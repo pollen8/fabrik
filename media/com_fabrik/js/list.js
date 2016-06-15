@@ -1375,7 +1375,18 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     if (cell.prop('tagName') !== 'A') {
                         cell.html(val);
                     } else {
-                        cell.prop('href', val);
+                        var href;
+                        try {
+                            // handle our view/edit links with data-rowid
+                            href = jQuery(val).prop('href');
+                            var rowid = jQuery(val).data('rowid');
+                            cell.prop('href', href);
+                            cell.data('rowid', rowid);
+                        }
+                        catch (err) {
+                            // val wasn't an A tag, so just treat it as an href
+                            cell.prop('href', val);
+                        }
                     }
                 });
                 template.find('.fabrik_row').prop('id', row.id);
