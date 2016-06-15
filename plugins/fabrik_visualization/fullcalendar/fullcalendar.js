@@ -307,14 +307,15 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
             url += '&fabrik_window_id=' + this.windowopts.id;
             if (this.clickdate !== null) {
-                /* First add the default minimum duration to the end date */
+                /* Add offset to start date */
+                this.clickdate = moment(this.clickdate).add({h:this.options.startOffset}).format('YYYY-MM-DD HH:mm:ss')
+                /* Add the default minimum duration to the end date */
                 var minDur = self.calendar.fullCalendar('option', 'defaultTimedEventDuration').split(':');
                 var endDate = moment(this.clickdate).add({
                     h: minDur[0],
                     m: minDur[1],
                     s: minDur[2]
                 }).format('YYYY-MM-DD HH:mm:ss');
-                this.clickdate = moment(this.clickdate).add({h:this.options.startOffset}).format('YYYY-MM-DD HH:mm:ss');
                 url += '&start_date=' + this.clickdate + '&end_date=' + endDate;
             }
             this.windowopts.type = 'window';
