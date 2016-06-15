@@ -163,7 +163,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->readonlyMonth  = (bool) $params->get('readonly_monthview', false);
 		$options->j3             = FabrikWorker::j3();
 		$options->calOptions     = $params->get('calOptions', '{}');
-		$options->startOffset    = (int) $params->get('startdate_hour_offest', '0');
+		$options->startOffset    = (int) $params->get('startdate_hour_offset', '0');
 
 		return $options;
 	}
