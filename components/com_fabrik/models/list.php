@@ -7372,7 +7372,10 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($oRecord->$primaryKey) && is_numeric($oRecord->$primaryKey))
 				{
-					$oRecord->$primaryKey = $rowId;
+					if (!empty($rowid))
+					{
+						$oRecord->$primaryKey = $rowId;
+					}
 				}
 			}
 		}

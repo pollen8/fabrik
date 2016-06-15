@@ -1,5 +1,5 @@
 /*!
- * FullCalendar v2.7.1
+ * FullCalendar v2.7.2
  * Docs & License: http://fullcalendar.io/
  * (c) 2016 Adam Shaw
  */
@@ -19,13 +19,10 @@
 ;;
 
 var FC = $.fullCalendar = {
-	version: "2.7.1",
+	version: "2.7.2",
 	internalApiVersion: 3
 };
 var fcViews = FC.views = {};
-
-
-FC.isTouch = 'ontouchstart' in document;
 
 
 $.fn.fullCalendar = function(options) {
@@ -468,6 +465,30 @@ function preventSelection(el) {
 // Stops a mouse/touch event from doing it's native browser action
 function preventDefault(ev) {
 	ev.preventDefault();
+}
+
+
+// attach a handler to get called when ANY scroll action happens on the page.
+// this was impossible to do with normal on/off because 'scroll' doesn't bubble.
+// http://stackoverflow.com/a/32954565/96342
+// returns `true` on success.
+function bindAnyScroll(handler) {
+	if (window.addEventListener) {
+		window.addEventListener('scroll', handler, true); // useCapture=true
+		return true;
+	}
+	return false;
+}
+
+
+// undoes bindAnyScroll. must pass in the original function.
+// returns `true` on success.
+function unbindAnyScroll(handler) {
+	if (window.removeEventListener) {
+		window.removeEventListener('scroll', handler, true); // useCapture=true
+		return true;
+	}
+	return false;
 }
 
 
@@ -1966,6 +1987,35 @@ var ListenerMixin = FC.ListenerMixin = (function() {
 })();
 ;;
 
+// simple class for toggle a `isIgnoringMouse` flag on delay
+// initMouseIgnoring must first be called, with a millisecond delay setting.
+var MouseIgnorerMixin = {
+
+	isIgnoringMouse: false, // bool
+	delayUnignoreMouse: null, // method
+
+
+	initMouseIgnoring: function(delay) {
+		this.delayUnignoreMouse = debounce(proxy(this, 'unignoreMouse'), delay || 1000);
+	},
+
+
+	// temporarily ignore mouse actions on segments
+	tempIgnoreMouse: function() {
+		this.isIgnoringMouse = true;
+		this.delayUnignoreMouse();
+	},
+
+
+	// delayUnignoreMouse eventually calls this
+	unignoreMouse: function() {
+		this.isIgnoringMouse = false;
+	}
+
+};
+
+;;
+
 /* A rectangular panel that is absolutely positioned over other content
 ------------------------------------------------------------------------------------------------------------------------
 Options:
@@ -2374,7 +2424,7 @@ var CoordCache = FC.CoordCache = Class.extend({
 ----------------------------------------------------------------------------------------------------------------------*/
 // TODO: use Emitter
 
-var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
+var DragListener = FC.DragListener = Class.extend(ListenerMixin, MouseIgnorerMixin, {
 
 	options: null,
 
@@ -2386,6 +2436,8 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 	originX: null,
 	originY: null,
 
+	// the wrapping element that scrolls, or MIGHT scroll if there's overflow.
+	// TODO: do this for wrappers that have overflow:hidden as well.
 	scrollEl: null,
 
 	isInteracting: false,
@@ -2398,9 +2450,13 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 	delayTimeoutId: null,
 	minDistance: null,
 
+	handleTouchScrollProxy: null, // calls handleTouchScroll, always bound to `this`
+
 
 	constructor: function(options) {
 		this.options = options || {};
+		this.handleTouchScrollProxy = proxy(this, 'handleTouchScroll');
+		this.initMouseIgnoring(500);
 	},
 
 
@@ -2412,7 +2468,10 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 		var isTouch = getEvIsTouch(ev);
 
 		if (ev.type === 'mousedown') {
-			if (!isPrimaryMouseButton(ev)) {
+			if (this.isIgnoringMouse) {
+				return;
+			}
+			else if (!isPrimaryMouseButton(ev)) {
 				return;
 			}
 			else {
@@ -2454,7 +2513,7 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 	},
 
 
-	endInteraction: function(ev) {
+	endInteraction: function(ev, isCancelled) {
 		if (this.isInteracting) {
 			this.endDrag(ev);
 
@@ -2467,13 +2526,20 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 			this.unbindHandlers();
 
 			this.isInteracting = false;
-			this.handleInteractionEnd(ev);
+			this.handleInteractionEnd(ev, isCancelled);
+
+			// a touchstart+touchend on the same element will result in the following addition simulated events:
+			// mouseover + mouseout + click
+			// let's ignore these bogus events
+			if (this.isTouch) {
+				this.tempIgnoreMouse();
+			}
 		}
 	},
 
 
-	handleInteractionEnd: function(ev) {
-		this.trigger('interactionEnd', ev);
+	handleInteractionEnd: function(ev, isCancelled) {
+		this.trigger('interactionEnd', ev, isCancelled || false);
 	},
 
 
@@ -2500,12 +2566,16 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 						touchStartIgnores--; // and we don't want this to fire immediately, so ignore.
 					}
 					else {
-						_this.endInteraction(ev);
+						_this.endInteraction(ev, true); // isCancelled=true
 					}
 				}
 			});
 
-			if (this.scrollEl) {
+			// listen to ALL scroll actions on the page
+			if (
+				!bindAnyScroll(this.handleTouchScrollProxy) && // hopefully this works and short-circuits the rest
+				this.scrollEl // otherwise, attach a single handler to this
+			) {
 				this.listenTo(this.scrollEl, 'scroll', this.handleTouchScroll);
 			}
 		}
@@ -2526,8 +2596,10 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 	unbindHandlers: function() {
 		this.stopListeningTo($(document));
 
+		// unbind scroll listening
+		unbindAnyScroll(this.handleTouchScrollProxy);
 		if (this.scrollEl) {
-			this.stopListeningTo(this.scrollEl);
+			this.stopListeningTo(this.scrollEl, 'scroll');
 		}
 	},
 
@@ -2660,7 +2732,7 @@ var DragListener = FC.DragListener = Class.extend(ListenerMixin, {
 		// if the drag is being initiated by touch, but a scroll happens before
 		// the drag-initiating delay is over, cancel the drag
 		if (!this.isDragging) {
-			this.endInteraction(ev);
+			this.endInteraction(ev, true); // isCancelled=true
 		}
 	},
 
@@ -3312,7 +3384,7 @@ var MouseFollower = Class.extend(ListenerMixin, {
 /* An abstract class comprised of a "grid" of areas that each represent a specific datetime
 ----------------------------------------------------------------------------------------------------------------------*/
 
-var Grid = FC.Grid = Class.extend(ListenerMixin, {
+var Grid = FC.Grid = Class.extend(ListenerMixin, MouseIgnorerMixin, {
 
 	view: null, // a View object
 	isRTL: null, // shortcut to the view's isRTL option
@@ -3345,6 +3417,9 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 		this.view = view;
 		this.isRTL = view.opt('isRTL');
 		this.elsByFill = {};
+
+		this.dayDragListener = this.buildDayDragListener();
+		this.initMouseIgnoring();
 	},
 
 
@@ -3480,12 +3555,8 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 		this.el = el;
 		preventSelection(el);
 
-		if (this.view.calendar.isTouch) {
-			this.bindDayHandler('touchstart', this.dayTouchStart);
-		}
-		else {
-			this.bindDayHandler('mousedown', this.dayMousedown);
-		}
+		this.bindDayHandler('touchstart', this.dayTouchStart);
+		this.bindDayHandler('mousedown', this.dayMousedown);
 
 		// attach event-element-related handlers. in Grid.events
 		// same garbage collection note as above.
@@ -3563,16 +3634,24 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 
 	// Process a mousedown on an element that represents a day. For day clicking and selecting.
 	dayMousedown: function(ev) {
-		this.clearDragListeners();
-		this.buildDayDragListener().startInteraction(ev, {
-			//distance: 5, // needs more work if we want dayClick to fire correctly
-		});
+		if (!this.isIgnoringMouse) {
+			this.dayDragListener.startInteraction(ev, {
+				//distance: 5, // needs more work if we want dayClick to fire correctly
+			});
+		}
 	},
 
 
 	dayTouchStart: function(ev) {
-		this.clearDragListeners();
-		this.buildDayDragListener().startInteraction(ev, {
+		var view = this.view;
+
+		// HACK to prevent a user's clickaway for unselecting a range or an event
+		// from causing a dayClick.
+		if (view.isSelected || view.selectedEvent) {
+			this.tempIgnoreMouse();
+		}
+
+		this.dayDragListener.startInteraction(ev, {
 			delay: this.view.opt('longPressDelay')
 		});
 	},
@@ -3590,10 +3669,10 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 		// this listener tracks a mousedown on a day element, and a subsequent drag.
 		// if the drag ends on the same day, it is a 'dayClick'.
 		// if 'selectable' is enabled, this listener also detects selections.
-		var dragListener = this.dayDragListener = new HitDragListener(this, {
+		var dragListener = new HitDragListener(this, {
 			scroll: view.opt('dragScroll'),
 			interactionStart: function() {
-				dayClickHit = dragListener.origHit;
+				dayClickHit = dragListener.origHit; // for dayClick, where no dragging happens
 			},
 			dragStart: function() {
 				view.unselect(); // since we could be rendering a new selection, we want to clear any old one
@@ -3626,20 +3705,24 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 				_this.unrenderSelection();
 				enableCursor();
 			},
-			interactionEnd: function(ev) {
-				if (dayClickHit) {
-					view.triggerDayClick(
-						_this.getHitSpan(dayClickHit),
-						_this.getHitEl(dayClickHit),
-						ev
-					);
+			interactionEnd: function(ev, isCancelled) {
+				if (!isCancelled) {
+					if (
+						dayClickHit &&
+						!_this.isIgnoringMouse // see hack in dayTouchStart
+					) {
+						view.triggerDayClick(
+							_this.getHitSpan(dayClickHit),
+							_this.getHitEl(dayClickHit),
+							ev
+						);
+					}
+					if (selectionSpan) {
+						// the selection will already have been rendered. just report it
+						view.reportSelection(selectionSpan, ev);
+					}
+					enableCursor();
 				}
-				if (selectionSpan) {
-					// the selection will already have been rendered. just report it
-					view.reportSelection(selectionSpan, ev);
-				}
-				enableCursor();
-				_this.dayDragListener = null;
 			}
 		});
 
@@ -3651,9 +3734,8 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, {
 	// Useful for when public API methods that result in re-rendering are invoked during a drag.
 	// Also useful for when touch devices misbehave and don't fire their touchend.
 	clearDragListeners: function() {
-		if (this.dayDragListener) {
-			this.dayDragListener.endInteraction(); // will clear this.dayDragListener
-		}
+		this.dayDragListener.endInteraction();
+
 		if (this.segDragListener) {
 			this.segDragListener.endInteraction(); // will clear this.segDragListener
 		}
@@ -4113,15 +4195,11 @@ Grid.mixin({
 
 	// Attaches event-element-related handlers to the container element and leverage bubbling
 	bindSegHandlers: function() {
-		if (this.view.calendar.isTouch) {
-			this.bindSegHandler('touchstart', this.handleSegTouchStart);
-		}
-		else {
-			this.bindSegHandler('mouseenter', this.handleSegMouseover);
-			this.bindSegHandler('mouseleave', this.handleSegMouseout);
-			this.bindSegHandler('mousedown', this.handleSegMousedown);
-		}
-
+		this.bindSegHandler('touchstart', this.handleSegTouchStart);
+		this.bindSegHandler('touchend', this.handleSegTouchEnd);
+		this.bindSegHandler('mouseenter', this.handleSegMouseover);
+		this.bindSegHandler('mouseleave', this.handleSegMouseout);
+		this.bindSegHandler('mousedown', this.handleSegMousedown);
 		this.bindSegHandler('click', this.handleSegClick);
 	},
 
@@ -4149,8 +4227,12 @@ Grid.mixin({
 
 	// Updates internal state and triggers handlers for when an event element is moused over
 	handleSegMouseover: function(seg, ev) {
-		if (!this.mousedOverSeg) {
+		if (
+			!this.isIgnoringMouse &&
+			!this.mousedOverSeg
+		) {
 			this.mousedOverSeg = seg;
+			seg.el.addClass('fc-allow-mouse-resize');
 			this.view.trigger('eventMouseover', seg.el[0], seg.event, ev);
 		}
 	},
@@ -4164,7 +4246,20 @@ Grid.mixin({
 		if (this.mousedOverSeg) {
 			seg = seg || this.mousedOverSeg; // if given no args, use the currently moused-over segment
 			this.mousedOverSeg = null;
+			seg.el.removeClass('fc-allow-mouse-resize');
 			this.view.trigger('eventMouseout', seg.el[0], seg.event, ev);
+		}
+	},
+
+
+	handleSegMousedown: function(seg, ev) {
+		var isResizing = this.startSegResize(seg, ev, { distance: 5 });
+
+		if (!isResizing && this.view.isEventDraggable(seg.event)) {
+			this.buildSegDragListener(seg)
+				.startInteraction(ev, {
+					distance: 5
+				});
 		}
 	},
 
@@ -4184,37 +4279,25 @@ Grid.mixin({
 		}
 
 		if (!isResizing && (isDraggable || isResizable)) { // allowed to be selected?
-			this.clearDragListeners();
 
 			dragListener = isDraggable ?
 				this.buildSegDragListener(seg) :
-				new DragListener(); // seg isn't draggable, but let's use a generic DragListener
-				                    // simply for the delay, so it can be selected.
+				this.buildSegSelectListener(seg); // seg isn't draggable, but still needs to be selected
 
-			dragListener._dragStart = function() { // TODO: better way of binding
-				// if not previously selected, will fire after a delay. then, select the event
-				if (!isSelected) {
-					view.selectEvent(event);
-				}
-			};
-
-			dragListener.startInteraction(ev, {
+			dragListener.startInteraction(ev, { // won't start if already started
 				delay: isSelected ? 0 : this.view.opt('longPressDelay') // do delay if not already selected
 			});
 		}
+
+		// a long tap simulates a mouseover. ignore this bogus mouseover.
+		this.tempIgnoreMouse();
 	},
 
 
-	handleSegMousedown: function(seg, ev) {
-		var isResizing = this.startSegResize(seg, ev, { distance: 5 });
-
-		if (!isResizing && this.view.isEventDraggable(seg.event)) {
-			this.clearDragListeners();
-			this.buildSegDragListener(seg)
-				.startInteraction(ev, {
-					distance: 5
-				});
-		}
+	handleSegTouchEnd: function(seg, ev) {
+		// touchstart+touchend = click, which simulates a mouseover.
+		// ignore this bogus mouseover.
+		this.tempIgnoreMouse();
 	},
 
 
@@ -4223,7 +4306,6 @@ Grid.mixin({
 	// `dragOptions` are optional.
 	startSegResize: function(seg, ev, dragOptions) {
 		if ($(ev.target).is('.fc-resizer')) {
-			this.clearDragListeners();
 			this.buildSegResizeListener(seg, $(ev.target).is('.fc-start-resizer'))
 				.startInteraction(ev, dragOptions);
 			return true;
@@ -4239,6 +4321,7 @@ Grid.mixin({
 
 	// Builds a listener that will track user-dragging on an event segment.
 	// Generic enough to work with any type of Grid.
+	// Has side effect of setting/unsetting `segDragListener`
 	buildSegDragListener: function(seg) {
 		var _this = this;
 		var view = this.view;
@@ -4248,6 +4331,10 @@ Grid.mixin({
 		var isDragging;
 		var mouseFollower; // A clone of the original element that will move with the mouse
 		var dropLocation; // zoned event date properties
+
+		if (this.segDragListener) {
+			return this.segDragListener;
+		}
 
 		// Tracks mouse movement over the *view's* coordinate map. Allows dragging and dropping between subcomponents
 		// of the view.
@@ -4268,6 +4355,10 @@ Grid.mixin({
 				mouseFollower.start(ev);
 			},
 			dragStart: function(ev) {
+				if (dragListener.isTouch && !view.isEventSelected(event)) {
+					// if not previously selected, will fire after a delay. then, select the event
+					view.selectEvent(event);
+				}
 				isDragging = true;
 				_this.handleSegMouseout(seg, ev); // ensure a mouseout on the manipulated event has been reported
 				_this.segDragStart(seg, ev);
@@ -4331,6 +4422,34 @@ Grid.mixin({
 						view.reportEventDrop(event, dropLocation, this.largeUnit, el, ev);
 					}
 				});
+				_this.segDragListener = null;
+			}
+		});
+
+		return dragListener;
+	},
+
+
+	// seg isn't draggable, but let's use a generic DragListener
+	// simply for the delay, so it can be selected.
+	// Has side effect of setting/unsetting `segDragListener`
+	buildSegSelectListener: function(seg) {
+		var _this = this;
+		var view = this.view;
+		var event = seg.event;
+
+		if (this.segDragListener) {
+			return this.segDragListener;
+		}
+
+		var dragListener = this.segDragListener = new DragListener({
+			dragStart: function(ev) {
+				if (dragListener.isTouch && !view.isEventSelected(event)) {
+					// if not previously selected, will fire after a delay. then, select the event
+					view.selectEvent(event);
+				}
+			},
+			interactionEnd: function(ev) {
 				_this.segDragListener = null;
 			}
 		});
@@ -8100,8 +8219,7 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 	// Binds DOM handlers to elements that reside outside the view container, such as the document
 	bindGlobalHandlers: function() {
 		this.listenTo($(document), 'mousedown', this.handleDocumentMousedown);
-		this.listenTo($(document), 'touchstart', this.handleDocumentTouchStart);
-		this.listenTo($(document), 'touchend', this.handleDocumentTouchEnd);
+		this.listenTo($(document), 'touchstart', this.processUnselect);
 	},
 
 
@@ -8662,25 +8780,18 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 	/* Mouse / Touch Unselecting (time range & event unselection)
 	------------------------------------------------------------------------------------------------------------------*/
 	// TODO: move consistently to down/start or up/end?
+	// TODO: don't kill previous selection if touch scrolling
 
 
 	handleDocumentMousedown: function(ev) {
-		// touch devices fire simulated mouse events on a "click".
-		// only process mousedown if we know this isn't a touch device.
-		if (!this.calendar.isTouch && isPrimaryMouseButton(ev)) {
-			this.processRangeUnselect(ev);
-			this.processEventUnselect(ev);
+		if (isPrimaryMouseButton(ev)) {
+			this.processUnselect(ev);
 		}
 	},
 
 
-	handleDocumentTouchStart: function(ev) {
+	processUnselect: function(ev) {
 		this.processRangeUnselect(ev);
-	},
-
-
-	handleDocumentTouchEnd: function(ev) {
-		// TODO: don't do this if because of touch-scrolling
 		this.processEventUnselect(ev);
 	},
 
@@ -8953,7 +9064,6 @@ var Calendar = FC.Calendar = Class.extend({
 	view: null, // current View object
 	header: null,
 	loadingLevel: 0, // number of simultaneous loading tasks
-	isTouch: false,
 
 
 	// a lot of this class' OOP logic is scoped within this constructor function,
@@ -8999,10 +9109,6 @@ var Calendar = FC.Calendar = Class.extend({
 			overrides
 		]);
 		populateInstanceComputableOptions(this.options);
-
-		this.isTouch = this.options.isTouch != null ?
-			this.options.isTouch :
-			FC.isTouch;
 
 		this.viewSpecCache = {}; // somewhat unrelated
 	},
@@ -9460,10 +9566,6 @@ function Calendar_constructor(element, overrides) {
 		tm = options.theme ? 'ui' : 'fc';
 		element.addClass('fc');
 
-		element.addClass(
-			t.isTouch ? 'fc-touch' : 'fc-cursor'
-		);
-
 		if (options.isRTL) {
 			element.addClass('fc-rtl');
 		}
@@ -9506,7 +9608,7 @@ function Calendar_constructor(element, overrides) {
 
 		header.removeElement();
 		content.remove();
-		element.removeClass('fc fc-touch fc-cursor fc-ltr fc-rtl fc-unthemed ui-widget');
+		element.removeClass('fc fc-ltr fc-rtl fc-unthemed ui-widget');
 
 		if (windowResizeProxy) {
 			$(window).unbind('resize', windowResizeProxy);
