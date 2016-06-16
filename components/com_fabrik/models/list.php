@@ -6283,7 +6283,7 @@ class FabrikFEModelList extends JModelForm
 			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->id = 'searchall_' . $this->getRenderContext();
 			$o->displayValue = '';
-			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '" value="' . $v
+			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '"title="' . $searchLabel . '" value="' . $v
 			. '" class="' . $class . '" name="' . $requestKey . '" id="' . $id . '" />';
 
 			if ($params->get('search-mode-advanced') == 1)
