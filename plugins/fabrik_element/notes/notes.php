@@ -220,7 +220,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string|JDatabaseQuery
 	 */
-	protected function buildQueryWhere($data = array(), $repeatCounter = 0, $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
+	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
