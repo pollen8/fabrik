@@ -19,6 +19,7 @@ $d = $displayData;
 	data-list="<?php echo $d->dataList;?>"
 	data-isajax="<?php echo $d->isAjax; ?>"
 	data-rowid="<?php echo $d->rowId; ?>"
+	data-iscustom="<?php if ($d->isCustom) echo '1'; else echo '0'; ?>"
 	href="<?php echo $d->editLink;?>"
 	title="<?php echo $d->editLabel;?>">
 	<?php echo FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $d->editLabel));?> <?php echo $d->editText; ?></a>

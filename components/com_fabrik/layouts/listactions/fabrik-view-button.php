@@ -19,6 +19,7 @@ $d = $displayData;
 	data-list="<?php echo $d->dataList; ?>"
 	data-isajax="<?php echo $d->isAjax; ?>"
 	data-rowid="<?php echo $d->rowId; ?>"
+	data-iscustom="<?php if ($d->isCustom) echo '1'; else echo '0'; ?>"
 	href="<?php echo $d->link; ?>" 
 	title="<?php echo $d->viewLabel;?>" 
 	target="<?php echo $d->viewLinkTarget; ?>">

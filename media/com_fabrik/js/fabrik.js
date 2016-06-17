@@ -406,8 +406,13 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
             a = jQuery(e.target).find('a').length > 0 ? jQuery(e.target).find('a') : jQuery(e.target).closest('a');
         }
         url = a.prop('href');
-        url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
-        url += '&format=partial';
+
+        // if it's a custom link, don't add our junk 'n' stuff
+        if (jQuery(target).data('iscustom') !== 1) {
+            url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
+            url += '&format=partial';
+        }
+
         title = a.prop('title');
         loadMethod = a.data('loadmethod');
         if (loadMethod === undefined) {
