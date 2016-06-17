@@ -418,10 +418,19 @@ EOD;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$table   = $formModel->getTable();
 
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
-			. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
+		if ($app->isAdmin())
+		{
+			$url = 'index.php?option=com_' . $package . '&task=details.view&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
+				. '&rowid=' . $formModel->getRowId(). '&iframe=1&print=1';
+		}
+		else
+		{
+			//$this->pdfURL = 'index.php?option=com_' . $this->package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf';
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
+				. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
 
-		$url .= '&Itemid=' . FabrikWorker::itemId();
+			$url .= '&Itemid=' . FabrikWorker::itemId();
+		}
 
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
@@ -434,7 +443,7 @@ EOD;
 		$url = JRoute::_($url);
 
 		// $$$ rob for some reason JRoute wasn't doing this ???
-		$url            = str_replace('&', '&amp;', $url);
+		//$url            = str_replace('&', '&amp;', $url);
 		self::$printURL = $url;
 
 		return self::$printURL;

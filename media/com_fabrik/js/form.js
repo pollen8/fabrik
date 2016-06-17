@@ -152,8 +152,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     window.print();
                 } else {
                     // Build URL as we could have changed the rowid via ajax pagination
+                    /*
                     var url = 'index.php?option=com_' + Fabrik.package + '&view=details&tmpl=component&formid=' + this.id +
                         '&listid=' + this.options.listid + '&rowid=' + this.options.rowid + '&iframe=1&print=1';
+                    */
+                    var url = jQuery(e.target).prop('href');
+                    url = url.replace(/&rowid=\d+/, '&rowid=' + this.options.rowid);
                     if (this.options.lang !== false) {
                         url += '&lang=' + this.options.lang;
                     }

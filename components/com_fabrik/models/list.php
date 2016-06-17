@@ -1464,6 +1464,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->rowData = $row;
 					$displayData->rowId = $rowId;
 					$displayData->isAjax = $isAjax;
+					$displayData->isCustom = $this->getCustomLink('url', 'edit') !== '';
 					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
@@ -1495,6 +1496,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->rowData = $row;
 					$displayData->rowId = $rowId;
 					$displayData->isAjax = $isAjax;
+					$displayData->isCustom = $this->getCustomLink('url', 'details') !== '';
 					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search.png');
 					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
@@ -2245,11 +2247,13 @@ class FabrikFEModelList extends JModelForm
 		$dataList = 'list_' . $this->getRenderContext();
 		$rowId = $this->getSlug($row);
 		$isAjax = $this->isAjaxLinks() ? '1' : '0';
+		$isCustom = $customLink === '' ? '0' : '1';
 		if ($target !== '') $target = 'target="' . $target . '"';
 		$data = '<a data-loadmethod="' . $loadMethod
 			. '" data-list="' . $dataList
 			. '" data-rowid="' . $rowId
 			. '" data-isajax="' . $isAjax
+			. '" data-iscustom="' . $isCustom
 			. '" class="' . $class
 			. '" href="' . $link
 			. '"' . $target . '>' . $data
