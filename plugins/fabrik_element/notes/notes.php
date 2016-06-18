@@ -244,7 +244,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		// Jaanus: when we choose WHERE field to be the same as FK then WHERE criteria is automatically FK = rowid, custom criteria(s) above may be added
-		if ($fk !== '' && $field === $fk && $rowId != '')
+		if ($fk !== '' && $field === $fk && $primaryKey != '')
 		{
 			$where[] = $db->qn($fk) . ' = ' . $primaryKey;
 		}
