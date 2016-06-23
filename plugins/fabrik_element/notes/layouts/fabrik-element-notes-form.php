@@ -38,7 +38,7 @@ endif;
 
 <?php
 // Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
-if ($d->rowid > 0) :
+if ($d->primaryKey > 0) :
 	if ($d->fieldType == 'field') :?>
 		<input class="fabrikinput inputbox text span12" name="<?php echo $d->name; ?>" />
 	<?php
