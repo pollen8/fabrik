@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-$this->filepath = "foo";
 $formModel = $model->getFormModel();
 
 foreach ($data as $name => $value)

@@ -2918,6 +2918,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params                    = $this->getParams();
 		$storage                   = $this->getStorage();
 		$this->_repeatGroupCounter = $repeatCounter;
+		$output                    = array();
 
 		if ($params->get('fu_show_image_in_email', false))
 		{
@@ -2952,19 +2953,26 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$render->render($this, $params, $v);
 				}
-			}
 
-			if ($render->output == '' && $params->get('default_image') != '')
-			{
-				$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
-			}
+				if ($render->output == '' && $params->get('default_image') != '')
+				{
+					$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
+				}
 
-			return $render->output;
+				$output[] = $render->output;
+			}
 		}
 		else
 		{
-			return $storage->preRenderPath($value);
+			$value     = (array) $value;
+
+			foreach ($value as $v) {
+				$output[] = $storage->preRenderPath($value);
+			}
 		}
+
+		// @TODO figure better solution for sepchar
+		return implode('<br />', $output);
 	}
 
 	/**
@@ -3070,7 +3078,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($ajaxIndex !== '')
 		{
-			$filePath = FArrayHelper::getValue($filePath, $ajaxIndex);
+			if (is_array($filePath))
+			{
+				$filePath = FArrayHelper::getValue($filePath, $ajaxIndex);
+			}
 		}
 
 		$filePath    = $storage->getFullPath($filePath);

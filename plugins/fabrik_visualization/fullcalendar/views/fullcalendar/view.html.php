@@ -68,7 +68,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$this->jLayouts();
 		$this->jsText();
 		$this->iniJs();
-
+		FabrikHelperHTML::slimbox();
+		
 		$this->params = $model->getParams();
 		$tpl          = $params->get('calendar_layout', $tpl);
 		$tmplPath     = JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl;
