@@ -339,7 +339,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         }
         // Get correct list block
         if (!l.submit('list.delete')) {
-            e.stop();
+            e.preventDefault();
         }
     };
 
