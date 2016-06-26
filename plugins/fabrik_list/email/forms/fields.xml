@@ -232,6 +232,14 @@
 				label="PLG_LIST_EMAIL_TO_TABLE_NAME_LABEL"
 				description="PLG_LIST_EMAIL_TO_TABLE_NAME_DESC"
 			/>
+
+			<field name="emailtable_to_table_where"
+			       description="PLG_LIST_EMAIL_TO_TABLE_WHERE_LABEL"
+			       label="PLG_LIST_EMAIL_TO_TABLE_WHERE_LABEL"
+			       repeat="true"
+			       type="fabrikeditor"
+			       mode="sql"
+			/>
 			
 		</fieldset>
 		

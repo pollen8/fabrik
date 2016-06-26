@@ -759,6 +759,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		$tableEmail = $params->get('emailtable_to_table_email');
 		$tableName  = $params->get('emailtable_to_table_name');
+		$tableWhere = $params->get('emailtable_to_table_where', '');
 
 		$toTableModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$toTableModel->setId($table);
@@ -771,6 +772,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$query = $toDb->getQuery(true);
 		$query->select($tableEmail . ' AS email, ' . $tableName . ' AS name')
 			->from($emailTableTo_table)->order('name ASC');
+
+		if (!empty($tableWhere)) {
+			$w = new FabrikWorker;
+			$tableWhere = $w->parseMessageForPlaceHolder($tableWhere);
+			$query->where($tableWhere);
+		}
+
 		$toDb->setQuery($query);
 		$results = $toDb->loadObjectList();
 
