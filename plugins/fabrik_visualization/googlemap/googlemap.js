@@ -35,6 +35,7 @@ var FbGoogleMapViz = new Class({
 		'radius_fill_colors': [],
 		'streetView': false,
 		'traffic': false,
+		'key': false,
 		'styles': []
 	},
 
@@ -110,7 +111,7 @@ var FbGoogleMapViz = new Class({
 
 		}
 
-		Fabrik.loadGoogleMap(true, function () {
+		Fabrik.loadGoogleMap(this.options.key, function () {
 			this.iniGMap();
 		}.bind(this));
 

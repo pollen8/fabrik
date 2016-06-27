@@ -225,13 +225,17 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Load the google maps API once
      *
-     * @param {boolean} s Sensor
+     * @param {boolean|string} k API key
      * @param {function|string} cb Callback method function or function name (assigned to window)
      */
-    Fabrik.loadGoogleMap = function (s, cb) {
+    Fabrik.loadGoogleMap = function (k, cb) {
 
         var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
         var src = prefix + '//maps.googleapis.com/maps/api/js?libraries=places&callback=Fabrik.mapCb';
+        
+        if (k !== false) {
+            src += '&key=' + k;
+        }
 
         // Have we previously started to load the Googlemaps script?
         var gmapScripts = Array.from(document.scripts).filter(function (f) {

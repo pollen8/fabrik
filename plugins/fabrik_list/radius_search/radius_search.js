@@ -119,7 +119,8 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 			prefilter           : true,
 			prefilterDistance   : 1000,
 			prefilterDone       : false,
-			offset_y            : 0
+			offset_y            : 0,
+			key                 : false
 		},
 
 		geocoder: null,
@@ -164,7 +165,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 
 				}.bind(this));
 
-				Fabrik.loadGoogleMap(true, 'geoCode');
+				Fabrik.loadGoogleMap(this.options.key, 'geoCode');
 
 				if (typeOf(this.options.value) === 'null') {
 					this.options.value = 0;

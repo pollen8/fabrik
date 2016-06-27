@@ -26,7 +26,9 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
 
         options: {
             use_input_mask        : false,
-            input_mask_definitions: ''
+            input_mask_definitions: '',
+            geocomplete           : false,
+            mapKey                : false
         },
 
         initialize: function (element, options) {
@@ -61,7 +63,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                     }
                 }.bind(this);
                 window.addEvent('google.geolocate.loaded', this.loadFn);
-                Fabrik.loadGoogleMap(false, 'geolocateLoad');
+                Fabrik.loadGoogleMap(this.options.mapKey, 'geolocateLoad');
             }
         },
 

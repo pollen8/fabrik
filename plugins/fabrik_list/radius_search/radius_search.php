@@ -501,6 +501,9 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$opts->geoCodeAsType = $params->get('geocode_as_type', 1);
 		$opts->renderOrder = $this->renderOrder;
 		$opts->offset_y = (int)$params->get('window_offset_y', '0');
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$opts->key = empty($apiKey) ? false : $apiKey;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadius_search($opts)";
 

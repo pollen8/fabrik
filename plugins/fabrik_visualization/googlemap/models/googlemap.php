@@ -130,6 +130,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->radius_defaults = (array) $params->get('fb_gm_radius_default');
 		$opts->radius_fill_colors = (array) $params->get('fb_gm_radius_fill_color');
 		$opts->styles = FabGoogleMapHelper::styleJs($params);
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$opts->key = empty($apiKey) ? false : $apiKey;
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
 		$js = array();

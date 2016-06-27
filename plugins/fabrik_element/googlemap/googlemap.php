@@ -404,6 +404,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$opts->directionsFrom = false;
 		}
 
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$opts->key = empty($apiKey) ? false : $apiKey;
+
 		return array('FbGoogleMap', $id, $opts);
 	}
 

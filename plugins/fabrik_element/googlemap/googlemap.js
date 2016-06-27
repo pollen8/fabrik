@@ -79,12 +79,12 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             'directionsFrom'      : false,
             'directionsFromLat'   : 0,
             'directionsFromLon'   : 0,
-            reverse_geocode_fields: {}
+            'reverse_geocode_fields': {},
+            'key'                 : false
         },
 
         loadScript: function () {
-            var s = this.options.sensor === false ? 'false' : 'true';
-            Fabrik.loadGoogleMap(s, 'googlemapload');
+            Fabrik.loadGoogleMap(this.options.key, 'googlemapload');
         },
 
         initialize: function (element, options) {
