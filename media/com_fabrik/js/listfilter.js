@@ -32,7 +32,7 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
             this.filtersInHeadings = this.container.find('.listfilter');
             var b = this.container.find('.toggleFilters');
             b.on('click', function (e) {
-                e.stopPropagation();
+                e.preventDefault();
                 self.filterContainer.toggle();
                 self.filtersInHeadings.toggle();
             });
