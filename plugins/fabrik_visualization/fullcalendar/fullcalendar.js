@@ -141,6 +141,8 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 maxTime                  : this.options.close, // an end time (6pm in this example)
 				weekends				 : this.options.showweekends,
                 eventClick               : function (calEvent, jsEvent, view) {
+                    jsEvent.stopPropagation();
+                    jsEvent.preventDefault();
                     self.clickEntry(calEvent);
                     return false;
                 },
@@ -377,7 +379,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
         clickEntry: function (calEvent) {
             if (this.options.showFullDetails === false) {
                 var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
-                jQuery('#' + popoverId).popover('show');
+                jQuery('#' + popoverId).popover('toggle');
             } else {
                 this.viewEntry(calEvent);
             }
