@@ -5,10 +5,8 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbYouTube;
-
-requirejs(['jquery'], function (jQuery) {
-    FbYouTube = new Class({
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbYouTube = new Class({
         Extends   : FbElement,
         initialize: function (element, options) {
             this.setPlugin('fabrikyoutube');
