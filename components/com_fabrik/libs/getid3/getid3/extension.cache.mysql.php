@@ -175,6 +175,7 @@ class getID3_cached_mysql extends getID3
 
 
 	// private: (re)create sql table
+	// $$$ hugh - added latin1 charset otherwise MySQL blows up if default is UTf8 due to length of index
 	private function create_table($drop=false) {
 
 		$SQLquery  = 'CREATE TABLE IF NOT EXISTS `'.mysql_real_escape_string($this->table).'` (';
@@ -183,7 +184,7 @@ class getID3_cached_mysql extends getID3
 		$SQLquery .= ', `filetime` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `analyzetime` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `value` LONGTEXT NOT NULL';
-		$SQLquery .= ', PRIMARY KEY (`filename`, `filesize`, `filetime`)) ENGINE=MyISAM';
+		$SQLquery .= ', PRIMARY KEY (`filename`, `filesize`, `filetime`)) CHARACTER SET latin1 ENGINE=MyISAM';
 		$this->cursor = mysql_query($SQLquery, $this->connection);
 		echo mysql_error($this->connection);
 	}
