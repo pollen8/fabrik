@@ -179,7 +179,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			// MCL test
 			$mcl = FabrikHelperHTML::mcl();
-			$s->deps[] = array_merge($s->deps, $mcl);
+			$s->deps = array_merge($s->deps, $mcl);
 
 			if (strstr($runtimes, 'html5'))
 			{
@@ -214,6 +214,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (array_key_exists($key, $shim) && isset($shim[$key]->deps))
 		{
+			$merged = array_merge($shim[$key]->deps, $s->deps);
+			$unique = array_unique($merged);
+			$values = array_values($unique);
 			$shim[$key]->deps = array_values(array_unique(array_merge($shim[$key]->deps, $s->deps)));
 		}
 		else
