@@ -334,7 +334,7 @@ class FabrikAdminControllerList extends FabControllerForm
 			}
 		}
 
-		$format = $input->get('fromat', 'html');
+		$format = $input->get('format', 'html');
 		$ref    = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getId() . '&format=' . $format;
 		$this->app->redirect($ref);
 	}

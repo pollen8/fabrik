@@ -88,7 +88,7 @@ class FabrikAdminViewList extends JViewLegacy
 				'headings' => $this->headings,
 				'formid' => $model->getTable()->form_id,
 				'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
-		$d['nav'] = $nav->getProperties();
+		$d['nav'] = get_object_vars($nav);
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
 		$msg = $app->getMessageQueue();
