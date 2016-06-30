@@ -364,18 +364,15 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$folder = 'components/com_fabrik/libs/googlemaps/geocomplete/';
 			$s->deps[] = $folder . 'jquery.geocomplete';
 		}
-
-		//if (count($s->deps) > 1)
-		//{
-			if (array_key_exists($key, $shim))
-			{
-				$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
-			}
-			else
-			{
-				$shim[$key] = $s;
-			}
-		//}
+		
+		if (array_key_exists($key, $shim))
+		{
+			$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
+		}
+		else
+		{
+			$shim[$key] = $s;
+		}
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 
