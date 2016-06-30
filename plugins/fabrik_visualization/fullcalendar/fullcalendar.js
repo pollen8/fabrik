@@ -379,7 +379,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
         clickEntry: function (calEvent) {
             if (this.options.showFullDetails === false) {
                 var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
-                jQuery('#' + popoverId).popover('toggle');
+                jQuery('#' + popoverId).popover('show');
             } else {
                 this.viewEntry(calEvent);
             }
