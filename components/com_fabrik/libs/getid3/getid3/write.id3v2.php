@@ -30,7 +30,7 @@ class getid3_write_id3v2
 	public $warnings                    = array();  // any non-critical errors will be stored here
 	public $errors                      = array();  // any critical errors will be stored here
 
-	public function getid3_write_id3v2() {
+	public function __construct() {
 		return true;
 	}
 
@@ -815,7 +815,7 @@ class getid3_write_id3v2
 					// Counter         $xx xx xx xx (xx ...)
 					if (!$this->IsWithinBitRange($source_data_array['rating'], 8, false)) {
 						$this->errors[] = 'Invalid Rating byte in '.$frame_name.' ('.$source_data_array['rating'].') (range = 0 to 255)';
-					} elseif (!IsValidEmail($source_data_array['email'])) {
+					} elseif (!$this->IsValidEmail($source_data_array['email'])) {
 						$this->errors[] = 'Invalid Email in '.$frame_name.' ('.$source_data_array['email'].')';
 					} else {
 						$framedata .= str_replace("\x00", '', $source_data_array['email'])."\x00";
@@ -1183,7 +1183,6 @@ class getid3_write_id3v2
 			$PreviousFrames = array();
 			return true;
 		}
-
 		if ($this->majorversion == 4) {
 			switch ($frame_name) {
 				case 'UFID':
@@ -1744,14 +1743,14 @@ class getid3_write_id3v2
 		return false;
 	}
 
-	public function ID3v2IsValidRGADname($RGADname) {
+	public static function ID3v2IsValidRGADname($RGADname) {
 		if (($RGADname >= 0) && ($RGADname <= 2)) {
 			return true;
 		}
 		return false;
 	}
 
-	public function ID3v2IsValidRGADoriginator($RGADoriginator) {
+	public static function ID3v2IsValidRGADoriginator($RGADoriginator) {
 		if (($RGADoriginator >= 0) && ($RGADoriginator <= 3)) {
 			return true;
 		}
@@ -1759,14 +1758,19 @@ class getid3_write_id3v2
 	}
 
 	public function ID3v2IsValidTextEncoding($textencodingbyte) {
+		// 0 = ISO-8859-1
+		// 1 = UTF-16 with BOM
+		// 2 = UTF-16BE without BOM
+		// 3 = UTF-8
 		static $ID3v2IsValidTextEncoding_cache = array(
-			2 => array(true, true),
-			3 => array(true, true),
-			4 => array(true, true, true, true));
+			2 => array(true, true),              // ID3v2.2 - allow 0=ISO-8859-1, 1=UTF-16
+			3 => array(true, true),              // ID3v2.3 - allow 0=ISO-8859-1, 1=UTF-16
+			4 => array(true, true, true, true),  // ID3v2.4 - allow 0=ISO-8859-1, 1=UTF-16, 2=UTF-16BE, 3=UTF-8
+		);
 		return isset($ID3v2IsValidTextEncoding_cache[$this->majorversion][$textencodingbyte]);
 	}
 
-	public function Unsynchronise($data) {
+	public static function Unsynchronise($data) {
 		// Whenever a false synchronisation is found within the tag, one zeroed
 		// byte is inserted after the first false synchronisation byte. The
 		// format of a correct sync that should be altered by ID3 encoders is as
@@ -1835,14 +1839,11 @@ class getid3_write_id3v2
 		}
 	}
 
-	public function IsValidMIMEstring($mimestring) {
-		if ((strlen($mimestring) >= 3) && (strpos($mimestring, '/') > 0) && (strpos($mimestring, '/') < (strlen($mimestring) - 1))) {
-			return true;
-		}
-		return false;
+	public static function IsValidMIMEstring($mimestring) {
+		return preg_match('#^.+/.+$#', $mimestring);
 	}
 
-	public function IsWithinBitRange($number, $maxbits, $signed=false) {
+	public static function IsWithinBitRange($number, $maxbits, $signed=false) {
 		if ($signed) {
 			if (($number > (0 - pow(2, $maxbits - 1))) && ($number <= pow(2, $maxbits - 1))) {
 				return true;
@@ -1855,18 +1856,15 @@ class getid3_write_id3v2
 		return false;
 	}
 
-	public function safe_parse_url($url) {
-		$parts = @parse_url($url);
-		$parts['scheme'] = (isset($parts['scheme']) ? $parts['scheme'] : '');
-		$parts['host']   = (isset($parts['host'])   ? $parts['host']   : '');
-		$parts['user']   = (isset($parts['user'])   ? $parts['user']   : '');
-		$parts['pass']   = (isset($parts['pass'])   ? $parts['pass']   : '');
-		$parts['path']   = (isset($parts['path'])   ? $parts['path']   : '');
-		$parts['query']  = (isset($parts['query'])  ? $parts['query']  : '');
-		return $parts;
+	public static function IsValidEmail($email) {
+		if (function_exists('filter_var')) {
+			return filter_var($email, FILTER_VALIDATE_EMAIL);
+		}
+		// VERY crude email validation
+		return preg_match('#^[^ ]+@[a-z\\-\\.]+\\.[a-z]{2,}$#', $email);
 	}
 
-	public function IsValidURL($url, $allowUserPass=false) {
+	public static function IsValidURL($url, $allowUserPass=false) {
 		if ($url == '') {
 			return false;
 		}
@@ -1877,6 +1875,10 @@ class getid3_write_id3v2
 				return false;
 			}
 		}
+		// 2016-06-08: relax URL checking to avoid falsely rejecting valid URLs, leave URL validation to the user
+		// http://www.getid3.org/phpBB3/viewtopic.php?t=1926
+		return true;
+		/*
 		if ($parts = $this->safe_parse_url($url)) {
 			if (($parts['scheme'] != 'http') && ($parts['scheme'] != 'https') && ($parts['scheme'] != 'ftp') && ($parts['scheme'] != 'gopher')) {
 				return false;
@@ -1895,6 +1897,18 @@ class getid3_write_id3v2
 			}
 		}
 		return false;
+		*/
+	}
+
+	public static function safe_parse_url($url) {
+		$parts = @parse_url($url);
+		$parts['scheme'] = (isset($parts['scheme']) ? $parts['scheme'] : '');
+		$parts['host']   = (isset($parts['host'])   ? $parts['host']   : '');
+		$parts['user']   = (isset($parts['user'])   ? $parts['user']   : '');
+		$parts['pass']   = (isset($parts['pass'])   ? $parts['pass']   : '');
+		$parts['path']   = (isset($parts['path'])   ? $parts['path']   : '');
+		$parts['query']  = (isset($parts['query'])  ? $parts['query']  : '');
+		return $parts;
 	}
 
 	public static function ID3v2ShortFrameNameLookup($majorversion, $long_description) {
@@ -1906,6 +1920,7 @@ class getid3_write_id3v2
 			$ID3v2ShortFrameNameLookup[2]['comment']                                          = 'COM';
 			$ID3v2ShortFrameNameLookup[2]['album']                                            = 'TAL';
 			$ID3v2ShortFrameNameLookup[2]['beats_per_minute']                                 = 'TBP';
+			$ID3v2ShortFrameNameLookup[2]['bpm']                                              = 'TBP';
 			$ID3v2ShortFrameNameLookup[2]['composer']                                         = 'TCM';
 			$ID3v2ShortFrameNameLookup[2]['genre']                                            = 'TCO';
 			$ID3v2ShortFrameNameLookup[2]['itunescompilation']                                = 'TCP';
@@ -1966,6 +1981,7 @@ class getid3_write_id3v2
 			$ID3v2ShortFrameNameLookup[3]['synchronised_tempo_codes']                         = 'SYTC';
 			$ID3v2ShortFrameNameLookup[3]['album']                                            = 'TALB';
 			$ID3v2ShortFrameNameLookup[3]['beats_per_minute']                                 = 'TBPM';
+			$ID3v2ShortFrameNameLookup[3]['bpm']                                              = 'TBPM';
 			$ID3v2ShortFrameNameLookup[3]['itunescompilation']                                = 'TCMP';
 			$ID3v2ShortFrameNameLookup[3]['composer']                                         = 'TCOM';
 			$ID3v2ShortFrameNameLookup[3]['genre']                                            = 'TCON';

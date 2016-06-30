@@ -179,7 +179,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			// MCL test
 			$mcl = FabrikHelperHTML::mcl();
-			$s->deps = array_merge($s->deps, $mcl);
+			//$s->deps = array_merge($s->deps, $mcl);
 
 			if (strstr($runtimes, 'html5'))
 			{

@@ -58,13 +58,13 @@ class VideoRenderModel extends FabModel
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
 
-		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
+		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysqli.php', __FILE__, true);
 		$config = $this->config;
 		$host = $config->get('host');
 		$database = $config->get('db');
 		$username = $config->get('user');
 		$password = $config->get('password');
-		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
+		$getID3 = new getID3_cached_mysqli($host, $database, $username, $password);
 
 		// Analyse file and store returned data in $ThisFileInfo
 		$relPath = JPATH_SITE . $file;
