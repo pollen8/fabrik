@@ -195,7 +195,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$jsFiles = array();
 		JHTML::stylesheet('plugins/fabrik_form/comment/comments.css');
 		$jsFiles['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
-		$jsFiles['Comments'] = 'plugins/fabrik_form/comment/comments.js';
+		$jsFiles['FabrikComment'] = 'plugins/fabrik_form/comment/comments.js';
 		$jsFiles['InlineEdit'] = 'plugins/fabrik_form/comment/inlineedit.js';
 
 		$thumbOpts = $this->doThumbs() ? $thumbOpts = $this->loadThumbJsOpts() : "{}";
@@ -267,7 +267,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	private function canAddComment()
 	{
 		$params = $this->getParams();
-		$anonymous = $params->get('comment-internal-anonymous');
+		$anonymous = $params->get('comment-internal-guest');
 
 		return $this->user->get('id') == 0 && $anonymous == 0 ? false : true;
 	}
