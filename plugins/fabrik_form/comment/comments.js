@@ -86,7 +86,6 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 			// For update
 			this.spinner.hide();
-			this.watchInput();
 			this.updateThumbs();
 		},
 
@@ -126,20 +125,14 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 				}.bind(this)
 			});
 
-			this.element.getElements('.replyform').each(function (f) {
-				var input = f.getElement('textarea');
-				if (!input) {
-					return;
-				}
-				f.getElement('button.submit').addEvent('click', function (e) {
-					this.doInput(e);
-				}.bind(this));
+			var self = this;
+			jQuery('.replyform button.submit').on('click', function(e) {
+				self.doInput(e);
+			});
 
-				input.addEvent('click', function (e) {
-					this.testInput(e);
-				}.bind(this));
-
-			}.bind(this));
+			jQuery('.replyform textarea').on('click', function(e) {
+				self.testInput(e);
+			});
 		},
 
 		testInput: function (e) {
@@ -184,7 +177,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 
 			var v = replyform.getElement('textarea').get('value');
-			e.stop();
+			e.preventDefault();
 			if (v === '') {
 				this.spinner.hide();
 				alert(Joomla.JText._('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING'));

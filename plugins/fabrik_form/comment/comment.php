@@ -215,7 +215,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->showCountInTitle = $params->get('comment-show-count-in-title');
 		$layoutData->commnents = $this->writeComments($params, $comments);
 		$layoutData->commentsLocked = $this->commentsLocked;
-		$layoutData->anonymous = $params->get('comment-internal-anonymous');
+		$layoutData->allowGuest = $params->get('comment-internal-allow-guest');
 		$layoutData->userLoggedIn = $this->user->get('id') != 0;
 		$layoutData->form = $this->getAddCommentForm(0, true);
 
@@ -267,7 +267,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	private function canAddComment()
 	{
 		$params = $this->getParams();
-		$anonymous = $params->get('comment-internal-guest');
+		$anonymous = $params->get('comment-internal-allow-guest');
 
 		return $this->user->get('id') == 0 && $anonymous == 0 ? false : true;
 	}
