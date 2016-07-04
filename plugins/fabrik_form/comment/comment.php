@@ -499,6 +499,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$this->thumb->formid = $this->getModel()->getId();
 			$this->thumb->listid = $this->getListId();
 			$this->thumb->special = 'comments_' . $this->thumb->formid;
+			$this->thumb->install();
 		}
 
 		return $this->thumb;
