@@ -9,7 +9,7 @@ $pw2Attributes = array();
 
 foreach ($d->pw1Attributes as $key => $val)
 {
-	$pw1Attributes[] = $key . '="' . $val . '"';
+	$pw1Attributes[] = $key . '="' . $val . '" ';
 }
 
 $pw1Attributes = implode("\n", $pw1Attributes);
@@ -17,7 +17,7 @@ $pw1Attributes = implode("\n", $pw1Attributes);
 
 foreach ($d->pw2Attributes as $key => $val)
 {
-	$pw2Attributes[] = $key . '="' . $val . '"';
+	$pw2Attributes[] = $key . '="' . $val . '" ';
 }
 
 $pw2Attributes = implode("\n", $pw2Attributes);

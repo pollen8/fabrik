@@ -14,7 +14,7 @@ $d = $displayData;
 		$opt = $d->opts[$i];
 		$show =  $d->editable || (!$d->editable && $opt->value == $d->default);
 		if ($show) :
-			$display = $opt->value == $d->default ? '' : 'style="display: none"';
+			$display = $opt->value == $d->default ? '' : 'style="display: none" ';
 			//$c = $d->showPleaseSelect ? $i + 1 : $i;
 		?>
 			<div <?php echo $display ;?> class="notice description-<?php echo  $i; ?>">
