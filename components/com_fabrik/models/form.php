@@ -2634,11 +2634,12 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   string  $labelMethod           An element method that if set can alter the option's label
 	 *                                         Used to only show elements that can be selected for search all
 	 * @param   bool    $noJoins               do not include elements in joined tables (default false)
+	 * @param   bool    $translate             run label through translation (default true)
 	 *
 	 * @return	array	html options
 	 */
 	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false,
-		$filter = array(), $labelMethod = '', $noJoins = false)
+		$filter = array(), $labelMethod = '', $noJoins = false, $translate = true)
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
@@ -2669,6 +2670,11 @@ class FabrikFEModelForm extends FabModelForm
 
 				$val = $el->$key;
 				$label = strip_tags($prefix . $el->label);
+
+				if ($translate)
+				{
+					$label = FText::_($label);
+				}
 
 				if ($labelMethod !== '')
 				{
