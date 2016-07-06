@@ -112,7 +112,7 @@ $listDirn  = $this->state->get('list.direction');
 							<?php
 							if ($item->checked_out && ($item->checked_out != $user->get('id')))
 							{
-								echo $item->label;
+								echo FText::_($item->label);
 							}
 							else
 							{
