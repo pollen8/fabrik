@@ -961,6 +961,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 */
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$this->_staticMap($value, null, null, null, $repeatCounter, false, $data);
+		return $this->_staticMap($value, null, null, null, $repeatCounter, false, $data);
 	}
 }
