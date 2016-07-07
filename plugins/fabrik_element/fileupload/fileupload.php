@@ -1048,12 +1048,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$mediaParams = JComponentHelper::getParams('com_media');
 			$aFileTypes  = explode(',', $mediaParams->get('upload_extensions'));
-			if (!$stripDot)
+		}
+
+		if (!$stripDot)
+		{
+			foreach ($aFileTypes as &$type)
 			{
-				foreach ($aFileTypes as &$type)
-				{
-					$type = '.' . $type;
-				}
+				$type = '.' . $type;
 			}
 		}
 
@@ -2327,7 +2328,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$accept = !empty($fileTypes) ? ' accept="' . $fileTypes . '" ' : ' ';
 
-		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $accept . $id . '" ' . $capture . ' />' . "\n";
+		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" ' . $accept . ' id="' . $id . '" ' . $capture . ' />' . "\n";
 
 		if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage' && $params->get('upload_allow_folderselect') == '1')
 		{
