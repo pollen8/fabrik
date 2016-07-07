@@ -3091,10 +3091,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filePath = FabrikWorker::JSONtoData($filePath, false);
 		$filePath = is_object($filePath) ? FArrayHelper::fromObject($filePath) : (array) $filePath;
 
-		if ($this->getGroupModel()->canRepeat())
-		{
-			$filePath = FArrayHelper::getValue($filePath, $repeatCount);
-		}
+		$filePath = FArrayHelper::getValue($filePath, $repeatCount);
 
 		if ($ajaxIndex !== '')
 		{
