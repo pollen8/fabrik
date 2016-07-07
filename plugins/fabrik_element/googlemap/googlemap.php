@@ -920,4 +920,47 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		return $this->default;
 	}
+
+
+	/**
+	 * Used to format the data when shown in the form's email
+	 *
+	 * @param   mixed $value         element's data
+	 * @param   array $data          form records data
+	 * @param   int   $repeatCounter repeat group counter
+	 *
+	 * @return  string    formatted value
+	 */
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		if ($this->inRepeatGroup && is_array($value))
+		{
+			$val = array();
+
+			foreach ($value as $v2)
+			{
+				$val[] = $this->getIndEmailValue($v2, $data, $repeatCounter);
+			}
+		}
+		else
+		{
+			$val = $this->getIndEmailValue($value, $data, $repeatCounter);
+		}
+
+		return $val;
+	}
+
+	/**
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed $value         Element value
+	 * @param   array $data          Form data
+	 * @param   int   $repeatCounter Group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$this->_staticMap($value, null, null, null, $repeatCounter, false, $data);
+	}
 }
