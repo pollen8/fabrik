@@ -87,7 +87,7 @@
 					<fields name="params">
 						<fieldset modal="true" name="list_elements_modal" repeat="true">
 
-							<field name="show_in_list" type="listfields" label="MOD_FABRIK_LIST_ELEMENTS_HEADING" size="30"/>
+							<field name="show_in_list" type="listfields" label="MOD_FABRIK_LIST_ELEMENTS_HEADING" size="50"/>
 
 						</fieldset>
 					</fields>
