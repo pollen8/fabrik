@@ -145,6 +145,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 				else
 				{
+					// erm ... ?? ... ^^
 					if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
 					{
 						$default = $data[$name][$repeatCounter];
