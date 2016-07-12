@@ -30,7 +30,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         initialize: function (element, options) {
-            window.addEvent('domready', function () {
+            // not sure why we use domready, but causes issues in popups on second+ open, doesn't fire
+            //window.addEvent('domready', function () {
                 this.matchedResult = false;
                 this.setOptions(options);
                 element = element.replace('-auto-complete', '');
@@ -76,7 +77,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         }
                     }
                 }.bind(this));
-            }.bind(this));
+            //}.bind(this));
         },
 
         search: function (e) {
