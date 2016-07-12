@@ -78,7 +78,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 * @TODO when editing a form with joined repeat group the rowid will be set but
 		 * the record is in fact new
 		 */
-		if ($params->get('update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
+		//if ($params->get('update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
+		if ($params->get('update_on_edit') || !$rowId)
 		{
 			// Set user to logged in user
 			if ($this->isEditable())
@@ -87,7 +88,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$userId = (int) $this->getValue($data, $repeatCounter);
+				$userId = (int) $this->getValue($data, $repeatCounter, array('raw' => 1));
 
 				// On failed validation value is 1 - user ids are always more than that so don't load userid=1 otherwise an error is generated
 				$user = $userId <= 1 ? $this->user : JFactory::getUser($userId);
@@ -131,7 +132,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 				if ($id === '')
 				{
-					$id = $this->getValue($data, $repeatCounter);
+					$id = $this->getValue($data, $repeatCounter, array('raw' => 1));
 				}
 
 				/*
