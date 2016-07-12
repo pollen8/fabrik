@@ -135,7 +135,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             h = parseInt(h, 10);
 
 
-            yy = window.getSize().y / 2 - (h / 2);
+            yy = jQuery(window).height() / 2 - (h / 2);
 
             if ( jQuery.inArray(jQuery(source).css('position'),['fixed','static']) === -1) {
                 yy += window.getScroll().y;
@@ -144,7 +144,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
             //d.top = this.options.offset_y !== null ? this.options.offset_y : yy;
 
-            xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
+            xx = jQuery(window).width() / 2 + window.getScroll().x - w / 2;
             //xx = (window.getSize().x / 2) - (w / 2);
             d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
             //d.left = this.options.offset_x !== null ? this.options.offset_x : xx;
@@ -166,7 +166,12 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 dim = this.options[dir] + '';
             if (dim.indexOf('%') !== -1) {
                 // @TODO fix
-                return Math.floor(window.getSize()[coord] * (dim.toFloat() / 100));
+                if (dir === 'height') {
+                    return Math.floor(jQuery(window).height() * (dim.toFloat() / 100));
+                }
+                else {
+                    return Math.floor(jQuery(window).width() * (dim.toFloat() / 100));
+                }
             }
             return parseInt(dim, 10);
         },
@@ -363,12 +368,11 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
         expand: function () {
             if (!this.expanded) {
                 this.expanded = true;
-                var w = window.getSize();
                 this.unexpanded = jQuery.extend({}, this.window.position(),
                     {'width': this.window.width(), 'height': this.window.height()});//this.window.getCoordinates();
                 var scroll = window.getScroll();
                 this.window.css({'left': scroll.x + 'px', 'top': scroll.y + 'px'});
-                this.window.css({'width': w.x, 'height': w.y});
+                this.window.css({'width': jQuery(window).width(), 'height': jQuery(window).height()});
             } else {
                 this.window.css({
                     'left': this.unexpanded.left + 'px',
