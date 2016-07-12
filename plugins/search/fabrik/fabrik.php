@@ -60,6 +60,6 @@ class PlgSearchFabrik extends JPlugin
 			}
 		}
 
-		return plgSystemFabrik::onDoContentSearch($text, $this->params, $phrase, $ordering, $areas);
+		return plgSystemFabrik::onDoContentSearch($text, $this->params, $phrase, $ordering);
 	}
 }
