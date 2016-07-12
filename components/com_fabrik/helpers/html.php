@@ -73,6 +73,14 @@ class FabrikHelperHTML
 	protected static $jLayoutsJs = array();
 
 	/**
+	 * Array of paths for requirejs
+	 *
+	 * @var object
+	 */
+
+	protected static $allRequirePaths = null;
+
+	/**
 	 * CSS files loaded via AJAX
 	 *
 	 * @var  array
@@ -796,15 +804,29 @@ EOD;
 	public static function mcl()
 	{
 		// Cant used compressed version as its not up to date
-		$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
-			'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
-			'media/com_fabrik/js/lib/mcl/Thread.js');
+		$src = array(
+			'media/com_fabrik/js/lib/mcl/CANVAS.js',
+			'media/com_fabrik/js/lib/mcl/CanvasItem.js',
+			'media/com_fabrik/js/lib/mcl/Cmorph.js',
+			'media/com_fabrik/js/lib/mcl/Layer.js',
+			'media/com_fabrik/js/lib/mcl/LayerHash.js',
+			'media/com_fabrik/js/lib/mcl/Thread.js'
+		);
 
 		if (!self::$mcl)
 		{
 			self::script($src);
 			self::$mcl = true;
 		}
+
+		$src = array(
+			'lib/mcl/CANVAS',
+			'lib/mcl/CanvasItem',
+			'lib/mcl/Cmorph',
+			'lib/mcl/Layer',
+			'lib/mcl/LayerHash',
+			'lib/mcl/Thread'
+		);
 
 		return $src;
 	}
@@ -1042,7 +1064,7 @@ EOD;
 	public static function iniRequireJs($shim = array(), $paths = array())
 	{
 		$session      = JFactory::getSession();
-		$requirePaths = (object) array_merge((array) self::requirePaths(), $paths);
+		self::$allRequirePaths = (object) array_merge((array) self::requirePaths(), $paths);
 		$framework    = array();
 		$deps         = array();
 		$j3           = FabrikWorker::j3();
@@ -1101,7 +1123,7 @@ EOD;
 
 		$opts = array(
 			'baseUrl' => $requirejsBaseURI,
-			'paths' => $requirePaths,
+			'paths' => self::$allRequirePaths,
 			'shim' => $newShim,
 			'waitSeconds' => 30
 		);
@@ -1168,36 +1190,41 @@ EOD;
 	 */
 	protected static function requirePaths()
 	{
-		$r              = new stdClass;
-		$r->fab         = 'media/com_fabrik/js';
-		$r->lib         = 'media/com_fabrik/js/lib';
-		$r->element     = 'plugins/fabrik_element';
-		$r->list        = 'plugins/fabrik_list';
-		$r->form        = 'plugins/fabrik_form';
-		$r->cron        = 'plugins/fabrik_cron';
-		$r->viz         = 'plugins/fabrik_visualization';
-		$r->admin       = 'administrator/components/com_fabrik/views';
-		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
-
-		$r->jQueryUI = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
-		$r->chosen   = 'media/jui/js/chosen.jquery.min';
-		$r->ajaxChosen   = 'media/jui/js/ajax-chosen.min';
-
-		// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
-		// This avoids AMD issues where we were loading fab/form or fab/form-min.
-		if (!self::isDebug())
+		if (empty(self::$allRequirePaths))
 		{
-			$r->fab .= '/dist';
+			$r              = new stdClass;
+			$r->fab         = 'media/com_fabrik/js';
+			$r->lib         = 'media/com_fabrik/js/lib';
+			$r->element     = 'plugins/fabrik_element';
+			$r->list        = 'plugins/fabrik_list';
+			$r->form        = 'plugins/fabrik_form';
+			$r->cron        = 'plugins/fabrik_cron';
+			$r->viz         = 'plugins/fabrik_visualization';
+			$r->admin       = 'administrator/components/com_fabrik/views';
+			$r->adminfields = 'administrator/components/com_fabrik/models/fields';
+
+			$r->jQueryUI   = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
+			$r->chosen     = 'media/jui/js/chosen.jquery.min';
+			$r->ajaxChosen = 'media/jui/js/ajax-chosen.min';
+
+			// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
+			// This avoids AMD issues where we were loading fab/form or fab/form-min.
+			if (!self::isDebug())
+			{
+				$r->fab .= '/dist';
+			}
+
+			$version = new JVersion;
+
+			if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
+			{
+				$r->punycode = 'media/system/js/punycode';
+			}
+
+			self::$allRequirePaths = $r;
 		}
 
-		$version = new JVersion;
-
-		if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
-		{
-			$r->punycode = 'media/system/js/punycode';
-		}
-
-		return $r;
+		return self::$allRequirePaths;
 	}
 
 	/**
