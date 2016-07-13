@@ -542,6 +542,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($params->get('fu_show_image_in_table', '0') != '2')
 		{
 			$data     = json_encode($data);
+			// icons will already have been set in _renderListData
+			$opts['icon'] = 0;
 			$rendered = parent::renderListData($data, $thisRow, $opts);
 		}
 
