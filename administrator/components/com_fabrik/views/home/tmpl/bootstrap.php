@@ -27,12 +27,9 @@ JToolBarHelper::title(FText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 
 	<div class="row-fluid">
 		<div class="span6">
-			<a href="http://fabrikar.com">
-				<?php echo JHTML::image('media/com_fabrik/images/logo.png', 'Fabrik logo'); ?>
-				</a>
 			<div style="float:left;width:250px;margin-top:30px;">
-				<a href="http://fabrikar.com/subscribe">
-					<?php echo JHTML::image('media/com_fabrik/images/box.png', 'Fabrik'); ?>
+				<a href="http://fabrikar.com/">
+					<?php echo JHTML::image('media/com_fabrik/images/logo.png', 'Fabrik'); ?>
 				</a>
 			</div>
 			<div style="margin-left:200px;margin-top:30px;">
