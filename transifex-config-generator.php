@@ -51,6 +51,11 @@ if ($handle = opendir('components/com_fabrik/language/'))
 	$x[] = 'source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.ini';
 	$x[] = 'source_lang = en_GB';
 
+	$ini[] = '[' . $txProject . '.com_fabrik_sys]';
+	$ini[] = 'file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.sys.ini';
+	$ini[] = 'source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.sys.ini';
+	$ini[] = 'source_lang = en_GB';
+
 	while (false !== ($langentry = readdir($handle)))
 	{
 
@@ -71,6 +76,11 @@ if ($handle = opendir('plugins/content/fabrik/language/'))
 {
 	$x = array();
 	$ini = array();
+
+	$x[] = '[' . $txProject . '.plg_content]';
+	$x[] = 'file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.ini';
+	$x[] = 'source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.ini';
+	$x[] = 'source_lang = en_GB';
 
 	$ini[] = '[' . $txProject . '.plg_content_sys]';
 	$ini[] = 'file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.sys.ini';
