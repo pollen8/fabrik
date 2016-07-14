@@ -2883,6 +2883,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$modalOpts = array(
 				'content' => '',
 				'id' => $opts->modalId,
+				'title' => '',
 				'modal' => false,
 				'expandable' => true
 			);
@@ -2894,6 +2895,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$modalOpts = array(
 				'content' => '',
 				'id' => 'db_join_select',
+				'title' => '',
 				'modal' => false,
 				'expandable' => true
 			);

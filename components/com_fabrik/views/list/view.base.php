@@ -124,6 +124,7 @@ class FabrikViewListBase extends FabrikView
 			$modalOpts = array(
 				'content' => '',
 				'id' => 'advanced-filter',
+				'title' => JText::_('COM_FABRIK_FIELD_ADVANCED_SEARCH_LABEL'),
 				'modal' => false,
 				'expandable' => true
 			);
