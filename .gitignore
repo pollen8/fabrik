@@ -41,8 +41,9 @@ modules/*
 !modules/mod_fabrik_list/*
 !modules/mod_tagcloud
 !modules/mod_tagcloud/*
+!media/
 media/*
-!media/com_fabrik/*
+!media/com_fabrik/
 media/com_fabrik/uploads/
 node_modules/*
 plugins/*
