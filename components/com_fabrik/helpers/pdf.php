@@ -127,7 +127,7 @@ class FabrikPDFHelper
 			$config = JComponentHelper::getParams('com_fabrik');
 
 			// Don't show the errors if we want to debug the actual pdf html
-			if (JDEBUG && $config->get('pdf_debug', true) === true)
+			if (JDEBUG && $config->get('pdf_debug', false) === true)
 			{
 				echo "<pre>";
 				print_r($errors);
