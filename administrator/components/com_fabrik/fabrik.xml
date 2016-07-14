@@ -70,7 +70,6 @@
 				<menu alt="Groups" img="../administrator/components/com_fabrik/images/groups.png" link="option=com_fabrik&amp;view=groups" view="groups">com_fabrik_groups</menu>
 				<menu alt="Elements" img="../administrator/components/com_fabrik/images/elements.png" link="option=com_fabrik&amp;view=elements" view="elements">com_fabrik_elements</menu>
 				<menu alt="Visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" link="option=com_fabrik&amp;view=visualizations" view="visualizations">com_fabrik_visualizations</menu>
-				<menu alt="Packages" img="../administrator/components/com_fabrik/images/packages.png" link="option=com_fabrik&amp;view=packages" view="packages">com_fabrik_packages</menu>
 				<menu alt="Connections" img="../administrator/components/com_fabrik/images/connections.png" link="option=com_fabrik&amp;view=connections" view="connections">com_fabrik_connections</menu>
 				<menu alt="Schedule" img="../administrator/components/com_fabrik/images/schedules.png" link="option=com_fabrik&amp;view=crons" view="crons">com_fabrik_schedule</menu>
 		</submenu>

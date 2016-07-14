@@ -12,6 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+if (false):
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script', 'system/multiselect.js', false, true);
@@ -129,3 +130,7 @@ $listDirn = $this->state->get('list.direction');
 	<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>
+<?php
+else:
+	echo FText::_(COM_FABRIK_);
+endif; ?>
