@@ -51,10 +51,12 @@ if ($handle = opendir('components/com_fabrik/language/'))
 	$x[] = 'source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.ini';
 	$x[] = 'source_lang = en_GB';
 
+	/*
 	$ini[] = '[' . $txProject . '.com_fabrik_sys]';
 	$ini[] = 'file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.sys.ini';
 	$ini[] = 'source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.sys.ini';
 	$ini[] = 'source_lang = en_GB';
+	*/
 
 	while (false !== ($langentry = readdir($handle)))
 	{
@@ -62,13 +64,13 @@ if ($handle = opendir('components/com_fabrik/language/'))
 		if ($langentry !== '.' && $langentry !== '..' && $langentry !== 'en-GB' && $langentry !== 'index.html')
 		{
 			$x[] = 'trans.' .$langentry. ' = components/com_fabrik/language/' . $langentry. '/' . $langentry . '.com_fabrik.ini';
-			$ini[] = 'trans.' .$langentry. ' = components/com_fabrik/language/' . $langentry. '/' . $langentry . '.com_fabrik.sys.ini';
+			//$ini[] = 'trans.' .$langentry. ' = components/com_fabrik/language/' . $langentry. '/' . $langentry . '.com_fabrik.sys.ini';
 		}
 	}
 
 	closedir($handle);
 	$str[] = implode("\n", $x);
-	$str[] = implode("\n", $ini);
+	//$str[] = implode("\n", $ini);
 }
 
 // Content plugin
