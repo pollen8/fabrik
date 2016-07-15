@@ -77,10 +77,12 @@ if ($handle = opendir('plugins/content/fabrik/language/'))
 	$x = array();
 	$ini = array();
 
+	/*
 	$x[] = '[' . $txProject . '.plg_content]';
 	$x[] = 'file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.ini';
 	$x[] = 'source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.ini';
 	$x[] = 'source_lang = en_GB';
+	*/
 
 	$ini[] = '[' . $txProject . '.plg_content_sys]';
 	$ini[] = 'file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.sys.ini';
@@ -92,7 +94,7 @@ if ($handle = opendir('plugins/content/fabrik/language/'))
 
 		if ($langentry !== '.' && $langentry !== '..' && $langentry !== 'en-GB' && $langentry !== 'index.html')
 		{
-			$x[] = 'trans.' .$langentry. ' = plugins/content/fabrik/language/' . $langentry. '/' . $langentry . '.plg_content_fabrik.ini';
+			//$x[] = 'trans.' .$langentry. ' = plugins/content/fabrik/language/' . $langentry. '/' . $langentry . '.plg_content_fabrik.ini';
 			$ini[] = 'trans.' .$langentry. ' = plugins/content/fabrik/language/' . $langentry. '/' . $langentry . '.plg_content_fabrik.sys.ini';
 		}
 	}
