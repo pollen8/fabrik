@@ -132,5 +132,5 @@ $listDirn = $this->state->get('list.direction');
 </form>
 <?php
 else:
-	echo FText::_(COM_FABRIK_);
+	echo FText::_('COM_FABRIK_PACKAGES_REMOVED');
 endif; ?>
