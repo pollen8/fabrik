@@ -6,7 +6,7 @@
  */
 define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 	'use strict';
-	var FabRecordSet = new Class({
+	var Paginate = new Class({
 
 		initialize: function (form, options) {
 			this.form = form;
@@ -147,5 +147,5 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		}
 	});
 
-	return FabRecordSet;
+	return Paginate;
 });
