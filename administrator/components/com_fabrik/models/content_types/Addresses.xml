@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <contenttype>
   <name>Addresses</name>
-  <fabrikversion>3.4.2</fabrikversion>
+  <fabrikversion>3.5</fabrikversion>
   <group join_id="" is_join="0" id="3" name="Addresses" label="Addresses" css="" published="1" created="2016-02-23 20:00:56" private="0">
     <params repeat_group_button="0" repeat_group_show_first="1"/>
     <element label="date_time" published="1" name="date_time" id="43" plugin="date" created="2016-01-10 08:53:39" width="0" height="0" default="" hidden="1" eval="0" ordering="1" show_in_list_summary="1" filter_type="" filter_exact_match="1" link_to_detail="1" primary_key="0" auto_increment="0" access="1" use_in_page_title="0" parent_id="0">

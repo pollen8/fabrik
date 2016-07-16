@@ -48,7 +48,9 @@
 		<folder>dbdriver</folder>
 		<folder>driver</folder>
 		<folder>pdf</folder>
+		<folder>partial</folder>
 		<folder>query</folder>
+		<folder>fabrik</folder>
 		<file>controller.php</file>
 		<file>fabrik.php</file>
 		<file>router.php</file>

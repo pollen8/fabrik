@@ -276,7 +276,7 @@ var refreshFiles = function () {
     fs.mkdirsSync('./fabrik_build/output/component/site/pdf');
     fs.mkdirsSync('./fabrik_build/output/component/site/partial');
     fs.mkdirsSync('./fabrik_build/output/component/media');
-    fs.mkdirsSync('./fabrik_build/library/fabrik');
+    //fs.mkdirsSync('./fabrik_build/library/fabrik');
 
 
     fs.copySync('libraries/joomla/document/fabrikfeed', './fabrik_build/output/component/site/fabrikfeed');
@@ -284,7 +284,7 @@ var refreshFiles = function () {
     fs.copySync('libraries/joomla/document/partial', './fabrik_build/output/component/site/partial');
 
     // Library folder
-    fs.copySync('libraries/fabrik', './fabrik_build/library/fabrik');
+    //fs.copySync('libraries/fabrik', './fabrik_build/library/fabrik');
 
     fs.copySync('administrator/components/com_fabrik/', './fabrik_build/output/component/admin', {
         'filter': function (f) {
@@ -427,7 +427,7 @@ var component = function (version, grunt) {
                                         './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
                                             zipPromises.push(zipPlugin('fabrik_build/output/component/',
                                                 'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
-                                            library(version, grunt)
+                                            //library(version, grunt)
 ;                                            packages(version, grunt);
                                         });
                                 });

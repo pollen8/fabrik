@@ -78,7 +78,13 @@ class PlgSystemFabrik extends JPlugin
 
 		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
+		if (!file_exists(JPATH_LIBRARIES . '/fabrik/include.php'))
+		{
+			throw new Exception('PLG_FABRIK_SYSTEM_AUTOLOAD_MISSING');
+		}
+
 		require_once JPATH_LIBRARIES . '/fabrik/include.php';
+
 		parent::__construct($subject, $config);
 	}
 

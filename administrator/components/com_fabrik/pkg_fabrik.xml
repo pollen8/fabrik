@@ -61,6 +61,7 @@
 		<file group="fabrik_visualization" id="calendar" type="plugin">plg_fabrik_visualization_calendar_{version}.zip</file>
 		<file group="fabrik_visualization" id="chart" type="plugin">plg_fabrik_visualization_chart_{version}.zip</file>
 		<file group="fabrik_visualization" id="googlemap" type="plugin">plg_fabrik_visualization_googlemap_{version}.zip</file>
+		<file group="fabrik_visualization" id="fullcalendar" type="plugin">plg_fabrik_visualization_fullcalendar_{version}.zip</file>
 		<file group="fabrik_visualization" id="media" type="plugin">plg_fabrik_visualization_media_{version}.zip</file>
 		<file group="fabrik_visualization" id="slideshow" type="plugin">plg_fabrik_visualization_slideshow_{version}.zip</file>
 

@@ -171,6 +171,22 @@ class Com_FabrikInstallerScript
 			return false;
 		}
 
+		$dest = 'libraries/fabrik';
+
+		if (!JFolder::exists(JPATH_ROOT . '/' . $dest))
+		{
+			JFolder::create(JPATH_ROOT . '/' . $dest);
+		}
+
+		$moveRes = JFolder::copy($componentFrontend . '/fabrik', $dest, JPATH_SITE, true, false);
+
+		if ($moveRes !== true)
+		{
+			echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrik to ' . $dest . '</p>';
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -256,6 +272,7 @@ class Com_FabrikInstallerScript
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$app   = JFactory::getApplication();
+		$msg = array();
 
 		// Fabrik 3.5 Uninstalled plugins.
 		$plugins = array(
@@ -314,24 +331,35 @@ class Com_FabrikInstallerScript
 		foreach ($forms as $form)
 		{
 			$params = json_decode($form->params);
+			$found = false;
 
-			for ($i = 0; $i < count($params->plugins); $i++)
+			if (isset($params->plugins))
 			{
-				if (in_array($params->plugins[$i], $plugins['fabrik_form']))
+				for ($i = 0; $i < count($params->plugins); $i++)
 				{
-					$msg[]                    = 'Form ' . $form->id . '\'s plugin \'' . $params->plugins[$i] .
-						'\' has been unpublished';
-					$params->plugin_state[$i] = 0;
+					if (in_array($params->plugins[$i], $plugins['fabrik_form']))
+					{
+						$msg[]                    = 'Form ' . $form->id . '\'s plugin \'' . $params->plugins[$i] .
+							'\' has been unpublished';
+						$params->plugin_state[$i] = 0;
+						$found = true;
+					}
+				}
+
+				if ($found)
+				{
+					$query->clear()->update('#__fabrik_forms')->set('params = ' . $db->q(json_encode($params)))
+						->where('id = ' . (int) $form->id);
+
+					$db->setQuery($query)->execute();
 				}
 			}
-
-			$query->clear()->update('#__fabrik_forms')->set('params = ' . $db->q(json_encode($params)))
-				->where('id = ' . (int) $form->id);
-
-			$db->setQuery($query)->execute();
 		}
 
-		$app->enqueueMessage(implode('<br>', $msg), 'warning');
+		if (!empty($msg))
+		{
+			$app->enqueueMessage(implode('<br>', $msg), 'warning');
+		}
 
 		return true;
 	}
