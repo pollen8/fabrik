@@ -395,6 +395,7 @@ var FbGoogleMapViz = new Class({
 
 			// Create tips in bubble text
 			Fabrik.tips.attach('.fabrikTip');
+			Fabrik.fireEvent('fabrik.viz.googlemap.info.opened', [this, marker]);
 		}.bind(this));
 		if (this.options.clustering) {
 			this.clusterMarkers.push(marker);
