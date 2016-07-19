@@ -60,10 +60,11 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                 /**
                  * Using a 3rd party jQuery lib to 'debounce' the input, so the search doesn't fire until
-                 * the user has stopped typing for more than X ms
+                 * the user has stopped typing for more than X ms.  Don't use on() here, use bind(), otherwise
+                 * we get multiple events when form popups are opened multiple times.
                  */
                 var self = this;
-                jQuery(document).on('keyup', debounce(this.options.debounceDelay, function (e) {
+                jQuery(this.getInputElement()).bind('keyup', debounce(this.options.debounceDelay, function (e) {
                     self.search(e);
                 }));
 
