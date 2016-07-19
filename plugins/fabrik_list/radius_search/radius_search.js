@@ -296,7 +296,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 			var win = this.button.retrieve('win');
 			var c = win.contentEl.clone();
 			c.hide();
-			this.button.getParent().adopt(c);
+			jQuery(this.button).parent().append(c);
 			return true;
 		},
 
