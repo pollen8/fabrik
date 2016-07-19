@@ -237,8 +237,10 @@ class FabrikViewFullcalendar extends JViewLegacy
 			);
 			$shim['viz/fullcalendar/fullcalendar']->deps[] = 'lang';
 			$paths['lang'] = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/lang/' . $lang;
-		}		
-		
+		}
+
+		$model->getCustomJsAction($srcs);
+
 		FabrikHelperHTML::iniRequireJs($shim, $paths);
 		FabrikHelperHTML::script($srcs, $js);
 	}
