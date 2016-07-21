@@ -575,6 +575,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             }
             Fabrik.tips.hideAll();
             this.fireEvent('onClose', [this]);
+            Fabrik.fireEvent('fabrik.window.close', [this]);
         },
 
         /**
