@@ -344,7 +344,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 
 			// remove any duplicates in case they have misunderstood and selected the same element for all fields
-			$opts->geocode_fields = array_unique($opts->geocode_fields);
+			$opts->geocode_fields = array_values(array_unique($opts->geocode_fields));
 		}
 
 		$opts->reverse_geocode = $params->get('fb_gm_reverse_geocode', '0') == '0' ? false : true;
