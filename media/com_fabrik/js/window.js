@@ -30,7 +30,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 case 'modal':
                     Fabrik.Windows[opts.id] = new Fabrik.Modal(opts);
                     jQuery(window).on('resize', function () {
-                        Fabrik.Windows[opts.id].fitToContent(false);
+                        if (opts.id in Fabrik.Windows) {
+                            Fabrik.Windows[opts.id].fitToContent(false);
+                        }
                     });
                     break;
                 case '':
