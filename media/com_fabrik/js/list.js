@@ -1308,17 +1308,17 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         }
                     }
                 });
-                template.find('.fabrik_row').prop('id', row.id);
                 if (typeof(this.options.itemTemplate) === 'string') {
-                    c = template.find('.fabrik_row');
+                    c = template.find('.fabrik_row').addBack(template);
                     c.prop('id', row.id);
+                    c.removeClass();
                     var newClass = row['class'].split(' ');
                     for (j = 0; j < newClass.length; j++) {
                         c.addClass(newClass[j]);
                     }
                     r = template.clone();
                 } else {
-                    r = template.find('.fabrik_row');
+                    r = template.find('.fabrik_row').addBack(template);
                 }
                 return r;
             },
