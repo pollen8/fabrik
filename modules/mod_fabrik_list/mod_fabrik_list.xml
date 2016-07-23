@@ -49,7 +49,7 @@
 						<option value="1">JYES</option>
 				</field>
 
-				<field name="fabriklayout" type="folderlist" default="" descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="MOD_FABRIK_LIST_TEMPLATE_LABEL"/>
+				<field name="fabriklayout" type="fabriktemplate" default="" descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="MOD_FABRIK_LIST_TEMPLATE_LABEL"/>
 
 				<field name="show-title" type="list" default="" description="MOD_FABRIK_LIST_SHOW_TITLE_DESC" label="MOD_FABRIK_LIST_SHOW_TITLE_LABEL">
 						<option value="">JGLOBAL_USE_GLOBAL</option>
