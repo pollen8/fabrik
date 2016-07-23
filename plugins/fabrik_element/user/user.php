@@ -523,7 +523,20 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 */
 	protected function _getSelectLabel($filter = false)
 	{
-		return $this->getParams()->get('user_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT'));
+		$label  = $this->getParams()->get('user_noselectionlabel');
+
+		if (strstr($label, '::'))
+		{
+			$labels = explode('::', $label);
+			$label  = $filter ? $labels[1] : $labels[0];
+		}
+
+		if (!$filter && $label == '')
+		{
+			$label = 'COM_FABRIK_PLEASE_SELECT';
+		}
+
+		return FText::_($label);
 	}
 
 	/**
