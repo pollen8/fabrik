@@ -264,7 +264,12 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 				modalDivs = jQuery(modal).find('div'); 
                 jQuery(popup).attr('data-title', e.label);
                 jQuery(popup).append(e.label);
-
+				
+				// fill in the content of the modal
+				jQuery(modal).find(".modal-title")[0].innerHTML = e.label;
+				jQuery(modal).find(".modal-body")[0].innerHTML = jQuery(body).prop('outerHTML');
+				jQuery(modal).find(".modal-footer")[0].innerHTML = jQuery(buttons).prop('outerHTML');
+				
                 events.push(
                     {
                         id       : popup.id,
