@@ -57,8 +57,8 @@ class FabrikViewGooglemap extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fb_gm_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
-		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['ListPlugin'] = 'media/com_fabrik/js/list-plugin.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
@@ -78,24 +78,25 @@ class FabrikViewGooglemap extends JViewLegacy
 		}
 		else
 		{
-			if (FabrikHelperHTML::isDebug())
+			/*if (FabrikHelperHTML::isDebug())
 			{
-				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
+				$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 			}
 			else
 			{
-				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap-min.js';
-			}
+				$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap-min.js';
+			}*/
+			$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 
 			if ((int) $this->params->get('fb_gm_clustering', '0') == 1)
 			{
 				if (FabrikHelperHTML::isDebug())
 				{
-					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
+					$srcs['Cluster'] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
 				}
 				else
 				{
-					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer_packed.js';
+					$srcs['Cluster'] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer_packed.js';
 				}
 			}
 			else
@@ -119,8 +120,10 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		$js .= $model->getFilterJs();
 
+		$model->getCustomJsAction($srcs);
+
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 
 		// Check and add a general fabrik custom css file overrides template css and generic table css

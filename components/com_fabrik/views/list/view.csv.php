@@ -84,17 +84,17 @@ class FabrikViewList extends FabrikViewListBase
 			$total = $this->session->get($key);
 		}
 
+		if ((int) $total === 0)
+		{
+			$notice = new stdClass;
+			$notice->err = FText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
+			echo json_encode($notice);
+
+			return;
+		}
+
 		if ($start < $total)
 		{
-			if ((int) $total === 0)
-			{
-				$notice = new stdClass;
-				$notice->err = FText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
-				echo json_encode($notice);
-
-				return;
-			}
-
 			$download = (bool) $input->getInt('download', true);
 			$canDownload = ($start + $limit >= $total) && $download;
 			$exporter->writeFile($total, $canDownload);

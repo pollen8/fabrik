@@ -14,13 +14,12 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik Timeline Viz Controller
+ * Fabrik Time line Viz Controller
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.timeline
  * @since       3.0
  */
-
 class FabrikControllerVisualizationtimeline extends FabrikControllerVisualization
 {
 	/**
@@ -28,15 +27,11 @@ class FabrikControllerVisualizationtimeline extends FabrikControllerVisualizatio
 	 *
 	 * @return  void
 	 */
-
 	public function ajax_getEvents()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$viewName = 'timeline';
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model = $this->getModel($viewName);
-		$id = $input->getInt('visualizationid', 0);
+		$model    = $this->getModel($viewName);
+		$id       = $this->input->getInt('visualizationid', 0);
 		$model->setId($id);
 		$model->onAjax_getEvents();
 	}

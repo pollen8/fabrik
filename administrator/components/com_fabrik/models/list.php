@@ -2385,7 +2385,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$o                      = (object) $a;
 		$o->admin_template      = 'admin';
 		$o->detaillink          = 0;
-		$o->empty_data_msg      = 'No data found';
+		$o->empty_data_msg      = FText::_('COM_FABRIK_LIST_NO_DATA_MSG');
 		$o->pdf                 = '';
 		$o->rss                 = 0;
 		$o->feed_title          = '';

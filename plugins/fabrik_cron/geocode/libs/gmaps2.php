@@ -39,7 +39,7 @@ Class GeoCode
     private function makeUrl()
     {
         $this->address = str_replace(" ", "+",$this->address);
-        $this->url = "http://maps.googleapis.com/maps/api/geocode/json?address=".$this->address."&sensor=false";
+        $this->url = "http://maps.googleapis.com/maps/api/geocode/json?address=".$this->address;
     }
 
     private function parseGeoData()

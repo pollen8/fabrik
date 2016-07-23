@@ -84,6 +84,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
 		$opts->zoomlevel = (int) $params->get('fb_gm_zoomlevel');
+		$opts->fitbounds = (bool) $params->get('fb_gm_fitbounds');
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
@@ -117,6 +118,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->polygonfillcolour = (array) $params->get('fb_gm_polygon_fillColor');
 		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
 		$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
+		$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
+		$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
 		$opts->use_overlays = (int) $params->get('fb_gm_use_overlays', '0');
 		$opts->use_overlays_sidebar = $opts->use_overlays && (int) $params->get('fb_gm_use_overlays_sidebar', '0');
 		$opts->use_groups = (bool) $params->get('fb_gm_group_sidebar', 0);
@@ -127,6 +130,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->radius_defaults = (array) $params->get('fb_gm_radius_default');
 		$opts->radius_fill_colors = (array) $params->get('fb_gm_radius_fill_color');
 		$opts->styles = FabGoogleMapHelper::styleJs($params);
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$opts->key = empty($apiKey) ? false : $apiKey;
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
 		$js = array();
@@ -352,6 +358,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					$rowData['coords'] = $v[0] . ',' . $v[1];
 					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
+					FabrikHelperHTML::runContentPlugins($html);
 
 					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
 					$title = $titleElement == '' ? '' : html_entity_decode(strip_tags($row->$titleElement),ENT_COMPAT, 'UTF-8');

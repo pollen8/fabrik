@@ -41,7 +41,7 @@ class plgSystemFabrikj2store extends JPlugin
 
 				if ($content->published == 1)
 				{
-					$product->exists = 0;
+					$product->exists = 1;
 				}
 				else
 				{
@@ -103,7 +103,7 @@ class plgSystemFabrikj2store extends JPlugin
 			$context->id        = $objectRow->__pk_val;
 			$sets[$key]         = $context;
 		}
-echo "<pre>";print_r($sets);echo "</pre>";
+//echo "<pre>";print_r($sets);echo "</pre>";
 		return $sets [$key];
 	}
 }

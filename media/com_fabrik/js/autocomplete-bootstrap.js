@@ -30,7 +30,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         initialize: function (element, options) {
-            window.addEvent('domready', function () {
+            // not sure why we use domready, but causes issues in popups on second+ open, doesn't fire
+            //window.addEvent('domready', function () {
                 this.matchedResult = false;
                 this.setOptions(options);
                 element = element.replace('-auto-complete', '');
@@ -59,10 +60,11 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                 /**
                  * Using a 3rd party jQuery lib to 'debounce' the input, so the search doesn't fire until
-                 * the user has stopped typing for more than X ms
+                 * the user has stopped typing for more than X ms.  Don't use on() here, use bind(), otherwise
+                 * we get multiple events when form popups are opened multiple times.
                  */
                 var self = this;
-                jQuery(document).on('keyup', debounce(this.options.debounceDelay, function (e) {
+                jQuery(this.getInputElement()).bind('keyup', debounce(this.options.debounceDelay, function (e) {
                     self.search(e);
                 }));
 
@@ -76,7 +78,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         }
                     }
                 }.bind(this));
-            }.bind(this));
+            //}.bind(this));
         },
 
         search: function (e) {

@@ -145,6 +145,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 				else
 				{
+					// erm ... ?? ... ^^
 					if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
 					{
 						$default = $data[$name][$repeatCounter];
@@ -358,7 +359,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			//  $$$ Paul - Because this is run on List rows before repeat-group merges, repeat group placeholders are OK.
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
-			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
+			$w = new FabrikWorker;
+			$cal = $w->parseMessageForPlaceHolder($cal, $data, true, true);
 
 			if (FabrikHelperHTML::isDebug())
 			{

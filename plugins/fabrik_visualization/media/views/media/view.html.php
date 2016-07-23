@@ -43,16 +43,16 @@ class FabrikViewMedia extends JViewLegacy
 		$params = $model->getParams();
 		$js = $model->getJs();
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'plugins/fabrik_visualization/media/media.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['Media'] = 'plugins/fabrik_visualization/media/media.js';
 
 		if ($params->get('media_which_player', 'jw') == 'jw')
 		{
-			$srcs[] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
+			$srcs['JWPlayer'] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
 		}
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 
 		if (!$model->canView())
 		{

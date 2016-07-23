@@ -64,7 +64,7 @@ class getid3_writetags
 	// private
 	private $ThisFileInfo; // analysis of file before writing
 
-	public function getid3_writetags() {
+	public function __construct() {
 		return true;
 	}
 
@@ -494,6 +494,27 @@ throw new Exception('$this->overwrite_tags=false is known to be buggy in this ve
 							$this->errors[] = 'ID3v2 APIC data is not properly structured';
 							return false;
 						}
+					}
+					break;
+
+				case 'POPM':
+					if (isset($valuearray['email']) &&
+						isset($valuearray['rating']) &&
+						isset($valuearray['data'])) {
+							$tag_data_id3v2['POPM'][] = $valuearray;
+					} else {
+						$this->errors[] = 'ID3v2 POPM data is not properly structured';
+						return false;
+					}
+					break;
+
+				case 'UFID':
+					if (isset($valuearray['ownerid']) &&
+						isset($valuearray['data'])) {
+							$tag_data_id3v2['UFID'][] = $valuearray;
+					} else {
+						$this->errors[] = 'ID3v2 UFID data is not properly structured';
+						return false;
 					}
 					break;
 

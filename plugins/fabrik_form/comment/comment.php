@@ -194,9 +194,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		$jsFiles = array();
 		JHTML::stylesheet('plugins/fabrik_form/comment/comments.css');
-		$jsFiles[] = 'media/com_fabrik/js/fabrik.js';
-		$jsFiles[] = 'plugins/fabrik_form/comment/comments.js';
-		$jsFiles[] = 'plugins/fabrik_form/comment/inlineedit.js';
+		$jsFiles['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
+		$jsFiles['FabrikComment'] = 'plugins/fabrik_form/comment/comments.js';
+		$jsFiles['InlineEdit'] = 'plugins/fabrik_form/comment/inlineedit.js';
 
 		$thumbOpts = $this->doThumbs() ? $thumbOpts = $this->loadThumbJsOpts() : "{}";
 		$rowId = $input->get('rowid', '', 'string');
@@ -215,7 +215,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->showCountInTitle = $params->get('comment-show-count-in-title');
 		$layoutData->commnents = $this->writeComments($params, $comments);
 		$layoutData->commentsLocked = $this->commentsLocked;
-		$layoutData->anonymous = $params->get('comment-internal-anonymous');
+		$layoutData->allowGuest = $params->get('comment-internal-allow-guest');
 		$layoutData->userLoggedIn = $this->user->get('id') != 0;
 		$layoutData->form = $this->getAddCommentForm(0, true);
 
@@ -250,7 +250,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 		if ($this->doThumbs())
 		{
-			$jsFiles[] = 'plugins/fabrik_element/thumbs/list-thumbs.js';
+			$jsFiles['FbThumbsList'] = 'plugins/fabrik_element/thumbs/list-thumbs.js';
 			$script .= "\n comments.thumbs = new FbThumbsList(" . $this->formModel->getId() . ", $thumbOpts);";
 		}
 
@@ -267,7 +267,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	private function canAddComment()
 	{
 		$params = $this->getParams();
-		$anonymous = $params->get('comment-internal-anonymous');
+		$anonymous = $params->get('comment-internal-allow-guest');
 
 		return $this->user->get('id') == 0 && $anonymous == 0 ? false : true;
 	}
@@ -499,6 +499,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$this->thumb->formid = $this->getModel()->getId();
 			$this->thumb->listid = $this->getListId();
 			$this->thumb->special = 'comments_' . $this->thumb->formid;
+			$this->thumb->install();
 		}
 
 		return $this->thumb;

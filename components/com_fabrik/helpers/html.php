@@ -73,6 +73,14 @@ class FabrikHelperHTML
 	protected static $jLayoutsJs = array();
 
 	/**
+	 * Array of paths for requirejs
+	 *
+	 * @var object
+	 */
+
+	protected static $allRequirePaths = null;
+
+	/**
 	 * CSS files loaded via AJAX
 	 *
 	 * @var  array
@@ -418,10 +426,19 @@ EOD;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$table   = $formModel->getTable();
 
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
-			. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
+		if ($app->isAdmin())
+		{
+			$url = 'index.php?option=com_' . $package . '&task=details.view&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
+				. '&rowid=' . $formModel->getRowId(). '&iframe=1&print=1';
+		}
+		else
+		{
+			//$this->pdfURL = 'index.php?option=com_' . $this->package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf';
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
+				. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
 
-		$url .= '&Itemid=' . FabrikWorker::itemId();
+			$url .= '&Itemid=' . FabrikWorker::itemId();
+		}
 
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
@@ -434,7 +451,7 @@ EOD;
 		$url = JRoute::_($url);
 
 		// $$$ rob for some reason JRoute wasn't doing this ???
-		$url            = str_replace('&', '&amp;', $url);
+		//$url            = str_replace('&', '&amp;', $url);
 		self::$printURL = $url;
 
 		return self::$printURL;
@@ -782,21 +799,36 @@ EOD;
 	/**
 	 * Load the MCL canvas layer library
 	 *
-	 * @return  void
+	 * @return  array Scripts needed to load MCL
 	 */
 	public static function mcl()
 	{
+		// Cant used compressed version as its not up to date
+		$src = array(
+			'media/com_fabrik/js/lib/mcl/CANVAS.js',
+			'media/com_fabrik/js/lib/mcl/CanvasItem.js',
+			'media/com_fabrik/js/lib/mcl/Cmorph.js',
+			'media/com_fabrik/js/lib/mcl/Layer.js',
+			'media/com_fabrik/js/lib/mcl/LayerHash.js',
+			'media/com_fabrik/js/lib/mcl/Thread.js'
+		);
+
 		if (!self::$mcl)
 		{
-			// Cant used compressed version as its not up to date
-			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
-				'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
-				'media/com_fabrik/js/lib/mcl/Thread.js');
-
-			// , 'media/com_fabrik/js/canvas-extra.js'
 			self::script($src);
 			self::$mcl = true;
 		}
+
+		$src = array(
+			'lib/mcl/CANVAS',
+			'lib/mcl/CanvasItem',
+			'lib/mcl/Cmorph',
+			'lib/mcl/Layer',
+			'lib/mcl/LayerHash',
+			'lib/mcl/Thread'
+		);
+
+		return $src;
 	}
 
 	/**
@@ -847,7 +879,7 @@ EOD;
 
 			//$ext = self::isDebug() ? '.js' : '-min.js';
 			$mediaFolder = self::getMediaFolder();
-			$src = array();
+			$src         = array();
 			JHtml::_('behavior.framework', true);
 
 			// Ensure bootstrap js is loaded - as J template may not load it.
@@ -860,16 +892,16 @@ EOD;
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
-			$liveSiteReq[] = $mediaFolder . '/chosen-loader';
-			$liveSiteReq[] = $mediaFolder . '/fabrik';
+			$liveSiteReq['Chosen'] = $mediaFolder . '/chosen-loader';
+			$liveSiteReq['Fabrik'] = $mediaFolder . '/fabrik';
 
 			if ($bootstrapped)
 			{
-				$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tipsBootStrapMock';
 			}
 			else
 			{
-				$liveSiteReq[] = $mediaFolder . '/tips';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tips';
 			}
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
@@ -878,6 +910,7 @@ EOD;
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
+				JHtml::_('script', 'jui/ajax-chosen.min', false, true, false, false, self::isDebug());
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
@@ -900,7 +933,7 @@ EOD;
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = $mediaFolder . '/window.js';
+				$src['Window'] = $mediaFolder . '/window.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
@@ -910,7 +943,7 @@ EOD;
 
 				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
 				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
-				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%;\n";
 
 				if ($bootstrapped)
 				{
@@ -943,7 +976,7 @@ EOD;
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik', 'FloatingTips'));
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js');
 			self::$framework = $src;
 		}
 
@@ -1021,16 +1054,17 @@ EOD;
 	 * Stores the shim and config to the session, which Fabrik system plugin
 	 * then uses to inject scripts into document.
 	 *
-	 * @param   array $shim Shim js files
+	 * @param   array $shim  Shim js files
+	 * @param   array $paths Additional require js paths
 	 *
 	 * @since   3.1
 	 *
 	 * @return  void
 	 */
-	public static function iniRequireJs($shim = array())
+	public static function iniRequireJs($shim = array(), $paths = array())
 	{
 		$session      = JFactory::getSession();
-		$requirePaths = self::requirePaths();
+		self::$allRequirePaths = (object) array_merge((array) self::requirePaths(), $paths);
 		$framework    = array();
 		$deps         = array();
 		$j3           = FabrikWorker::j3();
@@ -1044,7 +1078,7 @@ EOD;
 		{
 			if (is_array($newShim) && array_key_exists($k, $newShim))
 			{
-				$s->deps = array_merge($s->deps, $newShim[$k]->deps);
+				$s->deps = array_unique(array_merge($s->deps, $newShim[$k]->deps));
 			}
 
 			$newShim[$k] = $s;
@@ -1087,19 +1121,18 @@ EOD;
 			return moment;
 		});";
 
-		$opts     = array(
+		$opts = array(
 			'baseUrl' => $requirejsBaseURI,
-			'paths' => $requirePaths,
+			'paths' => self::$allRequirePaths,
 			'shim' => $newShim,
 			'waitSeconds' => 30
 		);
 
-		// Force script reloads if in debug.
-		if (self::isDebug())
+		// Force script reloads if in burst is on.
+		if (self::getBurstJs())
 		{
 			$opts['urlArgs'] = 'bust=' . time();
 		}
-		$opts['urlArgs'] = 'bust=' . time();
 
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
@@ -1109,6 +1142,22 @@ EOD;
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
 		$session->set('fabrik.js.config', $config);
+	}
+
+	/**
+	 * Should we 'burst' the loading of JS files. If true then loaded
+	 * js files will be appended with a random query string ensuring they
+	 * are not loaded from cache
+	 *
+	 * @return boolean
+	 * @throws Exception
+	 */
+	protected static function getBurstJs()
+	{
+		$app    = JFactory::getApplication();
+		$config = JComponentHelper::getParams('com_fabrik');
+
+		return (bool) $app->input->get('burst', $config->get('burst_js', 0));
 	}
 
 	/**
@@ -1141,34 +1190,41 @@ EOD;
 	 */
 	protected static function requirePaths()
 	{
-		$r              = new stdClass;
-		$r->fab         = 'media/com_fabrik/js';
-		$r->lib         = 'media/com_fabrik/js/lib';
-		$r->element     = 'plugins/fabrik_element';
-		$r->list        = 'plugins/fabrik_list';
-		$r->form        = 'plugins/fabrik_form';
-		$r->cron        = 'plugins/fabrik_cron';
-		$r->viz         = 'plugins/fabrik_visualization';
-		$r->admin       = 'administrator/components/com_fabrik/views';
-		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
-
-		$r->jQueryUI = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
-
-		// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
-		// This avoids AMD issues where we were loading fab/form or fab/form-min.
-		if (!self::isDebug())
+		if (empty(self::$allRequirePaths))
 		{
-			$r->fab .= '/dist';
+			$r              = new stdClass;
+			$r->fab         = 'media/com_fabrik/js';
+			$r->lib         = 'media/com_fabrik/js/lib';
+			$r->element     = 'plugins/fabrik_element';
+			$r->list        = 'plugins/fabrik_list';
+			$r->form        = 'plugins/fabrik_form';
+			$r->cron        = 'plugins/fabrik_cron';
+			$r->viz         = 'plugins/fabrik_visualization';
+			$r->admin       = 'administrator/components/com_fabrik/views';
+			$r->adminfields = 'administrator/components/com_fabrik/models/fields';
+
+			$r->jQueryUI   = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
+			$r->chosen     = 'media/jui/js/chosen.jquery.min';
+			$r->ajaxChosen = 'media/jui/js/ajax-chosen.min';
+
+			// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
+			// This avoids AMD issues where we were loading fab/form or fab/form-min.
+			if (!self::isDebug())
+			{
+				$r->fab .= '/dist';
+			}
+
+			$version = new JVersion;
+
+			if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
+			{
+				$r->punycode = 'media/system/js/punycode';
+			}
+
+			self::$allRequirePaths = $r;
 		}
 
-		$version = new JVersion;
-
-		if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
-		{
-			$r->punycode = 'media/system/js/punycode';
-		}
-
-		return $r;
+		return self::$allRequirePaths;
 	}
 
 	/**
@@ -1278,7 +1334,6 @@ EOD;
 	 *
 	 * @return  bool
 	 */
-
 	public static function inAjaxLoadedPage()
 	{
 		$app     = JFactory::getApplication();
@@ -1370,11 +1425,10 @@ EOD;
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
 	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
-	 * @param   array  $names
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '', $minSuffix = '-min.js', $names = array())
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
 	{
 		if (empty($file))
 		{
@@ -1395,6 +1449,25 @@ EOD;
 		{
 			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 			{
+				/**
+				 * Fix for new media compressed JS paths, which we switched from ./js/foo-mins.js to ./js/dist/foo.js.
+				 * Some code feeds us the new dist path, but some still uses just media/com_fabrik/js.  So, if we're
+				 * not in debug mode, and the path is media/com_fabrik/js and doesn't have /dist, add it.
+				 **/
+				if (!self::isDebug())
+				{
+					if (strpos($file, 'media/com_fabrik/js/') !== false)
+					{
+						if (strpos($file, 'media/com_fabrik/js/lib/') === false)
+						{
+							if (strpos($file, 'media/com_fabrik/js/dist/') === false)
+							{
+								$file = str_replace('media/com_fabrik/js/', 'media/com_fabrik/js/dist/', $file);
+							}
+						}
+					}
+				}
+
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
 					$compressedFile = str_replace('.js', $ext, $file);
@@ -1446,7 +1519,11 @@ EOD;
 			}
 		}
 
-		$files     = array_unique($files);
+		$files = array_unique($files);
+
+		// Set names from $files keys if assoc array. In general it is for require js files
+		$names = array_keys($files) !== range(0, count($files) - 1) ? array_keys($files) : array();
+
 		$files     = "['" . implode("', '", $files) . "']";
 		$require[] = 'requirejs(' . ($files) . ', function (' . implode(", ", $names) . ') {';
 		$require[] = $onLoad;
@@ -1716,8 +1793,11 @@ EOD;
 
 		foreach ($path as $p)
 		{
-			$str[] = '<a href="#" class="crumb' . $i . '">' . $p . '</a><span> / </span>';
-			$i++;
+			if (!empty($p))
+			{
+				$str[] = '<a href="#" class="crumb' . $i . '">' . $p . '</a><span> / </span>';
+				$i++;
+			}
 		}
 
 		$str[] = '</span>';
@@ -1771,19 +1851,21 @@ EOD;
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
 		$jsFile = 'autocomplete';
+		$className = 'AutoComplete';
 
 		if (FabrikWorker::j3())
 		{
 			$jsFile = $plugin === 'cascadingdropdown' ? 'autocomplete-bootstrap-cdd' : 'autocomplete-bootstrap';
+			$className = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'AutoComplete';
 		}
 
 		$needed   = array();
-		$needed[] = 'fab/' . $jsFile ;
+		$needed[] = 'fab/' . $jsFile;
 		$needed[] = 'lib/Event.mock';
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
-			"require(['$needed'], function (AutoComplete) {
-	new AutoComplete('$htmlId', $str);
+			"require(['$needed'], function ($className) {
+	new $className('$htmlId', $str);
 });"
 		);
 	}
@@ -2291,12 +2373,14 @@ EOD;
 	 */
 	public static function runContentPlugins(&$text)
 	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$opt   = $input->get('option');
-		$view  = $input->get('view');
+		$app    = JFactory::getApplication();
+		$input  = $app->input;
+		$opt    = $input->get('option');
+		$view   = $input->get('view');
+		$format = $input->get('format');
 		$input->set('option', 'com_content');
 		$input->set('view', 'article');
+		$input->set('format', 'html');
 		jimport('joomla.html.html.content');
 
 		/**
@@ -2322,6 +2406,7 @@ EOD;
 
 		$input->set('option', $opt);
 		$input->set('view', $view);
+		$input->set('format', $format);
 	}
 
 	/**

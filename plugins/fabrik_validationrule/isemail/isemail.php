@@ -60,7 +60,21 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		}
 
 		// $$$ hugh - let's try using new helper func instead of rolling our own.
-		return FabrikWorker::isEmail($email);
+		if (FabrikWorker::isEmail($email))
+		{
+			if ($params->get('isemail-check_mx', '0') === '1')
+			{
+				list($user, $domain) = explode('@', $data);
+				if (!checkdnsrr($domain, 'MX')) {
+					return false;
+				}
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		};
 	}
 
 	/**

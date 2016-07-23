@@ -30,7 +30,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 case 'modal':
                     Fabrik.Windows[opts.id] = new Fabrik.Modal(opts);
                     jQuery(window).on('resize', function () {
-                        Fabrik.Windows[opts.id].fitToContent(false);
+                        if (opts.id in Fabrik.Windows) {
+                            Fabrik.Windows[opts.id].fitToContent(false);
+                        }
                     });
                     break;
                 case '':
@@ -123,25 +125,35 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
          * Center the modal window
          */
         center: function () {
-            var pxWidth = this.windowDimensionInPx('width'),
+            var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]'),
+                pxWidth = this.windowDimensionInPx('width'),
                 pxHeight = this.windowDimensionInPx('height'),
-                w = this.window.width(),
-                h = this.window.height(),
+                w = source.width(),
+                h = source.height(),
                 d = {}, yy, xx;
             w = (w === null || w === 'auto') ? pxWidth : w;
             h = (h === null || h === 'auto') ? pxHeight : h;
             w = parseInt(w, 10);
             h = parseInt(h, 10);
 
-            yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
-            d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
 
-            xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
+            yy = jQuery(window).height() / 2 - (h / 2);
+
+            if ( jQuery.inArray(jQuery(source).css('position'),['fixed','static']) === -1) {
+                yy += window.getScroll().y;
+            }
+            //yy = (window.getSize().y / 2) - (h / 2);
+            d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
+            //d.top = this.options.offset_y !== null ? this.options.offset_y : yy;
+
+            xx = jQuery(window).width() / 2 + window.getScroll().x - w / 2;
+            //xx = (window.getSize().x / 2) - (w / 2);
             d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
+            //d.left = this.options.offset_x !== null ? this.options.offset_x : xx;
 
             // Prototype J template css puts margin left on .modals
             d['margin-left'] = 0;
-            this.window.css(d);
+            source.css(d);
         },
 
         /**
@@ -156,7 +168,12 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 dim = this.options[dir] + '';
             if (dim.indexOf('%') !== -1) {
                 // @TODO fix
-                return Math.floor(window.getSize()[coord] * (dim.toFloat() / 100));
+                if (dir === 'height') {
+                    return Math.floor(jQuery(window).height() * (dim.toFloat() / 100));
+                }
+                else {
+                    return Math.floor(jQuery(window).width() * (dim.toFloat() / 100));
+                }
             }
             return parseInt(dim, 10);
         },
@@ -195,20 +212,24 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
             var handle = this.window.find('*[data-role="title"]');
-
+            // Bauer asks... why?
+            // Rob - because modals should not be resizeable or movable - those are Windows (uncommenting)
             if (!this.options.modal) {
-                this.window.draggable(
+
+                // Needed for UIKIt overrides as window root is actually its mask
+                var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]');
+                source.draggable(
                     {
                         'handle': handle,
                         drag    : function () {
-                            Fabrik.fireEvent('fabrik.window.resized', this.window);
+                            Fabrik.fireEvent('fabrik.window.resized', self.window);
                             self.drawWindow();
                         }
                     }
                 );
 
-                this.window.resizable({
-                    containment: this.options.container ? jQuery('#' + this.options.container) : null,
+                source.resizable({
+                    containment: self.options.container ? jQuery('#' + self.options.container) : null,
                     handles    : {
                         'n' : '.ui-resizable-n',
                         'e' : '.ui-resizable-e',
@@ -221,12 +242,32 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     },
 
                     resize: function () {
+                        Fabrik.fireEvent('fabrik.window.resized', self.window);
                         self.drawWindow();
                     }
                 });
             }
-            // Set window dimensions before center - needed for fileupload crop
 
+            // Rob - removed this caused any form with a file upload in it to be unscrollable - as we load the window
+            // in the background.
+            /* Prevent browser window from being scrolled */
+           /* jQuery('body').css({'height':'100%','overflow':'hidden'});
+
+            /!* Allow browser window to be scrolled again when modal is released from DOM *!/
+            jQuery('div.modal').on('remove', function () {
+                jQuery('body').css({'height':'initial','overflow':'initial'});
+            });*/
+
+            /* Use form title if modal handlelabel is blank
+            * $$$ Rob - this is not going to work with UIKit for example - try not to rely on the DOM classes/markup
+            * for this type of thing - assign data-foo attributes to the layouts instead */
+            if (jQuery('div.modal-header .handlelabel').text().length === 0) {
+                if (jQuery('div.itemContentPadder form').context.title.length) {
+                    jQuery('div.modal-header .handlelabel').text(jQuery('div.itemContentPadder form').context.title);
+                }
+            }
+
+            // Set window dimensions before center - needed for fileupload crop
             this.window.css('width', this.options.width);
             this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
 
@@ -234,6 +275,10 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.fitToContent(false);
             } else {
                 this.center();
+            }
+
+            if (this.options.visible) {
+                this.open();
             }
         },
 
@@ -257,7 +302,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
          * @returns {*}
          */
         buildWinViaJS: function () {
-            var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [], self = this;
+            var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [], self = this,
+                directions, i;
             this.window = new Element('div', {
                 'id'   : this.options.id,
                 'class': 'fabrikWindow ' + this.classSuffix + ' modal'
@@ -309,6 +355,10 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.window.append([this.handle, this.contentWrapperEl]);
             } else {
                 this.window.append([this.handle, this.contentWrapperEl, draggerC]);
+                directions = ['n', 'e', 's', 'w', 'nw', 'ne', 'se', 'sw'];
+                for (i = 0; i < directions.length; i ++) {
+                    this.window.append(jQuery('<div class="ui-resizable-' + directions[i] + ' ui-resizable-handle"></div>'));
+                }
             }
 
             return this.window;
@@ -320,12 +370,11 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
         expand: function () {
             if (!this.expanded) {
                 this.expanded = true;
-                var w = window.getSize();
                 this.unexpanded = jQuery.extend({}, this.window.position(),
                     {'width': this.window.width(), 'height': this.window.height()});//this.window.getCoordinates();
                 var scroll = window.getScroll();
                 this.window.css({'left': scroll.x + 'px', 'top': scroll.y + 'px'});
-                this.window.css({'width': w.x, 'height': w.y});
+                this.window.css({'width': jQuery(window).width(), 'height': jQuery(window).height()});
             } else {
                 this.window.css({
                     'left': this.unexpanded.left + 'px',
@@ -382,6 +431,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.options.onContentLoaded.apply(self);
                     });
                     break;
+                // Deprecated - causes all sorts of issues with window resizing.
                 case 'iframe':
                     var h = parseInt(this.options.height, 10) - 40,
                         scrollX = this.contentEl[0].scrollWidth,
@@ -448,8 +498,11 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
         drawWindow: function () {
             var titleHeight = this.titleHeight(),
                 footer = this.footerHeight(),
-                h = this.contentHeight(),
-                w = this.window.width();
+                h = this.contentHeight();
+
+            // Needed for UIKIt overrides as window root is actually its mask
+            var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]');
+            var w = source.width();
 
             // If content larger than window - set it to the window (minus footer/title)
             if (h > this.window.height()) {
@@ -461,7 +514,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             // Resize iframe when window is resized
             if (this.options.loadMethod === 'iframe') {
-                this.iframeEl.css('height', this.contentWrapperEl[0].offsetHeight - 40);
+                this.iframeEl.css('height', this.contentWrapperEl[0].offsetHeight);
                 this.iframeEl.css('width', this.contentWrapperEl[0].offsetWidth - 10);
             }
         },
@@ -482,7 +535,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             }
             if (!this.options.offset_y && scroll) {
                 //new Fx.Scroll(window).toElement(this.window);
-                jQuery('body').scrollTop(this.window);
+                jQuery('body').scrollTop(this.window.offset().top);
             }
         },
 
@@ -522,7 +575,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             } else {
                 this.window.fadeOut({duration: 0});
             }
+            Fabrik.tips.hideAll();
             this.fireEvent('onClose', [this]);
+            Fabrik.fireEvent('fabrik.window.close', [this]);
         },
 
         /**
@@ -576,8 +631,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 'width'      : opts.width ? opts.width : 300,
                 'height'     : opts.height ? opts.height : 320,
                 'minimizable': false,
-                'collapsible': true
-
+                'collapsible': true,
+                'contentURL' : opts.contentURL ? opts.contentURL : ''
             };
             opts2.id = 'redirect';
             opts = jQuery.merge(opts2, opts);

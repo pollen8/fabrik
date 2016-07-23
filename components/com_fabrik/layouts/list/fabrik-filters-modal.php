@@ -33,27 +33,25 @@ foreach ($d->filters as $key => $filter) :
 endforeach;
 
 ?>
-<?php if ($showClearFilters) : ?>
-	<div>
-		<?php echo JText::_('COM_FABRIK_FILTERS_ACTIVE') ?>
-		<?php
-		foreach ($d->filters as $key => $filter) :
-			if ($filter->displayValue !== '') :
-				?>
-				<span class="label label-inverse">
-				<?php echo $filter->label . ': ' . $filter->displayValue . ' '; ?>
-					<a data-filter-clear="<?php echo $key; ?>" href="#" style="color: white;">
-						<?php echo FabrikHelperHTML::icon('icon-cancel', '', 'style="text-align: right; "'); ?>
-					</a>
-			</span>
-				<?php
-			endif;
-		endforeach;
-		?>
-	</div>
-	<?php
-endif;
-?>
+<div data-modal-state-container style="display:<?php echo $showClearFilters ? '' : 'none'; ?>">
+	<?php echo JText::_('COM_FABRIK_FILTERS_ACTIVE'); ?>
+	<span data-modal-state-display>
+	<?php $layout = FabrikHelperHTML::getLayout('list.fabrik-filters-modal-state-label');
+
+	foreach ($d->filters as $key => $filter) :
+		if ($filter->displayValue !== '') :
+
+			$layoutData = (object) array(
+				'label' => $filter->label,
+				'displayValue' => $filter->displayValue,
+				'key' => $key
+			);
+			echo $layout->render($layoutData);
+		endif;
+	endforeach;
+	?>
+	</span>
+</div>
 <div class="fabrikFilterContainer modal hide fade" id="filter_modal">
 
 	<div class="modal-header">
@@ -78,7 +76,7 @@ endif;
 		<?php
 		if ($d->filter_action != 'onchange') :
 			?>
-			<input type="button" class="btn btn-primary fabrik_filter_submit"
+			<input type="button" data-dismiss="modal" class="btn btn-primary fabrik_filter_submit"
 				value="<?php echo FText::_('COM_FABRIK_GO'); ?>" name="filter">
 			<?php
 		endif;

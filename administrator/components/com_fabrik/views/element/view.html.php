@@ -94,10 +94,9 @@ class FabrikAdminViewElement extends JViewLegacy
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = FabrikHelperHTML::mediaFile('fabrik.js');
-		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-		//$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
+		$srcs['Fabrik'] = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs['NameSpace'] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs['fabrikAdminElement'] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
 
 		$shim = array();
 		$dep = new stdClass;
@@ -109,7 +108,7 @@ class FabrikAdminViewElement extends JViewLegacy
 		$plugManagerDeps->deps = array('admin/namespace');
 		$shim['admin/pluginmanager'] = $plugManagerDeps;
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, $this->js, '-min.js', array('Window', 'Fabrik', 'NameSpace', 'fabrikAdminElement'));
+		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 

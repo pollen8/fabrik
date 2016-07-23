@@ -393,9 +393,10 @@ class JFormFieldListfields extends JFormFieldList
 		$script[]          = "}";
 		$script            = implode("\n", $script);
 
-		$srcs   = array();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
+		$srcs = array(
+			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
+			'ListFields' => 'administrator/components/com_fabrik/models/fields/listfields.js'
+		);
 		FabrikHelperHTML::script($srcs, $script);
 	}
 
@@ -452,13 +453,14 @@ class JFormFieldListfields extends JFormFieldList
 		$labelMethod    = (string) $this->getAttribute('label_method');
 		$noJoins        = FabrikWorker::toBoolean($this->getAttribute('nojoins', false), false);
 
-		$bits       = array();
-		$showRaw    = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
+		$bits    = array();
+		$showRaw = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
+
+		/** @var FabrikFEModelGroup $groupModel */
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
 		$optsKey = $valueFormat == 'tableelement' ? 'name' : 'id';
 		$useStep = FabrikWorker::toBoolean($this->getAttribute('usestep', false), false);
-		$res     = $groupModel->getForm()->getElementOptions($useStep, $optsKey, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 		$hash    = $controller . '.' . implode('.', $bits);
 
 		if (array_key_exists($hash, $this->results))
@@ -467,6 +469,7 @@ class JFormFieldListfields extends JFormFieldList
 		}
 		else
 		{
+			$res                  = $groupModel->getFormModel()->getElementOptions($useStep, $optsKey, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 			$this->results[$hash] = &$res;
 		}
 

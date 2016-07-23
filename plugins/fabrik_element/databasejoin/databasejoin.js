@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'],
+define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-bootstrap'],
     function (jQuery, FbElement, Encoder, Fabrik, AutoComplete) {
     window.FbDatabasejoin = new Class({
         Extends: FbElement,
@@ -77,8 +77,8 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
             if (e) {
                 // Loading from click
                 e.stop();
-                onContentLoaded = function (win) {
-                    this.fitToContent();
+                onContentLoaded = function () {
+                    this.fitToContent(false);
                 };
 
                 // @FIXME - if set to true, then click addrow, click select rows, click add row => can't submit the form
@@ -100,6 +100,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
             var a = c.getElement('.toggle-addoption'),
                 url = typeOf(a) === 'null' ? e.target.get('href') : a.get('href');
 
+            url += '&format=partial';
 
             var id = this.element.id + '-popupwin';
             this.windowopts = {
@@ -576,6 +577,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
             e.stop();
             var id = this.selectRecordWindowId();
             var url = this.getContainer().getElement('a.toggle-selectoption').href;
+            url += '&format=partial';
             url += '&triggerElement=' + this.element.id;
             url += '&resetfilters=1';
             url += '&c=' + this.options.listRef;
@@ -640,7 +642,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
                     } else {
                         //for detailed view prev/next pagination v is set via elements
                         //getROValue() method and is thus in the correct format - not sure that
-                        // h.get(v) is right at all but leaving in incase i've missed another scenario
+                        // h.get(v) is right at all but leaving in in case i've missed another scenario
                         this.element.innerHTML += v + '<br />';
                     }
                 }.bind(this));
@@ -696,10 +698,10 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
         },
 
         /**
-         * $$$ hugh - testing being able to set a dropdown join by label rather than value,
+         * $$$ hugh - testing being able to set a drop-down join by label rather than value,
          * needed in corner cases like reverse geocoding in the map element, where (say) the
          * 'country' element might be a join / CDD, but obviously we only get a label ("Austria")
-         * back from Google.  For now, VERY limited support, only for simple dropdown type.
+         * back from Google.  For now, VERY limited support, only for simple drop-down type.
          */
         updateByLabel: function (label) {
             this.getElement();
@@ -710,7 +712,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
             if (!this.options.editable || this.options.displayType !== 'dropdown') {
                 this.update(label);
             }
-            // OK, it's an editable dropdown, so let's see if we can find a matching option text
+            // OK, it's an editable drop-down, so let's see if we can find a matching option text
             var options = this.element.getElements('option');
             options.some(function (option) {
                 if (option.text === label) {
@@ -846,7 +848,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
         },
 
         /**
-         * Update auto-complete fields id and create new autocompleter object for duplicated element
+         * Update auto-complete fields id and create new auto-completer object for duplicated element
          */
         cloneAutoComplete: function () {
             var f = this.getAutoCompleteLabelField();
@@ -931,20 +933,21 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
                         // rob previously we we doing appendInfo() but that didnt get the concat
                         // labels for the database join
                         if (this.options.displayType === 'auto-complete') {
-
-                            // Need to get v if auto-complete and updating from posted popup form
-                            // as we only want to get ONE
-                            // option back inside update();
-                            new Request.JSON({
-                                'url'      : 'index.php?option=com_fabrik&view=form&format=raw',
-                                'data'     : {
-                                    'formid': this.options.popupform,
-                                    'rowid' : json.rowid
-                                },
-                                'onSuccess': function (json) {
-                                    this.update(json.data[this.options.key]);
-                                }.bind(this)
-                            }).send();
+                            if (this.activePopup) {
+                                // Need to get v if auto-complete and updating from posted popup form
+                                // as we only want to get ONE
+                                // option back inside update();
+                                new Request.JSON({
+                                    'url'      : 'index.php?option=com_fabrik&view=form&format=raw',
+                                    'data'     : {
+                                        'formid': this.options.popupform,
+                                        'rowid' : json.rowid
+                                    },
+                                    'onSuccess': function (json) {
+                                        this.update(json.data[this.options.key]);
+                                    }.bind(this)
+                                }).send();
+                            }
                         } else {
                             this.updateFromServer();
                         }

@@ -7,25 +7,28 @@
 
 // Define variable outside of require js so that the form class can initialize it
 
+function geolocateLoad() {
+    if (document.body) {
+        window.fireEvent('google.geolocate.loaded');
+    } else {
+        console.log('no body');
+    }
+}
+
 // Wrap in require js to ensure we always load the same version of jQuery
 // Multiple instances can be loaded an ajax pages are added and removed. However we always want
 // to get the same version as plugins are only assigned to this jQuery instance
 define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery.maskedinput'],
     function (jQuery, FbElement, Mask) {
-    function geolocateLoad() {
-        if (document.body) {
-            window.fireEvent('google.geolocate.loaded');
-        } else {
-            console.log('no body');
-        }
-    }
 
     window.FbField = new Class({
         Extends: FbElement,
 
         options: {
             use_input_mask        : false,
-            input_mask_definitions: ''
+            input_mask_definitions: '',
+            geocomplete           : false,
+            mapKey                : false
         },
 
         initialize: function (element, options) {
@@ -47,12 +50,20 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                 this.gcMade = false;
                 this.loadFn = function () {
                     if (this.gcMade === false) {
-                        jQuery('#' + this.element.id).geocomplete();
+                        var self = this;
+                        jQuery('#' + this.element.id).geocomplete()
+                            .bind(
+                            'geocode:result',
+                            function(event, result){
+                                //self.element.fireEvent('change', new Event.Mock(self.element, 'change'));
+                                Fabrik.fireEvent('fabrik.element.field.geocode', self);
+                            }
+                        );
                         this.gcMade = true;
                     }
                 }.bind(this);
                 window.addEvent('google.geolocate.loaded', this.loadFn);
-                Fabrik.loadGoogleMap(false, 'geolocateLoad');
+                Fabrik.loadGoogleMap(this.options.mapKey, 'geolocateLoad');
             }
         },
 
@@ -68,6 +79,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
             if (element) {
                 this.getElement().focus();
             }
+            this.parent();
         },
 
         cloned: function (c) {

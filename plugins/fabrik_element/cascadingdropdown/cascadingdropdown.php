@@ -669,6 +669,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 				// Load the matched element
 				$this->watchElement = $pluginManager->getElementPlugin($matched[0]);
+
+				if (!$this->watchElement)
+				{
+					throw new RuntimeException('No watch element found for cdd: ' . $this->getElement()->id . ', trying to find children of: ' . $watch, 500);
+				}
 			}
 		}
 

@@ -127,6 +127,26 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="show-weekends"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_VISUALIZATION_FULLCALENDAR_SHOW_WEEKENDS_DESC"
+				label="PLG_VISUALIZATION_FULLCALENDAR_SHOW_WEEKENDS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="greyscaled-weekend"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_VISUALIZATION_FULLCALENDAR_GREYSCALE_WEEKEND_DESC"
+				label="PLG_VISUALIZATION_FULLCALENDAR_GREYSCALE_WEEKEND_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="fullcalendar_default_view"
 				type="list"
 				default="monthView"
@@ -195,7 +215,14 @@
 				default="00:30:00"
 				description="PLG_VISUALIZATION_FULLCALENDAR_MINIMUM_DURATION_DESC"
 				label="PLG_VISUALIZATION_FULLCALENDAR_MINIMUM_DURATION_LABEL" />
-				
+
+			<field name="startdate_hour_offset"
+			       type="text"
+			       class="input-small"
+			       default="0"
+			       description="PLG_VISUALIZATION_FULLCALENDAR_STARTDATE_HOUR_OFFSET_DESC"
+			       label="PLG_VISUALIZATION_FULLCALENDAR_STARTDATE_HOUR_OFFSET_LABEL" />
+
 			<field name="fullcalendar_show_messages"
 				type="radio"
 				default="1"
@@ -217,16 +244,6 @@
 	
 		<fieldset label="PLG_VISUALIZATION_FULLCALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-fullcalendar-monthview">
 				
-			<field name="greyscaled-week-end"
-				type="radio"
-				default="0"
-				class="btn-group"
-				description="PLG_VISUALIZATION_FULLCALENDAR_GREYSCALE_WEEKEND_DESC"
-				label="PLG_VISUALIZATION_FULLCALENDAR_GREYSCALE_WEEKEND_LABEL" >
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="readonly_monthview"
 				type="radio"
 				class="btn-group"
@@ -272,17 +289,7 @@
 				description="PLG_VISUALIZATION_FULLCALENDAR_CLOSE_HOUR_DESC"
 				label="PLG_VISUALIZATION_FULLCALENDAR_CLOSE_HOUR_LABEL"
 				size="8" />
-			
-			<field name="fullcalendar-show-weekends"
-				type="radio"
-				default="1"
-				class="btn-group"
-				description="PLG_VISUALIZATION_FULLCALENDAR_SHOW_WEEKENDS_DESC"
-				label="PLG_VISUALIZATION_FULLCALENDAR_SHOW_WEEKENDS_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
+					
 		</fieldset>
 		
 	</fields>

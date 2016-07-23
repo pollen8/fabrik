@@ -927,6 +927,13 @@ class FabimageGD2 extends FabimageGD
 				// Create a new temporary image
 				$tmp_img = imagecreatetruecolor($new_width, $new_height);
 
+				// handle transparency for tmp image
+				if (function_exists('imagealphablending'))
+				{
+					imagealphablending($tmp_img, false);
+					imagesavealpha($tmp_img, true);
+				}
+
 				// Copy and resize old image into new image
 				imagecopyresampled($tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 				imagedestroy($img);

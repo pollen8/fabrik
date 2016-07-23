@@ -50,10 +50,10 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 */
 	public function loadJavascriptClass_result()
 	{
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$src = parent::loadJavascriptClass_result();
-
-		return array($src, 'media/com_fabrik/js/element' . $ext);
+		$src['element'] = $mediaFolder . '/element.js';
+		return $src;
 	}
 
 	/**
@@ -75,7 +75,8 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		$params = $this->getParams();
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$opts = $this->getElementJSOptions();
-		$opts->enabled = (FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
+		$orderElName = FabrikString::safeColNameToArrayKey(FArrayHelper::getValue($model->orderEls, 0, ''));
+		$opts->enabled = $orderElName == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName()) ? true
 			: false;
 		$opts->listid = $model->getId();
 		$opts->orderElementId = $params->get('order_element');

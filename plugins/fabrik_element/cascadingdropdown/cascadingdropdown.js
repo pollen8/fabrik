@@ -10,7 +10,7 @@
  this elements values
  */
 
-define(['jquery', 'element/databasejoin/databasejoin'], function (jQuery, FbDatabasejoin) {
+define(['jquery', 'element/databasejoin/databasejoin', 'fab/autocomplete-bootstrap-cdd'], function (jQuery, FbDatabasejoin, FabCddAutocomplete) {
     window.FbCascadingdropdown = new Class({
 
         options : {

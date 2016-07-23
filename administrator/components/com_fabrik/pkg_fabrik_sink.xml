@@ -2,15 +2,16 @@
 <extension type="package" version="3">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.4.3</version>
+	<version>3.5</version>
 	<url>http://www.joomla.org</url>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
-	<creationDate>March 2016</creationDate>
+	<creationDate>July 2016</creationDate>
 	<copyright>Copyright (C) 2005-2016 fabrikar.com - All rights reserved.</copyright>
 	<description>Fabrik Free Package</description>
 	<update>http://fabrikar.com/update/packages/free</update>
 	<files folder="packages">
+
 		<file id="com_fabrik" type="component">com_fabrik_{version}.zip</file>
 		<file client="site" id="mod_fabrik_form" type="module">mod_fabrik_form_{version}.zip</file>
 		<file client="site" id="mod_fabrik_list" type="module">mod_fabrik_list_{version}.zip</file>
@@ -109,6 +110,7 @@
 		<file group="fabrik_validationrule" id="userexists" type="plugin">plg_fabrik_validation_userexists_{version}.zip</file>
 
 		<file group="fabrik_visualization" id="calendar" type="plugin">plg_fabrik_visualization_calendar_{version}.zip</file>
+		<file group="fabrik_visualization" id="fullcalendar" type="plugin">plg_fabrik_visualization_fullcalendar_{version}.zip</file>
 		<file group="fabrik_visualization" id="chart" type="plugin">plg_fabrik_visualization_chart_{version}.zip</file>
 		<file group="fabrik_visualization" id="coverflow" type="plugin">plg_fabrik_visualization_coverflow_{version}.zip</file>
 		<file group="fabrik_visualization" id="fusion_gantt_chart" type="plugin">plg_fabrik_visualization_fusion_gantt_chart_{version}.zip</file>

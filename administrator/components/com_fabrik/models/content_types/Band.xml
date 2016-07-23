@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <contenttype>
   <name>Band</name>
-  <fabrikversion>3.4</fabrikversion>
+  <fabrikversion>3.5</fabrikversion>
   <group join_id="" is_join="0" id="1" name="Bands" label="" css="" published="1" created="2015-12-24 16:16:18" private="0">
     <params repeat_group_button="0" repeat_group_show_first="1"/>
     <element label="id" published="1" name="id" id="1" plugin="internalid" created="2015-12-24 16:00:45" width="3" height="0" default="" hidden="1" eval="0" ordering="1" show_in_list_summary="0" filter_type="" filter_exact_match="0" link_to_detail="1" primary_key="1" auto_increment="1" access="1" use_in_page_title="0" parent_id="0">

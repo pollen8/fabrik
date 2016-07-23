@@ -24,7 +24,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.2
  */
 
-class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
+class PlgFabrik_ListRadius_lookup extends PlgFabrik_List
 {
 	/**
 	 * Build the radius search HTML
@@ -292,8 +292,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$opts->myloc = $params->get('myloc', 1) == 1 ? true : false;
 		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
-		$this->jsInstance = "new FbListRadiusLookup($opts)";
-
+		$this->jsInstance = "new FbListRadius_lookup($opts)";
 		return true;
 	}
 
@@ -304,7 +303,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 	 */
 	public function loadJavascriptClassName_result()
 	{
-		return 'FbListRadiusLookup';
+		return 'FbListRadius_lookup';
 	}
 
 	/**

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Controllers\Controller;
+
 jimport('joomla.application.component.controller');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
@@ -23,7 +25,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikControllerVisualization extends JControllerLegacy
+class FabrikControllerVisualization extends Controller
 {
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
@@ -45,8 +47,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 	public function display($cachable = false, $urlparams = array())
 	{
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
 
 		if ($viewName == '')
@@ -98,8 +99,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 	protected function getViewName()
 	{
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
-		$app = JFactory::getApplication();
-		$viz->load($app->input->getInt('id'));
+		$viz->load($this->input->getInt('id'));
 		$viewName = $viz->plugin;
 		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');

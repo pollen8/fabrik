@@ -18,9 +18,9 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
- * @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @author      Rob Clayburn
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // Require the abstract plugin class
@@ -44,20 +44,20 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 */
 	public function onAfterJSLoad()
 	{
-		$params = $this->getParams();
-		$formModel = $this->getModel();
-		$input = $this->app->input;
-		$rowId = $input->get('rowid', '', 'string');
-		$opts = new stdClass;
+		$params        = $this->getParams();
+		$formModel     = $this->getModel();
+		$input         = $this->app->input;
+		$rowId         = $input->get('rowid', '', 'string');
+		$opts          = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
-		$opts->formid = $formModel->getId();
-		$opts->map = $params->get('autofill_map');
-		$opts->cnn = $params->get('autofill_cnn');
-		$opts->table = $params->get('autofill_table', '');
+		$opts->formid  = $formModel->getId();
+		$opts->map     = $params->get('autofill_map');
+		$opts->cnn     = $params->get('autofill_cnn');
+		$opts->table   = $params->get('autofill_table', '');
 
-		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
-		$opts->confirm = (bool) $params->get('autofill_confirm', true);
+		$opts->editOrig              = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
+		$opts->confirm               = (bool) $params->get('autofill_confirm', true);
 		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
 
 		switch ($params->get('autofill_onload', '0'))
@@ -84,24 +84,24 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 
 		if (!isset($formModel->formPluginJS))
 		{
-			$formModel->formPluginJS = '';
+			$formModel->formPluginJS = array();
 		}
 
 		$this->formJavascriptClass($params, $formModel);
-		$formModel->formPluginJS .= "\n" . 'var autofill = new Autofill(' . $opts . ');';
+		$formModel->formPluginJS['Autofill'] = 'var autofill = new Autofill(' . $opts . ');';
 	}
 
 	/**
 	 * Called via ajax to get the first match record
 	 *
-	 * @return	string	json object of record data
+	 * @return    string    json object of record data
 	 */
 	public function onajax_getAutoFill()
 	{
-		$input = $this->app->input;
-		$cnn = (int) $input->getInt('cnn');
+		$input   = $this->app->input;
+		$cnn     = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
-		$value = $input->get('v', '', 'string');
+		$value   = $input->get('v', '', 'string');
 		$input->set('resetfilters', 1);
 		$input->set('usekey', '');
 
@@ -128,12 +128,12 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			if ($input->get('autofill_lookup_field', '') !== '')
 			{
 				// Load on a fk
-				$fkId = $input->get('autofill_lookup_field', '');
-				$db = $listModel->getDb();
-				$fk = $listModel->getFormModel()->getElement($fkId, true);
+				$fkId   = $input->get('autofill_lookup_field', '');
+				$db     = $listModel->getDb();
+				$fk     = $listModel->getFormModel()->getElement($fkId, true);
 				$elName = $fk->getElement()->name;
-				$table = $listModel->getTable();
-				$query = $db->getQuery(true);
+				$table  = $listModel->getTable();
+				$query  = $db->getQuery(true);
 				$query->select($table->db_primary_key)->from($table->db_table_name)->where($elName . ' = ' . $db->q($value));
 				$db->setQuery($query);
 				$value = $db->loadResult();
@@ -191,17 +191,17 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	/**
 	 * Fill the response with the lookup data
 	 *
-	 * @param   object  $data      Lookup List - Row data
-	 * @param   object  &$newData  Data to fill the form with
-	 * @param   string  $from      Key to search for in $data - may be either element full name, or placeholders
-	 * @param   string  $to        Form's field to insert data into
+	 * @param   object $data     Lookup List - Row data
+	 * @param   object &$newData Data to fill the form with
+	 * @param   string $from     Key to search for in $data - may be either element full name, or placeholders
+	 * @param   string $to       Form's field to insert data into
 	 *
 	 * @return  null
 	 */
 	protected function fillField($data, &$newData, $from, $to)
 	{
 		$matched = false;
-		$toRaw = $to . '_raw';
+		$toRaw   = $to . '_raw';
 		$fromRaw = $from . '_raw';
 
 		if (array_key_exists($from, $data))
@@ -218,7 +218,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 
 		if (!$matched)
 		{
-			$w = new FabrikWorker;
+			$w               = new FabrikWorker;
 			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($from, $data);
 		}
 		else

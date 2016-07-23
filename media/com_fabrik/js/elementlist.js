@@ -109,7 +109,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 
                             // Replace this with that so that the js code runs on the correct element
                             if (typeof(js) !== 'function') {
-                                js = js.replace(/this/g, 'that');
+                                js = js.replace(/\bthis\b/g, 'that');
                                 eval(js);
                             } else {
                                 js.delay(0);
@@ -189,6 +189,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     }
                 }.bind(this));
             }
+        },
+
+        /**
+         * Get focus event
+         * @returns {string}
+         */
+        getFocusEvent: function () {
+            return 'click';
         }
 
     });

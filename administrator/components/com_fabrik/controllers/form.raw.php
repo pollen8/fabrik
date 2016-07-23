@@ -50,6 +50,20 @@ class FabrikAdminControllerForm extends JControllerForm
 	}
 
 	/**
+	 * Save a form's page to the session table
+	 *
+	 * @return  null
+	 */
+	public function savepage()
+	{
+		$input     = $this->input;
+		$model     = $this->getModel('Formsession', 'FabrikFEModel');
+		$formModel = $this->getModel('Form', 'FabrikFEModel');
+		$formModel->setId($input->getInt('formid'));
+		$model->savePage($formModel);
+	}
+
+	/**
 	 * Handle saving posted form data from the admin pages
 	 *
 	 * @return  void

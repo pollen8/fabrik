@@ -14,6 +14,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.parent(element, options);
         },
 
+        /**
+         * Get focus event
+         * @returns {string}
+         */
+        getFocusEvent: function () {
+            return 'click';
+        },
+        
         getValue: function () {
             var v = [];
             if (!this.options.editable) {

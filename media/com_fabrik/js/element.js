@@ -30,6 +30,7 @@ define(['jquery'], function (jQuery) {
          */
 
         initialize: function (element, options) {
+            var self = this;
             this.setPlugin('');
             options.element = element;
             this.strElement = element;
@@ -37,13 +38,21 @@ define(['jquery'], function (jQuery) {
             this.events = $H({}); // was changeEvents
             this.setOptions(options);
             // If this element is a 'chosen' select, we need to relay the jQuery change event to Moo
-            if (document.id(this.options.element + '_chzn')) {
+            if (this.options.advanced) {
                 var changeEvent = this.getChangeEvent();
                 jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
                     document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(document.id(this.id),
                         event.data.changeEvent));
                 });
             }
+
+            // In ajax pop up form. Close the validation tip message when we focus in the element
+            Fabrik.on('fabrik.form.element.added', function () {
+                self.addNewEvent(self.getFocusEvent(), function () {
+                    self.removeTipMsg();
+                });
+            });
+
             return this.setElement();
         },
 
@@ -116,8 +125,10 @@ define(['jquery'], function (jQuery) {
             //is only set when the element is assigned to the form.
         },
 
-        /** allows you to fire an array of events to element /  sub elements, used in calendar
+        /**
+         * Allows you to fire an array of events to element /  sub elements, used in calendar
          * to trigger js events when the calendar closes
+         * @param {array} evnts
          */
         fireEvents: function (evnts) {
             if (this.hasSubElements()) {
@@ -229,6 +240,11 @@ define(['jquery'], function (jQuery) {
             }.bind(this));
         },
 
+        /**
+         * Add a JS event to the element
+         * @param {string} action
+         * @param {string|function} js
+         */
         addNewEvent: function (action, js) {
             if (action === 'load') {
                 this.loadEvents.push(js);
@@ -279,7 +295,9 @@ define(['jquery'], function (jQuery) {
         },
 
         /**
-         * set the label (uses textContent attribute, prolly won't work on IE < 9)
+         * Set the label (uses textContent attribute, prolly won't work on IE < 9)
+         *
+         * @param {string} label
          */
         setLabel: function (label) {
             this.options.label = label;
@@ -438,11 +456,12 @@ define(['jquery'], function (jQuery) {
          * @return array of tips
          */
         tips: function () {
+            var self = this;
             return jQuery(Fabrik.tips.elements).filter(function (index, t) {
-                if (t === this.getContainer() || t.getParent() === this.getContainer()) {
+                if (t === self.getContainer() || t.getParent() === self.getContainer()) {
                     return true;
                 }
-            }.bind(this));
+            });
         },
 
         /**
@@ -466,7 +485,11 @@ define(['jquery'], function (jQuery) {
                 li = jQuery('<li>').addClass(klass);
                 li.html(msg);
                 jQuery('<i>').addClass(this.form.options.images.alert).prependTo(li);
-                d.find('ul').append(li);
+
+                // Only append the message once (was duplicating on multi-page forms)
+                if (d.find('li:contains("' + jQuery(msg).text() + '")').length === 0) {
+                    d.find('ul').append(li);
+                }
                 html = unescape(d.html());
 
                 if (t.data('fabrik-tip-orig') === undefined) {
@@ -543,6 +566,39 @@ define(['jquery'], function (jQuery) {
             }
         },
 
+        /**
+         * Move the tip using its position top property. Used when inside a modal form that
+         * scrolls vertically or modal is moved, and ensures the tip stays attached to the triggering element
+         * @param {number} top
+         * @param {number} left
+         */
+        moveTip: function (top, left) {
+            var t = this.tips(), tip, origPos;
+            t = jQuery(t[0]);
+            if (t.length > 0) {
+                tip = t.data('popover').$tip;
+                if (tip) {
+                    origPos = tip.data('origPos');
+                    if (origPos === undefined) {
+                        origPos = {
+                            'top' : parseInt(t.data('popover').$tip.css('top'), 10) + top,
+                            'left': parseInt(t.data('popover').$tip.css('left'), 10) + left
+                        };
+                        tip.data('origPos', origPos);
+                    }
+                    tip.css({
+                        'top': origPos.top - top,
+                        'left': origPos.left - left
+                    });
+                }
+            }
+        },
+
+        /**
+         * Set the failed validation message
+         * @param {string} msg
+         * @param {string} classname
+         */
         setErrorMessage: function (msg, classname) {
             var a, i;
             var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
@@ -561,7 +617,9 @@ define(['jquery'], function (jQuery) {
             switch (classname) {
                 case 'fabrikError':
                     Fabrik.loader.stop(this.element);
-                    if (Fabrik.bootstrapped) {
+                    // repeat groups in table format don't have anything to attach a tip msg to!
+                    var t = this.tips();
+                    if (Fabrik.bootstrapped && t.length !== 0) {
                         this.addTipMsg(msg);
                     } else {
                         a = new Element('a', {
@@ -761,6 +819,14 @@ define(['jquery'], function (jQuery) {
             return this.element.get('tag') === 'select' ? 'change' : 'blur';
         },
 
+        /**
+         * Get focus event
+         * @returns {string}
+         */
+        getFocusEvent: function () {
+            return this.element.get('tag') === 'select' ? 'click' : 'focus';
+        },
+
         getChangeEvent: function () {
             return 'change';
         },
@@ -768,6 +834,7 @@ define(['jquery'], function (jQuery) {
         select: function () {
         },
         focus : function () {
+            this.removeTipMsg();
         },
 
         hide: function () {

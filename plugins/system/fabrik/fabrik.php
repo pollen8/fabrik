@@ -29,16 +29,12 @@ class PlgSystemFabrik extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
-	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
-	 * This causes problems with cross-referencing necessary for the observer design pattern.
-	 *
 	 * @param   object &$subject The object to observe
 	 * @param   array  $config   An array that holds the plugin configuration
 	 *
 	 * @since    1.0
 	 */
-	public function plgSystemFabrik(&$subject, $config)
+	public function __construct(&$subject, $config)
 	{
 		// Could be component was uninstalled but not the plugin
 		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/helpers/file.php'))
@@ -82,7 +78,13 @@ class PlgSystemFabrik extends JPlugin
 
 		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
+		if (!file_exists(JPATH_LIBRARIES . '/fabrik/include.php'))
+		{
+			throw new Exception('PLG_FABRIK_SYSTEM_AUTOLOAD_MISSING');
+		}
+
 		require_once JPATH_LIBRARIES . '/fabrik/include.php';
+
 		parent::__construct($subject, $config);
 	}
 
@@ -116,6 +118,27 @@ class PlgSystemFabrik extends JPlugin
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
 		$session->clear('fabrik.js.jlayouts');
+	}
+
+	/**
+	 * Store head script in session js store,
+	 * used by partial document type to exclude scripts already loaded
+	 *
+	 * @return  void
+	 */
+	public static function storeHeadJs()
+	{
+		$session = JFactory::getSession();
+		$doc = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$key = md5($app->input->server->get('REQUEST_URI', '', 'string'));
+
+		if (!empty($key))
+		{
+			$key = 'fabrik.js.head.cache.' . $key;
+			$scripts = json_encode($doc->_scripts);
+			$session->set($key, $scripts);
+		}
 	}
 
 	/**
@@ -184,6 +207,7 @@ class PlgSystemFabrik extends JPlugin
 		$app    = JFactory::getApplication();
 		$script = self::js();
 		self::clearJs();
+		self::storeHeadJs();
 
 		$version           = new JVersion;
 		$lessThanThreeFour = version_compare($version->RELEASE, '3.4', '<');

@@ -48,6 +48,8 @@ class FabrikViewListBase extends FabrikView
 		$csvOpts->inccalcs     = (int) $params->get('csv_include_calculations');
 		$csvOpts->custom_qs    = $params->get('csv_custom_qs', '');
 		$csvOpts->incfilters   = (int) $params->get('incfilters');
+		$csvOpts->popupwidth   = FabrikWorker::getMenuOrRequestVar('popup_width','340',false,'menu');
+		$csvOpts->optswidth    = FabrikWorker::getMenuOrRequestVar('popup_opts_width','200',false,'menu');
 		$opts->csvOpts         = $csvOpts;
 
 		$opts->csvFields = $model->getCsvFields();
@@ -62,7 +64,7 @@ class FabrikViewListBase extends FabrikView
 		if ($opts->csvChoose)
 		{
 			$modalOpts['footer'] = 'export';
-			$layout              = FabrikHelperHTML::getLayout('fabrik-button');
+			$layout              = $model->getLayout('fabrik-button');
 			$layoutData          = (object) array(
 				'name' => 'submit',
 				'class' => 'exportCSVButton btn-primary',
@@ -122,11 +124,18 @@ class FabrikViewListBase extends FabrikView
 			$modalOpts = array(
 				'content' => '',
 				'id' => 'advanced-filter',
+				'title' => JText::_('COM_FABRIK_FIELD_ADVANCED_SEARCH_LABEL'),
 				'modal' => false,
 				'expandable' => true
 			);
 			FabrikHelperHTML::jLayoutJs('advanced-filter', 'fabrik-modal', (object) $modalOpts);
 		}
+
+		FabrikHelperHTML::jLayoutJs('modal-state-label', 'list.fabrik-filters-modal-state-label', $layoutData = (object) array(
+			'label' => '',
+			'displayValue' => '',
+			'key' => ''
+		));
 
 		$this->csvJS($opts, $model);
 
@@ -143,23 +152,20 @@ class FabrikViewListBase extends FabrikView
 		$src  = FabrikHelperHTML::framework();
 		$shim = array();
 
-		$dep              = new stdClass;
-		$dep->deps        = array();
-		$shim['fab/list'] = $dep;
-		$src[]            = FabrikHelperHTML::mediaFile('list.js');
-		$src[]            = FabrikHelperHTML::mediaFile('listfilter.js');
-		$src[]            = FabrikHelperHTML::mediaFile('list-plugin.js');
-		$src              = $model->getPluginJsClasses($src, $shim);
+		$dep                 = new stdClass;
+		$dep->deps           = array();
+		$shim['fab/list']    = $dep;
+		$src['FbList']       = FabrikHelperHTML::mediaFile('list.js');
+		$src['FbListFilter'] = FabrikHelperHTML::mediaFile('listfilter.js');
+		$src['ListPlugin']   = FabrikHelperHTML::mediaFile('list-plugin.js');
+		$src                 = $model->getPluginJsClasses($src, $shim);
+
 		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
 
-		$pluginManager->data = array_filter($pluginManager->data, function($v) {
+		$pluginManager->data = array_filter($pluginManager->data, function ($v)
+		{
 			return $v !== '';
 		});
-
-		$names            = array_merge(
-			array('Window', 'FbList', 'FbListFilter', 'ListPlugin'),
-			$pluginManager->data
-		);
 
 		$model->getCustomJsAction($src);
 
@@ -173,7 +179,7 @@ class FabrikViewListBase extends FabrikView
 
 		if (JFile::exists($aJsPath))
 		{
-			$src[] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
+			$src['CustomJs'] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
 		}
 
 		$origRows   = $this->rows;
@@ -309,18 +315,14 @@ class FabrikViewListBase extends FabrikView
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->pluginBeforeList = $pluginManager->data;
 		$script[]               = $model->filterJs;
-
-		// Was separate but should now load in with the rest of the require js code
-		$model    = $this->getModel();
-		$script[] = $model->getElementJs($src);
+		$script[]               = $this->getModel()->getElementJs($src);
 
 		// End domready wrapper
 		$script[] = '})';
 		$script   = implode("\n", $script);
 
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($src, $script, '-min.js',
-			$names);
+		FabrikHelperHTML::script($src, $script);
 	}
 
 	private function jsText()
@@ -401,7 +403,6 @@ class FabrikViewListBase extends FabrikView
 		$c    = 0;
 		$form = $model->getFormModel();
 		$nav  = $model->getPagination();
-		$this->setCanonicalLink();
 
 		foreach ($data as $groupk => $group)
 		{
@@ -486,8 +487,7 @@ class FabrikViewListBase extends FabrikView
 		$this->showToggleCols = (bool) $params->get('toggle_cols', false);
 		$this->canGroupBy     = $model->canGroupBy();
 		$this->navigation     = $nav;
-		$this->nav            = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
-			? $nav->getListFooter($this->renderContext, $model->getTmpl()) : '';
+		$this->nav            = $nav->getListFooter($this->renderContext, $model->getTmpl());
 		$this->nav            = '<div class="fabrikNav">' . $this->nav . '</div>';
 		$this->fabrik_userid  = $this->user->get('id');
 		$this->canDelete      = $model->deletePossible() ? true : false;
@@ -1007,23 +1007,5 @@ class FabrikViewListBase extends FabrikView
 		}
 
 		return $url;
-	}
-
-	/**
-	 * Set the canonical link - this is the definitive URL that Google et all, will use
-	 * to determine if duplicate URLs are the same content
-	 *
-	 * @throws Exception
-	 */
-	public function setCanonicalLink()
-	{
-		if (!$this->app->isAdmin() && !$this->isMambot)
-		{
-			$url = $this->getCanonicalLink();
-
-			// Set a flag so that the system plugin can clear out any other canonical links.
-			$this->session->set('fabrik.clearCanonical', true);
-			$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
-		}
 	}
 }

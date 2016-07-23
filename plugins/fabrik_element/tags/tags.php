@@ -84,9 +84,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter, true);
 
-			// Include jQuery
-			JHtml::_('jquery.framework');
-
 			// Requires chosen to work
 			JText::script('JGLOBAL_KEEP_TYPING');
 			JText::script('JGLOBAL_LOOKING_FOR');
@@ -94,10 +91,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			JText::script('JGLOBAL_SELECT_AN_OPTION');
 			JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
 
-			$ext = FabrikHelperHTML::isDebug() ? '.min.js' : '.js';
-			JHtml::_('script', 'jui/chosen.jquery' . $ext, false, true, false, false);
+			// Note: the Chosen js should be loaded via require statement
 			JHtml::_('stylesheet', 'jui/chosen.css', false, true);
-			JHtml::_('script', 'jui/ajax-chosen' . $ext, false, true, false, false);
 
 			$bootstrapClass = $params->get('bootstrap_class', 'span12');
 			$attr = 'multiple="multiple" class="inputbox ' . $bootstrapClass. ' small"';
@@ -371,6 +366,11 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
 
+		if (!class_exists('TagsModelTag'))
+		{
+			require_once JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php';
+		}
+
 		foreach ($tagIds as $tagKey => &$tagId)
 		{
 			if (empty($tagId))
@@ -383,7 +383,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			if (strstr($tagId, '#fabrik#'))
 			{
 				$tagId = str_replace('#fabrik#', '', $tagId);
-
 				/**
 				 * We need to use the J! com_tags model to save, so it can handle the nested set stuff
 				 */
@@ -392,7 +391,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				if ($tagsTableName === '' || $tagsTableName === $jTagsTableName)
 				{
 					JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
-					require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
+
 					$tagModel = new TagsModelTag;
 
 					/*
@@ -564,5 +563,45 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$url = JRoute::_($url);
 		}
 		return $url;
+	}
+
+	/**
+	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
+	 *
+	 * @return void|boolean
+	 */
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
+	{
+		$key = FabrikHelperHTML::isDebug() ? 'element/tags/tags' : 'element/tags/tags-min';
+
+		$s = new stdClass;
+
+		// Even though fab/element is now an AMD defined module we should still keep it in here
+		// otherwise (not sure of the reason) jQuery.mask is not defined in field.js
+
+		// Seems OK now - reverting to empty array
+		$s->deps = array();
+
+		$folder = 'media/jui/js/';
+		$s->deps[] = $folder . 'ajax-chosen';
+
+		if (array_key_exists($key, $shim))
+		{
+			$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
+		}
+		else
+		{
+			$shim[$key] = $s;
+		}
+
+		parent::formJavascriptClass($srcs, $script, $shim);
+
+		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
+		return false;
 	}
 }

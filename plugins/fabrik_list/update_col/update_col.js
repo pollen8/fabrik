@@ -39,7 +39,7 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 		}
 	});
 
-	var FbListUpdateCol = new Class({
+	var FbListUpdate_col = new Class({
 		Extends : FbListPlugin,
 		initialize: function (options) {
 			this.parent(options);
@@ -180,6 +180,6 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 		}
 	});
 
-	return FbListUpdateCol;
+	return FbListUpdate_col;
 });
 

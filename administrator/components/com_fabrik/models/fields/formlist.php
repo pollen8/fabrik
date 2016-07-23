@@ -112,6 +112,25 @@ class JFormFieldFormList extends JFormFieldList
 			$this->form->setValue('form', null, $this->value);
 		}
 
-		return parent::getInput();
+		if ((int) $this->form->getValue('id') == 0 || !$this->element['readonlyonedit'])
+		{
+			return parent::getInput();
+		}
+		else
+		{
+			$options = (array) $this->getOptions();
+			$v       = '';
+
+			foreach ($options as $opt)
+			{
+				if ($opt->value == $this->value)
+				{
+					$v = $opt->text;
+				}
+			}
+		}
+
+		return '<input type="hidden" value="' . $this->value . '" name="' . $this->name . '" />' . '<input type="text" value="' . $v
+		. '" name="form_justalabel" class="readonly" readonly="true" />';
 	}
 }

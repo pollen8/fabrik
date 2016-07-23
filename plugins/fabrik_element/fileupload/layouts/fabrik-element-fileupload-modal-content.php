@@ -27,7 +27,7 @@ $d = $displayData;
 	<?php endif; ?>
 	<?php if ($d->canvasSupport) : ?>
 		<div >
-			<input type="button" class="button btn btn-primary" name="close-crop" value="CLOSE">
+			<input type="button" class="button btn btn-primary" name="close-crop" value="<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_CLOSE'); ?>">
 		</div>
 	<?php endif; ?>
 </div>

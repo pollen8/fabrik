@@ -52,6 +52,13 @@ class FabrikFEModelImportcsv extends JModelForm
 	public $matchedHeadings = array();
 
 	/**
+	 * Used to store the heading key for any heading deselected on admin import into a new list
+	 *
+	 * @var array
+	 */
+	protected $unmatchedKeys = array();
+
+	/**
 	 * List's join objects
 	 *
 	 * @var array
@@ -165,41 +172,76 @@ class FabrikFEModelImportcsv extends JModelForm
 	 */
 	public function checkUpload()
 	{
+		/* Track errors message- so if from frontend menu redirect 
+		    to current url rather than throwing exception
+		 */
+		$errmsg = ''; 
+		
 		if (!(bool) ini_get('file_uploads'))
 		{
-			throw new Exception(FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
-
-			return false;
+            $errmsg = FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED');
+            $userFile = false;
 		}
-
-		$app      = JFactory::getApplication();
-		$input    = $app->input;
-		$userFile = $input->files->get('jform');
+		else
+		{
+		    $app      = JFactory::getApplication();
+		    $input    = $app->input;
+		    $userFile = $input->files->get('jform');
+		}    
 
 		if (!$userFile)
 		{
-			throw new Exception(FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
+			if($errmsg == '')
+			{
+				$errmsg = FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED');
+			}
+		} else {
+    		jimport('joomla.filesystem.file');
+            $allowedlist = FabrikWorker::getMenuOrRequestVar('csv_import_extensions','',false,'menu');
+            $allowed = empty($allowedlist) ? array('txt','csv','tsv') : explode(',',$allowedlist);
+            $ext = JFile::getExt($userFile['userfile']['name']);
 
-			return false;
+			if (!in_array($ext, $allowed))
+		    {
+		        $errmsg = 'Import Failed! Invalid file format ('.$ext.'). Valid formats are ('.implode(', ',$allowed).')';
+			}
+			else
+			{
+        		$tmp_name  = $this->getCSVFileName();
+		        $tmp_dir   = $this->getBaseDir();
+		        $to        = JPath::clean($tmp_dir . '/' . $tmp_name);
+		        $resultDir = JFile::upload($userFile['userfile']['tmp_name'], $to);
+
+		        if ($resultDir == false && !JFile::exists($to))
+		        {
+		            $errmsg = FText::_('Upload Error');	
+		        }
+		        else
+		        {
+		            $listid = $input->getInt('listid');
+		            // Allows user-created post-processing script to be (optionally) run 
+                    if (file_exists(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_import.php'))
+                    {
+                        require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_import.php');
+                    }				
+		        }  
+    		}
 		}
-
-		jimport('joomla.filesystem.file');
-		$allowed = array('txt', 'csv', 'tsv');
-
-		if (!in_array(JFile::getExt($userFile['userfile']['name']), $allowed))
+        
+        if (!empty($errmsg))
 		{
-			throw new Exception('File must be a csv file', 500);
-		}
-
-		$tmp_name  = $this->getCSVFileName();
-		$tmp_dir   = $this->getBaseDir();
-		$to        = JPath::clean($tmp_dir . '/' . $tmp_name);
-		$resultDir = JFile::upload($userFile['userfile']['tmp_name'], $to);
-
-		if ($resultDir == false && !JFile::exists($to))
-		{
-			throw new Exception(FText::_('Upload Error'));
-		}
+            // If from frontend menu redirect back to list with displayed error message, else throw exception
+            if(FabrikWorker::getMenuOrRequestVar('csv_import_extensions','',false,'menu') == '')
+            {
+                throw new Exception(FText::_($errmsg));
+            }
+            else
+            {
+                $cururl = JUri::getInstance(); 
+                $app = JFactory::getApplication();
+                $app->redirect($cururl, $errmsg, 'error');
+            }    
+		}    		
 
 		return true;
 	}
@@ -255,12 +297,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	 */
 	public function readCSV($file)
 	{
-		$baseDir          = $this->getBaseDir();
-		$this->headings   = array();
-		$this->data       = array();
-		$data             = $this->getFormData();
-		$field_delimiter  = $this->getFieldDelimiter();
-		$text_delimiter   = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
+		$baseDir         = $this->getBaseDir();
+		$this->headings  = array();
+		$this->data      = array();
+		$data            = $this->getFormData();
+		$field_delimiter = $this->getFieldDelimiter();
+		$text_delimiter  = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
 
 		if (!JFile::exists($baseDir . '/' . $file))
 		{
@@ -276,58 +318,32 @@ class FabrikFEModelImportcsv extends JModelForm
 		// Remove leading and trailing \s and \t. TRUE by default.
 		$csv->TrimFields(true);
 
-		$model       = $this->getlistModel();
-		$tableParams = $model->getParams();
-		$mode        = $tableParams->get('csvfullname');
-
-		while ($arr_data = $csv->NextLine())
+		while ($row = $csv->NextLine())
 		{
 			if (empty($this->headings))
 			{
-				foreach ($arr_data as &$heading)
-				{
-					// Remove UFT8 Byte-Order-Mark if present
-
-					/*
-					 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
-					 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
-					 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
-					 */
-					$heading = str_replace("\xEF\xBB\xBF",'',$heading);
-
-					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
-					if (0 === strncmp($heading, $bom, 3))
-					{
-						$heading = JString::substr($heading, 3);
-					}
-
-					if ($mode != 2)
-					{
-						// $$$ rob replacing with this as per thread - http://fabrikar.com/forums/showthread.php?p=83304
-						$heading = str_replace(' ', '_', $heading);
-					}
-				}
+				$this->sanitizeHeadings($row);
 
 				if (!$this->getSelectKey())
 				{
 					// If no table loaded and the user asked to automatically add a key then put id at the beginning of the new headings
 					$idHeading = 'id';
 
-					if (in_array($idHeading, $arr_data))
+					if (in_array($idHeading, $row))
 					{
 						$idHeading .= rand(0, 9);
 					}
 
-					array_unshift($arr_data, $idHeading);
+					array_unshift($row, $idHeading);
 				}
 
-				$this->headings = $arr_data;
+				$this->headings = $row;
 			}
 			else
 			{
 				if (function_exists('iconv'))
 				{
-					foreach ($arr_data as &$d)
+					foreach ($row as &$d)
 					{
 						/**
 						 * strip any none utf-8 characters from the import data
@@ -339,27 +355,76 @@ class FabrikFEModelImportcsv extends JModelForm
 
 				if (!$this->getSelectKey())
 				{
-					array_unshift($arr_data, '');
+					array_unshift($row, '');
+				}
+				
+				// In admin import the user has deselected some columns for import. Remove them from the row
+				if (!empty($this->unmatchedKeys))
+				{
+					$row = array_diff_key($row , $this->unmatchedKeys);
+					$row = array_values($row);
 				}
 
-				if (count($arr_data) == 1 && $arr_data[0] == '')
+				if (count($row) == 1 && $row[0] == '')
 				{
 					// CSV import from excel saved as unicode has blank record @ end
 				}
 				else
 				{
-					$this->data[] = $arr_data;
+					$this->data[] = $row;
 				}
 			}
 		}
 
 		fclose($csv->mHandle);
-		/*
-		 * $$$ hugh - remove the temp file, but don't clear session
-		 * $$$ rob 07/11/2011 - NO!!! as import in admin reads the file twice.
-		 * once for getting the headings and a second time for importing/
-		 * $this->removeCSVFile(false);
-		 */
+	}
+
+	/**
+	 * sanitize Headings
+	 *
+	 * @param  array &$row
+	 *
+	 * @return void
+	 */
+	private function sanitizeHeadings(&$row)
+	{
+		$model       = $this->getlistModel();
+		$tableParams = $model->getParams();
+		$mode        = $tableParams->get('csvfullname');
+
+		foreach ($row as $key => &$heading)
+		{
+			// Remove UFT8 Byte-Order-Mark if present
+
+			/*
+			 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
+			 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
+			 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
+			 */
+			$heading = str_replace("\xEF\xBB\xBF", '', $heading);
+			$bom     = pack("CCC", 0xef, 0xbb, 0xbf);
+
+			if (0 === strncmp($heading, $bom, 3))
+			{
+				$heading = JString::substr($heading, 3);
+			}
+
+			if ($mode != 2)
+			{
+				// $$$ rob replacing with this as per thread - http://fabrikar.com/forums/showthread.php?p=83304
+				$heading = str_replace(' ', '_', $heading);
+			}
+
+			if (!empty($this->matchedHeadings) && !in_array($heading, $this->matchedHeadings))
+			{
+				$this->unmatchedKeys[$key] = 1;
+				unset($row[$key]);
+
+			}
+
+		}
+
+		$row = array_values($row);
 	}
 
 	/**
@@ -479,15 +544,27 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$model = $this->getlistModel();
 		$model->getFormGroupElementData();
+
+		/** @var FabrikFEModelPluginmanager $pluginManager */
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
-		$formModel     = $model->getFormModel();
-		$tableParams   = $model->getParams();
-		$mode          = $tableParams->get('csvfullname');
-		$intKey        = 0;
-		$groups        = $formModel->getGroupsHiarachy();
-		$elementMap    = array();
+		$formModel   = $model->getFormModel();
+		$tableParams = $model->getParams();
+		$mode        = $tableParams->get('csvfullname');
+		$intKey      = 0;
+		$groups      = $formModel->getGroupsHiarachy();
+		$elementMap  = array();
 
+		// $$ Phil - Get 'Show in List' elements from menu (if 'use show in list') or set as empty array if not
+		$use_sil = FabrikWorker::getMenuOrRequestVar('csv_import_sil_only', '0', false, 'menu');
+		$list_elements = $use_sil ? FabrikWorker::getMenuOrRequestVar('list_elements', '', false, 'menu') : '';
+		$showinlist = !empty($list_elements) ? json_decode($list_elements, 1) : array();
+
+		if(!empty($showinlist))
+		{
+			$showinlist = $showinlist['show_in_list'];
+		}
+        
 		// $$ hugh - adding $rawMap so we can tell prepareCSVData() if data is already raw
 		$rawMap = array();
 
@@ -503,73 +580,81 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					$element = $elementModel->getElement();
 
-					switch ($mode)
-					{
-						case 0:
-							$name = $element->name;
-							break;
-						case 1:
-							$name = $elementModel->getFullName(false, false);
-							break;
-						case 2:
-							$name = $element->label;
-							break;
-					}
+                    // $$ Phil - Only include elements set in menu show in list, or if not set at all
+                    $elid = (int) $element->id;
 
-					$paramsKey = $elementModel->getFullName(false, false);
+					if(empty($showinlist) || in_array($elid,$showinlist)) {
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
-					{
-						if (!array_key_exists($paramsKey, $this->matchedHeadings))
-						{
-							// Heading found in table
-							$this->matchedHeadings[$paramsKey]         = $element->name;
-							$this->aUsedElements[strtolower($heading)] = $elementModel;
-							$elementMap[$intKey]                       = clone ($elementModel);
-							$rawMap[$intKey]                           = false;
-							$found                                     = true;
+					    switch ($mode)
+					    {
+						    case 0:
+							    $name = $element->name;
+							    break;
+						    case 1:
+    							$name = $elementModel->getFullName(false, false);
+	    						break;
+		    				case 2:
+			    				$name = $element->label;
+				    			break;
+					    }
 
-							// Break out of the group foreach
-							break;
-						}
-					}
+					    $paramsKey = $elementModel->getFullName(false, false);
 
-					$paramsKey .= '_raw';
+					    if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
+					    {
+					    	if (!array_key_exists($paramsKey, $this->matchedHeadings))
+						    {
+							    // Heading found in table
+							    $this->matchedHeadings[$paramsKey]         = $element->name;
+							    $this->aUsedElements[strtolower($heading)] = $elementModel;
+							    $elementMap[$intKey]                       = clone ($elementModel);
+							    $rawMap[$intKey]                           = false;
+							    $found                                     = true;
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
-					{
-						if (!array_key_exists($paramsKey, $this->matchedHeadings))
-						{
-							// Heading found in table
-							$this->matchedHeadings[$paramsKey]                  = $element->name . '_raw';
-							$this->aUsedElements[strtolower($heading) . '_raw'] = $elementModel;
-							$found                                              = true;
-							$elementMap[$intKey]                                = clone ($elementModel);
-							$rawMap[$intKey]                                    = true;
+							    // Break out of the group foreach
+							    break;
+						    }
+					    }
 
-							// Break out of the group foreach
-							break;
-						}
-					}
-					// Joined element params
-					if ($elementModel->isJoin())
-					{
-						$paramsKey = $elementModel->getJoinParamsKey();
-						$idKey     = $elementModel->getJoinIdKey();
+					    $paramsKey .= '_raw';
 
-						if ($paramsKey === $heading || $idKey === $heading)
-						{
-							if (!array_key_exists($paramsKey, $this->matchedHeadings))
-							{
-								$found = true;
+					    if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
+					    {
+						    if (!array_key_exists($paramsKey, $this->matchedHeadings))
+						    {
+							    // Heading found in table
+							    $this->matchedHeadings[$paramsKey]                  = $element->name . '_raw';
+							    $this->aUsedElements[strtolower($heading) . '_raw'] = $elementModel;
+							    $found                                              = true;
+							    $elementMap[$intKey]                                = clone ($elementModel);
+							    $rawMap[$intKey]                                    = true;
 
-								// Break out of the group foreach
-								break;
-							}
-						}
-					}
-				}
+							    // Break out of the group foreach
+							    break;
+						    }
+					    }
+
+					    // Joined element params
+					    if ($elementModel->isJoin())
+					    {
+						    $paramsKey = $elementModel->getJoinParamsKey();
+						    $idKey     = $elementModel->getJoinIdKey();
+
+    						if ($paramsKey === $heading || $idKey === $heading)
+	    					{
+		    					if (!array_key_exists($paramsKey, $this->matchedHeadings))
+			    				{
+				    				$found = true;
+
+					    			// Break out of the group foreach
+						    		break;
+							    }
+						    }
+					    }
+				    }
+				}    
 			}
+
 			// Moved after repeat group otherwise elements in second group are never found
 			if (!$found && !in_array($heading, $this->newHeadings) && trim($heading) !== '')
 			{
@@ -634,11 +719,24 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$app                 = JFactory::getApplication();
 		$jForm               = $app->input->get('jform', array(), 'array');
-		$dropData            = (int) FArrayHelper::getValue($jForm, 'drop_data', 0);
-		$overWrite           = (int) FArrayHelper::getValue($jForm, 'overwrite', 0);
+		
+		// $$ Phil - If from menu, get dropData and overwrite from menu option 
+        $dropData = FabrikWorker::getMenuOrRequestVar('csv_import_dropdata', '', false, 'menu');
+
+		if ($dropData == '')
+		{
+			$dropData = (int) FArrayHelper::getValue($jForm, 'drop_data', 0);
+		}
+
+        $overWrite = FabrikWorker::getMenuOrRequestVar('csv_import_overwrite', '', false, 'menu');
+
+		if($overWrite == '')
+		{
+			$overWrite = (int) FArrayHelper::getValue($jForm, 'overwrite', 0);
+		}
+		
 		$model               = $this->getlistModel();
 		$model->importingCSV = true;
-		$item                = $model->getTable();
 		$formModel           = $model->getFormModel();
 
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
@@ -657,13 +755,12 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$key = FabrikString::shortColName($item->db_primary_key);
 
-		// Get a list of existing primary key vals
+		// Get a list of existing primary key values
 		$db    = $model->getDb();
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key)->from($item->db_table_name);
 		$db->setQuery($query);
 		$aExistingKeys = $db->loadColumn();
-
 		$this->addedCount = 0;
 		$updatedCount     = 0;
 
@@ -697,11 +794,11 @@ class FabrikFEModelImportcsv extends JModelForm
 				// Test _raw key and use that
 				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw')
 				{
-					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
+					$pkTestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
 				}
 				else
 				{
-					$pktestHeading = $heading;
+					$pkTestHeading = $heading;
 				}
 				/*
 				 * $$$rob isset($pkVal) because: It could be that you have two elements (short names) with the
@@ -709,7 +806,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				 * presuming that the master table's pkval is the first one you come to
 				 */
 
-				if ($pktestHeading == $key && !isset($pkVal))
+				if ($pkTestHeading == $key && !isset($pkVal))
 				{
 					$pkVal = $data[$i];
 				}
@@ -718,7 +815,12 @@ class FabrikFEModelImportcsv extends JModelForm
 				$i++;
 			}
 
-			$this->addDefaults($aRow);
+            /* $$ Phil moved down. Why would you addDefaults unless you were adding a new row???
+             * If not new row, and not drop_data and/or if overwrite, this would overwrite 
+             * existing fields that are not included in the import data with their default value!
+             */
+            // $this->addDefaults($aRow);
+            
 			$model->getFormGroupElementData();
 			$this->setRawDataAsPriority($aRow);
 
@@ -730,6 +832,9 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			else
 			{
+			    // $$ Phil - Moved from above
+			    $this->addDefaults($aRow);
+			    
 				if ($item->auto_inc)
 				{
 					// If not overwriting ensure the any existing PK's are removed and the form rowId set to ''
@@ -1022,7 +1127,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$origData     = $aRow;
 		$app          = JFactory::getApplication();
-		$overWrite    = $app->input->getInt('overwrite', 0, 'post');
+		
+		// $$ Phil changed to let overwrite from menu take precidence
+        $overWrite = FabrikWorker::getMenuOrRequestVar('csv_import_overwrite','',false,'menu');
+		if($overWrite=='') $overWrite = $app->input->getInt('overwrite', 0, 'post');
+
 		$joins        = $this->getJoins();
 		$groups       = $formModel->getGroups();
 		$updatedCount = 0;
@@ -1172,14 +1281,19 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * Determine if the choose-element-types view should contain a column where
-	 * the user selects the field to be the pk
+	 * the user selects the field to be the pk.
+	 * Should return false if the user has asked for the importer to automatically create a
+	 * primary key
 	 *
 	 * @return  bool    true if column shown
 	 */
 	public function getSelectKey()
 	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
+		$app    = JFactory::getApplication();
+		$input  = $app->input;
+		$post   = $input->get('jform', array(), 'array');
+		$addKey = (int) FArrayHelper::getValue($post, 'addkey', 0);
+		$task   = $input->get('task', '', 'string');
 
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaning overwrite date dunna workie
@@ -1188,22 +1302,26 @@ class FabrikFEModelImportcsv extends JModelForm
 			return true;
 		}
 
-		// $$$ rob 13/03/2012 - reimporting into existing list - should return true
-		if ($input->getInt('listid') !== 0)
-		{
-			return true;
-		}
-
-		$model = $this->getlistModel();
-
-		if (trim($model->getPrimaryKey()) !== '')
+		if ($addKey === 1)
 		{
 			return false;
 		}
 
-		$post = $input->get('jform', array(), 'array');
+		// Admin import csv to new list: user not asking Fabrik to automatically create a pk
+		if ($task === 'makeTableFromCSV' && $addKey === 0)
+		{
+			return true;
+		}
 
-		if (FArrayHelper::getValue($post, 'addkey', 0) == 1)
+		// Reimporting into existing list - should return true
+    	// $$ Phil changed because if from frontend menu $task is 'input.doimport'
+		// if ($input->getInt('listid') !== 0 && $task === 'doimport')
+        if ($input->getInt('listid') !== 0 && strpos($task,'doimport') !== false)
+    	{
+			return true;
+		}
+
+		if (trim($this->getlistModel()->getPrimaryKey()) !== '')
 		{
 			return false;
 		}
@@ -1243,10 +1361,10 @@ class FabrikFEModelImportcsv extends JModelForm
  * $csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
  * $csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
  *
- * while ($arr_data = $csv->NextLine()) {
+ * while ($row = $csv->NextLine()) {
  *
  *         echo "<br><br>Processing line ". $csv->RowCount() . "<br>";
- *         echo implode(' , ', $arr_data);
+ *         echo implode(' , ', $row);
  *
  * }
  *
@@ -1377,7 +1495,7 @@ class Csv_Bv
 	 * @param   string $escape    Only one character is allowed (optional)
 	 */
 
-	public function Csv_Bv($file, $seperator = ',', $enclose = '"', $escape = '')
+	public function __construct($file, $seperator = ',', $enclose = '"', $escape = '')
 	{
 		$this->mFldSeperator    = $seperator;
 		$this->mFldEnclosure    = $enclose;
@@ -1414,8 +1532,9 @@ class Csv_Bv
 		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/";
 		$string  = preg_replace_callback(
 			$pattern,
-			function($m) {
-				return '&#' . ((ord($m[1])-224)*4096 + (ord($m[2])-128)*64 + (ord($m[3])-128));
+			function ($m)
+			{
+				return '&#' . ((ord($m[1]) - 224) * 4096 + (ord($m[2]) - 128) * 64 + (ord($m[3]) - 128));
 			},
 			$string
 		);
@@ -1423,8 +1542,9 @@ class Csv_Bv
 		// Decode two byte unicode characters
 		$string = preg_replace_callback(
 			"/([\300-\337])([\200-\277])/",
-			function ($m) {
-				return '&#' . ((ord($m[1])-192)*64+(ord($m[2])-128));
+			function ($m)
+			{
+				return '&#' . ((ord($m[1]) - 192) * 64 + (ord($m[2]) - 128));
 			},
 			$string
 		);
@@ -1456,7 +1576,11 @@ class Csv_Bv
 		// Skip empty rows if asked to
 		if ($this->mSkipEmptyRows)
 		{
-			if ($arr_row[0] === '' && count($arr_row) === 1)
+            /* $$ Phil changed - $arr_row (fgetcsv) could be false (if any errors or EOF) 
+             * and so needs to be include in this if condition so as to return false
+             */
+			// if ($arr_row[0] === '' && count($arr_row) === 1)
+			if (!$arr_row || ($arr_row[0] === '' && count($arr_row) === 1))
 			{
 				$this->mRowCount--;
 				$this->mSkippedRowCount++;

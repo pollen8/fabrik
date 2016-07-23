@@ -33,7 +33,7 @@ class FabrikControllerList extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   object          $model      List model
+	 * @param   object|boolean  $model      List model
 	 * @param   array|boolean   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  null

@@ -10,6 +10,8 @@
  */
 
 $d = $displayData;
+
+if ($d->showNav) :
 ?>
 <div class="list-footer">
 	<div class="limit">
@@ -32,4 +34,16 @@ $d = $displayData;
 	<?php echo $d->links; ?>
 	<input type="hidden" name="limitstart<?php echo $d->id; ?>" id="limitstart<?php echo $d->id; ?>" value="<?php echo $d->value; ?>" />
 </div>
-
+<?php
+else :
+	if ($d->showTotal) : ?>
+<div class="list-footer">
+	<span class="add-on">
+			<small>
+				<?php echo $d->pagesCounter; ?>
+			</small>
+	</span>
+</div>
+<?php
+	endif;
+endif;

@@ -100,6 +100,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 h.delay(100, this);
                 this.getCalendarImg().addEvent('click', function (e) {
                     e.stop();
+                    Fabrik.fireEvent('fabrik.element.date.calendar.show', this);
                     if (!this.cal.params.position) {
                         this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
                     } else {
@@ -270,6 +271,8 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             var params = this.options.calendarSetup;
             var tmp = ['displayArea', 'button'];
 
+            Fabrik.fireEvent('fabrik.element.date.calendar.create', this);
+
             for (i = 0; i < tmp.length; i++) {
                 if (typeof params[tmp[i]] === 'string') {
                     params[tmp[i]] = document.getElementById(params[tmp[i]]);
@@ -329,6 +332,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.cal.create();
             this.cal.refresh();
             this.cal.hide();
+            Fabrik.fireEvent('fabrik.element.date.calendar.created', this);
         },
 
         disableTyping: function () {
@@ -454,6 +458,11 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 } else {
                     d.setSeconds(0);
                 }
+            }
+            else {
+                d.setHours(0);
+                d.setMinutes(0);
+                d.setSeconds(0);
             }
             return d;
         },

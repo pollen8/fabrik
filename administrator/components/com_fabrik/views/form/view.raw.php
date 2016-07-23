@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminViewForm extends JViewLegacy
 {
 	/**
@@ -51,50 +50,28 @@ class FabrikAdminViewForm extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$w = new FabrikWorker;
-		$config = JFactory::getConfig();
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->render();
 
-		if (!$model->canPublish())
+		if (!$this->canAccess())
 		{
-			if (!$app->isAdmin())
-			{
-				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
-
-				return false;
-			}
-		}
-
-		$this->access = $model->checkAccessFromListSettings();
-
-		if ($this->access == 0)
-		{
-			return JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
+			return false;
 		}
 
 		$model->getJoinGroupIds();
 		$groups = $model->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
-		$JSONarray = array();
+		$JsonArray = array();
 		$JSONHtml = array();
 
 		for ($i = 0; $i < count($gkeys); $i++)
 		{
 			$groupModel = $groups[$gkeys[$i]];
-			$groupTable = $groupModel->getGroup();
-			$group = new stdClass;
-			$groupParams = $groupModel->getParams();
-			$aElements = array();
 
 			// Check if group is actually a table join
 			$repeatGroup = 1;
-			$foreignKey = null;
 
 			if ($groupModel->canRepeat())
 			{
@@ -102,12 +79,9 @@ class FabrikAdminViewForm extends JViewLegacy
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey = '';
 
 					if (is_object($joinTable))
 					{
-						$foreignKey = $joinTable->table_join_key;
-
 						// $$$ rob test!!!
 						if (!$groupModel->canView())
 						{
@@ -124,12 +98,9 @@ class FabrikAdminViewForm extends JViewLegacy
 			}
 
 			$groupModel->repeatTotal = $repeatGroup;
-			$aSubGroups = array();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
-				$aSubGroupElements = array();
-				$elCount = 0;
 				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel)
@@ -150,11 +121,11 @@ class FabrikAdminViewForm extends JViewLegacy
 
 					if (!$model->isEditable())
 					{
-						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
+						$JsonArray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
 					}
 					else
 					{
-						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->data, $c);
+						$JsonArray[$elementHTMLId] = $elementModel->getValue($model->data, $c);
 					}
 					// Test for paginate plugin
 					if (!$model->isEditable())
@@ -168,7 +139,7 @@ class FabrikAdminViewForm extends JViewLegacy
 			}
 		}
 
-		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml,
+		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JsonArray, 'html' => $JSONHtml,
 			'post' => $_REQUEST);
 		echo json_encode($data);
 	}
@@ -190,7 +161,6 @@ class FabrikAdminViewForm extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function addToolbar()
 	{
 		$app = JFactory::getApplication();

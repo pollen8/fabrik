@@ -109,7 +109,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 	}
 
 
-	var FbListRadiusSearch = new Class({
+	var FbListRadius_search = new Class({
 		Extends: FbListPlugin,
 
 		options: {
@@ -119,7 +119,8 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 			prefilter           : true,
 			prefilterDistance   : 1000,
 			prefilterDone       : false,
-			offset_y            : 0
+			offset_y            : 0,
+			key                 : false
 		},
 
 		geocoder: null,
@@ -164,7 +165,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 
 				}.bind(this));
 
-				Fabrik.loadGoogleMap(true, 'geoCode');
+				Fabrik.loadGoogleMap(this.options.key, 'geoCode');
 
 				if (typeOf(this.options.value) === 'null') {
 					this.options.value = 0;
@@ -241,7 +242,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 		 */
 		makeWin: function (mapid) {
 			var c = document.id(mapid).getParent('.radius_search');
-			var b = new Element('button.btn.button').set('html', '<i class="icon-location"></i> ' + Joomla.JText._('COM_FABRIK_SEARCH'));
+			var b = new Element('button.btn.button').set('html', '<i class="icon-location"></i> ' + Joomla.JText._('PLG_LIST_RADIUS_SEARCH_BUTTON'));
 			c.getParent().adopt(b);
 			var offset_y = this.options.offset_y > 0 ? this.options.offset_y : null;
 			var winOpts = {
@@ -295,7 +296,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 			var win = this.button.retrieve('win');
 			var c = win.contentEl.clone();
 			c.hide();
-			this.button.getParent().adopt(c);
+			jQuery(this.button).parent().append(c);
 			return true;
 		},
 
@@ -378,5 +379,5 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 
 	});
 
-	return FbListRadiusSearch;
+	return FbListRadius_search;
 });

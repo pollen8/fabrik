@@ -14,7 +14,6 @@ use Fabble\Helpers\Factory;
 use Joomla\String\Normalise;
 use Joomla\String\Inflector;
 
-
 /**'
  * Autoloader Class
  *
@@ -25,8 +24,10 @@ class FabrikAutoloader
 {
 	public function __construct()
 	{
+		spl_autoload_register(array($this, 'controller'));
+
 		// @TODO - at some point allow auto-loading of these as per Fabble
-		/*spl_autoload_register(array($this, 'controller'));
+		/*
 		spl_autoload_register(array($this, 'model'));
 		spl_autoload_register(array($this, 'view'));
 		spl_autoload_register(array($this, 'library'));
@@ -173,54 +174,16 @@ class FabrikAutoloader
 			return;
 		}
 
-		$scope = Factory::getApplication()->scope;
+		$class = str_replace('\\', '/', $class);
+		$file  = explode('/', $class);
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/libraries/fabrik/fabrik/Controllers/' . \Joomla\String\StringHelper::ucfirst($file) . '.php';
 
-		if ($this->appName($class) === $scope)
+		if (file_exists($path))
 		{
-			$plural = Inflector::getInstance();
-			$parts  = Normalise::fromCamelCase($class, true);
-			unset($parts[0]);
-
-			foreach ($parts as &$part)
-			{
-				$part = strtolower($part);
-
-				if ($plural->isPlural($part))
-				{
-					$part = strtolower($plural->toSingular($part));
-				}
-
-				$part = JString::ucfirst($part);
-			}
-
-			// Check custom controller
-			$name = array_pop($parts);
-			$path = JPATH_COMPONENT . '/controller/' . $name . '.php';
-
-			if (file_exists($path))
-			{
-				require_once $path;
-
-				return;
-			}
-
-			foreach ($parts as &$part)
-			{
-				$part = JString::ucfirst($part);
-			}
-
-			// Load Fabble default controllers
-			$path = JPATH_SITE . '/libraries/fabble/';
-			$path .= implode('/', $parts) . '/' . JString::ucfirst($name) . '.php';
-
-			if (file_exists($path))
-			{
-				require_once $path;
-				class_alias('\\Fabble\\Controller\\' . JString::ucfirst($name), $class);
-
-				return;
-			}
+			require_once $path;
 		}
+
 	}
 
 	/**

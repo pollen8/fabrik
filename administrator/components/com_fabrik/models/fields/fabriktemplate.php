@@ -42,15 +42,31 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 	{
 		$view = $this->element['view'] ? $this->element['view'] : 'list';
 
+		$dir = JPATH_ROOT . '/components/com_fabrik/views/' . $view . '/tmpl/';
+		$dir = str_replace('\\', '/', $dir);
+		$dir = str_replace('//', '/', $dir);
+
 		if (FabrikWorker::j3())
 		{
-			$this->element['directory'] = $this->directory = '/components/com_fabrik/views/' . $view . '/tmpl/';
+			$this->element['directory'] = $this->directory = $dir;
 		}
 		else
 		{
 			$this->element['directory'] = '/components/com_fabrik/views/' . $view . '/tmpl25/';
 		}
 
-		return parent::getOptions();
+		$opts = parent::getOptions();
+
+		foreach ($opts as &$opt)
+		{
+			$opt->value = str_replace('\\', '/', $opt->value);
+			$opt->value = str_replace('//', '/', $opt->value);
+			$opt->value = str_replace($dir, '', $opt->value);
+			$opt->text = str_replace('\\', '/', $opt->text);
+			$opt->text = str_replace('//', '/', $opt->text);
+			$opt->text = str_replace($dir, '', $opt->text);
+		}
+
+		return $opts;
 	}
 }

@@ -70,7 +70,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		if ($data == '')
 		{
-			return '';
+			return parent::renderListData($data, $thisRow, $opts);
 		}
 
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
@@ -348,7 +348,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts  = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file  = FabrikWorker::j3() ? 'clock.png' : 'time.png';
 
-		$btnLayout = FabrikHelperHTML::getLayout('fabrik-button');
+		$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 		$layoutData = (object) array(
 			'class' => 'timeButton',
 			'label' => FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts)
@@ -635,7 +635,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		// $$$ hugh - need to convert to database format so we GMT-ified date
-		return $this->renderListData($value, new stdClass);
+		$dummy = new stdClass;
+		return $this->renderListData($value, $dummy);
 		/* $$$ rob - no need to covert to db format now as its posted as db format already.
 		 *return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass);
 		 */
@@ -754,20 +755,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
-		$opts      = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
-		$img       = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
-		$html      = array();
+		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
+		$img  = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
+		$html = array();
 
 		if ($j3)
 		{
-			$btnLayout = FabrikHelperHTML::getLayout('fabrik-button');
+			$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 			$layoutData = (object) array(
 				'class' => 'calendarbutton',
-				'id' => $id . '_cal_img',
+				'id'    => $id . '_cal_img',
 				'label' => $img
 			);
-			$img = $btnLayout->render($layoutData);
-			$html[] = '<div class="input-append">';
+			$img        = $btnLayout->render($layoutData);
+			$html[]     = '<div class="input-append">';
 		}
 
 		$html[] = '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
@@ -1050,6 +1051,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$timeZone = new DateTimeZone($this->config->get('offset'));
 		$date     = JFactory::getDate($value, $timeZone);
+
+		// Querystring value passed into new record
+		if ($formModel->isNewRecord() && $value !== '')
+		{
+			// OK for : Default to current  = no Local time = yes
+			if (!$defaultToday)
+			{
+				$date = new DateTime($date, $timeZone);
+				return $date->format('Y-m-d H:i:s');
+			}
+
+			// Ok for : Default to current = yes, Local time = yes OR no
+			$date = new DateTime($date, $timeZone);
+			$date->setTimeZone(new DateTimeZone('UTC'));
+			return $date->format('Y-m-d H:i:s');
+		}
 
 		// If value = '' don't offset it (not sure what the logic is but testing seems to indicate this to be true)
 		$local = $formModel->hasErrors() || $value == '' || $params->get('date_store_as_local', 0) == 1 ? false : true;
@@ -1375,7 +1392,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$v         = $this->filterName($counter, $normal);
 
 		// Correct default got
-		$default = $this->getDefaultFilterVal($normal, $counter);
+		$default                   = $this->getDefaultFilterVal($normal, $counter);
 		$this->filterDisplayValues = (array) $default;
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
@@ -1459,7 +1476,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Override for main model getFilterRO to handle search all corner case
 	 *
-	 * @param   mixed  $data  String or array of filter value(s)
+	 * @param   mixed $data String or array of filter value(s)
 	 *
 	 * @since   3.0.7
 	 *
@@ -1646,8 +1663,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$from->value     = $default;
 		$from->name      = $v;
 
-		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar',
-				'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt'   => 'calendar',
+		                                                                   'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
 		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
@@ -1812,7 +1829,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				{
 					$data[$j][$key] = $orig_data;
 				}
-			} catch (Exception $e)
+			}
+			catch (Exception $e)
 			{
 				// Suppress date time format error
 			}
@@ -2077,10 +2095,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * @param   string $value         Search string - already quoted if specified in filter array options
 	 * @param   string $originalValue Original filter value without quotes or %'s applied
 	 * @param   string $type          Filter type advanced/normal/prefilter/search/querystring/searchall
-	 *
+	 * @param   string  $evalFilter     evaled
+	 *                                  
 	 * @return  string    sql query part e,g, "key = value"
 	 */
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
 		$this->encryptFieldName($key);
 
@@ -2367,7 +2386,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * @param   array $properties Default props
 	 *
-	 * @return  FabrikTableElement	element (id = 0)
+	 * @return  FabrikTableElement    element (id = 0)
 	 */
 	public function getDefaultProperties($properties = array())
 	{
@@ -2558,7 +2577,8 @@ class FabDate extends JDate
 		try
 		{
 			$dt = new DateTime($date);
-		} catch (Exception $e)
+		}
+		catch (Exception $e)
 		{
 			JDEBUG ? $app->enqueueMessage('date format unknown for ' . $orig . ' replacing with today\'s date', 'notice') : '';
 			$date = 'now';

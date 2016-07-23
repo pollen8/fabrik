@@ -42,11 +42,11 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 	 * Do the plugin action
 	 *
 	 * @param   array  &$data  Record data
-	 *
+	 * @param   object  &$listModel  List model
 	 * @return number of records updated
 	 */
 
-	public function process(&$data)
+	public function process(&$data, &$listModel)
 	{
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);

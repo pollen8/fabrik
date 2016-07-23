@@ -46,6 +46,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
     window.FbGoogleMap = new Class({
         Extends: FbElement,
 
+        watchGeoCodeDone: false,
+
         options: {
             'lat'                 : 0,
             'lat_dms'             : 0,
@@ -77,12 +79,12 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             'directionsFrom'      : false,
             'directionsFromLat'   : 0,
             'directionsFromLon'   : 0,
-            reverse_geocode_fields: {}
+            'reverse_geocode_fields': {},
+            'key'                 : false
         },
 
         loadScript: function () {
-            var s = this.options.sensor === false ? 'false' : 'true';
-            Fabrik.loadGoogleMap(s, 'googlemapload');
+            Fabrik.loadGoogleMap(this.options.key, 'googlemapload');
         },
 
         initialize: function (element, options) {
@@ -160,7 +162,9 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             if (this.mapMade === true) {
                 return;
             }
+
             this.mapMade = true;
+            var self = this;
 
             if (typeof(this.map) !== 'undefined' && this.map !== null) {
                 return;
@@ -180,7 +184,21 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 return;
             }
             this.field = this.element.getElement('input.fabrikinput');
+
+	        /**
+             * watchGeoCode() needs to run after all the elements have been added to the form, but
+             * the elements.added event may have already fired.  Typically on first load, where we
+             * waited for the maps API to load, it will have already fired.  But (say) opening a popup
+             * for a second time, API is already loaded, so no delay.  So call it direct, AND from the event,
+             * and watchGeoCode() will keep track of whether it can / has run.
+             */
             this.watchGeoCode();
+            Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+                if (form === self.form) {
+                    self.watchGeoCode();
+                }
+            });
+
             if (this.options.staticmap) {
                 var i = this.element.getElement('img');
                 var w = i.getStyle('width').toInt();
@@ -568,7 +586,13 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
         watchGeoCode: function () {
             if (!this.options.geocode || !this.options.editable) {
-                return false;
+                return;
+            }
+            if (typeof this.form === 'undefined') {
+                return;
+            }
+            if (this.watchGeoCodeDone) {
+                return;
             }
             if (this.options.geocode === '2') {
                 if (this.options.geocode_event !== 'button') {
@@ -576,14 +600,23 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         var f = document.id(field);
                         if (typeOf(f) !== 'null') {
                             var that = this;
-                            jQuery(f).on('keyup', Debounce(this.options.debounceDelay, function (e) {
-                                that.geoCode(e);
-                            }));
-                            // Select lists, radios whatnots
-                            f.addEvent('change', function (e) {
-                                this.geoCode();
-                            }.bind(this));
-
+                            var el = this.form.formElements.get(field);
+                            // if it's a field element with geocomplete, don't do keyup, wait for element to fire change
+                            if (!el.options.geocomplete) {
+                                jQuery(f).on('keyup', Debounce(this.options.debounceDelay, function (e) {
+                                    that.geoCode(e);
+                                }));
+                                // Select lists, radios whatnots
+                                f.addEvent('change', function (e) {
+                                    this.geoCode();
+                                }.bind(this));
+                            }
+                            else {
+                                Fabrik.addEvent('fabrik.element.field.geocode', function(el) {
+                                   //fconsole('fired: ' + el.element.id);
+                                    this.geoCode();
+                                }.bind(this));
+                            }
                         }
                     }.bind(this));
                 } else {
@@ -620,6 +653,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         }));
                 }
             }
+            this.watchGeoCodeDone = true;
         },
 
         unclonableProperties: function () {

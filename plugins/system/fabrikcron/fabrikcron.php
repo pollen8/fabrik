@@ -1,5 +1,4 @@
 <?php
-use Zend\Form\Annotation\Object;
 /**
  * Joomla! Fabrik cron job plugin
  *
@@ -29,7 +28,7 @@ class PlgSystemFabrikcron extends JPlugin
 	/**
 	 * Row for the currently running plugin, used by the shutdown handler
 	 *
-	 * @var string
+	 * @var stdClass
 	 */
 	protected $row = null;
 
@@ -40,32 +39,22 @@ class PlgSystemFabrikcron extends JPlugin
 	 */
 	protected $log = null;
 
-	/*
+	/**
+	 * @var JDatabaseDriver
+	 */
+	protected $db;
+
+	/**
+	 * @var JDatabaseQuery
+	 */
+	protected $query;
+	
+	/**
 	 * Plugin model
 	 *
 	 * @var PlgFabrik_Cron
 	 */
 	protected $pluginModel = null;
-
-	/**
-	 * Constructor
-	 *
-	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
-	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
-	 * This causes problems with cross-referencing necessary for the observer design pattern.
-	 *
-	 * @param   object  &$subject  The object to observe
-	 * @param   array   $config    An array that holds the plugin configuration
-	 *
-	 * @since	1.0
-	 *
-	 * return  void
-	 */
-
-	public function plgSystemFabrikcron(&$subject, $config)
-	{
-		parent::__construct($subject, $config);
-	}
 
 	/**
 	 * Reschedule the plugin for next run, and republish
@@ -103,10 +92,10 @@ class PlgSystemFabrikcron extends JPlugin
 		}
 
 		// Mark them as being run
-		$nextrun = JFactory::getDate($tmp);
+		$nextRun = JFactory::getDate($tmp);
 		$this->query->clear();
 		$this->query->update('#__{package}_cron');
-		$this->query->set('lastrun = ' . $this->db->quote($nextrun->toSql()));
+		$this->query->set('lastrun = ' . $this->db->quote($nextRun->toSql()));
 
 		if ($this->pluginModel->shouldReschedule() && $this->pluginModel->doRunGating())
 		{
@@ -158,6 +147,7 @@ class PlgSystemFabrikcron extends JPlugin
 		$mailer = JFactory::getMailer();
 		$config = JFactory::getConfig();
 		$input = $app->input;
+
 		if ($app->isAdmin() || $input->get('option') == 'com_acymailing')
 		{
 			return;
@@ -183,7 +173,7 @@ class PlgSystemFabrikcron extends JPlugin
 			 * .. which seems reasonable, as we use getDate() to set 'lastrun' to at the end of this func
 			 */
 
-			$nextrun = "CASE "
+			$nextRun = "CASE "
 				. "WHEN unit = 'second' THEN DATE_ADD( lastrun, INTERVAL frequency SECOND )\n"
 				. "WHEN unit = 'minute' THEN DATE_ADD( lastrun, INTERVAL frequency MINUTE )\n"
 				. "WHEN unit = 'hour' THEN DATE_ADD( lastrun, INTERVAL frequency HOUR )\n"
@@ -193,10 +183,10 @@ class PlgSystemFabrikcron extends JPlugin
 				. "WHEN unit = 'year' THEN DATE_ADD( lastrun, INTERVAL frequency YEAR ) END";
 
 			$this->query
-				->select("id, plugin, lastrun, unit, frequency, " . $nextrun . " AS nextrun")
+				->select("id, plugin, lastrun, unit, frequency, " . $nextRun . " AS nextrun")
 				->from('#__{package}_cron')
 				->where("published = '1'")
-				->where("$nextrun < '" . JFactory::getDate()->toSql() . "'");
+				->where("$nextRun < '" . JFactory::getDate()->toSql() . "'");
 		}
 		else
 		{
@@ -217,6 +207,8 @@ class PlgSystemFabrikcron extends JPlugin
 
 		$this->log->message = '';
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
+
+		/** @var FabrikFEModelPluginmanager $pluginManager */
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
@@ -250,10 +242,12 @@ class PlgSystemFabrikcron extends JPlugin
 
 			$tid = (int) $params->get('table');
 			$thisListModel = clone ($listModel);
+
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
 				$this->log->message .= "\n\n" . $this->row->plugin . "\n listid = " . $thisListModel->getId();
+
 				if ($this->pluginModel->requiresTableData())
 				{
 					//$table = $thisListModel->getTable();
@@ -263,7 +257,8 @@ class PlgSystemFabrikcron extends JPlugin
 					$thisListModel->setLimits(0, $cron_row_limit);
 					$thisListModel->getPagination(0, 0, $cron_row_limit);
 					$data = $thisListModel->getData();
-					$this->log->message .= "\n" . $thisListModel->buildQuery();
+					// for some reason this hoses up next query
+					//$this->log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else
@@ -271,7 +266,7 @@ class PlgSystemFabrikcron extends JPlugin
 				$data = array();
 			}
 
-			$res = $this->pluginModel->process($data, $thisListModel);
+			$this->pluginModel->process($data, $thisListModel);
 			$this->log->message = $this->pluginModel->getLog() . "\n\n" . $this->log->message;
 
 			$this->reschedule();

@@ -23,47 +23,55 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Form
  * @since       1.6
  */
-
 class JFormFieldPluginList extends JFormFieldList
 {
 	/**
 	 * The form field type.
 	 *
-	 * @var		string
-	 * @since	1.6
+	 * @var        string
+	 * @since    1.6
 	 */
 	protected $type = 'PluginList';
+
+	/**
+	 * Cache plugin list options
+	 *
+	 * @var array
+	 */
+	private static $cache = array();
 
 	/**
 	 * Method to get the field options.
 	 *
 	 * @return  array  The field option objects.
 	 */
-
 	protected function getOptions()
 	{
-		$group = (string) $this->element['plugin'];
-		$key = $this->element['key'];
-		$key = ($key == 'visualization.plugin') ? "CONCAT('visualization.',element) " : 'element';
+		$group    = (string) $this->element['plugin'];
+		$key      = $this->element['key'];
+		$key      = ($key == 'visualization.plugin') ? "CONCAT('visualization.',element) " : 'element';
+		$cacheKey = $group . '.' . $key;
 
-		// Initialize variables.
-		$options = array();
+		if (array_key_exists($cacheKey, self::$cache))
+		{
+			return self::$cache[$cacheKey];
+		}
 
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select($key . ' AS value, element AS text');
 		$query->from('#__extensions AS p');
-		$query->where($db->quoteName('type') . ' = ' . $db->quote('plugin'));
-		$query->where($db->quoteName('enabled') . ' = 1 AND state != -1');
-		$query->where($db->quoteName('folder') . ' = ' . $db->quote($group));
+		$query->where($db->qn('type') . ' = ' . $db->q('plugin'));
+		$query->where($db->qn('enabled') . ' = 1 AND state != -1');
+		$query->where($db->qn('folder') . ' = ' . $db->q($group));
 		$query->order('text');
 
 		// Get the options.
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
-
 		array_unshift($options, JHtml::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
+		self::$cache[$cacheKey] = $options;
 
 		return $options;
 	}

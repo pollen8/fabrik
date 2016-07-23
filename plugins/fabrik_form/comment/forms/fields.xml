@@ -113,6 +113,17 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="comment-internal-allow-guest"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_FORM_COMMENT_ALLOW_GUEST_DESC"
+			       label="PLG_FORM_COMMENT_ALLOW_GUEST_LABEL"
+			       repeat="true">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="comment-show-count-in-title"
 				type="radio"
 				default="1"

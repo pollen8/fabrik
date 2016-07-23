@@ -448,7 +448,7 @@ class Gso extends AbstractAdapter
 	 *
 	 * @throws \Exception
 	 *
-	 * @return string Shipping label
+	 * @return array label file format, label image data
 	 */
 	public function ship($verifyPeer = true)
 	{
@@ -487,7 +487,8 @@ class Gso extends AbstractAdapter
 
 		$label = $this->response->SubmitShipmentResult->Label->Paper;
 
-		return $label;
+		// @todo test this is the right format and label is not base64 enoded
+		return ['gif', $label];
 	}
 
 	/**

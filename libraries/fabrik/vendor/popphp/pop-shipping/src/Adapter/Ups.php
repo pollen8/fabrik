@@ -55,6 +55,24 @@ class Ups extends AbstractAdapter
 	protected $testMode = false;
 
 	/**
+	 * Optional Processing. nonvalidate = No street level address
+	 * validation would be performed, but Postal Code/State
+	 * combination validation would still be performed.
+	 * validate = No street level address validation would be
+	 * performed, but City/State/Postal Code combination validation
+	 * would still be performed.
+	 *
+	 * @var string
+	 */
+	protected $validateAddress = 'nonvalidate';
+
+	/**
+	 * Shipment description required for international shipments
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+	/**
 	 * User ID
 	 *
 	 * @var string
@@ -172,7 +190,8 @@ class Ups extends AbstractAdapter
 		'City' => null,
 		'StateProvinceCode' => '',
 		'PostalCode' => null,
-		'CountryCode' => null
+		'CountryCode' => null,
+		'PhoneNumber' => null
 	];
 
 	/**
@@ -227,6 +246,12 @@ class Ups extends AbstractAdapter
 	{
 		$this->testMode = (bool) $test;
 		$this->userId   = $userId;
+
+		if (empty($accessKey) || empty($userId) ||empty($password))
+		{
+			throw new \InvalidArgumentException('UPS shipping mut supply an accesskey; userid and password');
+		}
+
 		$this->accessRequest .= PHP_EOL . '    <AccessLicenseNumber>' . $accessKey . '</AccessLicenseNumber>';
 		$this->accessRequest .= PHP_EOL . '    <UserId>' . $userId . '</UserId>';
 		$this->accessRequest .= PHP_EOL . '    <Password>' . $password . '</Password>';
@@ -308,53 +333,30 @@ class Ups extends AbstractAdapter
 	 */
 	public function shipTo(array $shipTo)
 	{
-		foreach ($shipTo as $key => $value)
+		$map = [
+			'phone' => 'PhoneNumber',
+			'state' => 'StateProvinceCode',
+			'company' => 'CompanyName',
+			'addressline1' => 'AddressLine1',
+			'address1' => 'AddressLine1',
+			'address' => 'AddressLine1',
+			'addressline2' => 'AddressLine2',
+			'address2' => 'AddressLine2',
+			'addressline3' => 'AddressLine3',
+			'address3' => 'AddressLine3',
+			'city' => 'City',
+			'postalcode' => 'PostalCode',
+			'zipcode' => 'PostalCode',
+			'zip' => 'PostalCode',
+			'countrycode' => 'CountryCode',
+			'country' => 'CountryCode',
+		];
+
+		foreach ($map as $key => $val)
 		{
-			if (stripos($key, 'company') !== false)
+			if (array_key_exists($key, $shipTo))
 			{
-				$this->shipTo['CompanyName'] = $value;
-			}
-			else
-			{
-				if ((strtolower($key) == 'addressline1') || (strtolower($key) == 'address1') || (strtolower($key) == 'address'))
-				{
-					$this->shipTo['AddressLine1'] = $value;
-				}
-				else
-				{
-					if ((strtolower($key) == 'addressline2') || (strtolower($key) == 'address2'))
-					{
-						$this->shipTo['AddressLine2'] = $value;
-					}
-					else
-					{
-						if ((strtolower($key) == 'addressline3') || (strtolower($key) == 'address3'))
-						{
-							$this->shipTo['AddressLine3'] = $value;
-						}
-						else
-						{
-							if (strtolower($key) == 'city')
-							{
-								$this->shipTo['City'] = $value;
-							}
-							else
-							{
-								if ((strtolower($key) == 'postalcode') || (strtolower($key) == 'zipcode') || (strtolower($key) == 'zip'))
-								{
-									$this->shipTo['PostalCode'] = $value;
-								}
-								else
-								{
-									if ((strtolower($key) == 'countrycode') || (strtolower($key) == 'country'))
-									{
-										$this->shipTo['CountryCode'] = $value;
-									}
-								}
-							}
-						}
-					}
-				}
+				$this->shipTo[$val] = $shipTo[$key];
 			}
 		}
 	}
@@ -368,53 +370,30 @@ class Ups extends AbstractAdapter
 	 */
 	public function shipFrom(array $shipFrom)
 	{
-		foreach ($shipFrom as $key => $value)
+		$map = [
+			'phone' => 'PhoneNumber',
+			'state' => 'StateProvinceCode',
+			'company' => 'CompanyName',
+			'addressline1' => 'AddressLine1',
+			'address1' => 'AddressLine1',
+			'address' => 'AddressLine1',
+			'addressline2' => 'AddressLine2',
+			'address2' => 'AddressLine2',
+			'addressline3' => 'AddressLine3',
+			'address3' => 'AddressLine3',
+			'city' => 'City',
+			'postalcode' => 'PostalCode',
+			'zipcode' => 'PostalCode',
+			'zip' => 'PostalCode',
+			'countrycode' => 'CountryCode',
+			'country' => 'CountryCode',
+		];
+
+		foreach ($map as $key => $val)
 		{
-			if (stripos($key, 'company') !== false)
+			if (array_key_exists($key, $shipFrom))
 			{
-				$this->shipFrom['CompanyName'] = $value;
-			}
-			else
-			{
-				if ((strtolower($key) == 'addressline1') || (strtolower($key) == 'address1') || (strtolower($key) == 'address'))
-				{
-					$this->shipFrom['AddressLine1'] = $value;
-				}
-				else
-				{
-					if ((strtolower($key) == 'addressline2') || (strtolower($key) == 'address2'))
-					{
-						$this->shipFrom['AddressLine2'] = $value;
-					}
-					else
-					{
-						if ((strtolower($key) == 'addressline3') || (strtolower($key) == 'address3'))
-						{
-							$this->shipFrom['AddressLine3'] = $value;
-						}
-						else
-						{
-							if (strtolower($key) == 'city')
-							{
-								$this->shipFrom['City'] = $value;
-							}
-							else
-							{
-								if ((strtolower($key) == 'postalcode') || (strtolower($key) == 'zipcode') || (strtolower($key) == 'zip'))
-								{
-									$this->shipFrom['PostalCode'] = $value;
-								}
-								else
-								{
-									if ((strtolower($key) == 'countrycode') || (strtolower($key) == 'country'))
-									{
-										$this->shipFrom['CountryCode'] = $value;
-									}
-								}
-							}
-						}
-					}
-				}
+				$this->shipFrom[$val] = $shipFrom[$key];
 			}
 		}
 	}
@@ -477,7 +456,7 @@ class Ups extends AbstractAdapter
 	 * @param string $digest
 	 * @param bool   $verifyPeer
 	 *
-	 * @return bool|string
+	 * @return array label file format, label image data
 	 */
 	protected function sendAcceptRequest($digest, $verifyPeer)
 	{
@@ -521,8 +500,10 @@ class Ups extends AbstractAdapter
 		}
 
 		$this->response = simplexml_load_string($xml);
+		$label = (string) $this->response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
 
-		return (string) $this->response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
+		// Label is base64 encoded, so decode first
+		 return ['gif', base64_decode($label)];
 	}
 
 	/**
@@ -570,12 +551,12 @@ class Ups extends AbstractAdapter
 
 			foreach ($this->response->RatedShipment as $rate)
 			{
-				$serviceType = self::$services[(string) $rate->Service->Code];
-				$this->rates[$serviceType] = (string) $rate->TotalCharges->MonetaryValue;
+				$serviceType                       = self::$services[(string) $rate->Service->Code];
+				$this->rates[$serviceType]         = (string) $rate->TotalCharges->MonetaryValue;
 				$this->ratesExtended[$serviceType] = (object) [
 					'shipper' => 'ups',
 					'total' => $this->rates[$serviceType],
-					'title' =>  $serviceType
+					'title' => $serviceType
 				];
 			}
 		}
@@ -619,17 +600,19 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '            <XpciVersion/>';
 		$xml .= PHP_EOL . '        </TransactionReference>';
 		$xml .= PHP_EOL . '        <RequestAction>ShipConfirm</RequestAction>';
-		$xml .= PHP_EOL . '        <RequestOption>validate</RequestOption>';
+		$xml .= PHP_EOL . '        <RequestOption>' . $this->validateAddress . '</RequestOption>';
 		$xml .= PHP_EOL . '    </Request>';
 		$xml .= PHP_EOL . '    <Shipment>';
+		$xml .= PHP_EOL . '        <Description>' . $this->description . '</Description>';
 		$xml .= PHP_EOL . '        <Shipper>';
 		$xml .= PHP_EOL . '            <Name>' . $this->shipFrom['CompanyName'] . '</Name>';
 		$xml .= PHP_EOL . '            <ShipperNumber>' . $this->shipperNumber . '</ShipperNumber>';
+		$xml .= PHP_EOL . '            <PhoneNumber>' . $this->shipFrom['PhoneNumber'] . '</PhoneNumber>';
 		$xml .= PHP_EOL . '            <Address>';
 
 		foreach ($this->shipFrom as $key => $value)
 		{
-			if ($key !== 'CompanyName')
+			if ($key !== 'CompanyName' && $key !== 'PhoneNumber')
 			{
 				if (null !== $value)
 				{
@@ -646,12 +629,13 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '        </Shipper>';
 
 		$xml .= PHP_EOL . '        <ShipTo>';
-		$xml .= PHP_EOL . '            <CompanyName>foo - ' . $this->shipTo['CompanyName'] . '</CompanyName>';
+		$xml .= PHP_EOL . '            <CompanyName>' . $this->shipTo['CompanyName'] . '</CompanyName>';
+		$xml .= PHP_EOL . '            <PhoneNumber>' . $this->shipTo['PhoneNumber'] . '</PhoneNumber>';
 		$xml .= PHP_EOL . '            <Address>';
 
 		foreach ($this->shipTo as $key => $value)
 		{
-			if ($key !== 'CompanyName')
+			if ($key !== 'CompanyName' && $key !== 'PhoneNumber')
 			{
 				if (null !== $value)
 				{
@@ -705,7 +689,7 @@ class Ups extends AbstractAdapter
 
 		foreach ($this->packages as $package)
 		{
-			$this->rateRequest .= $package->rateRequest($alcohol);
+			$xml .= $package->rateRequest($alcohol);
 		}
 
 		$xml .= PHP_EOL . '    </Shipment>';
@@ -835,6 +819,7 @@ class Ups extends AbstractAdapter
 
 	/**
 	 * Get Package
+	 *
 	 * @return \Pop\Shipping\PackageAdapter\Ups
 	 */
 	public function getPackage()

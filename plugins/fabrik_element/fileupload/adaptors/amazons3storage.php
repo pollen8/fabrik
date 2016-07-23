@@ -95,6 +95,8 @@ class Amazons3storage extends FabrikStorageAdaptor
 			return false;
 		}
 
+		$re = '/^' . preg_quote(COM_FABRIK_BASE) . '/';
+		$filepath = preg_replace($re, '', $filepath);
 		$bucket = $this->getBucketName();
 		$filepath = str_replace("%20", " ", $filepath);
 		$filepath = $this->urlToPath($filepath);
@@ -576,7 +578,8 @@ class Amazons3storage extends FabrikStorageAdaptor
 			$file = str_replace("%20", " ", $file);
 			$file = str_replace("\\", '/', $file);
 			$bucket = trim($this->getBucketName());
-			$hostbucket = !$this->ssl;
+			//$hostbucket = !$this->ssl;
+			$hostbucket = false;
 			$filepath = $this->s3->getAuthenticatedURL($bucket, $file, $lifetime, $hostbucket, $this->ssl);
 		}
 
