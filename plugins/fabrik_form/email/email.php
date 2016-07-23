@@ -287,6 +287,16 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$userIds = array();
 		}
 
+		$customHeadersEval = $params->get('email_headers_eval', '');
+		$customHeaders = array();
+
+		if (!empty($customHeadersEval))
+		{
+			$customHeadersEval = $w->parseMessageForPlaceholder($customHeadersEval, $this->data, false);
+			$customHeaders = @eval($customHeadersEval);
+			FabrikWorker::logEval($customHeadersEval, 'Caught exception on eval in email custom headers : %s');
+		}
+
 		// Send email
 		foreach ($emailTo as $email)
 		{
@@ -331,8 +341,18 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				}
 
 				$res = FabrikWorker::sendMail(
-					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
-					$htmlEmail, $cc, $bcc, $thisAttachments, $returnPath, $returnPathName
+					$emailFrom,
+					$emailFromName,
+					$email,
+					$thisSubject,
+					$thisMessage,
+					$htmlEmail,
+					$cc,
+					$bcc,
+					$thisAttachments,
+					$returnPath,
+					$returnPathName,
+					$customHeaders
 				);
 
 				/*

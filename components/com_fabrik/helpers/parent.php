@@ -1902,13 +1902,14 @@ class FabrikWorker
 	 * @param   mixed    $attachment   Attachment file name(s)
 	 * @param   mixed    $replyTo      Reply to email address(es)
 	 * @param   mixed    $replyToName  Reply to name(s)
+	 * @param   array    $headers      Optional custom headers, assoc array keyed by header name
 	 *
 	 * @return  boolean  True on success
 	 *
 	 * @since   11.1
 	 */
 	public static function sendMail($from, $fromName, $recipient, $subject, $body, $mode = false,
-		$cc = null, $bcc = null, $attachment = null, $replyTo = null, $replyToName = null)
+		$cc = null, $bcc = null, $attachment = null, $replyTo = null, $replyToName = null, $headers = array())
 	{
 		// do a couple of tweaks to improve spam scores
 
@@ -2030,6 +2031,10 @@ class FabrikWorker
 		if ($mode)
 		{
 			$mailer->AltBody = JMailHelper::cleanText(strip_tags($body));
+		}
+
+		foreach ($headers as $headerName => $headerValue) {
+			$mailer->addCustomHeader($headerName, $headerValue);
 		}
 
 		try
