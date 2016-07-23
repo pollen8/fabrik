@@ -267,6 +267,13 @@ class FabrikViewFullcalendar extends JViewLegacy
 		);
 
 		FabrikHelperHTML::jLayoutJs(
+			'fabrik-visualization-fullcalendar-event-modal-popup',
+			'fabrik-visualization-fullcalendar-event-modal-popup',
+			(object) array(),
+			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
+		);
+
+		FabrikHelperHTML::jLayoutJs(
 			'fabrik-visualization-fullcalendar-viewevent',
 			'fabrik-visualization-fullcalendar-viewevent',
 			(object) array(),
