@@ -5744,6 +5744,7 @@ class FabrikFEModelList extends JModelForm
 			$this->nav->showAllOption = $params->get('showall-records', false);
 			$this->nav->setId($this->getId());
 			$this->nav->showTotal = $params->get('show-total', false);
+			$this->nav->showNav = $this->app->input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1));
 			$item = $this->getTable();
 			$this->nav->startLimit = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
 			$this->nav->showDisplayNum = $params->get('show_displaynum', true);
