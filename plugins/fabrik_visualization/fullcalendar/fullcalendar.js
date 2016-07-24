@@ -141,8 +141,8 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 maxTime                  : this.options.close, // an end time (6pm in this example)
 				weekends				 : this.options.showweekends,
                 eventClick               : function (calEvent, jsEvent, view) {
-                    jsEvent.stopPropagation();
-                    jsEvent.preventDefault();
+                    //jsEvent.stopPropagation();
+                    //jsEvent.preventDefault();
                     self.clickEntry(calEvent);
                     return false;
                 },
@@ -158,10 +158,10 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 },
                 loading                  : function (start) {
                     if (!start) {
-                        jQuery('.fc-view-container').delegate('.popover button.jclose', 'click', function () {
-                            var popover = jQuery(this).data('popover');
-                            jQuery('#' + popover).popover('hide');
-                        });
+//                        jQuery('.fc-view-container').delegate('.popover button.jclose', 'click', function () {
+//                            var popover = jQuery(this).data('popover');
+//                            jQuery('#' + popover).popover('hide');
+//                        });
                     }
                 }
             };
@@ -199,11 +199,11 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     self.deleteEntry(calEvent);
                 });
 
-            jQuery(document).on('click', '.popover .jclose', function (event, target) {
-                event.preventDefault();
-                var id = jQuery(event.target).attr('data-popover');
-                jQuery('#' + id).popover('hide');
-            });
+//            jQuery(document).on('click', '.popover .jclose', function (event, target) {
+//                event.preventDefault();
+//                var id = jQuery(event.target).attr('data-popover');
+//                jQuery('#' + id).popover('hide');
+//            });
 
             this.ajax.deleteEvent = new Request({
                 url         : this.options.url.del,
@@ -219,12 +219,14 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
         processEvents: function (json, callback) {
             json = $H(JSON.decode(json));
             var events = [], dispStartTime, dispEndTime, buttons, width, bDelete, bEdit, bView,
-                dispStartDate, dispEndDate, popup, id, body, mStartDate, mEndDate;
+                dispStartDate, dispEndDate, popup, id, body, mStartDate, mEndDate, modal, modalDivs;
             json.each(function (e) {
                 popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
                 id = e._listid + '_' + e.id;
                 popup.id = 'fabrikevent_' + id;
-
+				modal = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-modal-popup'])[0];
+				modal.id = 'fabrikevent_modal_' + id;
+				popup.href = '#' + modal.id;
                 body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
                 mStartDate = moment(e.startdate);
                 mEndDate = moment(e.enddate);
@@ -256,20 +258,23 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 e._canView === false ? bView.remove()
                     : bView.attr('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_VIEW'));
 
-                jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML') + buttons.prop('outerHTML'));
+ //               jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML') + buttons.prop('outerHTML'));
 
                 width = (dispStartDate === '' ? 'auto' : '200px');
-                jQuery(popup).attr('data-title', '<div style="width:' + width +
-                    '; height: 35px;"><div style="float:right;"><button class="btn jclose" data-popover="' + popup.id +
-                    '" data-toggle="tooltip" title="' + Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CLOSE') +
-                    '"><i class="icon-remove"></i></button></div><div style="text-align:center;">' +
-                    e.label + '</div></div>');
+				modalDivs = jQuery(modal).find('div'); 
+                jQuery(popup).data('title', e.label);
+                //jQuery(popup).attr('data-target', '#fabrikevent_modal_' + id);
                 jQuery(popup).append(e.label);
-
+				
+				// fill in the content of the modal
+				jQuery(modal).find('.modal-title')[0].innerHTML = e.label;
+				jQuery(modal).find('.modal-body')[0].innerHTML = jQuery(body).prop('outerHTML');
+				jQuery(modal).find('.modal-footer')[0].innerHTML = jQuery(buttons).prop('outerHTML');
+				
                 events.push(
                     {
                         id       : popup.id,
-                        title    : jQuery(popup).prop('outerHTML'),
+                        title    : jQuery(popup).prop('outerHTML') + jQuery(modal).prop('outerHTML'),
                         start    : e.startdate,
                         end      : e.enddate,
                         url      : e.link,
@@ -378,8 +383,9 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
         clickEntry: function (calEvent) {
             if (this.options.showFullDetails === false) {
-                var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
-                jQuery('#' + popoverId).popover('show');
+                var popoverId = 'fabrikevent_modal_' + calEvent.listid + '_' + calEvent.rowid;
+//                jQuery('#' + popoverId).popover('show');
+                jQuery('#' + popoverId).modal();
             } else {
                 this.viewEntry(calEvent);
             }

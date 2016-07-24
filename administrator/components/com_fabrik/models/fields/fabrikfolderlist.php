@@ -40,7 +40,7 @@ class JFormFieldFabrikFolderlist extends JFormFieldFolderList
 	 */
 	protected function getOptions()
 	{
-		$dir = JPATH_ROOT . $this->element['directory'];
+		$dir = JPATH_ROOT . DIRECTORY_SEPARATOR . $this->element['directory'];
 
 		$dir = str_replace('\\', '/', $dir);
 		$dir = str_replace('//', '/', $dir);
