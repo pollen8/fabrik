@@ -168,7 +168,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             /* Now merge any calendar overrides/additions from the visualisation */
             jQuery.extend(true, this.calOptions, JSON.parse(self.options.calOptions));
             this.calendar.fullCalendar(this.calOptions);
-
+/*
             document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])',
                 function (event) {
                     event.preventDefault();
@@ -214,7 +214,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     self.calendar.fullCalendar('refetchEvents');
                 }
             });
-        },
+*/        },
 
         processEvents: function (json, callback) {
             json = $H(JSON.decode(json));
@@ -224,9 +224,6 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
                 id = e._listid + '_' + e.id;
                 popup.id = 'fabrikevent_' + id;
-				modal = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-modal-popup'])[0];
-				modal.id = 'fabrikevent_modal_' + id;
-				popup.href = '#' + modal.id;
                 body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
                 mStartDate = moment(e.startdate);
                 mEndDate = moment(e.enddate);
@@ -258,22 +255,16 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 e._canView === false ? bView.remove()
                     : bView.attr('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_VIEW'));
 
- //               jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML') + buttons.prop('outerHTML'));
+                jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML') + buttons.prop('outerHTML'));
+                jQuery(popup).attr('data-title', e.label);
 
                 width = (dispStartDate === '' ? 'auto' : '200px');
-				modalDivs = jQuery(modal).find('div'); 
-                jQuery(popup).attr('data-title', e.label);
                 jQuery(popup).append(e.label);
-				
-				// fill in the content of the modal
-				jQuery(modal).find(".modal-title")[0].innerHTML = e.label;
-				jQuery(modal).find(".modal-body")[0].innerHTML = jQuery(body).prop('outerHTML');
-				jQuery(modal).find(".modal-footer")[0].innerHTML = jQuery(buttons).prop('outerHTML');
 				
                 events.push(
                     {
                         id       : popup.id,
-                        title    : jQuery(popup).prop('outerHTML') + jQuery(modal).prop('outerHTML'),
+                        title    : jQuery(popup).prop('outerHTML'),
                         start    : e.startdate,
                         end      : e.enddate,
                         url      : e.link,
@@ -382,8 +373,10 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
         clickEntry: function (calEvent) {
             if (this.options.showFullDetails === false) {
-                var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
-//                jQuery('#' + popoverId).popover('show');
+                var feModal = jQuery('#fabrikEvent_modal.modal');
+				feModal.find(".modal-title")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-title');
+				feModal.find(".modal-body")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-content');
+                feModal.modal('show');
             } else {
                 this.viewEntry(calEvent);
             }
