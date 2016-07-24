@@ -29,7 +29,7 @@
 
 				<field name="usekey" type="text" default="" description="MOD_FABRIK_FORM_USEKEY_DESC" label="MOD_FABRIK_FORM_USEKEY_LABEL" size="15"/>
 
-				<field name="template" type="fabriktemplate" default="" description="MOD_FABRIK_FORM_TEMPLATE_DESC" directory="/components/com_fabrik/views/form/tmpl" hide_default="0" hide_none="1" label="MOD_FABRIK_FORM_TEMPLATE_LABEL"/>
+				<field name="template" type="fabriktemplate" view="form" default="" description="MOD_FABRIK_FORM_TEMPLATE_DESC" directory="/components/com_fabrik/views/form/tmpl" hide_default="0" hide_none="1" label="MOD_FABRIK_FORM_TEMPLATE_LABEL"/>
 
 				<field name="formmodule_useajax" type="radio" default="1" description="MOD_FABRIK_FORM_AJAX_DESC" label="MOD_FABRIK_FORM_AJAX_LABEL">
 						<option value="0">JNO</option>
