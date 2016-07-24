@@ -484,7 +484,7 @@
 				directory="/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/"
 				label="template"
 				name="fb_gm_layout"
-				type="folderlist" />
+				type="fabrikfolderlist" />
 
 		</fieldset>
 
