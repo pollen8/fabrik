@@ -48,7 +48,7 @@
 					size="15"/>					
 					
 				<field name="template"
-					type="folderlist"
+					type="fabrikfolderlist"
 					default="default"
 					description="MOD_FABRIK_FORM_TEMPLATE_DESC"
 					directory="/components/com_fabrik/views/form/tmpl"

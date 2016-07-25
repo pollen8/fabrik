@@ -226,7 +226,7 @@ function _fabrikRouteMatchesMenuItem($query, $menuItem)
 
 		case 'details':
 		case 'form':
-			if (!isset($menuItem->query['rowid']))
+			if (isset($query['rowid']) && !isset($menuItem->query['rowid']))
 			{
 				$menuItem->query['rowid'] = $query['rowid'];
 			}

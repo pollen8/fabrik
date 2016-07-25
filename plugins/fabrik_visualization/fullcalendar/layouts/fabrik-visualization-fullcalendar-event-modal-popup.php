@@ -1,7 +1,9 @@
 <?php
 defined('JPATH_BASE') or die;
+
+$d = $displayData;
 ?>
-<div id="" class="modal fade" role="dialog">
+<div id="<?php echo $d->id; ?>" class="modal fade fabrikEventModal" role="dialog">
   <div class="modal-dialog modal-sm">
 
     <!-- Modal content-->

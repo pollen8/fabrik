@@ -188,7 +188,8 @@
 				default="1"
 				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_DESC"
 				label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_LABEL">
-					<option value="1">PLG_ELEMENT_GOOGLE_MAP_STATIC</option>
+					<option value="1">PLG_ELEMENT_GOOGLE_MAP_STATIC_CACHED</option>
+					<option value="3">PLG_ELEMENT_GOOGLE_MAP_STATIC</option>
 					<option value="2">PLG_ELEMENT_GOOGLE_MAP_FULL</option>
 			</field>
 

@@ -36,7 +36,7 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
             c.getElements('.radio.btn-group label').addClass('btn');
 
 
-            c.getElements(".btn-group input[checked=checked]").each(function (input) {
+            c.getElements(".btn-group input[checked]").each(function (input) {
                 var label = input.getParent('label'), v;
                 if (typeOf(label) === 'null') {
                     // J3.2 button group markup - label is after input (no longer the case)

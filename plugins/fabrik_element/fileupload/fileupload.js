@@ -44,7 +44,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                             response: JSON.encode(response)
                         });
 
-                        newBar.replaces(bar);
+                        jQuery(bar).replaceWith(newBar);
                     });
                 }
                 this.redraw();

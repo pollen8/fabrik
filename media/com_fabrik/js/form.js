@@ -1555,7 +1555,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 e.preventDefault();
                 if (!self.addingOrDeletingGroup) {
                     self.addingOrDeletingGroup = true;
-                    self.duplicateGroup(e);
+                    self.duplicateGroup(e, true);
                     self.addingOrDeletingGroup = false;
                 }
             }));
@@ -1640,7 +1640,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                         // Duplicate group
                         for (i = repeat_rows; i < min; i++) {
-                            this.duplicateGroup(add_e);
+                            this.duplicateGroup(add_e, false);
                         }
                     }
                 }
@@ -1818,9 +1818,11 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         /**
          * Duplicates the groups sub group and places it at the end of the group
          *
-         * @param   event  e  Click event
+         * @param   event  e       Click event
+         * @param   bool   scroll  Scroll to group if offscreen
          */
-        duplicateGroup: function (e) {
+        duplicateGroup: function (e, scroll) {
+            scroll = typeof scroll !== 'undefined' ? scroll : true;
             var subElementContainer, container;
             Fabrik.fireEvent('fabrik.form.group.duplicate', [this, e]);
             if (this.result === false) {
@@ -2005,16 +2007,25 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             o[i] = newElementControllers;
             this.addElements(o);
 
-            // Only scroll the window if the new element is not visible
-            var win_size = jQuery(window).height(),
-                win_scroll = document.id(window).getScroll().y,
-                obj = clone.getCoordinates();
-            // If the bottom of the new repeat goes below the bottom of the visible
-            // window,
-            // scroll up just enough to show it.
-            if (obj.bottom > (win_scroll + win_size)) {
-                var new_win_scroll = obj.bottom - win_size;
-                this.winScroller.start(0, new_win_scroll);
+	        /**
+             * Only scroll the window if the new element is not visible and 'scroll' arg true
+             * (so for example, we won't scroll if called from duplicateGroupsToMin)
+             */
+
+            if (scroll) {
+                var win_size = jQuery(window).height(),
+                    win_scroll = document.id(window).getScroll().y,
+                    obj = clone.getCoordinates();
+
+	            /**
+                 * If the bottom of the new repeat goes below the bottom of the visible window,
+                 * scroll up just enough to show it.
+                 */
+
+                if (obj.bottom > (win_scroll + win_size)) {
+                    var new_win_scroll = obj.bottom - win_size;
+                    this.winScroller.start(0, new_win_scroll);
+                }
             }
 
             var myFx = new Fx.Tween(clone, {
@@ -2023,10 +2034,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             }).set(0);
 
             clone.fade(1);
-            // $$$ hugh - added groupid (i) and repeatCounter (c) as args
-            // note I commented out the increment of c a few lines above//duplicate
             Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
-
             this.setRepeatGroupIntro(group, i);
             this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
         },

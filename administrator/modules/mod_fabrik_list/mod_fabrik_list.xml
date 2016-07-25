@@ -61,7 +61,7 @@
 
 				<field name="limit" type="text" default="0" description="MOD_FABRIK_LIST_LIMIT_DESC" label="MOD_FABRIK_LIST_LIMIT_LABEL" size="4"/>
 
-				<field name="fabriklayout" type="folderlist" default="default" descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="MOD_FABRIK_LIST_TEMPLATE_LABEL"/>
+				<field name="fabriklayout" type="fabrikfolderlist" default="default" descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="MOD_FABRIK_LIST_TEMPLATE_LABEL"/>
 
 				<field name="list_elements" type="fabrikmodalrepeat" description="MOD_FABRIK_LIST_ELEMENTS_DESC" label="MOD_FABRIK_LIST_ELEMENTS_LABEL">
 

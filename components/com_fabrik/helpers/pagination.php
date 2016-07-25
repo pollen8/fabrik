@@ -464,6 +464,8 @@ class FPagination extends JPagination
 		$displayData->pagesCounter = $list['pagescounter'];
 		$displayData->listName     = 'limit' . $this->id;
 		$displayData->links        = $list['pageslinks'];
+		$displayData->showNav      = $this->showNav;
+		$displayData->showTotal    = $this->showTotal;
 
 		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
