@@ -208,6 +208,23 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     self.calendar.fullCalendar('refetchEvents');
                 }
             });
+
+            function reposition() {
+                var modal = jQuery(this);
+                modal.css('display', 'block');
+                modal.css('margin-top', Math.max(0, (jQuery(window).height() - modal.height()) / 2));
+                //modal.css('margin-left', Math.max(0, (jQuery(window).width() - modal.width()) / 2));
+                var modalWidth = modal.width(),
+                    modalMargin = '-' + (modalWidth/2) + 'px!important';
+                modal.css('margin-left',modalMargin);
+            }
+
+            // Reposition when a modal is shown
+            jQuery('.modal').on('show.bs.modal', reposition);
+            // Reposition when the window is resized
+            jQuery(window).on('resize', function() {
+                jQuery('.modal:visible').each(reposition);
+            });
         },
 
         processEvents: function (json, callback) {
