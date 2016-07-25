@@ -344,7 +344,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 
 			// remove any duplicates in case they have misunderstood and selected the same element for all fields
-			$opts->geocode_fields = array_unique($opts->geocode_fields);
+			$opts->geocode_fields = array_values(array_unique($opts->geocode_fields));
 		}
 
 		$opts->reverse_geocode = $params->get('fb_gm_reverse_geocode', '0') == '0' ? false : true;
@@ -497,6 +497,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if (!isset(self::$usestatic))
 		{
 			$params = $this->getParams();
+			$static = $params->get('fb_gm_staticmap');
 
 			// Requires you to have installed the pda plugin
 			// http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
@@ -506,7 +507,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 			else
 			{
-				self::$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->isEditable());
+				self::$usestatic = ($static == '1' || $static == '3') && !$this->isEditable();
 			}
 		}
 
@@ -772,7 +773,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$layout = $this->getLayout('static');
 		$displayData = new stdClass;
 
-		if (!$tableView || ($tableView && $params->get('fb_gm_staticmap_tableview', '0') === '1'))
+		if ((!$tableView && $params->get('fb_gm_staticmap') == '1') || ($tableView && $params->get('fb_gm_staticmap_tableview', '0') === '1'))
 		{
 			$displayData->src = Fabimage::cacheRemote($src, $folder, $file);
 

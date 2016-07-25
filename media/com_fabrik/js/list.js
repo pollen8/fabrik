@@ -1171,8 +1171,22 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
              * @private
              */
             _updateRows: function (data) {
-                var tbody, itemTemplate, i, groupHeading, columnCount, parent, items = [], item,
-                    rowTemplate, cell, cells, form = jQuery(this.form), self = this, fullRow;
+                var tbody,
+                    itemTemplate,
+                    i,
+                    groupHeading,
+                    columnCount,
+                    parent,
+                    items = [],
+                    item,
+                    rowTemplate,
+                    cell,
+                    cells,
+                    form = jQuery(this.form),
+                    self = this,
+                    tmpl = 'tr',
+                    fullRow;
+
                 if (typeOf(data) !== 'object') {
                     return;
                 }
@@ -1194,9 +1208,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (cell.prop('tagName') === 'TR') {
                     parent = cell;
                     columnCount = 1;
+                    tmpl = 'tr';
                 } else {
                     parent = cell.parent();
                     columnCount = form.find('.fabrikDataContainer').data('cols');
+                    tmpl = 'div';
                 }
 
                 columnCount = columnCount === undefined ? 1 : columnCount;
@@ -1235,13 +1251,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
 
                     items = Fabrik.Array.chunk(items, columnCount);
                     for (i = 0; i < items.length; i++) {
-                        if (items[i].length > 0) {
-                            // We need to treat <tr>s differently from div templates
-                            cells = items[i][0].prop('tagName') === 'TR' ? items[i][0].children() : items[i];
-                        } else {
+                        if (tmpl === 'div') {
                             cells = items[i];
+                            fullRow = rowTemplate.clone().append(cells);
                         }
-                        fullRow = rowTemplate.clone().append(cells);
+                        else {
+                            fullRow = items[i];
+                        }
                         tbody.append(fullRow);
                     }
                 });
@@ -1308,17 +1324,17 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         }
                     }
                 });
-                template.find('.fabrik_row').prop('id', row.id);
                 if (typeof(this.options.itemTemplate) === 'string') {
-                    c = template.find('.fabrik_row');
+                    c = template.find('.fabrik_row').addBack(template);
                     c.prop('id', row.id);
+                    c.removeClass();
                     var newClass = row['class'].split(' ');
                     for (j = 0; j < newClass.length; j++) {
                         c.addClass(newClass[j]);
                     }
                     r = template.clone();
                 } else {
-                    r = template.find('.fabrik_row');
+                    r = template.find('.fabrik_row').addBack(template);
                 }
                 return r;
             },

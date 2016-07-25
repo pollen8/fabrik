@@ -271,6 +271,8 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             var params = this.options.calendarSetup;
             var tmp = ['displayArea', 'button'];
 
+            Fabrik.fireEvent('fabrik.element.date.calendar.create', this);
+
             for (i = 0; i < tmp.length; i++) {
                 if (typeof params[tmp[i]] === 'string') {
                     params[tmp[i]] = document.getElementById(params[tmp[i]]);
