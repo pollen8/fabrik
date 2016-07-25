@@ -199,12 +199,6 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     self.deleteEntry(calEvent);
                 });
 
-//            jQuery(document).on('click', '.popover .jclose', function (event, target) {
-//                event.preventDefault();
-//                var id = jQuery(event.target).attr('data-popover');
-//                jQuery('#' + id).popover('hide');
-//            });
-
             this.ajax.deleteEvent = new Request({
                 url         : this.options.url.del,
                 'data'      : {
@@ -240,6 +234,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 }
                 body.getElement('#viewstart').innerHTML = dispStartDate + dispStartTime;
                 body.getElement('#viewend').innerHTML = dispEndDate + dispEndTime;
+                jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML'));
 
                 buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons']);
                 buttons[0].id = 'fabrikevent_buttons_' + id;
@@ -254,11 +249,10 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 bView = buttons.find('.popupView');
                 e._canView === false ? bView.remove()
                     : bView.attr('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_VIEW'));
+                jQuery(popup).attr('data-buttons', buttons.prop('outerHTML'));
 
-                jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML') + buttons.prop('outerHTML'));
+//                width = (dispStartDate === '' ? 'auto' : '200px');
                 jQuery(popup).attr('data-title', e.label);
-
-                width = (dispStartDate === '' ? 'auto' : '200px');
                 jQuery(popup).append(e.label);
 				
                 events.push(
@@ -376,6 +370,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 var feModal = jQuery('#fabrikEvent_modal.modal');
 				feModal.find(".modal-title")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-title');
 				feModal.find(".modal-body")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-content');
+				feModal.find(".modal-footer button").before(jQuery('#' + calEvent.id).attr('data-buttons'));
                 feModal.modal('show');
             } else {
                 this.viewEntry(calEvent);

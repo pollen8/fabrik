@@ -8,5 +8,6 @@ defined('JPATH_BASE') or die;
 	data-toggle="modal"
 	data-title=""
 	data-body=""
+	data-buttons=""
 >
 </a>
