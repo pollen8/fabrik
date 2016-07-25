@@ -1056,7 +1056,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			foreach ($aFileTypes as &$type)
 			{
-				$type = '.' . $type;
+				$type = '.' . ltrim($type, '.');
 			}
 		}
 
