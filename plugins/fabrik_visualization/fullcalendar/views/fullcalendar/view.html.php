@@ -71,9 +71,18 @@ class FabrikViewFullcalendar extends JViewLegacy
 		FabrikHelperHTML::slimbox();
 		
 		$this->params = $model->getParams();
-		$tpl          = $params->get('calendar_layout', $tpl);
+		$tpl          = $params->get('fullcalendar_layout', $tpl);
 		$tmplPath     = JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplPath);
+
+		// Store the file in the tmp folder so it can be attached
+		$layout             = FabrikHelperHTML::getLayout(
+			'fabrik-visualization-fullcalendar-event-modal-popup',
+			array(JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/layouts')
+		);
+		$displayData       = new stdClass;
+		$displayData->id   = 'fabrikEvent_modal';
+		$this->modalLayout = $layout->render($displayData);
 
 		$this->css($tpl);
 
