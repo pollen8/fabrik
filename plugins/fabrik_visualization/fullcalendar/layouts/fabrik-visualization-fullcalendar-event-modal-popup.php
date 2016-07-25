@@ -16,7 +16,8 @@ $d = $displayData;
         <!-- modal body will go here -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div class="btn-group calEventButtons">
+        </div>
       </div>
     </div>
 
