@@ -175,7 +175,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     var id = event.target.findClassUp('calEventButtons').id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                    jQuery('#' + id).popover('hide');
+                    jQuery('#fabrikEvent_modal').modal('hide');
                     self.viewEntry(calEvent);
                 });
 
@@ -195,7 +195,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     var id = event.target.findClassUp('calEventButtons').id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                    jQuery('#fabrikEvent_modal').popover('hide');
+                    jQuery('#fabrikEvent_modal').modal('hide');
                     self.deleteEntry(calEvent);
                 });
 
@@ -368,9 +368,9 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
         clickEntry: function (calEvent) {
             if (this.options.showFullDetails === false) {
                 var feModal = jQuery('#fabrikEvent_modal.modal');
-				feModal.find(".modal-title")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-title');
-				feModal.find(".modal-body")[0].innerHTML = jQuery('#' + calEvent.id).attr('data-content');
-				feModal.find(".modal-footer button").before(jQuery('#' + calEvent.id).attr('data-buttons'));
+				feModal.find('.modal-title').html(jQuery('#' + calEvent.id).attr('data-title'));
+				feModal.find('.modal-body').html(jQuery('#' + calEvent.id).attr('data-content'));
+				feModal.find('.modal-footer .calEventButtons').html(jQuery('#' + calEvent.id).attr('data-buttons'));
                 feModal.modal('show');
             } else {
                 this.viewEntry(calEvent);
