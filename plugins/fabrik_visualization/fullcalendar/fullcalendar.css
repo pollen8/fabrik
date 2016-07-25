@@ -1,3 +1,15 @@
 a.fabrikEvent.label {
 	background-color: initial;
 }
+
+.fabrikEventModal {
+	width: 300px !important;
+}
+
+.fabrikEventModal .row {
+	margin-left: 10px;
+}
+
+.calEventButtons {
+	mergin-left: 10px;
+}

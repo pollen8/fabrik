@@ -168,7 +168,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             /* Now merge any calendar overrides/additions from the visualisation */
             jQuery.extend(true, this.calOptions, JSON.parse(self.options.calOptions));
             this.calendar.fullCalendar(this.calOptions);
-/*
+
             document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])',
                 function (event) {
                     event.preventDefault();
@@ -185,7 +185,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     var id = event.target.findClassUp('calEventButtons').id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                    jQuery('#' + id).popover('hide');
+                    jQuery('#fabrikEvent_modal').modal('hide');
                     self.editEntry(calEvent);
                 });
 
@@ -195,7 +195,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     var id = event.target.findClassUp('calEventButtons').id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                    jQuery('#' + id).popover('hide');
+                    jQuery('#fabrikEvent_modal').popover('hide');
                     self.deleteEntry(calEvent);
                 });
 
@@ -214,7 +214,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     self.calendar.fullCalendar('refetchEvents');
                 }
             });
-*/        },
+        },
 
         processEvents: function (json, callback) {
             json = $H(JSON.decode(json));
