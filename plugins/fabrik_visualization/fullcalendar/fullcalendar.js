@@ -172,7 +172,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])',
                 function (event) {
                     event.preventDefault();
-                    var id = event.target.findClassUp('calEventButtons').id;
+                    var id = jQuery(event.target).closest('.calEventButtonsID')[0].id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
                     jQuery('#fabrikEvent_modal').modal('hide');
@@ -182,7 +182,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])',
                 function (event) {
                     event.preventDefault();
-                    var id = event.target.findClassUp('calEventButtons').id;
+                    var id = jQuery(event.target).closest('.calEventButtonsID')[0].id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
                     jQuery('#fabrikEvent_modal').modal('hide');
@@ -192,7 +192,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])',
                 function (event) {
                     event.preventDefault();
-                    var id = event.target.findClassUp('calEventButtons').id;
+                    var id = jQuery(event.target).closest('.calEventButtonsID')[0].id;
                     id = id.replace(/_buttons/, '');
                     var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
                     jQuery('#fabrikEvent_modal').modal('hide');
