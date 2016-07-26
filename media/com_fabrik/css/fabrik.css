@@ -694,3 +694,9 @@ form.fabrikForm label.radio {
 .chzn-container {
 	text-align: start;
 }
+
+/** Prevent links from showing in print view - Bootstrap related */
+
+@media print {
+	a[href]:after { content: none !important; }
+}
