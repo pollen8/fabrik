@@ -4,7 +4,7 @@
 		<fieldset name="thisoptions">
 		
 			<field name="slideshow_viz_layout"
-				type="folderlist"
+				type="fabrikfolderlist"
 				directory="/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl"
 				label="PLG_VISUALIZATION_SLIDESHOW_TEMPLATE_LABEL"
 			/>
