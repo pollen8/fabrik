@@ -82,7 +82,10 @@ class FabrikAdminModelHome extends FabModelAdmin
 		}
 		else
 		{
-			$rssDoc = JSimplepieFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);
+			$rssDoc = new SimplePie();
+			$rssDoc->set_feed_url('http://feeds.feedburner.com/fabrik');
+			$rssDoc->set_cache_duration(86400);
+			$rssDoc->init();
 		}
 
 		if ($rssDoc == false)
