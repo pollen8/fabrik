@@ -368,6 +368,9 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 				q = $(this).val();
 				$(\'a[data-product_id=\' + productId + \']\').data(\'product_qty\', q);
 			});
+			$(\'body\').on(\'after_adding_to_cart\', function(btn, response, type) {
+				Fabrik.loader.stop($(btn).closest(\'.fabrikForm\');
+			});
 		});
 		');
 		}
