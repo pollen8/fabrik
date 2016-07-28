@@ -434,7 +434,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							switch ($iconImgPath) {
 								case 'media':
 								default:
-									$iconImg = 'media/com_fabrik/images' . $iconImg;
+									$iconImg = 'media/com_fabrik/images/' . ltrim($iconImg, '/');
 									break;
 								case 'jroot':
 									break;
