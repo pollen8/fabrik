@@ -11,6 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/pdf.php';
 
 /**
  * Send email upon form submission
@@ -170,6 +171,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
+		FabrikPDFHelper::fullPaths($message);
 
 
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
