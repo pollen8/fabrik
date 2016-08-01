@@ -274,8 +274,8 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 				c.setStyles({'position': 'relative', 'left': 0});
 				var w = b.retrieve('win');
 				w.center();
-				//w.fitToContent();
 				w.open();
+				w.fitToContent();
 			}.bind(this));
 
 			b.store('win', win);
