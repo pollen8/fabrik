@@ -1643,8 +1643,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$val = $origData[$j]->$name;
 
-				if (!empty($val))
-				{
+				// http://fabrikar.com/forums/index.php?threads/fileupload-file-save-in-the-bad-record.44751/#post-230064
+				//if (!empty($val))
+				//{
 					if (in_array($val, $deletedImages))
 					{
 						unset($origData[$j]->$name);
@@ -1653,7 +1654,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					{
 						$filesToKeep[$index] = $origData[$j]->$name;
 					}
-				}
+				//}
 			}
 
 			$index++;
