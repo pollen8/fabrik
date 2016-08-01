@@ -190,11 +190,17 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.window = this.buildWinViaJS();
             }
 
+            // use fabrikHide to prevent the window displaying momentarily as page loads
+            if (!this.options.visible) {
+                this.window.addClass('fabrikHide');
+            }
+
             jQuery(document.body).append(this.window);
             this.loadContent();
 
             if (!this.options.visible) {
-                this.window.fadeOut();
+                this.window.hide();
+                this.window.removeClass('fabrikHide');
             }
 
             jQuery(this.window).find('*[data-role="close"]').on('click', function (e) {
@@ -588,7 +594,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             if (e) {
                 e.stopPropagation();
             }
-            this.window.fadeIn({duration: 0});
+            //this.window.fadeIn({duration: 0});
+            this.window.show();
             this.fireEvent('onOpen', [this]);
         }
 
