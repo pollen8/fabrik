@@ -187,8 +187,8 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$this->loadMeForAjax();
 		$this->getElement();
 		$params        = $this->getParams();
-		$digsig_width  = (int) $params->get('digsig_list_width', '200');
-		$digsig_height = (int) $params->get('digsig_list_height', '75');
+		$digsig_width  = (int) $params->get('digsig_form_width', '400');
+		$digsig_height = (int) $params->get('digsig_form_height', '250');
 		$this->lang->load('com_fabrik.plg.element.fabrikdigsig', JPATH_ADMINISTRATOR);
 		$url = 'index.php';
 
