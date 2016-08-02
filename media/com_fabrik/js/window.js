@@ -330,6 +330,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             expandIcon = jQuery(Fabrik.jLayouts['icon-full-screen']);
             label = jQuery('<h3 />').addClass(hclass).text(this.options.title);
+            jQuery(label).data('role', 'title');
+            // turns out you can find() data attrs added with data()
+            jQuery(label).attr('data-role', 'title');
 
             handleParts.push(label);
             if (this.options.expandable && this.options.modal === false) {
