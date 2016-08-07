@@ -323,8 +323,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 hclass += ' draggable';
                 draggerC = jQuery('<div />').addClass('bottomBar modal-footer');
                 dragger = jQuery('<div />').addClass('dragger');
-                resizeIcon = jQuery(Fabrik.jLayouts['icon-expand']);
-                resizeIcon.prependTo(dragger);
+                // not really compatible with using jQuery resizeable()
+                //resizeIcon = jQuery(Fabrik.jLayouts['icon-expand']);
+                //resizeIcon.prependTo(dragger);
                 draggerC.append(dragger);
             }
 
