@@ -410,6 +410,11 @@ class PlgSystemFabrik extends JPlugin
 			// Test for swap too boolean mode
 			$mode = $input->get('searchphrase', '') === 'all' ? 0 : 1;
 
+			if ($mode)
+			{
+				$input->set('override_join_val_column_concat', 1);
+			}
+
 			// $params->set('search-mode-advanced', true);
 			$params->set('search-mode-advanced', $mode);
 
