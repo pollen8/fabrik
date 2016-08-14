@@ -123,6 +123,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				&& substr(JString::strtolower($href), 0, 7) != 'http://'
 				&& substr(JString::strtolower($href), 0, 8) != 'https://'
 				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
+				&& substr(JString::strtolower($href), 0, 7) != 'mailto:'
 				)
 			{
 					$href = 'http://' . $href;
