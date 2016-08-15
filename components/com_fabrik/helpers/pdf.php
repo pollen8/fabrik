@@ -84,11 +84,17 @@ class FabrikPDFHelper
 			{
 				$uri = JUri::getInstance();
 				$host = $uri->getHost();
+				$port = $uri->getPort();
+
+				if (empty($port))
+				{
+					$port = 80;
+				}
 
 				// If the port is not default, add it
-				if (! (($uri->getScheme() == 'http' && $uri->getPort() == 80) ||
-					($uri->getScheme() == 'https' && $uri->getPort() == 443))) {
-					$host .= ':' . $uri->getPort();
+				if (! (($uri->getScheme() == 'http' && $port == 80) ||
+					($uri->getScheme() == 'https' && $port == 443))) {
+					$host .= ':' . $port;
 				}
 
 				$base = $uri->getScheme() . '://' . $host;
