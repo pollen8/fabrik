@@ -460,9 +460,11 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 }
             }
             else {
-                d.setHours(0);
-                d.setMinutes(0);
-                d.setSeconds(0);
+                if (this.options.dateTimeFormat === '') {
+                    d.setHours(0);
+                    d.setMinutes(0);
+                    d.setSeconds(0);
+                }
             }
             return d;
         },
