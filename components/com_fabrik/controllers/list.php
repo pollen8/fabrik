@@ -305,7 +305,7 @@ class FabrikControllerList extends JControllerLegacy
 		}
 		else
 		{
-			$ref = $defaultRef;
+			$ref = $defaultRef . '&setListRefFromRequest=1&listref=' . $model->getRenderContext();
 		}
 
 		$app->redirect($ref);
