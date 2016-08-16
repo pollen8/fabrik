@@ -695,7 +695,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$displayData = array(
 			'uls' => $uls,
 			'condense' => $condense,
-			'addHtml' => $addHtml
+			'addHtml' => $addHtml,
+			'sepChar' => ArrayHelper::getValue($opts, 'sepChar', ' ')
 		);
 
 		return $layout->render((object) $displayData);
@@ -712,7 +713,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function renderListData_csv($data, &$thisRow)
 	{
 		$this->renderWithHTML = false;
-		$d = $this->renderListData($data, $thisRow);
+		$d = $this->renderListData($data, $thisRow, array('sepChar' => "\n"));
 
 		if ($this->isJoin())
 		{
