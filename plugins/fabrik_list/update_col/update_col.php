@@ -234,6 +234,11 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 			$this->_process($model, $userCol, (int) $this->user->get('id'), false);
 		}
 
+		if ($params->get('update_email_after_update', '1') == '0')
+		{
+			$this->sendEmails($ids);
+		}
+
 		if (!empty($update))
 		{
 			foreach ($update->coltoupdate as $i => $col)
@@ -242,7 +247,10 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 			}
 		}
 
-		$this->sendEmails($ids);
+		if ($params->get('update_email_after_update', '1') == '1')
+		{
+			$this->sendEmails($ids);
+		}
 
 		$this->msg = $params->get('update_message', '');
 
