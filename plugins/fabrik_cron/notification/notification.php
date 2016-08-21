@@ -43,6 +43,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 	 *
 	 * @param   array  &$data  Record data
 	 * @param   object  &$listModel  List model
+	 *
 	 * @return number of records updated
 	 */
 
