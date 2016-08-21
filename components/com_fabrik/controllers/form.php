@@ -107,6 +107,8 @@ class FabrikControllerForm extends JControllerLegacy
 		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
+		FabrikWorker::getPluginManager()->runPlugins('onBeforeGetData', $model);
+
 		// Get data as it will be needed for ACL when testing if current row is editable.
 		$model->getData();
 
