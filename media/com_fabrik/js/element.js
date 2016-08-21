@@ -574,8 +574,8 @@ define(['jquery'], function (jQuery) {
          */
         moveTip: function (top, left) {
             var t = this.tips(), tip, origPos;
-            t = jQuery(t[0]);
             if (t.length > 0) {
+                t = jQuery(t[0]);
                 tip = t.data('popover').$tip;
                 if (tip) {
                     origPos = tip.data('origPos');
