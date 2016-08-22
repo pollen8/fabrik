@@ -53,7 +53,7 @@ class VideoRenderModel extends FabModel
 	 */
 	public function render(&$model, &$params, $file)
 	{
-		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
+		$src = $model->getStorage()->getFileUrl($file);
 		ini_set('display_errors', true);
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
