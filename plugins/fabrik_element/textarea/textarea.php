@@ -395,7 +395,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$value = $value[$repeatCounter];
 		}
 
-		return $this->renderListData($value, new stdClass);
+		$oData = FArrayHelper::toObject($data);
+
+		return $this->renderListData($value, $oData);
 	}
 
 	/**
