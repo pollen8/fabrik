@@ -2910,7 +2910,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
 						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
 
-						$key = serialize($jsAct);
+						$key = $elId . serialize($jsAct);
 
 						if (array_key_exists($key, self::$fxAdded))
 						{
