@@ -1075,6 +1075,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
+			if (preg_match('/(ORDER\s+BY)(.*)/i', $filterWhere, $matches))
+			{
+				$this->orderBy = $this->parseThisTable($matches[0], $join);
+				$filterWhere         = str_replace($this->orderBy, '', $filterWhere);
+				$filterWhere         = str_replace($matches[0], '', $filterWhere);
+			}
 			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
 
@@ -2378,6 +2384,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					break;
 				case '-1':
 				default:
+					$orders = array();
 					// Check if the 'Joins where and/or order by statement' has an order by
 					$joinWhere = $params->get('database_join_where_sql');
 
@@ -2388,9 +2395,25 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 						if (count($joinWhere) > 1)
 						{
-							$order = $joinWhere[count($joinWhere) - 1];
+							$orders[] = $joinWhere[count($joinWhere) - 1];
 						}
 					}
+
+					$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
+
+					if (JString::stristr($filterWhere, 'ORDER BY'))
+					{
+						$filterWhere = str_replace('order by', 'ORDER BY', $filterWhere);
+						$filterWhere = explode('ORDER BY', $filterWhere);
+
+						if (count($filterWhere) > 1)
+						{
+							$orders[] = $filterWhere[count($filterWhere) - 1];
+						}
+					}
+
+					$order = implode(', ', $orders);
+
 					break;
 			}
 
@@ -2691,11 +2714,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
 
+		$this->getOrderBy('filter', $query);
+
 		$db->setQuery($query, $offset, $limit);
 		$sql     = (string) $query;
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows    = $db->loadObjectList($groupBy);
-		ksort($rows);
+		//ksort($rows);
 
 		return $rows;
 	}
