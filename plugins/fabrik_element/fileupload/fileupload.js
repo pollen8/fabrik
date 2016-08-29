@@ -174,7 +174,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                 });
 
                 if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
-                    this.makeDeletedImageField(this.groupid, b.get('data-file')).appendTo(c);
+                    this.makeDeletedImageField(this.groupid, b.data('file')).appendTo(c);
                     Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
                 }
 
