@@ -2377,10 +2377,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			switch ($params->get('filter_groupby', 'text'))
 			{
 				case 'text':
-					$order = $joinLabel . 'ASC ';
+					// If rendering as multi/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
+					if ($this->isJoin())
+					{
+						$join      = $this->getJoinModel()->getJoin();
+						$to    = $this->getDbName();
+						$joinLabel = str_replace($join->table_join, $to, $joinLabel);
+					}
+					$order = $joinLabel . ' ASC ';
 					break;
 				case 'value':
-					$order = $joinKey . 'ASC ';
+					$order = $joinKey . ' ASC ';
 					break;
 				case '-1':
 				default:
