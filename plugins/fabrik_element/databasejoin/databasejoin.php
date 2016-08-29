@@ -2380,9 +2380,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					// If rendering as multi/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
 					if ($this->isJoin())
 					{
-						$join      = $this->getJoinModel()->getJoin();
-						$to    = $this->getDbName();
-						$joinLabel = str_replace($join->table_join, $to, $joinLabel);
+						if (stristr($joinLabel, "CONCAT"))
+						{
+							$join = $this->getJoinModel()->getJoin();
+							$to        = $this->getDbName();
+							$joinLabel = str_replace($join->table_join, $to, $joinLabel);
+						}
 					}
 					$order = $joinLabel . ' ASC ';
 					break;
