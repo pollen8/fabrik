@@ -1744,8 +1744,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$input   = $this->app->input;
 		$counter = $input->get('counter', 0);
+		$listRef = $this->getListModel()->getRenderContext();
 
-		return $this->getHTMLId() . '_filter_range_' . $range . '_' . $input->get('task') . '.' . $counter;
+		return $this->getHTMLId() . '_' . $listRef . '_filter_range_' . $range . '_' . $input->get('task') . '.' . $counter;
 	}
 
 	/**
