@@ -8749,10 +8749,6 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($groupModels as $groupModel)
 		{
-			$gJoin = $groupModel->isJoin();
-			$elJoin = $elGroupModel->isJoin();
-			$gId = $groupModel->getId();
-			$elId = $elGroupModel->getId();
 			if (
 				(!$groupModel->isJoin() && !$elGroupModel->isJoin())
 				||
