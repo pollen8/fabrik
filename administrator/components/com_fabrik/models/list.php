@@ -308,6 +308,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', 'thismonth', FText::_('COM_FABRIK_THIS_MONTH'));
 				$aConditions[] = JHTML::_('select.option', 'lastmonth', FText::_('COM_FABRIK_LAST_MONTH'));
 				$aConditions[] = JHTML::_('select.option', 'nextmonth', FText::_('COM_FABRIK_NEXT_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'nextweek1', FText::_('COM_FABRIK_NEXT_WEEK1'));
 				$aConditions[] = JHTML::_('select.option', 'birthday', FText::_('COM_FABRIK_BIRTHDAY_TODAY'));
 
 				break;

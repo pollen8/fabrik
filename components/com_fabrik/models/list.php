@@ -8736,19 +8736,28 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Test if a field already exists in the database
 	 *
-	 * @param   string  $field   field to test
-	 * @param   array   $ignore  id's to ignore
+	 * @param   string  $field         field to test
+	 * @param   array   $ignore        id's to ignore
+	 * @param   int     $elGroupModel  group ID of element
 	 *
 	 * @return  bool
 	 */
-	public function fieldExists($field, $ignore = array())
+	public function fieldExists($field, $ignore = array(), $elGroupModel)
 	{
 		$field = JString::strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
 
 		foreach ($groupModels as $groupModel)
 		{
-			if (!$groupModel->isJoin())
+			$gJoin = $groupModel->isJoin();
+			$elJoin = $elGroupModel->isJoin();
+			$gId = $groupModel->getId();
+			$elId = $elGroupModel->getId();
+			if (
+				(!$groupModel->isJoin() && !$elGroupModel->isJoin())
+				||
+				($groupModel->getId() == $elGroupModel->getId())
+			)
 			{
 				// Don't check groups that aren't in this table
 				$elementModels = $groupModel->getMyElements();
@@ -10665,9 +10674,6 @@ class FabrikFEModelList extends JModelForm
 		$tbl = array_shift($colBits);
 
 		$joinFound = false;
-		$ids = ArrayHelper::toInteger($ids);
-		$ids = implode(',', $ids);
-		$dbk = $k = $table->db_primary_key;
 		// $joins = $this->getJoins();
 
 		// If the update element is in a join replace the key and table name with the join table's name and key
@@ -10724,6 +10730,9 @@ class FabrikFEModelList extends JModelForm
 
 		if (!$joinFound)
 		{
+			$ids = ArrayHelper::toInteger($ids);
+			$ids = implode(',', $ids);
+			$dbk = $k = $table->db_primary_key;
 			$db_table_name = $table->db_table_name;
 			$query = $db->getQuery(true);
 			$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');

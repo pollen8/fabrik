@@ -2024,7 +2024,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// $$$ rob - if its a joined group then it can have the same element names
 		if ((int) $groupModel->getGroup()->is_join === 0)
 		{
-			if ($groupListModel->fieldExists($rule->name))
+			if ($groupListModel->fieldExists($rule->name, array(), $groupModel))
 			{
 				$this->app->enqueueMessage(FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'), 'error');
 
@@ -4494,6 +4494,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			case 'nextmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
 					. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				break;
+			case 'nextweek1':
+				$query = ' (YEARWEEK(' . $key . ',1) = YEARWEEK(DATE_ADD(NOW(), INTERVAL 1 WEEK), 1))';
 				break;
 			case 'birthday':
 				$query = '(MONTH(' . $key . ') = MONTH(CURDATE()) AND  DAY(' . $key . ') = DAY(CURDATE())) ';
