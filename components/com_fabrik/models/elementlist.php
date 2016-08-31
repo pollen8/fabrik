@@ -206,7 +206,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
-			$str = $this->filterQueryMultiValues($key, $condition, $originalValue, $evalFilter);
+			$str = $this->filterQueryMultiValues($key, $condition, $originalValue, $evalFilter, $type);
 		}
 		else
 		{
@@ -248,14 +248,20 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * @param $condition
 	 * @param $originalValue
 	 * @param $evalFilter
+	 * @param $type
 	 *
 	 * @return string
 	 */
-	protected function filterQueryMultiValues ($key, $condition, $originalValue, $evalFilter)
+	protected function filterQueryMultiValues ($key, $condition, $originalValue, $evalFilter, $type)
 	{
 		$str = array();
 
-		if ($evalFilter)
+		/**
+		 * Grrrr.  For some reason, $evalFilter is getting set in element filter session when it shouldn't.
+		 * This code was only meant for eval'ing of prefilters, so until i can work out why eval is getting set,
+		 * just restrict this to prefilter types
+		 */
+		if ($evalFilter && ($type === 'prefilter' || $type === 'menuprefilter'))
 		{
 			$originalValue = stripslashes(htmlspecialchars_decode($originalValue, ENT_QUOTES));
 			$originalValue = @eval($originalValue);
