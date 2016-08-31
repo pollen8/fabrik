@@ -155,7 +155,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                 self = this,
                 b = c.find('[data-file]');
             if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
-                var joinPkVal = b.data('data-join-pk-val');
+                var joinPkVal = b.data('join-pk-val');
                 new jQuery.ajax({
                     url : '',
                     data: {
