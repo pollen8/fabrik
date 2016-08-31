@@ -47,10 +47,12 @@ define(['jquery'], function (jQuery) {
             }
 
             // In ajax pop up form. Close the validation tip message when we focus in the element
-            Fabrik.on('fabrik.form.element.added', function () {
-                self.addNewEvent(self.getFocusEvent(), function () {
-                    self.removeTipMsg();
-                });
+            Fabrik.on('fabrik.form.element.added', function (form, elId, el) {
+                if (el === self) {
+                    self.addNewEvent(self.getFocusEvent(), function () {
+                        self.removeTipMsg();
+                    });
+                }
             });
 
             return this.setElement();
