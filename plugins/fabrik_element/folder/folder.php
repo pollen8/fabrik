@@ -38,7 +38,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$selected = $this->getValue($data, $repeatCounter);
-		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
+		$errorCss = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$aRoValues = array();
 		$path = JPATH_ROOT . '/' . $params->get('fbfolder_path');
 		$opts = array();
@@ -89,7 +89,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$displayData->name = $name;
 		$displayData->selected = $selected;
 		$displayData->id = $id;
-		$displayData->errorCSS = $errorCSS;
+		$displayData->errorCss = $errorCss;
 
 		return $layout->render($displayData);
 	}
