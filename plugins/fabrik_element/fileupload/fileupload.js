@@ -179,6 +179,9 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                 }
 
                 b.remove();
+	            var el = jQuery(this.element);
+	            var i = el.closest('.fabrikElement').find('img');
+	            i.attr('src', this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '');
             }
         },
 
