@@ -390,6 +390,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 							$html .= $rowData['fabrik_view'];
 						}
+						$template_nl2br = false;
 					}
 
 					if ($template_nl2br)
