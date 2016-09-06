@@ -306,6 +306,8 @@ function fabrikParseRoute($segments)
 	 */
 	if (!$viewFound)
 	{
+		$app   = JFactory::getApplication();
+		$app->enqueueMessage(JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
 		$menus = JMenu::getInstance('site');
 		$menu  = $menus->getActive();
 		$link  = parse_url($menu->link);
