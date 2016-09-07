@@ -903,7 +903,11 @@ class FabrikFEModelList extends JModelForm
 		catch (Exception $e)
 		{
 			$item = $this->getTable();
-			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br /><br /><pre>' . $e->getMessage() . '</pre>';
+			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br />';
+			if (FabrikHelperHTML::isDebug(true))
+			{
+				$msg .= '<br /><pre>' . $e->getMessage() . '</pre>';
+			}
 			throw new RuntimeException($msg, 500);
 		}
 
