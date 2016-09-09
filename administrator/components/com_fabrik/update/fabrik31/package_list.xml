@@ -60,7 +60,6 @@
   <extension name="Fabrik form: alphauserpoints" element="alphauserpoints" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_alphauserpoints.xml"/>
   <extension name="Fabrik form: article" element="article" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_article.xml"/>
   <extension name="Fabrik form: autofill" element="autofill" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_autofill.xml"/>
-  <extension name="Fabrik form: campaignmonitor" element="campaignmonitor" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_campaignmonitor.xml"/>
   <extension name="Fabrik form: clone" element="clone" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_clone.xml"/>
   <extension name="Fabrik form: comment" element="comment" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_comment.xml"/>
   <extension name="Fabrik form: confirmation" element="confirmation" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_confirmation.xml"/>
@@ -81,7 +80,6 @@
   <extension name="Fabrik form: redirect" element="redirect" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_redirect.xml"/>
   <extension name="Fabrik form: rest" element="rest" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_rest.xml"/>
   <extension name="Fabrik form: salesforce" element="salesforce" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_salesforce.xml"/>
-  <extension name="Fabrik form: slack" element="slack" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_slack.xml"/>
   <extension name="Fabrik form: sms" element="sms" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_sms.xml"/>
   <extension name="Fabrik form: subscriptions" element="subscriptions" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_subscriptions.xml"/>
   <extension name="Fabrik form: twitter" element="twitter" type="plugin" folder="fabrik_form" version="3.5.1" detailsurl="http://fabrikar.com/update/fabrik31/plg_form_twitter.xml"/>
