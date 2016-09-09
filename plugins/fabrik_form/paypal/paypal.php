@@ -189,6 +189,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$subDb->setQuery($query);
 			$sub = $subDb->loadObject();
 
+			// Log the query
+			$this->doLog('fabrik.paypal.onAfterProcess.debug', "Subscription query: " . (string)$query);
+
+
 			if (is_object($sub))
 			{
 				$opts['p3'] = $sub->p3;

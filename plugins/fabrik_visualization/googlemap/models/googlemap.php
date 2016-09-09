@@ -711,6 +711,27 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 		$uri = JURI::getInstance();
 		$src = $uri->getScheme() . "://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconStr";
+
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$client = $config->get('google_buisness_client_id', '');
+		$signature = $config->get('google_buisness_signature', '');
+
+		if ($client !== '')
+		{
+			if ($signature === '')
+			{
+				throw new Exception('You have entered a Google Maps Business Client id, but have not supplied a signature value');
+			}
+
+			$src .= '&client=' . $client;
+			$src .= '&signature=' . $signature;
+		}
+		elseif ($apiKey !== '')
+		{
+			$src .= '&key=' . $apiKey;
+		}
+
 		$str = '<img src="' . $src . '" alt="static map" />';
 
 		return $str;
