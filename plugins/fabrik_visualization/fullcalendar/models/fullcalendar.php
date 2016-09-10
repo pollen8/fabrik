@@ -495,7 +495,9 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
 								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
-							$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
+							//$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
+							$row->link = $defaultURL;
+							$row->customLink = $thisCustomUrl;
 							$row->details = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=details&formid='
 								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$row->custom = $customUrl != '';
