@@ -82,6 +82,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		}
 		else
 		{
+			jimport('simplepie.simplepie');
 			$rssDoc = new SimplePie();
 			$rssDoc->set_feed_url('http://feeds.feedburner.com/fabrik');
 			$rssDoc->set_cache_duration(86400);
