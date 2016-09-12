@@ -154,6 +154,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
 					}
+					
+					if ($fd == 'D month YYYY')
+					{
+						$detailValue = $dayDisplay . ' ' . $monthDisplay . ' ' . $year;
+					}
 
 					if ($fd == 'Month d, YYYY')
 					{
