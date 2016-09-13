@@ -2103,6 +2103,8 @@ class FabrikWorker
 	 */
 	public static function itemId($listId = null)
 	{
+		static $listIds = array();
+
 		$app = JFactory::getApplication();
 
 		if (!$app->isAdmin())
@@ -2110,19 +2112,31 @@ class FabrikWorker
 			// Attempt to get Itemid from possible list menu item.
 			if (!is_null($listId))
 			{
-				$db         = JFactory::getDbo();
-				$myLanguage = JFactory::getLanguage();
-				$myTag      = $myLanguage->getTag();
-				$qLanguage  = !empty($myTag) ? ' AND ' . $db->q($myTag) . ' = ' . $db->qn('m.language') : '';
-				$query      = $db->getQuery(true);
-				$query->select('m.id AS itemId')->from('#__extensions AS e')
-					->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
-					->where('e.name = "com_fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"' . $qLanguage);
-				$db->setQuery($query);
-
-				if ($itemId = $db->loadResult())
+				if (!array_key_exists($listId, $listIds))
 				{
-					return $itemId;
+					$db         = JFactory::getDbo();
+					$myLanguage = JFactory::getLanguage();
+					$myTag      = $myLanguage->getTag();
+					$qLanguage  = !empty($myTag) ? ' AND ' . $db->q($myTag) . ' = ' . $db->qn('m.language') : '';
+					$query      = $db->getQuery(true);
+					$query->select('m.id AS itemId')->from('#__extensions AS e')
+						->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
+						->where('e.name = "com_fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"' . $qLanguage);
+					$db->setQuery($query);
+
+					if ($itemId = $db->loadResult())
+					{
+						$listIds[$listId] = $itemId;
+					}
+					else{
+						$listIds[$listId] = false;
+					}
+				}
+				else{
+					if ($listIds[$listId] !== false)
+					{
+						return $listIds[$listId];
+					}
 				}
 			}
 
