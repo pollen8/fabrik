@@ -1478,7 +1478,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 
-		if ($params->get('databasejoin_readonly_link') == 1)
+		if ($this->app->input->get('print', '') !== '1' && $params->get('databasejoin_readonly_link') == 1)
 		{
 			if ($popUrl = $this->popUpFormUrl())
 			{
