@@ -317,7 +317,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 			// Used in list model setLimits
 			$input->set('limit' . $listId, $recLimit);
-			$listModel->setLimits();
+			$listModel->setLimits(0, $recLimit);
 			$listModel->getPagination(0, 0, $recLimit);
 			$data = $listModel->getData();
 			$this->txt = array();
