@@ -342,6 +342,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					}
 				}
 
+				JDEBUG ? $profiler->mark("email: sendMail start: " . $email) : null;
+
 				$res = FabrikWorker::sendMail(
 					$emailFrom,
 					$emailFromName,
@@ -356,6 +358,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					$returnPathName,
 					$customHeaders
 				);
+
+				JDEBUG ? $profiler->mark("email: sendMail end: " . $email) : null;
 
 				/*
 				 * $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message,
@@ -386,6 +390,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		}
 
 		$this->updateRow();
+
+		JDEBUG ? $profiler->mark("email: end: onAfterProcess") : null;
 
 		return true;
 	}
