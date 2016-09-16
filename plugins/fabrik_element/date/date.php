@@ -90,8 +90,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			if (FabrikWorker::isDate($d))
 			{
 				$date = JFactory::getDate($d);
+				$view = FArrayHelper::getValue($opts, 'view', 'list');
 
-				if ($this->shouldApplyTz('list'))
+				if ($this->shouldApplyTz($view))
 				{
 					$date->setTimeZone($timeZone);
 				}
@@ -400,6 +401,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	protected function shouldApplyTz($view = 'form')
 	{
+		// if formatting for plugins (getProcessData), TZ has already been dealt with
+		if ($view == 'email')
+		{
+			return false;
+		}
+
 		$formModel    = $this->getFormModel();
 		$params       = $this->getParams();
 		$storeAsLocal = (bool) $params->get('date_store_as_local', 0);
@@ -636,7 +643,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// $$$ hugh - need to convert to database format so we GMT-ified date
 		$dummy = new stdClass;
-		return $this->renderListData($value, $dummy);
+		$opts  = array(
+			'view' => 'email'
+		);
+		return $this->renderListData($value, $dummy, $opts);
 		/* $$$ rob - no need to covert to db format now as its posted as db format already.
 		 *return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass);
 		 */
