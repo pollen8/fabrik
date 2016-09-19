@@ -16,6 +16,9 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
         watchSubmit: function () {
             var form = jQuery('#emailtable');
             form.submit(function (event) {
+                if (typeof WFEditor !== 'undefined') {
+                    WFEditor.getContent('message');
+                }
                 Fabrik.loader.start(form);
                 jQuery.ajax({
                     type  : 'POST', // define the type of HTTP verb we want to use (POST for our form)
