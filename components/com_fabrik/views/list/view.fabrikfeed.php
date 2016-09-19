@@ -215,6 +215,7 @@ class FabrikViewList extends FabrikViewListBase
 							}
 							else
 							{
+								$enclosureUrl = ltrim($enclosureUrl, '/\\');
 								$enclosureFile = COM_FABRIK_BASE . $enclosureUrl;
 								$enclosureUrl = COM_FABRIK_LIVESITE . str_replace('\\', '/', $enclosureUrl);
 							}

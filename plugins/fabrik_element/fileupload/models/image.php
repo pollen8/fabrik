@@ -70,6 +70,7 @@ class ImageRenderModel
 		 * So we have to work out if we're being called from a table or form
 		 */
 		$formModel = $model->getFormModel();
+		$listModel = $model->getListModel();
 		$title     = basename($file);
 
 		if ($params->get('fu_title_element') == '')
@@ -134,7 +135,9 @@ class ImageRenderModel
 		$displayData->lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
 		$displayData->fullSize      = $model->storage->preRenderPath($fullSize);
 		$displayData->file          = $file;
-		$displayData->makeLink      = $params->get('make_link', true) && !$this->fullImageInRecord($params);
+		$displayData->makeLink      = $params->get('make_link', true)
+			&& !$this->fullImageInRecord($params)
+			&& $listModel->getOutPutFormat() !== 'feed';
 		$displayData->title         = $title;
 		$displayData->isJoin        = $model->isJoin();
 		$displayData->width         = $width;
