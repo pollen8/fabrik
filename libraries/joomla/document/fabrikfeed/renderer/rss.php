@@ -154,7 +154,8 @@ class JDocumentRendererrss extends JDocumentRenderer
 			$feed.= "		<item>\n";
 			$feed.= "			<title><![CDATA[" .  htmlspecialchars(strip_tags(html_entity_decode($data->items[$i]->title, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8') . "]]></title>\n";
 			$feed.= "			<link>" . $url . $data->items[$i]->link . "</link>\n";
-			$feed.= "			<description><![CDATA[" . htmlspecialchars(html_entity_decode($this->_relToAbs($data->items[$i]->description), ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8') . "]]></description>\n";
+			//$feed.= "			<description><![CDATA[" . htmlspecialchars(html_entity_decode($this->_relToAbs($data->items[$i]->description), ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8') . "]]></description>\n";
+			$feed.= "			<description><![CDATA[" . html_entity_decode($this->_relToAbs($data->items[$i]->description), ENT_COMPAT, 'UTF-8') . "]]></description>\n";
 
 			if ($data->items[$i]->author != "")
 			{

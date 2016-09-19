@@ -244,11 +244,11 @@ class FabrikViewList extends FabrikViewListBase
 					if ($title == '')
 					{
 						// Set a default title
-						$title = $row->$dbColName['colName'];
+						$title = $row->{$dbColName['colName']};
 					}
 
 					// Rob - was stripping tags - but aren't they valid in the content?
-					$rssContent = $row->$dbColName['colName'];
+					$rssContent = $row->{$dbColName['colName']};
 					$found = false;
 
 					foreach ($rssTags as $rssTag => $namespace)
