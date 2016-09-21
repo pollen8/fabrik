@@ -582,6 +582,10 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
             url += '&resetfilters=1';
             url += '&c=' + this.options.listRef;
 
+            var onContentLoaded = function () {
+                this.fitToContent(false);
+            };
+
             this.windowopts = {
                 'id'             : id,
                 modalId          : 'db_join_select',
@@ -594,9 +598,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                 'height'         : 320,
                 'minimizable'    : false,
                 'collapsible'    : true,
-                'onContentLoaded': function () {
-                    this.fitToContent();
-                }
+                'onContentLoaded': onContentLoaded,
             };
             Fabrik.getWindow(this.windowopts);
         },

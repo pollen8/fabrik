@@ -101,7 +101,18 @@ if (!function_exists('fabrik_pagination_item_active'))
 {
 	function fabrik_pagination_item_active(&$item, $listid)
 	{
-		return '<a title="' . $item->text . '" href="' . $item->link . '">' . $item->text . '</a>';
+		switch ($item->key)
+		{
+			case 'previous':
+				$rel = 'rel="prev" ';
+				break;
+			case 'next':
+				$rel = 'rel="next" ';
+				break;
+			default:
+				$rel = '';
+		}
+		return '<a ' . $rel . 'title="' . $item->text . '" href="' . $item->link . '">' . $item->text . '</a>';
 	}
 }
 
