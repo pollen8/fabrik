@@ -68,6 +68,8 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			{
 				foreach ($group as $row)
 				{
+					$row = ArrayHelper::fromObject($row);
+
 					if (!empty($condition))
 					{
 						$this_condition = $w->parseMessageForPlaceHolder($condition, $row);
@@ -77,8 +79,6 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 							continue;
 						}
 					}
-
-					$row = ArrayHelper::fromObject($row);
 
 					foreach ($to as $thisTo)
 					{
