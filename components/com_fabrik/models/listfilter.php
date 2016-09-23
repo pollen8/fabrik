@@ -871,7 +871,8 @@ class FabrikFEModelListfilter extends FabModel
 
 								foreach ($joins as $join)
 								{
-									$key = $db->qn($join->table_join) . '.' . array_pop(explode('.', $key));
+									$key = explode('.', $key);
+									$key = $db->qn($join->table_join) . '.' . array_pop($key);
 
 									if (array_key_exists($key, $filter_elements))
 									{
