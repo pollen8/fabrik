@@ -275,7 +275,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             // Set window dimensions before center - needed for fileupload crop
             this.window.css('width', this.options.width);
-            this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
+            this.window.css('height', parseInt(this.options.height) + this.window.find('*[data-role="title"]').height());
 
             if (this.options.modal) {
                 this.fitToContent(false);
@@ -348,7 +348,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             var bottomBarHeight = 0;
             var topBarHeight = 15;
-            var contentHeight = this.options.height - bottomBarHeight - topBarHeight;
+            var contentHeight = parseInt(this.options.height) - bottomBarHeight - topBarHeight;
             if (contentHeight < this.options.loadHeight) {
                 contentHeight = this.options.loadHeight;
             }
@@ -621,7 +621,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             var testH = this.contentHeight() + this.footerHeight() + this.titleHeight(),
                 winHeight = jQuery(window).height(),
                 h = testH < winHeight ? testH : winHeight;
-            this.window.css('height', Math.max(this.options.height, h));
+            this.window.css('height', Math.max(parseInt(this.options.height), h));
         },
 
         /**
