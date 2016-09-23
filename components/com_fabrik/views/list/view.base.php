@@ -527,7 +527,7 @@ class FabrikViewListBase extends FabrikView
 		{
 			$this->rssLink = $model->getRSSFeedLink();
 
-			if ($this->rssLink != '')
+			if ($this->rssLink != '' && $this->app->input->get('format') === 'html')
 			{
 				$attribs = array('type' => 'application/rss+xml', 'title' => 'RSS 2.0');
 				$this->doc->addHeadLink($this->rssLink, 'alternate', 'rel', $attribs);

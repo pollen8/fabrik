@@ -65,4 +65,9 @@ class FabrikViewList extends FabrikViewListBase
 			$this->output();
 		}
 	}
+
+	public function layoutFilters()
+	{
+		return '';
+	}
 }
