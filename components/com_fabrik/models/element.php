@@ -3366,8 +3366,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		// If no custom list layout found revert to the default list.filter.fabrik-filter-checkbox renderer
 		if ($res === '')
 		{
-			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
-			$layout   = new JLayoutFile('list.filter.fabrik-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			//$basePath = COM_FABRIK_FRONTEND . '/layouts/';
+			//$layout   = new JLayoutFile('list.filter.fabrik-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			//$layout = $this->getLayout('list.filter.fabrik-filter-checkbox');
+			$layout = $this->getListModel()->getLayout('list.filter.fabrik-filter-checkbox');
 			$res      = $layout->render($displayData);
 		}
 
