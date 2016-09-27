@@ -6542,7 +6542,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->loadMeForAjax();
 		$cache  = FabrikWorker::getCache();
 		$search = $input->get('value', '', 'string');
-		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
+		// uh oh, can't serialize PDO db objects so no can cache, as J! serializes the args
+		if ($this->config->get('dbtype') === 'pdomysql')
+		{
+			echo $this->cacheAutoCompleteOptions($this, $search);
+		}
+		else
+		{
+			echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
+		}
 	}
 
 	/**
