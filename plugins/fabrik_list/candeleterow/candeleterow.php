@@ -70,7 +70,15 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 		else
 		{
 			$dbPrimaryKey = $this->getModel()->getPrimaryKey(true);
-			$pkVal = $data->$dbPrimaryKey;
+			if (isset($data->$dbPrimaryKey))
+			{
+				$pkVal = $data->$dbPrimaryKey;
+			}
+			else
+			{
+				// probably a new form, so nope, no rowid, can't delete
+				return false;
+			}
 		}
 
 		if (array_key_exists($pkVal, $results))
