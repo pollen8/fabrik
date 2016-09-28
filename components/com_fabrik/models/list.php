@@ -6285,30 +6285,46 @@ class FabrikFEModelList extends JModelForm
 			|| ($params->get('search-mode', '0') == 'OR'))
 		{
 			// One field to search them all (and in the darkness bind them)
-			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
-			$v = $this->getFilterModel()->getSearchAllValue('html');
+			//$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
+			//$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
-			$searchLabel = FText::_($params->get('search-all-label', 'COM_FABRIK_SEARCH'));
-			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
+			//$searchLabel = FText::_($params->get('search-all-label', 'COM_FABRIK_SEARCH'));
+			//$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->id = 'searchall_' . $this->getRenderContext();
 			$o->displayValue = '';
-			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '"title="' . $searchLabel . '" value="' . $v
-			. '" class="' . $class . '" name="' . $requestKey . '" id="' . $id . '" />';
+			//$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '"title="' . $searchLabel . '" value="' . $v
+			//. '" class="' . $class . '" name="' . $requestKey . '" id="' . $id . '" />';
+
+			$displayData = new stdClass;
+			$displayData->id = $id;
+			$displayData->searchLabel = FText::_($params->get('search-all-label', 'COM_FABRIK_SEARCH'));;
+			$displayData->class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
+			$displayData->v = $this->getFilterModel()->getSearchAllValue('html');
+			$displayData->requestKey = $this->getFilterModel()->getSearchAllRequestKey();;
 
 			if ($params->get('search-mode-advanced') == 1)
 			{
-				$searchOpts = array();
-				$searchOpts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
-				$searchOpts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
-				$searchOpts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
-				$searchOpts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
-				$mode = $this->app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
-				$o->filter .= '&nbsp;'
-						. JHTML::_('select.genericList', $searchOpts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
+				$displayData->advanced = true;
+				$displayData->searchOpts = array();
+				$displayData->searchOpts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
+				$displayData->searchOpts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
+				$displayData->searchOpts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
+				$displayData->searchOpts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
+				$displayData->mode = $this->app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
+
+				//$o->filter .= '&nbsp;'
+				//		. JHTML::_('select.genericList', $searchOpts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
+			}
+			else
+			{
+				$displayData->advanced = false;
 			}
 
+			$layout = $this->getLayout('list.fabrik-search-all');
+			$o->filter = $layout->render($displayData);
+
 			$o->name = 'all';
-			$o->label = $searchLabel;
+			$o->label = $layoutData->searchLabel;
 			$o->displayValue = '';
 			$aFilters[] = $o;
 		}
