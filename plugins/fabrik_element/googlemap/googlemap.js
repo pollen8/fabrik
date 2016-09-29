@@ -80,7 +80,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             'directionsFromLat'   : 0,
             'directionsFromLon'   : 0,
             'reverse_geocode_fields': {},
-            'key'                 : false
+            'key'                 : false,
+            'mapShown'            : true
         },
 
         loadScript: function () {
@@ -90,6 +91,10 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
         initialize: function (element, options) {
             this.mapMade = false;
             this.parent(element, options);
+
+            if (!this.options.mapShown) {
+                return;
+            }
 
             this.loadFn = function () {
                 // experimental support for OSM rendering
