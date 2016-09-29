@@ -1315,8 +1315,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             // handle our view/edit links with data-rowid
                             href = jQuery(val).prop('href');
                             var rowid = jQuery(val).data('rowid');
-                            cell.prop('href', href);
-                            cell.data('rowid', rowid);
+                            // need to only do this for our links, not custom detail links
+                            jQuery.each(cell, function (thisKey, thisCell) {
+                                if (jQuery(thisCell).data('iscustom') === 0) {
+                                    jQuery(thisCell).prop('href', href);
+                                    jQuery(thisCell).data('rowid', rowid);
+                                }
+                            });
                         }
                         catch (err) {
                             // val wasn't an A tag, so just treat it as an href
