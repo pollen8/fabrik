@@ -6324,7 +6324,7 @@ class FabrikFEModelList extends JModelForm
 			$o->filter = $layout->render($displayData);
 
 			$o->name = 'all';
-			$o->label = $layoutData->searchLabel;
+			$o->label = $displayData->searchLabel;
 			$o->displayValue = '';
 			$aFilters[] = $o;
 		}
