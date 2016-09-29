@@ -275,7 +275,10 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                         el.val('');
                     }
                 } else {
-                    el.find('img').prop('src', val);
+                    var img = el.closest('div.fabrikSubElementContainer').find('img');
+                    if (img) {
+                        img.prop('src', val);
+                    }
                 }
             }
         },
