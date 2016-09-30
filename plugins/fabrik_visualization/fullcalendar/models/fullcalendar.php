@@ -196,7 +196,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$legend = (array) $params->get('legendtext');
 			$stati = (array) $params->get('status_element');
 			$allDayEl = (array) $params->get('allday_element');
-
+			$popupTemplates = (array) $params->get('popup_template');
 			$this->events = array();
 
 			for ($i = 0; $i < count($tables); $i++)
@@ -245,6 +245,8 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 						$table_label[$i] = '';
 					}
 
+					$popupTemplate = FArrayHelper::getValue($popupTemplates, $i, '');
+
 					$customUrl = FArrayHelper::getValue($customUrls, $i, '');
 					$status = FArrayHelper::getValue($stati, $i, '');
 					$allday = FArrayHelper::getValue($allDayEl, $i, '');
@@ -260,7 +262,8 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 						'listid' => $tables[$i],
 						'customUrl' => $customUrl,
 						'status' => $status,
-						'allday' => $allday
+						'allday' => $allday,
+						'popupTemplate' => $popupTemplate
 					);
 				}
 			}
@@ -523,6 +526,8 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							}
 							$row->startShowTime = (bool)$data['startShowTime'];
 							$row->endShowTime = (bool)$data['endShowTime'];
+
+							$row->popupTemplate = $w->parseMessageForPlaceHolder($data['popupTemplate'], $row);
 /*
 							$mydate = new DateTime($row->startdate);
 							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
@@ -673,19 +678,13 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		$input = $app->input;
 		$id = $input->getInt('id');
 		$listid = $input->getInt('listid');
-		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$listModel->setId($listid);
-		$list = $listModel->getTable();
-		$tableDb = $listModel->getDb();
-		$db = FabrikWorker::getDbo(true);
-		$query = $db->getQuery(true);
-		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $listid);
-		$db->setQuery($query);
-		$tablename = $db->loadResult();
-		$query = $tableDb->getQuery(true);
-		$query->delete(FabrikString::safeColName($tablename))->where($list->db_primary_key . ' = ' . $id);
-		$tableDb->setQuery($query);
-		$tableDb->execute();
+		if (!empty($id) && !empty($listid))
+		{
+			$ids = array($id);
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+			$listModel->setId($listid);
+			$ok = $listModel->deleteRows($ids);
+		}
 	}
 
 	/**
