@@ -251,6 +251,15 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 }
                 body.getElement('#viewstart').innerHTML = dispStartDate + dispStartTime;
                 body.getElement('#viewend').innerHTML = dispEndDate + dispEndTime;
+                var pt = jQuery(body).find('[data-role=fabrik-popup-template]');
+                if (pt) {
+                    if (e.popupTemplate !== '') {
+                        jQuery(pt).prepend(e.popupTemplate);
+                    }
+                    else {
+                        jQuery(pt).hide();
+                    }
+                }
                 jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML'));
 
                 buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons']);
