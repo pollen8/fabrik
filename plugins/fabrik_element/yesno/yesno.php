@@ -102,7 +102,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	public function renderListData_pdf($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		$raw = $this->getFullName() . '_raw';
+		$raw = $this->getFullName(true, false) . '_raw';
 		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
 
