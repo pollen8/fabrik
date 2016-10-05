@@ -370,6 +370,14 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 
 		self::$exportedTables[] = $tableName;
 		//$exporter    = $this->db->getExporter();
+
+
+		// Until the J! exporters are fixed, we only handle Mysqli (with out extended class)
+		if (!($this->db instanceof JDatabaseDriverMysqli))
+		{
+			throw new Exception('Sorry, we currently only support the Mysqli database driver for export');
+		}
+
 		$exporter = new JDatabaseExporterMysqli2;
 		$exporter->setDbo($this->db);
 		$exporter->from($tableName);
