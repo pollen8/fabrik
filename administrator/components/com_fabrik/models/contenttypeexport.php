@@ -382,7 +382,15 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		$exporter->setDbo($this->db);
 		$exporter->from($tableName);
 		$tableDoc = new DOMDocument();
-		$tableDoc->loadXML((string) $exporter);
+		$xml = (string) $exporter;
+
+		// magic __toString can't throw exceptions, so we've overridden it, and store the exception
+		if (empty($xml) && $exporter->exception !== null)
+		{
+			throw new Exception('An error occured in XML export: ' . $exporter->exception->getMessage());
+		}
+
+		$tableDoc->loadXML($xml);
 		$structures = $tableDoc->getElementsByTagName('table_structure');
 
 		foreach ($structures as $table)
