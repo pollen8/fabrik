@@ -11,18 +11,30 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
 $d = $displayData;
 $data = $d->value;
 $tmpl = $d->tmpl;
+$format = $d->format;
+
 $j3 = FabrikWorker::j3();
 
+$opts = array();
+$properties = array();
+
+if ($d->format == 'pdf') :
+	$opts['forceImage'] = true;
+	FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+endif;
+
 if ($data == '1') :
-	$icon = $j3 ? 'checkmark.png' : '1.png';
-	$opts = array('alt' => FText::_('JYES'));
+	$icon = $j3 && $format != 'pdf' ? 'checkmark.png' : '1.png';
+	$properties['alt'] = FText::_('JYES');
 
-	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $opts);
+	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
 else :
-	$icon = $j3 ? 'remove.png' : '0.png';
+	$icon = $j3 && $format != 'pdf' ? 'remove.png' : '0.png';
+	$properties['alt'] = FText::_('JNO');
 
-	echo FabrikHelperHTML::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
+	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
 endif;

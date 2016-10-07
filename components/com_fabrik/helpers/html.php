@@ -1244,10 +1244,10 @@ EOD;
 	 *
 	 * @return  void
 	 */
-	public static function loadBootstrapCSS()
+	public static function loadBootstrapCSS($force = false)
 	{
 		$app = JFactory::getApplication();
-		if ($app->input->get('loadbootstrapcss', '') !== '')
+		if ($force || $app->input->get('loadbootstrapcss', '') !== '')
 		{
 			$doc = JFactory::getDocument();
 			JHtmlBootstrap::loadCss(true, $doc->direction);

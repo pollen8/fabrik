@@ -40,6 +40,7 @@ class FabrikViewList extends FabrikViewListBase
 
 		if (parent::display($tpl) !== false)
 		{
+			FabrikhelperHTML::loadBootstrapCSS(true);
 			$model = $this->getModel();
 			$params = $model->getParams();
 			$size = $params->get('pdf_size', 'A4');
