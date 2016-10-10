@@ -339,23 +339,20 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 	{
 		if (!isset($this->canAdd))
 		{
-			$params = $this->getParams();
-			$lists = (array) $params->get('fullcalendar_table');
+			$params       = $this->getParams();
+			$lists        = (array) $params->get('fullcalendar_table');
+			$this->canAdd = false;
 
 			foreach ($lists as $id)
 			{
 				$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($id);
 
-				if (!$listModel->canAdd())
+				if ($listModel->canAdd())
 				{
-					$this->canAdd = false;
-
-					return false;
+					$this->canAdd = true;
 				}
 			}
-
-			$this->canAdd = true;
 		}
 
 		return $this->canAdd;

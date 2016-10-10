@@ -36,6 +36,16 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
+
+		foreach ($rows as $rowkey => $row) {
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
+			$listModel->setId($row->value);
+			if (!$listModel->canAdd())
+			{
+				unset($rows[$rowkey]);
+			}
+		}
+
 		$model->getVisualization();
 		$options   = array();
 		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
