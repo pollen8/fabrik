@@ -205,7 +205,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         calSelect: function (calendar, date) {
 
             // Test the date is selectable...
-            if (calendar.dateClicked && !this.dateSelect(calendar.date)) {
+            if (calendar.dateClicked && this.dateSelect(calendar.date) !== true) {
                 var d = this.setTimeFromField(calendar.date);
                 this.update(d.format('db'));
                 this.getDateField().fireEvent('change');
