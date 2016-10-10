@@ -51,13 +51,16 @@ class FabrikFEModelCSVExport extends FabModel
 	public $model;
 
 	/**
-	 * Get csv export step
+	 * Get csv export step from params or URL
 	 *
 	 * @return  integer  Export step
 	 */
 	public function getStep()
 	{
-		return (int) $this->model->getParams()->get('csv_export_step', $this->step);
+		$input = $this->app->input;
+		$step_param = $this->model->getParams()->get('csv_export_step', $this->step);
+		$step_url = $input->get('csv_export_step', $step_param);
+		return (int) $step_url;
 	}
 
 	/**
