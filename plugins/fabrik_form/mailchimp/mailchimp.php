@@ -41,9 +41,29 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 		if ($params->get('mailchimp_userconfirm', true))
 		{
-			$checked = $this->app->input->get('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
-			$this->html = '<label class="mailchimpsignup"><input type="checkbox" name="fabrik_mailchimp_signup" class="fabrik_mailchimp_signup" value="1" '
-				. $checked . '/>' . $params->get('mailchimp_signuplabel') . '</label>';
+			$api = new MCAPI($params->get('mailchimp_apikey'));
+			$listId = $params->get('mailchimp_listid');
+
+			//get the list of subscribers
+			$subList = $api->listMembers($listId,'subscribed', NULL, 0, 100);
+
+			if ($subList)
+			{
+				$formModel   = $this->getModel();
+				$emailKey    = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
+				$email       = $formModel->getElementData($emailKey);
+				$emails      = array_column($subList['data'], 'email');
+				$emilPresent = in_array($email, $emails);
+				$checked     = $emilPresent ? ' checked="checked"' : '';
+
+				$this->html = '<label class="mailchimpsignup"><input type="checkbox" name="fabrik_mailchimp_signup" class="fabrik_mailchimp_signup" value="1" '
+					. $checked . '/>' . FText::_($params->get('mailchimp_signuplabel')) . '</label>';
+			}
+			else
+			{
+				// API failed, so don't show a checkbox
+				$this->html = JText::_('PLG_FORM_MAILCHIMP_API_FAIL');
+			}
 		}
 		else
 		{
@@ -112,7 +132,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
 
-		if (!array_key_exists('fabrik_mailchimp_signup', $post) && (bool) $params->get('mailchimp_userconfirm', true) === true)
+		if ((bool) $params->get('mailchimp_userconfirm', true) === false)
 		{
 			return;
 		}
@@ -130,62 +150,73 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 			throw new RuntimeException('Mailchimp: no list id specified');
 		}
 
-		$api = new MCAPI($params->get('mailchimp_apikey'));
-		$opts = array();
 		$emailKey = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
-		$firstNameKey = $formModel->getElement($params->get('mailchimp_firstname'), true)->getFullName();
-		$fname = $formModel->formDataWithTableName[$firstNameKey];
-		$opts['FNAME'] = $fname;
-		$opts['NAME'] = $fname;
+		$email    = $formModel->formDataWithTableName[$emailKey];
+		$api      = new MCAPI($params->get('mailchimp_apikey'));
 
-		if ($params->get('mailchimp_lastname', '') !== '')
+		if (!array_key_exists('fabrik_mailchimp_signup', $post))
 		{
-			$lastNameKey = $formModel->getElement($params->get('mailchimp_lastname'), true)->getFullName();
-			$lname = $formModel->formDataWithTableName[$lastNameKey];
-			$opts['LNAME'] = $lname;
-			$opts['NAME'] .= ' ' . $lname;
+			$retval = $api->listUnsubscribe($listId, $email, true, true, true);
 		}
-
-		$email = $formModel->formDataWithTableName[$emailKey];
-		$w = new FabrikWorker;
-		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
-
-		if (!empty($groupOpts))
+		else
 		{
-			foreach ($groupOpts as $groupOpt)
+
+			$opts          = array();
+			$firstNameKey  = $formModel->getElement($params->get('mailchimp_firstname'), true)->getFullName();
+			$fname         = $formModel->formDataWithTableName[$firstNameKey];
+			$opts['FNAME'] = $fname;
+			$opts['NAME']  = $fname;
+
+			if ($params->get('mailchimp_lastname', '') !== '')
 			{
-				$groups = array();
-
-				if (isset($groupOpt->groups))
-				{
-					$groupOpt->groups = $w->parseMessageForPlaceHolder($groupOpt->groups, $emailData);
-
-					// An array of additional options: array('name'=>'Your Interests:', 'groups'=>'Bananas,Apples')
-					$groups[] = ArrayHelper::fromObject($groupOpt);
-				}
-				else
-				{
-					foreach ($groupOpt as $k => $v)
-					{
-						// Don't use emailData as that contains html markup which is not shown in the list view
-						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->formData);
-
-						// But... labels for db joins etc. are not available in formData
-						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);
-					}
-
-					$opts['GROUPINGS'] = $groups;
-				}
+				$lastNameKey   = $formModel->getElement($params->get('mailchimp_lastname'), true)->getFullName();
+				$lname         = $formModel->formDataWithTableName[$lastNameKey];
+				$opts['LNAME'] = $lname;
+				$opts['NAME'] .= ' ' . $lname;
 			}
 
-			$opts['GROUPINGS'] = $groups;
-		}
+			$w         = new FabrikWorker;
+			$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
 
-		// By default this sends a confirmation email - you will not see new members until the link contained in it is clicked!
-		$emailType = $params->get('mailchimp_email_type', 'html');
-		$doubleOptin = (bool) $params->get('mailchimp_double_optin', true);
-		$updateExisting = (bool) $params->get('mailchimp_update_existing', true);
-		$retval = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
+			if (!empty($groupOpts))
+			{
+				foreach ($groupOpts as $groupOpt)
+				{
+					$groups = array();
+
+					if (isset($groupOpt->groups))
+					{
+						$groupOpt->groups = $w->parseMessageForPlaceHolder($groupOpt->groups, $emailData);
+
+						// An array of additional options: array('name'=>'Your Interests:', 'groups'=>'Bananas,Apples')
+						$groups[] = ArrayHelper::fromObject($groupOpt);
+					}
+					else
+					{
+						foreach ($groupOpt as $k => $v)
+						{
+							// Don't use emailData as that contains html markup which is not shown in the list view
+							$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->formData);
+
+							// But... labels for db joins etc. are not available in formData
+							$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);
+						}
+
+						$opts['GROUPINGS'] = $groups;
+					}
+				}
+
+				$opts['GROUPINGS'] = $groups;
+			}
+
+			// By default this sends a confirmation email - you will not see new members until the link contained in it is clicked!
+			$emailType      = $params->get('mailchimp_email_type', 'html');
+			$doubleOptin    = (bool) $params->get('mailchimp_double_optin', true);
+			$updateExisting = (bool) $params->get('mailchimp_update_existing', true);
+			$retval         = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
+
+
+		}
 
 		if ($api->errorCode)
 		{
