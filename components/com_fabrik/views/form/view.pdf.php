@@ -39,6 +39,8 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		if (parent::display($tpl) !== false)
 		{
+			FabrikhelperHTML::loadBootstrapCSS(true);
+
 			/** @var JDocumentpdf $document */
 			$document = $this->doc;
 
