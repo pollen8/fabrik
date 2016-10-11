@@ -159,7 +159,7 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 				$elementName = $elementModel->getFullName(false, false);
 
 				// Was this element already pre-set?  Use array_search() rather than in_array() as we'll need the index if it exists.
-				if (isset($update) && isset($update->coltoupdate) && is_arry($update->coltoupdate))
+				if (isset($update) && isset($update->coltoupdate) && is_array($update->coltoupdate))
 				{
 					$index = array_search($elementName, $update->coltoupdate);
 				}
