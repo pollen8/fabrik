@@ -768,6 +768,7 @@ class FabrikWorker
 				if (!$unsafe)
 				{
 					$msg = self::replaceWithUnsafe($msg);
+					$msg = self::replaceWithSession($msg);
 				}
 
 				$msg = preg_replace("/{}/", "", $msg);
@@ -908,6 +909,66 @@ class FabrikWorker
 		foreach ($replacements as $key => $value)
 		{
 			$msg = str_replace($key, $value, $msg);
+		}
+
+		return $msg;
+	}
+
+	/**
+	 * Called from parseMessageForPlaceHolder to iterate through string to replace
+	 * {placeholder} with session data
+	 *
+	 * @param   string $msg Message to parse
+	 *
+	 * @return    string    parsed message
+	 */
+	public static function replaceWithSession($msg)
+	{
+		if (strstr($msg, '{$session->'))
+		{
+			$session   = JFactory::getSession();
+			$sessionData = array(
+				'id' => $session->getId(),
+				'token' => $session->get('session.token'),
+				'formtoken' => JSession::getFormToken()
+			);
+
+			foreach ($sessionData as $key => $value)
+			{
+				$msg = str_replace('{$session->' . $key . '}', $value, $msg);
+			}
+
+			$msg = preg_replace_callback(
+				'/{\$session-\>(.*?)}/',
+				function($matches) use ($session) {
+					$bits       = explode(':', $matches[1]);
+
+					if (count($bits) > 1)
+					{
+						$sessionKey = $bits[1];
+						$nameSpace  = $bits[0];
+					}
+					else
+					{
+						$sessionKey = $bits[0];
+						$nameSpace  = 'default';
+					}
+
+					$val        = $session->get($sessionKey, '', $nameSpace);
+
+					if (is_string($val))
+					{
+						return $val;
+					}
+					else if (is_numeric($val))
+					{
+						return (string) $val;
+					}
+
+					return '';
+				},
+				$msg
+			);
 		}
 
 		return $msg;

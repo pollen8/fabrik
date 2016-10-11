@@ -5227,7 +5227,9 @@ class FabrikFEModelList extends JModelForm
 			// $$ hugh - testing allowing {QS} replacements in pre-filter values
 			$w->replaceRequest($value);
 			$value = $this->prefilterParse($value);
-			$value = $w->parseMessageForPlaceHolder($value);
+
+			// add false for 'safe' so we include things like session data
+			$value = $w->parseMessageForPlaceHolder($value, null, true, false, null, false);
 
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
