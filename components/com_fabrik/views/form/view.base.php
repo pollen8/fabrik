@@ -970,7 +970,7 @@ class FabrikViewFormBase extends FabrikView
 
 		$layoutData = (object) array(
 			'type' => 'reset',
-			'class' => 'btn-warning button',
+			'class' => 'btn-warning button clearSession',
 			'name' => 'Reset',
 			'label' => $resetLabel
 		);
