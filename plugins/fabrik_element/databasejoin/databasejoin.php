@@ -2341,6 +2341,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			/* $$$ hugh - Sanity check - won't this screw things up if we have a complex preFilter with multiple filters using AND grouping? */
 			$preFilterWhere = str_replace('AND', 'WHERE', $preFilterWhere);
 		}
+		else
+		{
+			if (!preg_match('/^WHERE\s+/i', $where))
+			{
+				$where = 'WHERE ' . $where;
+			}
+		}
 
 		$where .= $preFilterWhere;
 		$sql .= $where;
