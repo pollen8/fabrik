@@ -4011,8 +4011,35 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('viewdetails', $this->access))
 		{
-			$groups = $this->user->getAuthorisedViewLevels();
-			$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
+			$allowPDF = false;
+
+			if ($this->app->input->get('format', 'html') === 'pdf')
+			{
+				$config = JComponentHelper::getParams('com_fabrik');
+
+				if ($config->get('allow_pdf_localhost_view', '0') === '1')
+				{
+					$whitelist = array(
+						'127.0.0.1',
+						'::1'
+					);
+
+					if(in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
+						$allowPDF = true;
+					}
+				}
+
+			}
+
+			if ($allowPDF)
+			{
+				$this->access->viewdetails = true;
+			}
+			else
+			{
+				$groups                    = $this->user->getAuthorisedViewLevels();
+				$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
+			}
 		}
 
 		return $this->access->viewdetails;
