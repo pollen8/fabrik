@@ -388,7 +388,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			JFile::delete($p);
 			$p .= '.pdf';
 
-			$url        = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=details&formid=' . $formId . '&rowid=' . $rowId . '&format=pdf&XDEBUG_SESSION_START=PHPSTORM';
+			$url        = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=details&formid=' . $formId . '&rowid=' . $rowId . '&format=pdf';
 			$pdfContent = file_get_contents($url);
 
 			JFile::write($p, $pdfContent);
