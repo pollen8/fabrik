@@ -49,6 +49,11 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	protected $recordCount = 0;
 
 	/**
+	 * Icon row data
+	 */
+	protected $iconRowData = null;
+
+	/**
 	 * Get HTML text
 	 *
 	 * @return  string
@@ -121,6 +126,65 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
 		$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
 		$opts->use_overlays = (int) $params->get('fb_gm_use_overlays', '0');
+
+		if ($opts->use_overlays)
+		{
+			$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
+			$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
+			$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
+			$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
+
+			$overlayCode = trim($params->get('fb_gm_overlay_code', ''));
+
+			if (!empty($overlayCode))
+			{
+				$overlayArray = eval($overlayCode);
+
+				if (is_array($overlayArray))
+				{
+					if (array_key_exists('urls', $overlayArray)  && is_array($overlayArray['urls']))
+					{
+						$opts->overlay_urls = array_merge($opts->overlay_urls, $overlayArray['urls']);
+					}
+
+					if (array_key_exists('labels', $overlayArray))
+					{
+						$opts->overlay_labels = array_merge($opts->overlay_labels, $overlayArray['labels']);
+					}
+
+					if (array_key_exists('preserveViewports', $overlayArray))
+					{
+						$opts->overlay_preserveviewports = array_merge($opts->overlay_preserveviewports, $overlayArray['preserveViewports']);
+					}
+
+					if (array_key_exists('suppressInfoWindows', $overlayArray))
+					{
+						$opts->overlay_suppressinfowindows = array_merge($opts->overlay_suppressinfowindows, $overlayArray['suppressInfoWindows']);
+					}
+				}
+			}
+
+			$this->overlayData = array(
+				'urls'                => $opts->overlay_urls,
+				'labels'              => $opts->overlay_labels,
+				'preserveViewports'   => $opts->overlay_preserveviewports,
+				'suppressInfoWindows' => $opts->overlay_suppressinfowindows
+			);
+		}
+		else
+		{
+			$opts->overlay_urls                = array();
+			$opts->overlay_labels              = array();
+			$opts->overlay_preserveviewports   = array();
+			$opts->overlay_suppressinfowindows = array();
+			$this->overlayData                 = array(
+				'urls'                => array(),
+				'labels'              => array(),
+				'preserveViewports'   => array(),
+				'suppressInfoWindows' => array()
+			);
+		}
+
 		$opts->use_overlays_sidebar = $opts->use_overlays && (int) $params->get('fb_gm_use_overlays_sidebar', '0');
 		$opts->use_groups = (bool) $params->get('fb_gm_group_sidebar', 0);
 		$opts->groupTemplates = $this->getGroupTemplates();
@@ -566,6 +630,11 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$icons[$v[0] . $v[1]][4] = $width;
 				$icons[$v[0] . $v[1]][5] = $height;
 			}
+
+			$this->iconRowData[] = array (
+				'icon' => $icons[$v[0] . $v[1]],
+				'data' => $rowData
+			);
 
 			$c++;
 		}

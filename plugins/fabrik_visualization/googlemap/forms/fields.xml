@@ -708,6 +708,12 @@
 					<option value="2">Right</option>
 			</field>
 
+			<field name="fb_gm_overlay_code"
+			       type="fabrikeditor"
+			       mode="php"
+			       description="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_CODE_DESC"
+			       label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_CODE_LABEL" />
+
 			<field
 				default="0"
 				class="btn-group"
