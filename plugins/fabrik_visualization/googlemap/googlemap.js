@@ -114,7 +114,22 @@ var FbGoogleMapViz = new Class({
 		}
 
 		Fabrik.loadGoogleMap(this.options.key, function () {
+
+			/*
+			var script2 = document.createElement('script');
+			script2.type = 'text/javascript';
+			script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/geolocation-marker/geolocation-marker.js';
+			document.body.appendChild(script2);
+			*/
+
 			this.iniGMap();
+
+			var src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/geolocation-marker/geolocation-marker.js';
+			var self = this;
+			jQuery.getScript(src, function () {
+				self.geoMarker = new GeolocationMarker(self.map);
+			});
+
 		}.bind(this));
 
 	},
