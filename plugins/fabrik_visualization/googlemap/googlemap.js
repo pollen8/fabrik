@@ -209,7 +209,18 @@ FbGoogleMapViz = new Class({
 			if (this.options.showLocation) {
 				var self = this;
 				requirejs(['lib/geolocation-marker/geolocation-marker-min'], function (GeolocationMarker) {
-					self.geoMarker = new GeolocationMarker(self.map);
+					self.geoMarker = new GeolocationMarker(
+						self.map,
+						{
+							'icon': {
+								'url': Fabrik.liveSite + 'media/com_fabrik/images/gpsloc.png',
+								'size': new google.maps.Size(34, 34),
+								'scaledSize': new google.maps.Size(17, 17),
+								'origin': new google.maps.Point(0, 0),
+								'anchor': new google.maps.Point(8, 8)
+							}
+						}
+					);
 				});
 			}
 		},
