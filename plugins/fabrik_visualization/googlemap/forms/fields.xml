@@ -414,6 +414,17 @@
 				description="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_DESC"
 				label="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_LABEL" />
 
+
+			<field name="fb_gm_show_location"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_VISUALIZATION_GOOGLEMAP_SHOW_LOCATION_DESC"
+			       label="PLG_VISUALIZATION_GOOGLEMAP_SHOW_LOCATION_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="fb_gm_fitbounds"
 			       type="radio"
 			       default="0"

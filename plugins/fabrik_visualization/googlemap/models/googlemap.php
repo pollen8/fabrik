@@ -197,6 +197,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$config = JComponentHelper::getParams('com_fabrik');
 		$apiKey = $config->get('google_api_key', '');
 		$opts->key = empty($apiKey) ? false : $apiKey;
+		$opts->showLocation = $params->get('fb_gm_show_location', '0') === '1';
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
 		$js = array();
