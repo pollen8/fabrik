@@ -6177,6 +6177,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Store the element params
 	 *
 	 * @return  bool
+	 *
+	 * @throws  RuntimeException
 	 */
 	public function storeAttribs()
 	{
@@ -6189,6 +6191,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$db              = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
+
+		if (strlen($element->params) > 65535)
+		{
+			throw new RuntimeException('Element params too big to save, probably calculation data');
+		}
+
 		$query           = $db->getQuery(true);
 		$query->update('#__{package}_elements')->set('params = ' . $db->q($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
