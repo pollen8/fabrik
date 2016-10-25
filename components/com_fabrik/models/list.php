@@ -11728,12 +11728,12 @@ class FabrikFEModelList extends JModelForm
 			}
 			elseif (!is_array($range))
 			{
-				$row->href = sprintf($urlEquals, $range);
+				$row->href = sprintf($urlEquals, urlencode($range));
 			}
 			else
 			{
 				list($low, $high) = $range;
-				$row->href = sprintf($urlEquals, sprintf($urlRange, $low, $high));
+				$row->href = sprintf($urlEquals, sprintf($urlRange, urlencode($low), urlencode($high)));
 			}
 
 			if ($itemId)
