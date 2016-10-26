@@ -216,6 +216,17 @@ class FabrikFEModelCSVExport extends FabModel
 					array_walk($a, array($this, 'implodeJSON'), $end_of_line);
 				}
 
+				$this->model->csvExportRow = $a;
+				$pluginResults = FabrikWorker::getPluginManager()->runPlugins('onExportCSVRow', $this->model, 'list', $a);
+				if (in_array(false, $pluginResults))
+				{
+					continue;
+				}
+				else
+				{
+					$a = $this->model->csvExportRow;
+				}
+
 				$str .= implode($this->delimiter, array_map(array($this, 'quote'), array_values($a)));
 				$str .= $end_of_line;
 			}
