@@ -1054,7 +1054,7 @@ class FabrikFEModelList extends JModelForm
 			 * then merge that with the getPublishedListElements.  This is to work around issues
 			 * where things like plugin bubble templates use placeholders for elements not shown in the list.
 			 */
-			$alwaysRenderElements = $this->getAlwaysRenderElements(true);
+			$alwaysRenderElements = $this->getAlwaysRenderElements(true, $groupModel->getId());
 			$showInList = $this->showInList();
 			$elementModels = $groupModel->getPublishedListElements();
 			$elementModels = array_merge($elementModels, $alwaysRenderElements);
@@ -11476,10 +11476,11 @@ class FabrikFEModelList extends JModelForm
 	 * Return an array of elements which are set to always render
 	 *
 	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   int   $groupid         Only return elements in this group
 	 *
 	 * @return  bool  array of element models
 	 */
-	public function getAlwaysRenderElements($not_shown_only = true)
+	public function getAlwaysRenderElements($not_shown_only = true, $groupId = 0)
 	{
 		$form = $this->getFormModel();
 		$alwaysRender = array();
@@ -11487,6 +11488,14 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($groups as $groupModel)
 		{
+			if ($groupId)
+			{
+				if ($groupModel->getId() !== $groupId)
+				{
+					continue;
+				}
+			}
+
 			$elementModels = $groupModel->getPublishedElements();
 
 			foreach ($elementModels as $elementModel)
