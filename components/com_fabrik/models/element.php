@@ -2428,7 +2428,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if (trim($customLink) !== '')
 			{
-				$v = '<a href="' . $customLink . '">' . $v . '</a>';
+				$v = '<a href="' . $customLink . '" data-iscustom="1">' . $v . '</a>';
 			}
 		}
 
