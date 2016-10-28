@@ -185,7 +185,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('controller process: start') : null;
 
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		if ($input->get('format', '') == 'raw')
@@ -204,8 +204,29 @@ class FabrikControllerForm extends JControllerLegacy
 
 		$model->setId($input->getInt('formid', 0));
 		$model->packageId = $input->getInt('packageId');
-		$this->isMambot = $input->get('isMambot', 0);
-		$model->rowId = $input->get('rowid', '', 'string');
+		$this->isMambot   = $input->get('isMambot', 0);
+		$model->rowId     = $input->get('rowid', '', 'string');
+		$listModel        = $model->getListModel();
+
+		// Do some ACL sanity checks
+
+		$aclOK            = false;
+
+		if ($model->isNewRecord() && $listModel->canAdd())
+		{
+			$aclOK = true;
+		}
+		else if (!$model->isNewRecord() && $listModel->canEdit(new stdClass()))
+		{
+			$aclOK = true;
+		}
+
+		if (!$aclOK)
+		{
+			$msg = $model->aclMessage(true);
+			$app->enqueueMessage($msg);
+			return;
+		}
 
 		/**
 		 * $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission

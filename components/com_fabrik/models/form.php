@@ -5139,13 +5139,15 @@ class FabrikFEModelForm extends FabModelForm
 	 * If trying to add/edit a record when the user doesn't have rights to do so,
 	 * what message, if any should we show.
 	 *
+	 * @param  bool  $force  if true don't check if messages suppressed
+	 *
 	 * @since  3.0.7
 	 *
 	 * @return string
 	 */
-	public function aclMessage()
+	public function aclMessage($force = false)
 	{
-		if (!$this->showACLMsg())
+		if (!$force && !$this->showACLMsg())
 		{
 			return '';
 		}
