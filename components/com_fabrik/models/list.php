@@ -332,6 +332,11 @@ class FabrikFEModelList extends JModelForm
 	public $csvExportRow = null;
 
 	/**
+	 * CSV export row (for modifying in csvlist plugins)
+	 */
+	public $csvExportHeadings = null;
+
+	/**
 	 * Element names to encrypt
 	 *
 	 * @var array

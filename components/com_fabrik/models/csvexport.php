@@ -731,6 +731,17 @@ class FabrikFEModelCSVExport extends FabModel
 			array_unshift($h, FText::_('Calculation'));
 		}
 
+		$this->model->csvExportHeadings = $h;
+		$pluginResults = FabrikWorker::getPluginManager()->runPlugins('onExportCSVHeadings', $this->model, 'list', $a);
+		if (in_array(false, $pluginResults))
+		{
+			return false;
+		}
+		else
+		{
+			$h = $this->model->csvExportHeadings;
+		}
+
 		$h = array_map(array($this, "quote"), $h);
 
 		return $h;

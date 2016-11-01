@@ -203,7 +203,8 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Called when we import a csv row
 	 *
-	 * @param  array  $args  row data
+	 * As PHP doesn't support pass by reference for func_get_args, can't pass heading array in
+	 * as an arg, so plugin must modify $listModel->cavExportRow
 	 *
 	 * @return boolean
 	 */
@@ -227,6 +228,46 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		{
 			$ret = @eval($code);
 			FabrikWorker::logEval($ret, 'Caught exception on eval in onExportCSVRow : %s');
+
+			if ($ret === false)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called when we export the csv headings
+	 *
+	 * As PHP doesn't support pass by reference for func_get_args, can't pass heading array in
+	 * as an arg, so plugin musr modify $listModel->cavExportHeadings
+	 *
+	 * @param  array  $args  row data
+	 *
+	 * @return boolean
+	 */
+
+	public function onExportCSVHeadings()
+	{
+		$listModel = $this->getModel();
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_export_headings_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file != -1 && $file != '')
+		{
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		$code = trim($params->get('listcsv_export_headings_php_code', ''));
+
+		if (!empty($code))
+		{
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onExportCSVHeadings : %s');
 
 			if ($ret === false)
 			{
