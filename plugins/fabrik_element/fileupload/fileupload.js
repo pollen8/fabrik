@@ -684,7 +684,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                     'repeatCounter': this.options.repeatCounter
                 }
             });
-            var li = e.target.closest('.plupload_delete');
+            var li = jQuery(e.target).closest('.plupload_delete');
             li.remove();
 
             // Remove hidden fields as well
