@@ -4409,21 +4409,24 @@ class FabrikFEModelList extends JModelForm
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$pk = $this->getPrimaryKeyAndExtra($join->table_join);
-			$pks = $join->table_join;
-			$pks .= '.' . $pk[0]['colname'];
-			$join->params->set('pk', $fabrikDb->qn($pks));
-			$query->update('#__{package}_joins')->set('params = ' . $db->q((string) $join->params))->where('id = ' . (int) $join->id);
-			$db->setQuery($query);
 
-			try
+			if ($pk !== false && !empty($pk[0]['colname']))
 			{
-				$db->execute();
-			}
-			catch (RuntimeException $e)
-			{
-			}
+				$pks = $join->table_join . '.' . $pk[0]['colname'];
+				$join->params->set('pk', $fabrikDb->qn($pks));
+				$query->update('#__{package}_joins')->set('params = ' . $db->q((string) $join->params))->where('id = ' . (int) $join->id);
+				$db->setQuery($query);
 
-			$join->params = new Registry($join->params);
+				try
+				{
+					$db->execute();
+				}
+				catch (RuntimeException $e)
+				{
+				}
+
+				$join->params = new Registry($join->params);
+			}
 		}
 	}
 
@@ -5154,6 +5157,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (isset($this->filters))
 		{
+
 			return $this->filters;
 		}
 
@@ -8148,14 +8152,33 @@ class FabrikFEModelList extends JModelForm
 			$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->q($table));
 			$db->setQuery($query);
 			$joinPk = $db->loadResult();
+			$shortColName = '';
 
 			if (!empty($joinPk))
 			{
 				$shortColName = FabrikString::shortColName($joinPk);
-				$key = $origColName->Key;
-				$extra = $origColName->Extra;
-				$type = $origColName->Type;
-				$keys[] = array('colname' => $shortColName, 'type' => $type, 'extra' => $extra, 'key' => $key);
+			}
+			else
+			{
+				// probably a view which hasn't been added as a list, try Final Desperate Hail Mary, see if 'id' exists
+				if (array_key_exists('id', $origColNamesByName))
+				{
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_JOIN_NO_PK_USED_ID'));
+					$shortColName = 'id';
+				}
+				else
+				{
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_JOIN_NO_PK'));
+				}
+			}
+
+			if (!empty($shortColName) && array_key_exists($shortColName, $origColNamesByName))
+			{
+				$origColName = $origColNamesByName[$shortColName];
+				$key         = $origColName->Key;
+				$extra       = $origColName->Extra;
+				$type        = $origColName->Type;
+				$keys[]      = array('colname' => $shortColName, 'type' => $type, 'extra' => $extra, 'key' => $key);
 			}
 		}
 
