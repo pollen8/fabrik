@@ -215,23 +215,30 @@ class FabrikControllerForm extends JControllerLegacy
 		 *
 		 * Used to setFormData() in the model validate(), but need to get it here so we can pass it to canEdit()
 		 */
-		$formData         = $model->setFormData();
-		$aclOK            = false;
+		if ($model->recordInDatabase())
+		{
+			$formData = $model->setFormData();
+			$aclOK    = false;
 
-		if ($model->isNewRecord() && $listModel->canAdd())
-		{
-			$aclOK = true;
-		}
-		else if (!$model->isNewRecord() && $listModel->canEdit($formData))
-		{
-			$aclOK = true;
-		}
+			if ($model->isNewRecord() && $listModel->canAdd())
+			{
+				$aclOK = true;
+			}
+			else
+			{
+				if (!$model->isNewRecord() && $listModel->canEdit($formData))
+				{
+					$aclOK = true;
+				}
+			}
 
-		if (!$aclOK)
-		{
-			$msg = $model->aclMessage(true);
-			$app->enqueueMessage($msg);
-			return;
+			if (!$aclOK)
+			{
+				$msg = $model->aclMessage(true);
+				$app->enqueueMessage($msg);
+
+				return;
+			}
 		}
 
 		/**
