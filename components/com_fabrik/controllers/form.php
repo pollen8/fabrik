@@ -208,15 +208,21 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->rowId     = $input->get('rowid', '', 'string');
 		$listModel        = $model->getListModel();
 
-		// Do some ACL sanity checks
-
+		/**
+		 * Do some ACL sanity checks.  Without this check, if spoof checking is disabled, a form can be submitted
+		 * with no ACL checks being performed.  With spoof checking, we do the ACL checks on form load, so can't get the
+		 * token without having access.
+		 *
+		 * Used to setFormData() in the model validate(), but need to get it here so we can pass it to canEdit()
+		 */
+		$formData         = $model->setFormData();
 		$aclOK            = false;
 
 		if ($model->isNewRecord() && $listModel->canAdd())
 		{
 			$aclOK = true;
 		}
-		else if (!$model->isNewRecord() && $listModel->canEdit(new stdClass()))
+		else if (!$model->isNewRecord() && $listModel->canEdit($formData))
 		{
 			$aclOK = true;
 		}
