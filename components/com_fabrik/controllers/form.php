@@ -213,11 +213,10 @@ class FabrikControllerForm extends JControllerLegacy
 		 * with no ACL checks being performed.  With spoof checking, we do the ACL checks on form load, so can't get the
 		 * token without having access.
 		 *
-		 * Used to setFormData() in the model validate(), but need to get it here so we can pass it to canEdit()
+		 * Don't bother checking if not recording to database, as no list or list ACLs.
 		 */
 		if ($model->recordInDatabase())
 		{
-			$formData = $model->setFormData();
 			$aclOK    = false;
 
 			if ($model->isNewRecord() && $listModel->canAdd())
@@ -226,6 +225,13 @@ class FabrikControllerForm extends JControllerLegacy
 			}
 			else
 			{
+				/*
+				 * Need to set up form data here so we can pass it to canEdit()
+				 *
+				 * Note that canEdit() expects form data as an object, and $formData is an array,
+				 * but the actual canUserDo() helper func it calls with the data will accept either.
+				 */
+				$formData = $model->setFormData();
 				if (!$model->isNewRecord() && $listModel->canEdit($formData))
 				{
 					$aclOK = true;
