@@ -282,6 +282,9 @@ FbGoogleMapViz = new Class({
 		this.markers.each(function (marker) {
 			marker.setMap(null);
 		});
+		if (this.options.clustering) {
+			this.cluster.clearMarkers();
+		}
 		this.bounds = new google.maps.LatLngBounds(null);
 	},
 

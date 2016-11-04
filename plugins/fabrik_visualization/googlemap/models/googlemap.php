@@ -632,10 +632,13 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$icons[$v[0] . $v[1]][5] = $height;
 			}
 
-			$this->iconRowData[] = array (
-				'icon' => $icons[$v[0] . $v[1]],
-				'data' => $rowData
-			);
+			if (!empty($icons))
+			{
+				$this->iconRowData[] = array(
+					'icon' => $icons[$v[0] . $v[1]],
+					'data' => $rowData
+				);
+			}
 
 			$c++;
 		}

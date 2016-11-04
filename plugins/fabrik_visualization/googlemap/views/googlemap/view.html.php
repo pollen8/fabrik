@@ -118,7 +118,10 @@ class FabrikViewGooglemap extends JViewLegacy
 			$js .= "]);";
 		}
 
-		$js .= $model->getFilterJs();
+		if ($model->showFilters())
+		{
+			$js .= $model->getFilterJs();
+		}
 
 		$model->getCustomJsAction($srcs);
 
