@@ -6194,7 +6194,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if (strlen($element->params) > 65535)
 		{
-			throw new RuntimeException('Element params too big to save, probably calculation data');
+			throw new RuntimeException(sprintf(FText::_('COM_FABRIK_ELEMENT_PARAMS_TOO_BIG'), $this->getId()));
 		}
 
 		$query           = $db->getQuery(true);
