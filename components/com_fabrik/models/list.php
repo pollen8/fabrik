@@ -4033,6 +4033,12 @@ class FabrikFEModelList extends JModelForm
 						'127.0.0.1',
 						'::1'
 					);
+					$pdfLocalhostIP = $config->get('allow_pdf_localhost_ip', '');
+
+					if (!empty($pdfLocalhostIP))
+					{
+						$whitelist[] = $pdfLocalhostIP;
+					}
 
 					if(in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
 						$allowPDF = true;
