@@ -2263,7 +2263,11 @@ class FabrikFEModelList extends JModelForm
 		$isAjax = $this->isAjaxLinks() ? '1' : '0';
 		$isCustom = $customLink !== '';
 
-		$layout                  = $this->getLayout('element.fabrik-element-custom-link');
+		$paths = array(
+			COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts/element/' . $elementModel->getFullName(true, false)
+		);
+
+		$layout                  = $this->getLayout('element.fabrik-element-custom-link', $paths);
 		$displayData             = new stdClass;
 		$displayData->loadMethod = $loadMethod;
 		$displayData->dataList   = $dataList;
