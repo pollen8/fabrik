@@ -2261,17 +2261,21 @@ class FabrikFEModelList extends JModelForm
 		$dataList = 'list_' . $this->getRenderContext();
 		$rowId = $this->getSlug($row);
 		$isAjax = $this->isAjaxLinks() ? '1' : '0';
-		$isCustom = $customLink === '' ? '0' : '1';
-		if ($target !== '') $target = 'target="' . $target . '"';
-		$data = '<a data-loadmethod="' . $loadMethod
-			. '" data-list="' . $dataList
-			. '" data-rowid="' . $rowId
-			. '" data-isajax="' . $isAjax
-			. '" data-iscustom="' . $isCustom
-			. '" class="' . $class
-			. '" href="' . $link
-			. '"' . $target . '>' . $data
-			. '</a>';
+		$isCustom = $customLink !== '';
+
+		$layout                  = $this->getLayout('element.fabrik-element-custom-link');
+		$displayData             = new stdClass;
+		$displayData->loadMethod = $loadMethod;
+		$displayData->dataList   = $dataList;
+		$displayData->isAjax     = $isAjax;
+		$displayData->customLink = $customLink;
+		$displayData->isCustom   = $isCustom;
+		$displayData->class      = $class;
+		$displayData->link       = $link;
+		$displayData->rowId      = $rowId;
+		$displayData->data       = $data;
+		$displayData->target     = $target;
+		$data                    = $layout->render($displayData);
 
 		return $data;
 	}
