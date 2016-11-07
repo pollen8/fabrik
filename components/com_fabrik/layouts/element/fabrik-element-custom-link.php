@@ -1,6 +1,6 @@
 <?php
 /**
- * Layout: list edit button
+ * Layout: element custom details link
  *
  * @package     Joomla
  * @subpackage  Fabrik
