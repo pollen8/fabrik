@@ -1332,10 +1332,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (typeof(this.options.itemTemplate) === 'string') {
                     c = template.find('.fabrik_row').addBack(template);
                     c.prop('id', row.id);
-                    c.removeClass();
-                    var newClass = row['class'].split(' ');
+                    c.removeClass('oddRow0');
+                    c.removeClass('oddRow1');
+                    var newClass = row['class'].split(/\s+/);
                     for (j = 0; j < newClass.length; j++) {
-                        c.addClass(newClass[j]);
+                        if (!c.hasClass(newClass[j])) {
+                            c.addClass(newClass[j]);
+                        }
                     }
                     r = template.clone();
                 } else {
