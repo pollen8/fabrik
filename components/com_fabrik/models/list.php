@@ -1257,6 +1257,13 @@ class FabrikFEModelList extends JModelForm
 		{
 			$w = new FabrikWorker;
 
+			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
+
+			if ($tableParams->get('group_by_raw', '1') === '1')
+			{
+				$groupBy .= '_raw';
+			}
+
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
 			$requestGroupBy = $input->get('group_by', '');
 
@@ -1275,12 +1282,6 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$groupedData = array();
-			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-
-			if ($tableParams->get('group_by_raw', '1') === '1')
-			{
-				$groupBy .= '_raw';
-			}
 
 			$groupTitle = null;
 			$aGroupTitles = array();
@@ -1305,8 +1306,7 @@ class FabrikFEModelList extends JModelForm
 				if (!in_array($sData, $aGroupTitles))
 				{
 					$aGroupTitles[] = $sData;
-					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, ArrayHelper::fromObject($data[$i])));
-					$this->groupTemplates[$sData] = nl2br($tmpGroupTemplate);
+					$this->groupTemplates[$sData] = $w->parseMessageForPlaceHolder($groupTemplate, ArrayHelper::fromObject($data[$i]));
 					$groupedData[$sData] = array();
 				}
 
