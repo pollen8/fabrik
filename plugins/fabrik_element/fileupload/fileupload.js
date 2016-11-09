@@ -405,7 +405,8 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                             } else {
                                 a = jQuery(document.createElement('span'));
                                 title = jQuery(document.createElement('a')).attr({
-                                    'href': file.url
+                                    'href': file.url,
+			      'target': '_blank'
                                 }).text(file.name);
                             }
 
