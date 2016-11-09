@@ -15,7 +15,7 @@ $d = $displayData;
 
 ?>
 <a data-loadmethod="<?php echo $d->loadMethod;?>"
-	class="<?php echo $d->class;?>; ?>"
+	class="<?php echo $d->class; ?>"
 	data-list="<?php echo $d->dataList; ?>"
 	data-isajax="<?php echo $d->isAjax; ?>"
 	data-rowid="<?php echo $d->rowId; ?>"
