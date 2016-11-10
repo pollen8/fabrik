@@ -1045,7 +1045,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of buildQuery()
-		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches))
+		if (preg_match('/(ORDER\s+BY)(.*)/is', $where, $matches))
 		{
 			$this->orderBy = $this->parseThisTable($matches[0], $join);
 			$where         = str_replace($this->orderBy, '', $where);
@@ -1075,7 +1075,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
-			if (preg_match('/(ORDER\s+BY)(.*)/i', $filterWhere, $matches))
+			if (preg_match('/(ORDER\s+BY)(.*)/is', $filterWhere, $matches))
 			{
 				$this->orderBy = $this->parseThisTable($matches[0], $join);
 				$filterWhere         = str_replace($this->orderBy, '', $filterWhere);
