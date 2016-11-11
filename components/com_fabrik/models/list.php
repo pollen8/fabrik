@@ -1259,11 +1259,6 @@ class FabrikFEModelList extends JModelForm
 
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
 
-			if ($tableParams->get('group_by_raw', '1') === '1')
-			{
-				$groupBy .= '_raw';
-			}
-
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
 			$requestGroupBy = $input->get('group_by', '');
 
@@ -1279,6 +1274,11 @@ class FabrikFEModelList extends JModelForm
 			else
 			{
 				$groupTemplate = '{' . $requestGroupBy . '}';
+			}
+
+			if ($tableParams->get('group_by_raw', '1') === '1')
+			{
+				$groupBy .= '_raw';
 			}
 
 			$groupedData = array();
