@@ -148,8 +148,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		if ($params->get('paypal_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
-			$itemRaw = $item;
 		}
+
+		$itemRaw = $item;
 
 		if (trim($item) == '')
 		{
