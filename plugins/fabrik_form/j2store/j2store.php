@@ -88,6 +88,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 			'upc',
 			'price',
 			'manufacturer_id',
+			'vendor_id',
 			'addtocart_text',
 			'shipping',
 			'length',

@@ -98,6 +98,19 @@
 			       description="PLG_FORM_J2STORE_FIELD_MANUFACTURER_DESC"
 			       label="PLG_FORM_J2STORE_FIELD_MANUFACTURER_LABEL"/>
 
+			<field name="j2store_vendor_id"
+			       repeat="true"
+			       type="listfields"
+			       mode="gui"
+			       placeholder="E.g. {my_products___vendor}"
+			       at="true"
+			       valueformat="tableelement"
+			       usestep="true"
+			       addbrackets="true"
+			       class="span5"
+			       description="PLG_FORM_J2STORE_FIELD_VENDOR_DESC"
+			       label="PLG_FORM_J2STORE_FIELD_VENDOR_LABEL"/>
+
 			<field name="j2store_addtocart_text"
 			       type="text"
 			       repeat="true"
