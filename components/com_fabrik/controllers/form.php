@@ -88,6 +88,11 @@ class FabrikControllerForm extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
 
+		if ($input->get('clearsession', '') === '1')
+		{
+			$this->clearSession();
+		}
+
 		if ($viewName == 'emailform')
 		{
 			$modelName = 'form';
@@ -567,17 +572,36 @@ class FabrikControllerForm extends JControllerLegacy
 	 * Clear down any temp db records or cookies
 	 * containing partially filled in form data
 	 *
+	 * This is the controller task, which then does display as well
+	 *
 	 * @return  null
 	 */
 	public function removeSession()
 	{
+		$this->clearSession();
+		$this->display();
+	}
+
+	/**
+	 * Clear down any temp db records or cookies
+	 * containing partially filled in form data
+	 *
+	 * @return  null
+	 */
+	public function clearSession()
+	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		// clean the cache, just for good measure
+		$cache = JFactory::getCache($input->get('option'));
+		$cache->clean();
+
+		// remove the formsession row
 		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($input->getInt('formid', 0));
 		$sessionModel->setRowId($input->get('rowid', '', 'string'));
 		$sessionModel->remove();
-		$this->display();
 	}
 
 	/**
