@@ -812,6 +812,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$data['block']      = 0;
 		}
 
+		if ($params->get('juser_require_reset', '') === '1')
+		{
+			$data['requireReset'] = 1;
+		}
+
 		return $data;
 	}
 

@@ -108,6 +108,17 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="juser_require_reset"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_FABRIK_FORM_JUSER_REQUIRE_RESET_DESC"
+			       label="PLG_FABRIK_FORM_JUSER_REQUIRE_RESET_LABEL"
+			       repeat="true">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset name="plg-form-juser-options" label="COM_FABRIK_OPTIONS">
