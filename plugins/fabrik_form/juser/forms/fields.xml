@@ -60,6 +60,14 @@
 				onlytablefields="0"
 				repeat="true" />
 
+			<field name="juser_field_requirereset"
+			       type="listfields"
+			       description="PLG_FABRIK_FORM_JUSER_REQUIRERESET_FIELD_DESC"
+			       label="PLG_FABRIK_FORM_JUSER_REQUIRERESET_FIELD_LABEL"
+			       onlytablefields="0"
+			       repeat="true" />
+
+
 		</fieldset>
 
 		<fieldset name="plg-form-juser-bypass" label="PLG_FABRIK_FORM_JUSER_BYPASS" description="text">

@@ -442,6 +442,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$this->emailfield = $this->getFieldName('juser_field_email');
 		$this->emailvalue = $this->getFieldValue('juser_field_email', $formModel->formData);
 
+		$this->requireresetfield = $this->getFieldName('juser_field_requirereset');
+		$this->requireresetvalue = $this->getFieldValue('juser_field_requirereset', $formModel->formData);
+
 		$data['id'] = $originalId;
 
 		$data['gid']  = $this->setGroupIds($me, $user);
@@ -487,6 +490,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$user->set('registerDate', $this->date->toSql());
 			$this->setActivation($data);
 		}
+		else
+		{
+			if (!empty($this->requireresetfield))
+			{
+				$data['requireReset'] = $this->requireresetvalue;
+			}
+		}
+
 
 		$this->trimNamePassword($user, $data);
 
@@ -812,9 +823,16 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$data['block']      = 0;
 		}
 
-		if ($params->get('juser_require_reset', '') === '1')
+		if (empty($this->requireresetfield))
 		{
-			$data['requireReset'] = 1;
+			if ($params->get('juser_require_reset', '') === '1')
+			{
+				$data['requireReset'] = 1;
+			}
+		}
+		else
+		{
+			$data['requireReset'] = $this->requireresetvalue;
 		}
 
 		return $data;
