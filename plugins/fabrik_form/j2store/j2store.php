@@ -386,6 +386,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 			self::$listJs = true;
 
 			// Includes the ajax add to cart js.
+			require_once (JPATH_ADMINISTRATOR.'/components/com_j2store/helpers/strapper.php');
 			J2StoreStrapper::addJs();
 
 			// Watch quantity input and update add to cart button data.
