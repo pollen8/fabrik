@@ -231,12 +231,17 @@ class FabrikControllerForm extends JControllerLegacy
 			else
 			{
 				/*
-				 * Need to set up form data here so we can pass it to canEdit()
+				 * Need to set up form data here so we can pass it to canEdit(), remembering to
+				 * add encrypted vars, so things like user elements which have ACLs on them get
+				 * included in data for canUserDo() checks.  Nay also need to do copyToFromRaw(),
+				 * but leave that until we find a need for it.
 				 *
 				 * Note that canEdit() expects form data as an object, and $formData is an array,
 				 * but the actual canUserDo() helper func it calls with the data will accept either.
 				 */
 				$formData = $model->setFormData();
+				$model->addEncrytedVarsToArray($formData);
+
 				if (!$model->isNewRecord() && $listModel->canEdit($formData))
 				{
 					$aclOK = true;
