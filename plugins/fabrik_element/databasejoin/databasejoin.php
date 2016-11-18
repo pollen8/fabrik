@@ -1081,7 +1081,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$filterWhere         = str_replace($this->orderBy, '', $filterWhere);
 				$filterWhere         = str_replace($matches[0], '', $filterWhere);
 			}
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			//$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			$where .= !empty($where) ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
 
 		if ($where == '')
