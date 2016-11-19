@@ -692,7 +692,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if ($toType == 'table' || $toType == 'table_picklist')
 		{
-			$to = $input->get('list_email_to', '', 'array');
+			$to = $input->get('list_email_to', array(), 'array');
 		}
 		else
 		{

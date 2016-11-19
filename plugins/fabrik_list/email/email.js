@@ -23,8 +23,11 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
                 jQuery.ajax({
                     type  : 'POST', // define the type of HTTP verb we want to use (POST for our form)
                     url   : 'index.php', // the url where we want to POST
-                    data  : jQuery(this).serialize(), // our data object
-                    encode: true
+                    //data  : jQuery(this).serialize(), // our data object
+                    data: new FormData(this),
+                    encode: true,
+                    processData: false,
+                    contentType: false
                 })
                     .done(function (data) {
                         form.html(data);
