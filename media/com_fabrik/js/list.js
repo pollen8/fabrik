@@ -945,6 +945,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     if (task === 'list.doPlugin') {
                         data += '&setListRefFromRequest=1';
                         data += '&listref=' + this.options.listRef;
+                        data += '&Itemid=' + this.options.Itemid;
                     }
 
                     if (task === 'list.filter' && this.advancedSearch !== false) {
