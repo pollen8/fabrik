@@ -1234,9 +1234,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 // $$$ rob was $H(data.data) but that wasnt working ????
                 // testing with $H back in again for grouped by data? Yeah works for
                 // grouped data!!
-                // $$$ hugh back out again!!
-                //var gdata = this.options.isGrouped || this.options.groupedBy !== '' ? $H(data.data) : data.data;
-                var gdata = data.data;
+                var gdata = this.options.isGrouped || this.options.groupedBy !== '' ? $H(data.data) : data.data;
+                //var gdata = data.data;
                 var gcounter = 0;
                 gdata.each(function (groupData, groupKey) {
                     tbody = self.options.isGrouped ? self.list.getElements('.fabrik_groupdata')[gcounter] : self.tbody;
