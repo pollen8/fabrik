@@ -120,6 +120,16 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 			$data['product_type'] = 'simple';
 		}
 
+		if (!isset($data['enabled']))
+		{
+			$data['enabled'] = '1';
+		}
+
+		if (!isset($data['visibility']))
+		{
+			$data['visibility'] = '1';
+		}
+
 		$data['product_source']     = $source;
 		$data['product_source_id']  = $this->getModel()->getInsertId();
 		$data['pricing_calculator'] = 'standard';
@@ -359,13 +369,18 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 			{
 				$product = F0FTable::getAnInstance('Product', 'J2StoreTable')->getClone();
 				$id      = $row->__pk_val;
+				$source  = $this->j2StoreSource();
 				$helper  = new J2Product();
 
-				if ($product->get_product_by_source($this->j2StoreSource(), $id))
+				if ($product->get_product_by_source($source, $id))
 				{
 					$helper->getCheckoutLink($product);
 					$layout       = $this->getLayout('addtocart-list');
 					$row->j2store = $layout->render((object) array('product' => $product));
+				}
+				else
+				{
+					$row->j2store = FText::_('PLG_FORM_J2STORE_PRODUCT_NOT_FOUND', $source, $id);
 				}
 			}
 		}
