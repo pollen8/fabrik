@@ -204,7 +204,18 @@ class PlgSystemFabrik extends JPlugin
 			return;
 		}
 
+		$formats = array (
+			'html',
+			'partial'
+		);
+
 		$app    = JFactory::getApplication();
+
+		if (!in_array($app->input->get('format', 'html'), $formats))
+		{
+			return;
+		}
+
 		$script = self::js();
 		self::clearJs();
 		self::storeHeadJs();
