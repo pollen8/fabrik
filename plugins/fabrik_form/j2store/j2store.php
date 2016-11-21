@@ -135,6 +135,9 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 		$data['pricing_calculator'] = 'standard';
 		$data['j2store_product_id'] = $productId;
 
+		// j2store save tosses a warning if this isn't there ...
+		$data['productfilter_ids'] = array();
+
 		$productModel->save($data);
 
 		if (empty($productId))
