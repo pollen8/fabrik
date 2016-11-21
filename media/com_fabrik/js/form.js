@@ -1574,6 +1574,24 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         /**
+         * not currently used in our code, provided as a helper function for custom JS
+         *
+         * @param groupId
+         * @returns {boolean}
+         */
+        mockDuplicateGroup: function(groupId) {
+            var add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
+
+            if (typeOf(add_btn) !== 'null') {
+                var add_e = new Event.Mock(add_btn, 'click');
+                this.duplicateGroup(add_e, false);
+                return true;
+            }
+
+            return false;
+        },
+
+        /**
          * When editing a new form and when min groups set we need to duplicate each group
          * by the min repeat value.
          */
