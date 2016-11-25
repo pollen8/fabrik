@@ -927,7 +927,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     if (this.form['limitstart' + this.id]) {
                         form.find('#limitstart' + this.id).val(0);
                     }
-                } else {
+                }
+                else if (task === 'list.view') {
+                    Fabrik['filter_listform_' + this.options.listRef].onSubmit();
+                }
+                else {
                     if (task !== '') {
                         this.form.task.value = task;
                     }
