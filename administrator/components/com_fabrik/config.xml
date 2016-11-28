@@ -142,7 +142,7 @@
 		       type="text"
 		       default=""
 		       description="COM_FABRIK_FIELD_LIST_ALLOW_PDF_LOCALHOST_IP_DESC"
-		       label="COM_FABRIK_FIELD_LIST_ALLOW_PDF_LOCALHOST_IP_DESC" />
+		       label="COM_FABRIK_FIELD_LIST_ALLOW_PDF_LOCALHOST_IP_LABEL" />
 
 
 		<field name="actionMethod"
