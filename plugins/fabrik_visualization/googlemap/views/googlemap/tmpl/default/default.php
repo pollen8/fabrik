@@ -24,7 +24,7 @@ endif;
 	<?php endif;
 	echo $this->loadTemplate('filter_horiz'); ?>
 	<div><?php echo $row->intro_text;?></div>
-	<table style="width:100%">
+	<table id="<?php echo $this->containerId . '_sub';?>" style="width:100%">
 		<tr>
 		<?php if ($this->sidebarPosition == '1') :
 			echo $this->loadTemplate('sidebar');

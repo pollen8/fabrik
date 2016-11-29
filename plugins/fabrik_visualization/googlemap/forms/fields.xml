@@ -613,6 +613,18 @@
 				size="6"
 				type="text" />
 
+
+			<field
+					default="0"
+					class="btn-group"
+					description="PLG_VISUALIZATION_GOOGLEMAP_AJAX_DEFER_DESC"
+					label="PLG_VISUALIZATION_GOOGLEMAP_AJAX_DEFER_LABEL"
+					name="fb_gm_ajax_defer"
+					type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset

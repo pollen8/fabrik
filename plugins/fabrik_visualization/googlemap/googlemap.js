@@ -18,6 +18,7 @@ FbGoogleMapViz = new Class({
 		'scalecontrol'      : false,
 		'center'            : 'middle',
 		'ajax_refresh'      : false,
+		'ajaxDefer'         : false,
 		'use_polygon'       : false,
 		'polyline'          : [],
 		'polylinewidth'     : [],
@@ -51,6 +52,8 @@ FbGoogleMapViz = new Class({
 			this.distanceWidgets = [];
 			this.icons = [];
 			this.setOptions(options);
+			this.container = document.id(this.options.container);
+			this.subContainer = document.id(this.options.container + '_sub');
 
 			this.updater = new Request.JSON({
 				url      : '',
@@ -72,7 +75,7 @@ FbGoogleMapViz = new Class({
 						this.center();
 					}
 					Fabrik.fireEvent('fabrik.viz.googlemap.ajax.refresh', [this]);
-					Fabrik.loader.stop(this.container);
+					Fabrik.loader.stop(this.subContainer);
 				}.bind(this)
 			});
 
@@ -87,7 +90,6 @@ FbGoogleMapViz = new Class({
 			}
 
 			// Clear filter list
-			this.container = document.id(this.options.container);
 			if (typeOf(this.container) !== 'null') {
 				var form = this.container.getElement('form[name=filter]');
 				var c = this.container.getElement('.clearFilters');
@@ -223,6 +225,11 @@ FbGoogleMapViz = new Class({
 					);
 				});
 			}
+
+			if (this.options.ajaxDefer)
+			{
+				this.update();
+			}
 		},
 
 	setPolyLines: function () {
@@ -274,7 +281,7 @@ FbGoogleMapViz = new Class({
 	},
 
 	update: function () {
-		Fabrik.loader.start(this.container);
+		Fabrik.loader.start(this.subContainer);
 		this.updater.send();
 	},
 

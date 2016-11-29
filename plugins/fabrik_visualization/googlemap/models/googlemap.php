@@ -78,60 +78,69 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			return '';
 		}
 
-		$input = $this->app->input;
+		$input  = $this->app->input;
 		$params = $this->getParams();
-		$viz = $this->getVisualization();
+		$viz    = $this->getVisualization();
 
-		$opts = new stdClass;
-		$opts->lat = (float) $params->get('fb_gm_default_lat', 0);
-		$opts->lon = (float) $params->get('fb_gm_default_lon', 0);
-		$opts->icons = $this->getJSIcons();
-		$opts->polyline = $this->getPolyline();
-		$opts->id = $viz->id;
-		$opts->zoomlevel = (int) $params->get('fb_gm_zoomlevel');
-		$opts->fitbounds = (bool) $params->get('fb_gm_fitbounds');
-		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
-		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
-		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
-		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');
+		$opts            = new stdClass;
+		$opts->lat       = (float) $params->get('fb_gm_default_lat', 0);
+		$opts->lon       = (float) $params->get('fb_gm_default_lon', 0);
+		$opts->ajaxDefer = (bool) $params->get('fb_gm_ajax_defer', '0');
+
+		if ($params->get('fb_gm_ajax_defer', '0') !== '1')
+		{
+			$opts->icons = $this->getJSIcons();
+		}
+		else
+		{
+			$opts->icons = array();
+		}
+
+		$opts->polyline        = $this->getPolyline();
+		$opts->id              = $viz->id;
+		$opts->zoomlevel       = (int) $params->get('fb_gm_zoomlevel');
+		$opts->fitbounds       = (bool) $params->get('fb_gm_fitbounds');
+		$opts->scalecontrol    = (bool) $params->get('fb_gm_scalecontrol');
+		$opts->scrollwheel     = (bool) $params->get('fb_gm_scrollwheelcontrol');
+		$opts->maptypecontrol  = (bool) $params->get('fb_gm_maptypecontrol');
+		$opts->traffic         = (bool) $params->get('fb_gm_trafficlayer', '0');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
-		$opts->streetView = (bool) $params->get('street_view');
-		$opts->center = $params->get('fb_gm_center');
-
+		$opts->streetView      = (bool) $params->get('street_view');
+		$opts->center          = $params->get('fb_gm_center');
 
 		if ($opts->center == 'querystring')
 		{
-			$opts->lat = $input->get('latitude', '') == '' ? $opts->lat : (float) $input->get('latitude');
-			$opts->lon = $input->get('longitude', '') == '' ? $opts->lon : (float) $input->get('longitude');
+			$opts->lat       = $input->get('latitude', '') == '' ? $opts->lat : (float) $input->get('latitude');
+			$opts->lon       = $input->get('longitude', '') == '' ? $opts->lon : (float) $input->get('longitude');
 			$opts->zoomlevel = $input->get('zoom', '') == '' ? $opts->zoomlevel : $input->get('zoom');
 		}
 
-		$opts->ajax_refresh = (bool) $params->get('fb_gm_ajax_refresh', false);
-		$opts->ajax_refresh_center = (bool) $params->get('fb_gm_ajax_refresh_center', true);
-		$opts->maptype = $params->get('fb_gm_maptype');
-		$opts->clustering = (bool) $params->get('fb_gm_clustering', '0') == '1';
-		$opts->cluster_splits = $params->get('fb_gm_cluster_splits');
-		$opts->icon_increment = $params->get('fb_gm_cluster_icon_increment');
-		$opts->refresh_rate = $params->get('fb_gm_ajax_refresh_rate');
-		$opts->use_cookies = (bool) $params->get('fb_gm_use_cookies');
-		$opts->container = $this->getContainerId();
-		$opts->polylinewidth = (array) $params->get('fb_gm_polyline_width');
-		$opts->polylinecolour = (array) $params->get('fb_gm_polyline_colour');
-		$usePolygon = (array) $params->get('fb_gm_use_polygon');
-		$opts->use_polygon = (bool) FArrayHelper::getValue($usePolygon, 0, true);
-		$opts->polygonopacity = $params->get('fb_gm_polygon_fillOpacity', 0.35);
-		$opts->polygonfillcolour = (array) $params->get('fb_gm_polygon_fillColor');
-		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
-		$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
-		$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
+		$opts->ajax_refresh                = (bool) $params->get('fb_gm_ajax_refresh', false);
+		$opts->ajax_refresh_center         = (bool) $params->get('fb_gm_ajax_refresh_center', true);
+		$opts->maptype                     = $params->get('fb_gm_maptype');
+		$opts->clustering                  = (bool) $params->get('fb_gm_clustering', '0') == '1';
+		$opts->cluster_splits              = $params->get('fb_gm_cluster_splits');
+		$opts->icon_increment              = $params->get('fb_gm_cluster_icon_increment');
+		$opts->refresh_rate                = $params->get('fb_gm_ajax_refresh_rate');
+		$opts->use_cookies                 = (bool) $params->get('fb_gm_use_cookies');
+		$opts->container                   = $this->getContainerId();
+		$opts->polylinewidth               = (array) $params->get('fb_gm_polyline_width');
+		$opts->polylinecolour              = (array) $params->get('fb_gm_polyline_colour');
+		$usePolygon                        = (array) $params->get('fb_gm_use_polygon');
+		$opts->use_polygon                 = (bool) FArrayHelper::getValue($usePolygon, 0, true);
+		$opts->polygonopacity              = $params->get('fb_gm_polygon_fillOpacity', 0.35);
+		$opts->polygonfillcolour           = (array) $params->get('fb_gm_polygon_fillColor');
+		$opts->overlay_urls                = (array) $params->get('fb_gm_overlay_urls');
+		$opts->overlay_labels              = (array) $params->get('fb_gm_overlay_labels');
+		$opts->overlay_preserveviewports   = (array) $params->get('fb_gm_overlay_preserveviewport');
 		$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
-		$opts->use_overlays = (int) $params->get('fb_gm_use_overlays', '0');
+		$opts->use_overlays                = (int) $params->get('fb_gm_use_overlays', '0');
 
 		if ($opts->use_overlays)
 		{
-			$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
-			$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
-			$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
+			$opts->overlay_urls                = (array) $params->get('fb_gm_overlay_urls');
+			$opts->overlay_labels              = (array) $params->get('fb_gm_overlay_labels');
+			$opts->overlay_preserveviewports   = (array) $params->get('fb_gm_overlay_preserveviewport');
 			$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
 
 			$overlayCode = trim($params->get('fb_gm_overlay_code', ''));
@@ -142,7 +151,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 				if (is_array($overlayArray))
 				{
-					if (array_key_exists('urls', $overlayArray)  && is_array($overlayArray['urls']))
+					if (array_key_exists('urls', $overlayArray) && is_array($overlayArray['urls']))
 					{
 						$opts->overlay_urls = array_merge($opts->overlay_urls, $overlayArray['urls']);
 					}
@@ -186,24 +195,24 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		}
 
 		$opts->use_overlays_sidebar = $opts->use_overlays && (int) $params->get('fb_gm_use_overlays_sidebar', '0');
-		$opts->use_groups = (bool) $params->get('fb_gm_group_sidebar', 0);
-		$opts->groupTemplates = $this->getGroupTemplates();
-		$opts->zoomStyle = (int) $params->get('fb_gm_zoom_control_style', 0);
-		$opts->zoom = $params->get('fb_gm_zoom', 1);
-		$opts->show_radius = $params->get('fb_gm_use_radius', '1') == '1' ? true : false;
-		$opts->radius_defaults = (array) $params->get('fb_gm_radius_default');
-		$opts->radius_fill_colors = (array) $params->get('fb_gm_radius_fill_color');
-		$opts->styles = FabGoogleMapHelper::styleJs($params);
-		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
-		$opts->key = empty($apiKey) ? false : $apiKey;
-		$opts->showLocation = $params->get('fb_gm_show_location', '0') === '1';
-		$opts = json_encode($opts);
-		$ref = $this->getJSRenderContext();
-		$js = array();
-		$js[] = "\t$ref = new FbGoogleMapViz('table_map', $opts)";
-		$js[] = "\t" . "Fabrik.addBlock('$ref', $ref);";
-		$js[] = "\n";
+		$opts->use_groups           = (bool) $params->get('fb_gm_group_sidebar', 0);
+		$opts->groupTemplates       = $this->getGroupTemplates();
+		$opts->zoomStyle            = (int) $params->get('fb_gm_zoom_control_style', 0);
+		$opts->zoom                 = $params->get('fb_gm_zoom', 1);
+		$opts->show_radius          = $params->get('fb_gm_use_radius', '1') == '1' ? true : false;
+		$opts->radius_defaults      = (array) $params->get('fb_gm_radius_default');
+		$opts->radius_fill_colors   = (array) $params->get('fb_gm_radius_fill_color');
+		$opts->styles               = FabGoogleMapHelper::styleJs($params);
+		$config                     = JComponentHelper::getParams('com_fabrik');
+		$apiKey                     = $config->get('google_api_key', '');
+		$opts->key                  = empty($apiKey) ? false : $apiKey;
+		$opts->showLocation         = $params->get('fb_gm_show_location', '0') === '1';
+		$opts                       = json_encode($opts);
+		$ref                        = $this->getJSRenderContext();
+		$js                         = array();
+		$js[]                       = "\t$ref = new FbGoogleMapViz('table_map', $opts)";
+		$js[]                       = "\t" . "Fabrik.addBlock('$ref', $ref);";
+		$js[]                       = "\n";
 
 		return implode("\n", $js);
 	}
