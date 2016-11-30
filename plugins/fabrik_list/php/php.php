@@ -128,7 +128,9 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		if ($file == -1 || $file == '')
 		{
 			$code = $params->get('table_php_code');
-			@eval($code);
+			@trigger_error('');
+			FabrikHelperHTML::isDebug() ? eval($code) : @eval($code);
+			FabrikWorker::logEval(false, 'Eval exception : list php plugin : %s');
 		}
 		else
 		{
