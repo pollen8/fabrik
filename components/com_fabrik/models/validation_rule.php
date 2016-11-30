@@ -137,6 +137,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			$post = null;
 		}
 
+		// unused by us, but available for user's to use
+		$formModel = $this->elementModel->getFormModel();
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
 		FabrikWorker::clearEval();
 		$res = @eval($condition);
