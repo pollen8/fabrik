@@ -840,6 +840,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->allowedDates   = $this->getAllowedPHPDates();
 		$opts->watchElement   = $this->getWatchId();
 		$opts->id             = $this->getId();
+		$opts->locale         = JFactory::getLanguage()->getTag();
 
 		// For reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);

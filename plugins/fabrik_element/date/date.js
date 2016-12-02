@@ -16,6 +16,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
          */
         options: {
             'dateTimeFormat': '',
+            'locale'        : 'en-GB',
             'calendarSetup' : {
                 'eventName'   : 'click',
                 'ifFormat'    : '%Y/%m/%d',
@@ -39,6 +40,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             if (!this.parent(element, options)) {
                 return false;
             }
+            Locale.use(this.options.locale);
             this.hour = '0';
             this.minute = '00';
             this.buttonBg = '#ffffff';
