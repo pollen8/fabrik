@@ -705,7 +705,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @return  string	Filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();

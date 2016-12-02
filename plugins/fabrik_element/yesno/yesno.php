@@ -287,7 +287,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 *
 	 * @return  string	Filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$listModel = $this->getlistModel();
 		$elName = $this->getFullName(true, false);

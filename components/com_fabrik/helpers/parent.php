@@ -366,7 +366,7 @@ class FabrikWorker
 		$matches3 = array();
 
 		// E.g. now
-		preg_match("/[now|ago|midnight|yesterday|today]/i", $date, $matches);
+		preg_match("/(now|ago|midnight|yesterday|today)/i", $date, $matches);
 
 		// E.g. +2 Week
 		preg_match("/[+|-][0-9]* (week\b|year\b|day\b|month\b)/i", $date, $matches2);

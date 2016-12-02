@@ -21,7 +21,7 @@
 				default="0"
 				description="PLG_FORM_UPSERT_INSERT_ONLY_DESC"
 				label="PLG_FORM_UPSERT_INSERT_ONLY_LABEL"
-				repeat="true">"plugins/fabrik_form/upsert/language/en-GB/en-GB.plg_fabrik_form_upsert.ini"
+				repeat="true">
 					<option value="0">PLG_FORM_UPSERT_INSERT_ONLY_BOTH</option>
 					<option value="1">PLG_FORM_UPSERT_INSERT_ONLY_INSERT</option>
 					<option value="2">PLG_FORM_UPSERT_INSERT_ONLY_UPDATE</option>
@@ -64,6 +64,7 @@
 						<field name="upsert_key"
 							type="element"
 							connection="params_connection_id"
+							   connection_in_repeat="false"
 							table="params_table"
 							valueformat="tableelement"
 							label="PLG_FORM_UPSERT_KEY_LABEL" />

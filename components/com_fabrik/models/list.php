@@ -6423,7 +6423,7 @@ class FabrikFEModelList extends JModelForm
 						$o = new stdClass;
 						$o->name = $elementModel->getFullName(true, false);
 						$o->id = $elementModel->getHTMLId() . 'value';
-						$o->filter = $elementModel->getFilter($counter, true);
+						$o->filter = $elementModel->getFilter($counter, true, $container);
 						$fScript[] = $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getListHeading();

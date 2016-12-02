@@ -29,7 +29,7 @@ module.exports = function (grunt) {
                         './plugins/fabrik_*/*/*.js',
                         '!./plugins/fabrik_*/**/*-min.js',
                         './plugins/fabrik_element/fileupload/lib/plupload/js/*.js',
-                        './plugins/fabrik_element/fileupload/lib/plupload/js/*-min.js',
+                        '!./plugins/fabrik_element/fileupload/lib/plupload/js/*-min.js',
                         './media/com_fabrik/js/*.js',
                         '!./media/com_fabrik/js/*-min.js',
                         '!/media/com_fabrik/js/**',

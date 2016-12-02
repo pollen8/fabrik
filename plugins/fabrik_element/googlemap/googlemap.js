@@ -51,7 +51,6 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
         options: {
             'lat'                 : 0,
             'lat_dms'             : 0,
-            'key'                 : '',
             'lon'                 : 0,
             'lon_dms'             : 0,
             'zoomlevel'           : '13',

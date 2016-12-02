@@ -707,7 +707,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string    filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$listModel = $this->getlistModel();
 		$formModel = $listModel->getFormModel();
@@ -769,7 +769,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
-				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal, $container);
 				$return       = array_merge($return, $autoComplete);
 				break;
 		}

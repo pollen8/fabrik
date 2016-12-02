@@ -1392,7 +1392,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * @return  string    filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$listModel = $this->getListModel();
 		$table     = $listModel->getTable();
@@ -1525,7 +1525,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * @return  string JLayout render
 	 */
-	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
+	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true, $container)
 	{
 		if (get_magic_quotes_gpc())
 		{
@@ -2691,6 +2691,8 @@ class FabDate extends JDate
 	 */
 	static public function dateFormatToStrftimeFormat(&$format)
 	{
+		// changed to use single array and strtr() to avoid left to right translation dupes, leaving this here for now
+		/*
 		$search = array('d', 'D', 'j', 'l', 'N', 'S', 'w', 'z', 'W', 'F', 'm', 'M', 'n', 't', 'L', 'o', 'Y',
 			'y', 'a', 'A', 'B', 'g', 'G', 'h', 'H', 'i', 's', 'u',
 			'I', 'O', 'P', 'T', 'Z', 'c', 'r', 'U');
@@ -2701,6 +2703,49 @@ class FabDate extends JDate
 
 		// Removed e => %z as that meant, j => %e => %%z (prob could re-implement with a regex if really needed)
 		$format = str_replace($search, $replace, $format);
+		*/
+
+		$trs = array(
+			'd' => '%d',
+			'D' => '%a',
+			'j' => '%e',
+			'l' => '%A',
+			'N' => '%u',
+			'S' => '',
+			'w' => '%w',
+			'z' => '%j',
+			'W' => '%V',
+			'F' => '%B',
+			'm' => '%m',
+			'M' => '%b',
+			'n' => '%m',
+			't' => '',
+			'L' => '',
+			'o' => '%g',
+			'Y' => '%Y',
+			'y' => '%y',
+			'a' => '%P',
+			'A' => '%p',
+			'B' => '',
+			'g' => '%l',
+			'G' => '%H',
+			'h' => '%I',
+			'H' => '%H',
+			'i' => '%M',
+			's' => '%S',
+			'e' => '%z',
+			'u' => '',
+			'I' => '',
+			'O' => '',
+			'P' => '',
+			'T' => '%z',
+			'Z' => '',
+			'c' => '%c',
+			'r' => '%a, %d %b %Y %H:%M:%S %z',
+			'U' => '%s'
+		);
+
+		$format = strtr($format, $trs);
 	}
 
 	/**

@@ -3185,7 +3185,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string    Filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$listModel = $this->getListModel();
 		$formModel = $listModel->getFormModel();
@@ -3249,7 +3249,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 
 			case 'auto-complete':
-				$autoComplete = $this->autoCompleteFilter($default, $v, null, $normal);
+				$autoComplete = $this->autoCompleteFilter($default, $v, null, $normal, $container);
 				$return       = array_merge($return, $autoComplete);
 				break;
 		}
@@ -3464,7 +3464,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  array  HTML bits
 	 */
-	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
+	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true, $container)
 	{
 		if (is_null($labelValue))
 		{
@@ -3491,7 +3491,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($normal)
 		{
 			$opts['menuclass'] = 'auto-complete-container';
-			$selector          = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
+
+			if (empty($container))
+			{
+				$container = 'listform_' . $listModel->getRenderContext();
+			}
+
+			$selector          = '#' . $container . ' .' . $id;
 		}
 		else
 		{
