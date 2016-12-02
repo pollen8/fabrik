@@ -129,10 +129,21 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
 
+			$time24h = $params->get('time_24h', '1') === '1';
+
 			for ($i = 0; $i < 24; $i++)
 			{
-				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
-				$hours[] = JHTML::_('select.option', $i);
+				$v = str_pad($i, 2, '0', STR_PAD_LEFT);
+
+				if ($time24h)
+				{
+					$l = $v;
+				}
+				else
+				{
+					$l = date("ga", strtotime("$v:00"));
+				}
+				$hours[] = JHTML::_('select.option', $v, $l);
 			}
 
 			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
