@@ -89,7 +89,19 @@ class FabrikControllerDetails extends JControllerLegacy
 		// Display the view
 		$view->error = $this->getError();
 
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
+		// $$$ hugh - added disable caching option, and no caching if not logged in (unless we can come up with a unique cacheid for guests)
+		// NOTE - can't use IP of client, as could be two users behind same NAT'ing proxy / firewall.
+		$listModel = $model->getListModel();
+		$listParams = $listModel->getParams();
+
+		$user = JFactory::getUser();
+
+		// don't cache for certain formats, or if used in social profile (CB, JomSocial)
+		if ($user->get('id') == 0
+			|| $listParams->get('list_disable_caching', '0') === '1'
+			|| in_array($input->get('format'), array('raw', 'csv', 'pdf'))
+			|| $input->get('fabrik_social_profile_hash', '') !== ''
+		)
 		{
 			$view->display();
 		}

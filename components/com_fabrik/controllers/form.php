@@ -154,7 +154,9 @@ class FabrikControllerForm extends JControllerLegacy
 
 		if ($user->get('id') == 0
 			|| $listParams->get('list_disable_caching', '0') === '1'
-			|| in_array($input->get('format'), array('raw', 'csv', 'pdf')))
+			|| in_array($input->get('format'), array('raw', 'csv', 'pdf'))
+			|| $input->get('fabrik_social_profile_hash', '') !== ''
+		)
 		{
 			$view->display();
 		}
