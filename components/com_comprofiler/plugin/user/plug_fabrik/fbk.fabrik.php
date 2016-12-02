@@ -81,6 +81,9 @@ class getFabrikTab extends cbTabHandler {
 			if (strstr( $txt, "{\$my->$k}" )) {
 				$txt = str_replace("{\$my->$k}", $v, $txt);
 			}
+			else if (strstr( $txt, "[\$my->$k]" )) {
+				$txt = str_replace("[\$my->$k]", $v, $txt);
+			}
 			// $$$ hugh - might as well stuff the entire CB user object in the session
 			$session->set('fabrik.plugin.' . $social_hash . '.' . $k, $v);
 		}
