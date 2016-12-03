@@ -146,7 +146,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 					$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 				}
 
-				return FabrikHelperHTML::a($href, $lbl, $opts);
+				$normalize = $params->get('link_normalize', '0') === '1';
+
+				return FabrikHelperHTML::a($href, $lbl, $opts, $normalize);
 			}
 			else
 			{
@@ -250,7 +252,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			return FabrikHelperHTML::a($href, $lbl, $opts);
+			$normalize = $params->get('link_normalize', '0') === '1';
+
+			return FabrikHelperHTML::a($href, $lbl, $opts, $normalize);
 		}
 
 		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';

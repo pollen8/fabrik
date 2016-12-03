@@ -2659,15 +2659,16 @@ EOD;
 	/**
 	 * Make an <a> tag
 	 *
-	 * @param   string $href URL
-	 * @param   string $lbl  Link text
-	 * @param   array  $opts Link properties key = value
+	 * @param   string $href      URL
+	 * @param   string $lbl       Link text
+	 * @param   array  $opts      Link properties key = value
+	 * @param   bool   $normalize if true, tweak scheme to match J! URI
 	 *
 	 * @since  3.1
 	 *
 	 * @return string  <a> tag or empty string if not $href
 	 */
-	public static function a($href, $lbl = '', $opts = array())
+	public static function a($href, $lbl = '', $opts = array(), $normalize = false)
 	{
 		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 		{
@@ -2680,6 +2681,15 @@ EOD;
 			jimport('joomla.mail.helper');
 
 			return JHTML::_('email.cloak', $href);
+		}
+
+		if ($normalize)
+		{
+			$parsedUrl = parse_url(JUri::root());
+			if ($parsedUrl['scheme'] === 'https')
+			{
+				$href = str_ireplace('http://', 'https://', $href);
+			}
 		}
 
 		if (empty($lbl))
