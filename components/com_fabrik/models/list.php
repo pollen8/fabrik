@@ -5255,7 +5255,55 @@ class FabrikFEModelList extends JModelForm
 			{
 				// Bool match
 				$this->filters['origvalue'][$i] = $value;
-				$this->filters['sqlCond'][$i] = $key . ' ' . $condition . ' (' . $db->q($value) . ' IN BOOLEAN MODE)';
+
+				/*
+				 * Meh.  This next bit is a nasty hack.  Turns out you can't mix different tables in a
+				 * MATCH(...) AGAINST (...), so we have to split it out into one MATCH per table, joined with OR.
+				 * This should really be done when building the search in doBooleanSearch() in the list filter model,
+				 * but the concept of a single filter with index 9999 is fairly baked-in, so creating multiple filters
+				 * for a single searchall will be problematic.  So lets hack it here, by seeing if the MATCH(..) list
+				 * uses more than one table, and if so massage it into multiple MATCH.
+				 */
+				$fieldsByTable = array();
+				$matches = array();
+				preg_match('/MATCH\((.*)\)/', $key, $matches);
+
+				// if we parsed out the fields, process them
+				if (count($matches) > 1)
+				{
+					$fields = explode(',', $matches[1]);
+
+					foreach ($fields as $field)
+					{
+						$parts = explode('.', $field);
+
+						if (!array_key_exists($parts[0], $fieldsByTable))
+						{
+							$fieldsByTable[$parts[0]] = array();
+						}
+
+						$fieldsByTable[$parts[0]][] = $parts[0] . '.' . $parts[1];
+					}
+				}
+
+				if (count($fieldsByTable) > 1)
+				{
+					// if we got more than one table, build the multiple MATCHes
+					$matchSql = array();
+
+					foreach ($fieldsByTable as $table => $fields)
+					{
+						$matchSql[] = 'MATCH(' . implode(',', $fields) . ')' . ' ' . $condition . ' (' . $db->q($value) . ' IN BOOLEAN MODE)';
+					}
+
+					$this->filters['sqlCond'][$i] = '(' . implode(' OR ', $matchSql) . ')';
+				}
+				else
+				{
+					// if only one table, or couldn't parse out the fields, stick with original behavior
+					$this->filters['sqlCond'][$i] = $key . ' ' . $condition . ' (' . $db->q($value) . ' IN BOOLEAN MODE)';
+				}
+
 				continue;
 			}
 
