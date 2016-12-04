@@ -357,7 +357,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	public function onLoadListData($opts)
 	{
-		if ($this->app->isAdmin())
+		if ($this->app->isAdmin()  || !$this->showCartButtons())
 		{
 			return;
 		}
@@ -435,7 +435,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	public function onGetPluginRowHeadings($args)
 	{
-		if ($this->app->isAdmin())
+		if ($this->app->isAdmin() || !$this->showCartButtons())
 		{
 			return;
 		}
@@ -444,4 +444,22 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 		$args[0]['headingClass']['j2store']  = array('class' => '', 'style' => '');
 		$args[0]['cellClass']['j2store']     = array('class' => '', 'style' => '');
 	}
+
+	/**
+	 * Determine if we use the plugin or not
+	 * both location and event criteria have to be match when form plug-in
+	 *
+	 * @param   string $location Location to trigger plugin on
+	 * @param   string $event    Event to trigger plugin on
+	 *
+	 * @return  bool  true if we should run the plugin otherwise false
+	 */
+	public function showCartButtons($location = null, $event = null)
+	{
+		$params = $this->getParams();
+		$groups = $this->user->getAuthorisedViewLevels();
+
+		return in_array($params->get('j2store_access', '1'), $groups);
+	}
+
 }
