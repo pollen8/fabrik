@@ -98,6 +98,16 @@ class FabrikControllerForm extends JControllerLegacy
 			$modelName = 'form';
 		}
 
+		$extraQS = FabrikWorker::getMenuOrRequestVar('extra_query_string', '', $this->isMambot, 'menu');
+		$extraQS = ltrim($extraQS, '&?');
+		$extraQS = FabrikString::encodeqs($extraQS);
+
+		foreach (explode('&', $extraQS) as $qsStr)
+		{
+			$parts = explode('=', $qsStr);
+			$input->set($parts[0], $parts[1]);
+		}
+
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
@@ -130,6 +140,11 @@ class FabrikControllerForm extends JControllerLegacy
 			else
 			{
 				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
+
+				if (!empty($extraQS))
+				{
+					$url .= '&' . $extraQS;
+				}
 			}
 
 			// So we can determine in form PHP plugin's that the original request was for a form.

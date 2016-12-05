@@ -600,6 +600,28 @@ class FabrikString extends JString
 	}
 
 	/**
+	 * Encode a query string (that already has &s in it)
+	 *
+	 * @param $qs
+	 *
+	 * @return string
+	 */
+	public static function encodeqs($qs)
+	{
+		$new_qs = array();
+
+		foreach (explode('&', $qs) as $arg)
+		{
+			$bits = explode('=', $arg);
+			$key = FArrayHelper::getValue($bits, 0, '');
+			$val = FArrayHelper::getValue($bits, 1, '');
+			$new_qs[] = $key . '=' . urlencode($val);
+		}
+
+		return implode('&', $new_qs);
+	}
+
+	/**
 	 * Takes a complete URL, and urlencodes any query string args
 	 *
 	 * @param   string  $url  To encode
@@ -614,17 +636,7 @@ class FabrikString extends JString
 
 			if (!empty($qs))
 			{
-				$new_qs = array();
-
-				foreach (explode('&', $qs) as $arg)
-				{
-					$bits = explode('=', $arg);
-					$key = FArrayHelper::getValue($bits, 0, '');
-					$val = FArrayHelper::getValue($bits, 1, '');
-					$new_qs[] = $key . '=' . urlencode($val);
-				}
-
-				$url = $site . '?' . implode('&', $new_qs);
+				$url = $site . '?' . self::encodeqs($qs);
 			}
 		}
 
