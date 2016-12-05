@@ -4071,7 +4071,10 @@ class FabrikFEModelForm extends FabModelForm
 			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
-		$w = new FabrikWorker;
+		$this->data['fabrik_view_url'] = $this->getListModel()->viewDetailsLink($this->data);
+		$this->data['fabrik_edit_url'] = $this->getListModel()->editLink($this->data);
+
+		$w    = new FabrikWorker;
 		$text = $w->parseMessageForPlaceHolder($text, $this->data, true);
 
 		// Jaanus: to remove content plugin code from intro and/or outro when plugins are not processed
