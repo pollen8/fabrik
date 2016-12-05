@@ -608,6 +608,11 @@ class FabrikString extends JString
 	 */
 	public static function encodeqs($qs)
 	{
+		if (empty($qs))
+		{
+			return '';
+		}
+
 		$new_qs = array();
 
 		foreach (explode('&', $qs) as $arg)

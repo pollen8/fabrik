@@ -102,10 +102,13 @@ class FabrikControllerForm extends JControllerLegacy
 		$extraQS = ltrim($extraQS, '&?');
 		$extraQS = FabrikString::encodeqs($extraQS);
 
-		foreach (explode('&', $extraQS) as $qsStr)
+		if (!empty($extraQS))
 		{
-			$parts = explode('=', $qsStr);
-			$input->set($parts[0], $parts[1]);
+			foreach (explode('&', $extraQS) as $qsStr)
+			{
+				$parts = explode('=', $qsStr);
+				$input->set($parts[0], $parts[1]);
+			}
 		}
 
 		$viewType = $document->getType();
