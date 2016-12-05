@@ -4105,7 +4105,7 @@ class FabrikFEModelForm extends FabModelForm
 		array_shift($m);
 		$m = implode(":", $m);
 		$m = FabrikString::rtrimword($m, "}");
-		$m = preg_replace('/\[(\S+)\]/', '{${1}}', $m);
+		$m = preg_replace('/\[(\S+?)\]/', '{${1}}', $m);
 		return $m;
 	}
 
