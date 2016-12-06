@@ -7659,6 +7659,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		// Custom per element layout...
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik/element/' . $this->getFullName(true, false));
 
+		// Custom per template layout
+		$view = $this->getFormModel()->isEditable() ? 'form' : 'details';
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/');
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/' . $this->getFullName(true, false));
 		return $layout;
 	}
 
