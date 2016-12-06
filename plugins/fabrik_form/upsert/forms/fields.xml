@@ -64,7 +64,6 @@
 						<field name="upsert_key"
 							type="element"
 							connection="params_connection_id"
-							   connection_in_repeat="false"
 							table="params_table"
 							valueformat="tableelement"
 							label="PLG_FORM_UPSERT_KEY_LABEL" />
