@@ -616,7 +616,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         _doPageNav: function (e, dir) {
             var self = this, url, d;
             if (this.options.editable) {
-                this.form.getElement('.fabrikMainError').addClass('fabrikHide');
+                if (typeOf(this.form.getElement('.fabrikMainError')) !== 'null') {
+                    this.form.getElement('.fabrikMainError').addClass('fabrikHide');
+                }
 
                 // If tip shown at bottom of long page and next page shorter we need to move the tip to
                 // the top of the page to avoid large space appearing at the bottom of the page.
@@ -1160,13 +1162,14 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
         updateMainError: function () {
             var myfx, activeValidations;
-            var mainEr = this.form.getElement('.fabrikMainError');
-            mainEr.set('html', this.options.error);
+            if (typeOf(this.form.getElement('.fabrikMainError')) !== 'null') {
+                this.form.getElement('.fabrikMainError').set('html', this.options.error);
+            }
             activeValidations = this.form.getElements('.fabrikError').filter(
                 function (e, index) {
                     return !e.hasClass('fabrikMainError');
                 });
-            if (activeValidations.length > 0 && mainEr.hasClass('fabrikHide')) {
+            if (activeValidations.length > 0 && this.form.getElement('.fabrikMainError').hasClass('fabrikHide')) {
                 this.showMainError(this.options.error);
             }
             if (activeValidations.length === 0) {
@@ -1175,14 +1178,16 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         hideMainError: function () {
-            var mainEr = this.form.getElement('.fabrikMainError');
-            myfx = new Fx.Tween(mainEr, {
-                property  : 'opacity',
-                duration  : 500,
-                onComplete: function () {
-                    mainEr.addClass('fabrikHide');
-                }
-            }).start(1, 0);
+            if (typeOf(this.form.getElement('.fabrikMainError')) !== 'null') {
+                var mainEr = this.form.getElement('.fabrikMainError');
+                myfx = new Fx.Tween(mainEr, {
+                    property  : 'opacity',
+                    duration  : 500,
+                    onComplete: function () {
+                        mainEr.addClass('fabrikHide');
+                    }
+                }).start(1, 0);
+            }
         },
 
         showMainError: function (msg) {
@@ -1190,13 +1195,15 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             if (Fabrik.bootstrapped && this.options.ajaxValidation) {
                 return;
             }
-            var mainEr = this.form.getElement('.fabrikMainError');
-            mainEr.set('html', msg);
-            mainEr.removeClass('fabrikHide');
-            myfx = new Fx.Tween(mainEr, {
-                property: 'opacity',
-                duration: 500
-            }).start(0, 1);
+            if (typeOf(this.form.getElement('.fabrikMainError')) !== 'null') {
+                var mainEr = this.form.getElement('.fabrikMainError');
+                mainEr.set('html', msg);
+                mainEr.removeClass('fabrikHide');
+                myfx = new Fx.Tween(mainEr, {
+                    property: 'opacity',
+                    duration: 500
+                }).start(0, 1);
+            }
         },
 
         /** @since 3.0 get a form button name */
