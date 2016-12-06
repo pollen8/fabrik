@@ -7663,6 +7663,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$view = $this->getFormModel()->isEditable() ? 'form' : 'details';
 		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/');
 		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/' . $this->getFullName(true, false));
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getFormModel()->getListModel()->getTmpl() . '/layouts/element/');
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getFormModel()->getListModel()->getTmpl() . '/layouts/element/' . $this->getFullName(true, false));
 		return $layout;
 	}
 
