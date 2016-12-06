@@ -54,11 +54,23 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		$listModel   = $elementModel->getlistModel();
 		$table       = $listModel->getTable();
 		$db          = $listModel->getDb();
-		$lookupTable = $db->qn($table->db_table_name);
+		//$lookupTable = $db->qn($table->db_table_name);
 		$data        = $db->q($data);
 		$query       = $db->getQuery(true);
 		$cond        = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '=';
 		$secret      = $this->config->get('secret');
+
+		$groupModel = $elementModel->getGroup();
+
+		// if it's a join, get the joined table name
+		if ($groupModel->isJoin())
+		{
+			$lookupTable = $groupModel->getJoinModel()->getJoin()->table_join;
+		}
+		else
+		{
+			$lookupTable = $table->db_table_name;
+		}
 
 		if ($elementModel->encryptMe())
 		{
@@ -69,27 +81,33 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 			$k = $db->qn($element->name);
 		}
 
-		$query->select('COUNT(*)')->from($lookupTable)->where($k . ' ' . $cond . ' ' . $data);
+		$query->select('COUNT(*)')->from($db->qn($lookupTable))->where($k . ' ' . $cond . ' ' . $data);
 
-		/* $$$ hugh - need to check to see if we're editing a record, otherwise
-		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
-		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
-		 * $rowId = $input->get('rowid');
-		 * Have to do it by grabbing PK from request, 'cos rowid isn't set on AJAX validation
+		/*
+		 * $$$ hugh - need to check to see if we're editing a record, so we can exclude this record
 		 *
-		 * Paul - if pk is an input field, then input pk may not be original so should use rowid
-		 * to match the record in the DB that matches THIS record, rather than the user changed pk.
-		 * Hugh rightly points out that this does not handle joined tables correctly, but this is
-		 * true if we use:
-		 * $rowId = $input->get('rowid','');    or
-		 * $rowId = $input->get($pk,'');
-			$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
+		 * Need to figure out if this is a joined element, and set PK and 'rowid' accordingly
+		 *
+		 * NOTE - probably only works for non-repeat joins
 		 */
-		$rowId = $input->get('rowid', '');
+
+		if (!$groupModel->isJoin())
+		{
+			// not a join, just use rowid and normal pk
+			$rowId = $input->get('rowid', '');
+			$pk = $table->db_primary_key;
+		}
+		else
+		{
+			// join, so get the join's PK and value as rowid
+			$pk = $groupModel->getJoinModel()->getForeignID();
+			$rowId = $this->formModel->formData[$pk];
+			$pk = $groupModel->getJoinModel()->getForeignID('.');
+		}
 
 		if (!empty($rowId))
 		{
-			$query->where($table->db_primary_key . ' != ' . $db->q($rowId));
+			$query->where($db->qn($pk) . ' != ' . $db->q($rowId));
 		}
 
 		$db->setQuery($query);
