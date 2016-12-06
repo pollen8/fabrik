@@ -13,7 +13,7 @@ else :
 	if ($d->isSlideShow) :
 		// We're building a Bootstrap slideshow, just a simple img tag
 		?>
-		<img src="<?php echo $d->fullSize; ?>" alt="<?php echo $d->title; ?>" style="margin:auto" />
+		<img height="100%" width="100%" object-fit="contain" src="<?php echo $d->fullSize; ?>" alt="<?php echo $d->title; ?>" style="margin:auto" />
 	<?php
 	else :
 		if ($d->isJoin) :
