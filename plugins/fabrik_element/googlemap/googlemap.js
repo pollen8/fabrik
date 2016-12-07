@@ -303,6 +303,9 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 }
 
                 google.maps.event.addListener(this.marker, 'dragend', function () {
+                    if (this.options.auto_center) {
+                        this.map.setCenter(this.marker.getPosition());
+                    }
                     this.field.value = this.marker.getPosition() + ':' + this.map.getZoom();
                     if (this.options.latlng === true) {
                         this.element.getElement('.lat').value = this.marker.getPosition().lat() + '° N';
@@ -323,12 +326,13 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     }
                 }.bind(this));
 
+                //google.maps.event.addListener(map, 'drag', centerMarker);
                 google.maps.event.addListener(this.map, 'zoom_changed', function (oldLevel, newLevel) {
                     this.field.value = this.marker.getPosition() + ':' + this.map.getZoom();
                 }.bind(this));
 
                 if (this.options.auto_center && this.options.editable) {
-                    google.maps.event.addListener(this.map, 'dragend', function () {
+                    google.maps.event.addListener(this.map, 'center_changed', function () {
                         this.marker.setPosition(this.map.getCenter());
                         this.field.value = this.marker.getPosition() + ':' + this.map.getZoom();
                         if (this.options.latlng === true) {
