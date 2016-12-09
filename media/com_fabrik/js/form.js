@@ -1279,6 +1279,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 e.stop();
                 return false;
             }
+            this.toggleSubmit(false);
             this.submitBroker.submit(function () {
                 if (this.options.showLoader) {
                     Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
@@ -1290,6 +1291,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     Fabrik.loader.stop(this.getBlock());
                     // Update global status error
                     this.updateMainError();
+                    this.toggleSubmit(true);
 
                     // Return otherwise ajax upload may still occur.
                     return;
@@ -1328,13 +1330,16 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                                 fconsole(text + ': ' + error);
                                 this.showMainError(error);
                                 Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+                                this.toggleSubmit(true);
                             }.bind(this),
 
                             onFailure : function (xhr) {
                                 fconsole(xhr);
                                 Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
+                                this.toggleSubmit(true);
                             }.bind(this),
                             onComplete: function (json, txt) {
+                                this.toggleSubmit(true);
                                 if (typeOf(json) === 'null') {
                                     // Stop spinner
                                     Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
