@@ -427,6 +427,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	{
 		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
+		$value = $this->getValue($data, $c);
+		$value = FabrikWorker::JSONtoData($value, true);
 
 		if ($group->canRepeat())
 		{
@@ -437,13 +439,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$values[$name]['data']['link'] = array();
 			}
 
-			$values[$name]['data']['label'][$c] = FArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'][$c] = FArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'][$c] = FArrayHelper::getValue($value, 'label');
+			$values[$name]['data']['link'][$c] = FArrayHelper::getValue($value, 'link');
 		}
 		else
 		{
-			$values[$name]['data']['label'] = FArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'] = FArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'] = FArrayHelper::getValue($value, 'label');
+			$values[$name]['data']['link'] = FArrayHelper::getValue($value, 'link');
 		}
 	}
 

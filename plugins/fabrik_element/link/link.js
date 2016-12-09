@@ -29,6 +29,10 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
         },
 
         getValue: function () {
+            if (!this.options.editable) {
+                return this.options.value;
+            }
+
             var s = this._getSubElements();
             var a = [];
             s.each(function (v) {
