@@ -42,6 +42,12 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 		{
 			$w = new FabrikWorker;
 			$this->data = $this->getProcessData();
+
+			if (!$this->shouldProcess('aup_conditon', null, $params))
+			{
+				return true;
+			}
+
 			require_once $api_AUP;
 			$aup = new AltaUserPointsHelper;
 
