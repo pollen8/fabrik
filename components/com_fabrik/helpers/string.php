@@ -1040,6 +1040,28 @@ class FabrikString extends JString
 		return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) !== false ? $_SERVER['REMOTE_ADDR'] : '';
 	}
 
+	public static function getRowClass($value, $prefix)
+	{
+		$value = preg_replace('/[^A-Z|a-z|0-9]/', '-', $value);
+		$value = FabrikString::ltrim($value, '-');
+		$value = FabrikString::rtrim($value, '-');
+
+		// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
+		// $$$ hugh can't have class names which start with a number, so need preg_match, not is_numeric()
+		if (preg_match('#^\d#', $value))
+		{
+			$value = $prefix . $value;
+		}
+		else
+		{
+			// 12/10/2016 - for consistency, start adding the prefixed version every time
+			$value .= " " . $prefix . $value;
+		}
+
+		return $value;
+	}
+
+
 }
 
 /**

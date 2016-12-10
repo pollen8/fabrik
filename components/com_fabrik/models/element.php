@@ -7241,18 +7241,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if ($c !== false)
 					{
-						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
-						$c = FabrikString::ltrim($c, '-');
-						$c = FabrikString::rtrim($c, '-');
-
-						// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-						// $$$ hugh can't have class names which start with a number, so need preg_match, not is_numeric()
-						if (preg_match('#^\d#', $c))
-						{
-							$c = $this->getElement()->name . $c;
-						}
-
-						$data[$groupKey][$i]->class .= ' ' . $c;
+						$data[$groupKey][$i]->class .= ' ' . FabrikString::getRowClass($c, $this->element()->name);
 					}
 				}
 			}

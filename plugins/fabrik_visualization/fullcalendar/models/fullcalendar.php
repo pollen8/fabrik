@@ -525,6 +525,15 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							$row->endShowTime = (bool)$data['endShowTime'];
 
 							$row->popupTemplate = $w->parseMessageForPlaceHolder($data['popupTemplate'], $row);
+
+							if (!empty($row->status))
+							{
+								$row->status = FabrikString::getRowClass($row->status, FabrikString::shortColName($status));
+							}
+							else
+							{
+								$row->status = '';
+							}
 /*
 							$mydate = new DateTime($row->startdate);
 							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
