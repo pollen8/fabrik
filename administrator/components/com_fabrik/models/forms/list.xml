@@ -1149,7 +1149,7 @@
 
 			<field name="list_detail_link_icon"
 			       type="text"
-			       default="search.png"
+			       default="search"
 			       class="input-large"
 			       size="30"
 			       label="COM_FABRIK_DETAIL_LINK_ICON_LABEL"
@@ -1181,6 +1181,15 @@
 			       size="30"
 			       label="COM_FABRIK_EDIT_LABEL"
 			       description="COM_FABRIK_EDIT_DESC"
+			/>
+
+			<field name="list_edit_link_icon"
+			       type="text"
+			       default="edit"
+			       class="input-large"
+			       size="30"
+			       label="COM_FABRIK_EDIT_LINK_ICON_LABEL"
+			       description="COM_FABRIK_EDIT_LINK_ICON_DESC"
 			/>
 
 			<field name="checkboxLocation"
@@ -1216,6 +1225,24 @@
 			       size="30"
 			       label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 			       description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
+			/>
+
+			<field name="list_add_icon"
+			       type="text"
+			       default="plus"
+			       class="input-large"
+			       size="30"
+			       label="COM_FABRIK_ADD_ICON_LABEL"
+			       description="COM_FABRIK_ADD_ICON_DESC"
+			/>
+
+			<field name="list_delete_icon"
+			       type="text"
+			       default="delete"
+			       class="input-large"
+			       size="30"
+			       label="COM_FABRIK_DELETE_ICON_LABEL"
+			       description="COM_FABRIK_DELETE_ICON_DESC"
 			/>
 
 		</fieldset>

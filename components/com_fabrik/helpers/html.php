@@ -2136,7 +2136,9 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false);
+		// if there's a file of this name in our paths, or forceImage is set, don't use icon, use image
+		$src = self::getImagePath($file, $type, $tmpl);
+		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false) || !empty($src);
 
 		if (FabrikWorker::j3() && $forceImage !== true)
 		{
@@ -2158,7 +2160,6 @@ EOD;
 			}
 		}
 
-		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);
 

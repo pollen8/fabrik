@@ -1479,6 +1479,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->rowId = $rowId;
 					$displayData->isAjax = $isAjax;
 					$displayData->isCustom = $this->getCustomLink('url', 'edit') !== '';
+					$displayData->list_edit_link_icon = $params->get('list_edit_link_icon', 'edit');
 					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
@@ -1511,7 +1512,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->rowId = $rowId;
 					$displayData->isAjax = $isAjax;
 					$displayData->isCustom = $this->getCustomLink('url', 'details') !== '';
-					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search.png');
+					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search');
 					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
 				}
@@ -1812,6 +1813,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected function deleteButton($tpl = '', $heading = false)
 	{
+		$params = $this->getParams();
 		$displayData = new stdClass;
 		$label = FText::_('COM_FABRIK_DELETE');
 		$buttonAction = $this->actionMethod();
@@ -1819,7 +1821,8 @@ class FabrikFEModelList extends JModelForm
 		$displayData->tpl = $this->getTmpl();
 		$displayData->text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 		$displayData->btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn btn-default ' : '';
-		$displayData->iconClass = $j3 ? 'icon-remove' : 'icon-minus';
+		//$displayData->iconClass = $j3 ? 'icon-remove' : 'icon-minus';
+		$displayData->list_delete_icon = $params->get('list_delete_icon', 'delete');
 		$displayData->label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
 		$displayData->renderContext = $this->getRenderContext();
 
@@ -9948,6 +9951,20 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 
 		return FText::_($params->get('addlabel', FText::_('COM_FABRIK_ADD')));
+	}
+
+	/**
+	 * Get add button label
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  string
+	 */
+	public function addIcon()
+	{
+		$params = $this->getParams();
+
+		return $params->get('list_add_icon', 'plus');
 	}
 
 	/**
