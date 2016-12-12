@@ -45,6 +45,36 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	}
 
 	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
+	protected function buttonLabel()
+	{
+		return $this->getParams()->get('copytable_button_label', parent::buttonLabel());
+	}
+
+	/**
+	 * Get button image
+	 *
+	 * @since   3.1b
+	 *
+	 * @return   string  image
+	 */
+
+	protected function getImageName()
+	{
+		$img = parent::getImageName();
+
+		if (FabrikWorker::j3() && $img === 'copy.png')
+		{
+			$img = 'copy';
+		}
+
+		return $img;
+	}
+
+	/**
 	 * Get the parameter name that defines the plugins acl access
 	 *
 	 * @return  string
