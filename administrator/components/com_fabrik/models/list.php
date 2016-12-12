@@ -859,7 +859,18 @@ class FabrikAdminModelList extends FabModelAdmin
 			foreach ($elementModels as $element)
 			{
 				// Int and DATETIME elements cant have a index size attribute
-				$colType = $element->getFieldDescription();
+
+				try
+				{
+					$colType = $element->getFieldDescription();
+				}
+				catch (exception $e)
+				{
+					// some corner case, like an unpublished join to a non existent database, so make something up
+					$map[$element->getFullName(false, false)] = '';
+					$map[$element->getElement()->get('id')]   = '';
+					continue;
+				}
 
 				if (JString::stristr($colType, 'int'))
 				{
