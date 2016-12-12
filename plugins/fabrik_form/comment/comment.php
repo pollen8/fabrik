@@ -564,6 +564,17 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$row = FabTable::getInstance('comment', 'FabrikTable');
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
+
+		foreach ($request as $k => $v)
+		{
+			if (!property_exists($row, $k))
+			{
+				unset($request[$k]);
+			}
+		}
+
+		unset($request['id']);
+
 		$row->bind($request);
 		$row->ipaddress = FabrikString::filteredIp();
 		$row->user_id = $this->user->get('id');
