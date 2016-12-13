@@ -347,7 +347,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$str[] = '<input type="text" class="' . $class . '" ' . $readOnly . ' size="' . $timeLength . '" value="' . $time . '" name="'
 			. $timeElName . '" />';
 		$opts  = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
-		$file  = FabrikWorker::j3() ? 'clock.png' : 'time.png';
+		$file  = FabrikWorker::j3() ? 'clock' : 'time.png';
 
 		$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 		$layoutData = (object) array(
@@ -766,7 +766,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
 		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
-		$img  = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
+		$img  = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $opts);
 		$html = array();
 
 		if ($j3)
@@ -1676,7 +1676,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt'   => 'calendar',
 		                                                                   'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
-		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+		$from->img = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
 
@@ -1723,7 +1723,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$from->name          = $v . '[0]';
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
-		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+		$from->img = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
 
@@ -1736,7 +1736,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$to->name  = $v . '[1]';
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $to->id . '_cal_img');
-		$to->img   = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+		$to->img   = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->to         = $to;
 		$displayData->filterType = $this->getFilterType();
