@@ -49,6 +49,8 @@
 
 		<field name="introduction"
 		       type="editor"
+		       buttons="true"
+		       hide="readmore,pagebreak"
 		       filter="FabrikAdminHelper::filterText"
 		       rows="3"
 		       cols="30"
@@ -218,6 +220,8 @@
 
 			<field name="outro"
 			       type="editor"
+			       buttons="true"
+			       hide="readmore,pagebreak"
 			       filter="FabrikAdminHelper::filterText"
 			       rows="3"
 			       cols="30"
@@ -690,18 +694,18 @@
 				<option value="nl">COM_FABRIK_LEAVE_CR_LF</option>
 				<option value="remove">COM_FABRIK_REMOVE</option>
 			</field>
-            
-            <field name="csv_clean_html"
-                type="list"
-                default="leave"
-                label="COM_FABRIK_FIELD_CSV_CLEAN_HTML_LABEL"
-                description="COM_FABRIK_FIELD_CSV_CLEAN_HTML_DESC"
-                >
-                <option value="leave">COM_FABRIK_LEAVE_HTML</option>
-                <option value="replaceli">COM_FABRIK_REPLACE_LI</option>
-                <option value="remove">COM_FABRIK_REMOVE_HTML</option>
-            </field>
-            
+
+			<field name="csv_clean_html"
+			       type="list"
+			       default="leave"
+			       label="COM_FABRIK_FIELD_CSV_CLEAN_HTML_LABEL"
+			       description="COM_FABRIK_FIELD_CSV_CLEAN_HTML_DESC"
+			>
+				<option value="leave">COM_FABRIK_LEAVE_HTML</option>
+				<option value="replaceli">COM_FABRIK_REPLACE_LI</option>
+				<option value="remove">COM_FABRIK_REMOVE_HTML</option>
+			</field>
+
 			<field name="csv_custom_qs"
 			       type="text"
 			       class="input-xxlarge"
@@ -1202,14 +1206,14 @@
 				<option value="beginning">COM_FABRIK_BEGINNING</option>
 				<option value="end">COM_FABRIK_END</option>
 			</field>
-			
+
 			<field name="hidecheckbox"
-				type="checkbox"
-				id="hidecheckbox"
-				label="COM_FABRIK_FIELD_CHECKBOX_HIDE_LABEL"
-				description="COM_FABRIK_FIELD_CHECKBOX_HIDE_DESC"
-				default="0"
-			/>			
+			       type="checkbox"
+			       id="hidecheckbox"
+			       label="COM_FABRIK_FIELD_CHECKBOX_HIDE_LABEL"
+			       description="COM_FABRIK_FIELD_CHECKBOX_HIDE_DESC"
+			       default="0"
+			/>
 
 			<field name="addurl"
 			       type="text"
@@ -1605,7 +1609,7 @@
 			       type="text"
 			       description="COM_FABRIK_DASHBOARD_ICON_DESC"
 			       label="COM_FABRIK_DASHBOARD_ICON_LABEL"
-			       />
+			/>
 		</fieldset>
 
 		<fieldset name="joins">
