@@ -291,6 +291,30 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Weed out any non-serializable properties.  We only ever get serialized by J!'s cache handler,
+	 * to create the cache ID, so we don't really care about __wake() or not saving all state.  We just
+	 * want to avoid the dreaded "serialization of a closure is not allowed", and provide enough propeties
+	 * to guarrantee a unique hash for the cache ID.
+	 */
+
+	public function __sleep() {
+		$serializable = array();
+
+		foreach ($this as $paramName => $paramValue) {
+
+			//if (!is_string($paramValue) && !is_array($paramValue) && is_callable($paramValue))
+			if (!is_numeric($paramValue) && !is_string($paramValue) && !is_array($paramValue))
+			{
+				continue;
+			}
+
+			$serializable[] = $paramName;
+		}
+
+		return $serializable;
+	}
+
+	/**
 	 * Method to set the element id
 	 *
 	 * @param   int $id element ID number
@@ -7241,7 +7265,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if ($c !== false)
 					{
-						$data[$groupKey][$i]->class .= ' ' . FabrikString::getRowClass($c, $this->element()->name);
+						$data[$groupKey][$i]->class .= ' ' . FabrikString::getRowClass($c, $this->element->name);
 					}
 				}
 			}
