@@ -28,12 +28,12 @@ if ($d->format == 'pdf') :
 endif;
 
 if ($data == '1') :
-	$icon = $j3 && $format != 'pdf' ? 'checkmark.png' : '1.png';
+	$icon = $j3 && $format != 'pdf' ? 'checkmark' : '1.png';
 	$properties['alt'] = FText::_('JYES');
 
 	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
 else :
-	$icon = $j3 && $format != 'pdf' ? 'remove.png' : '0.png';
+	$icon = $j3 && $format != 'pdf' ? 'remove' : '0.png';
 	$properties['alt'] = FText::_('JNO');
 
 	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);

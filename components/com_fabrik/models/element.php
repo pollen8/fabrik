@@ -1662,7 +1662,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($displayData->rollOver)
 		{
-			$displayData->icons .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
+			$displayData->icons .= FabrikHelperHTML::image('question-sign', 'form', $tmpl, $iconOpts) . ' ';
 		}
 
 		if ($displayData->isEditable)
@@ -1819,7 +1819,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($this->isTipped($mode))
 		{
-			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
+			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
 
 		if ($mode === 'form')
@@ -2217,7 +2217,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($tip !== '')
 		{
-			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
+			$tip = FabrikHelperHTML::image('question-sign', 'form', $tmpl) . ' ' . $tip;
 		}
 
 		$element->labels  = $groupModel->labelPosition('form');
@@ -6147,7 +6147,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$layout                          = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$displayData                     = new stdClass;
 		$displayData->id                 = $this->getHTMLId($repeatCounter);
-		$displayData->add_image          = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$displayData->add_image          = FabrikHelperHTML::image('plus', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
 		$displayData->allowadd_onlylabel = $params->get('allowadd-onlylabel');
 		$displayData->savenewadditions   = $params->get('savenewadditions');
 		$displayData->onlylabel          = $onlylabel;

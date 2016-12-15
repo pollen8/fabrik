@@ -11,7 +11,7 @@ defined('JPATH_BASE') or die;
 
 $d = $displayData;
 $usersConfig = JComponentHelper::getParams('com_fabrik');
-$icon        = $usersConfig->get('error_icon', 'exclamation-sign') . '.png';
+$icon        = $usersConfig->get('error_icon', 'warning');
 ?>
 <span class="fabrikErrorMessage">
 

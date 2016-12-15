@@ -435,7 +435,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->showPrint)
 		{
-			$text            = FabrikHelperHTML::image('print.png');
+			$text            = FabrikHelperHTML::image('print');
 			$this->printLink = '<a href="#" class="btn btn-default" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 
@@ -760,7 +760,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
-		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') : 'alert.png';
 		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
 
 		$imgs               = new stdClass;

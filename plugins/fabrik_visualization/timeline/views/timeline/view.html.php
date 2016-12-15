@@ -80,7 +80,7 @@ class FabrikViewTimeline extends JViewLegacy
 		JText::script('COM_FABRIK_ADVANCED_SEARCH');
 		JText::script('COM_FABRIK_LOADING');
 		$opts             = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => 'timelineDatePicker_cal_img');
-		$img              = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
+		$img              = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $opts);
 		$this->datePicker = '<input type="text" name="timelineDatePicker" id="timelineDatePicker" value="" />' . $img;
 
 		// Check and add a general fabrik custom css file overrides template css and generic table css
