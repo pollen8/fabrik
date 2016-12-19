@@ -68,33 +68,33 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 } else {
                     html = '<span style="color:red">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK') + '</span>';
                 }
+	            strength.set('html', html);
             } else {
                 // Bootstrap progress bar
-                html += '<div class="bar bar-warning" style="width: 10%;"></div>';
-                var tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
-                if (enoughRegex.test(pwd.value)) {
-                    html = '<div class="bar bar-info" style="width: 30%;"></div>';
-                    tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK');
-                }
-                if (mediumRegex.test(pwd.value)) {
-                    html = '<div class="bar bar-info" style="width: 70%;"></div>';
-                    tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_MEDIUM');
-                }
+                var tipTitle = '', newBar;
                 if (strongRegex.test(pwd.value)) {
-                    html = '<div class="bar bar-success" style="width: 100%;"></div>';
-                    tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_STRONG');
+	                tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_STRONG');
+	                newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-strong']);
+                }
+                else if (mediumRegex.test(pwd.value)) {
+                    tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_MEDIUM');
+	                newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-medium']);
+                }
+	            else if (enoughRegex.test(pwd.value)) {
+		            tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK');
+		            newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-weak']);
+	            }
+                else {
+	                tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
+	                newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-more']);
+
                 }
                 var options = {
                     title: tipTitle
                 };
-                try {
-                    jQuery(strength).tooltip('destroy');
-                } catch (e) {
-                    console.log(e);
-                }
-                jQuery(strength).tooltip(options);
+                jQuery(newBar).tooltip(options);
+                jQuery(strength).replaceWith(newBar);
             }
-            strength.set('html', html);
         },
 
         getConfirmationField: function () {
