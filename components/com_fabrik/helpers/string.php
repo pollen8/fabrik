@@ -1062,6 +1062,24 @@ class FabrikString extends JString
 	}
 
 
+	/**
+	 * Apply nl2br only outside of chevroned tags, eq. not between <...>
+	 *
+	 * @param $string
+	 *
+	 * @return mixed
+	 */
+	public static function safeNl2br($string)
+	{
+		return preg_replace_callback(
+			'#(\r\n?|\n)(?![^<]*>|[^<>]*</)#s',
+			function ($matches) {
+				return nl2br($matches[0]);
+			},
+			$string
+		);
+	}
+
 }
 
 /**
@@ -1121,6 +1139,4 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
-
-
 }

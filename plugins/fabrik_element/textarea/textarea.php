@@ -128,7 +128,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				{
 					for ($i = 0; $i < count($data); $i++)
 					{
-						$data[$i] = nl2br($data[$i]);
+						$data[$i] = FabrikString::safeNl2br($data[$i]);
 					}
 				}
 				else
@@ -138,7 +138,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 						$this->convertDataToString($data);
 					}
 
-					$data = nl2br($data);
+					$data = FabrikString::safeNl2br($data);
 				}
 			}
 
@@ -281,7 +281,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				if (!$this->useWysiwyg(false))
 				{
-					$value = nl2br($value);
+					$value = FabrikString::safeNl2br($value);
 				}
 
 				if ($value !== ''
