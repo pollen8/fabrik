@@ -431,6 +431,24 @@
 				<option value="1">JYES</option>
 			</field>
 
+
+			$displayData->searchOpts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
+			$displayData->searchOpts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
+			$displayData->searchOpts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
+			$displayData->searchOpts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
+
+			<field name="search-mode-advanced-default"
+			       type="list"
+			       default="all"
+			       label="COM_FABRIK_FIELD_ADVANCED_SEARCH_ALL_MODE_DEFAULT_LABEL"
+			       description="COM_FABRIK_FIELD_ADVANCED_SEARCH_ALL_MODE_DEFAULT_DESC"
+			>
+				<option value="all">COM_FABRIK_ALL_OF_THESE_TERMS</option>
+				<option value="any">COM_FABRIK_ANY_OF_THESE_TERMS</option>
+				<option value="exact">COM_FABRIK_EXACT_TERMS</option>
+				<option value="none">COM_FABRIK_NONE_OF_THESE_TERMS</option>
+			</field>
+
 			<field name="list_search_elements"
 			       type="fabrikmodalrepeat"
 			       icon="list"

@@ -6418,7 +6418,11 @@ class FabrikFEModelList extends JModelForm
 				$displayData->searchOpts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
 				$displayData->searchOpts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
 				$displayData->searchOpts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
-				$displayData->mode = $this->app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
+				$displayData->mode = $this->app->getUserStateFromRequest(
+					'com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode',
+					'search-mode-advanced',
+					$params->get('search-mode-advanced-default', 'all')
+				);
 
 				//$o->filter .= '&nbsp;'
 				//		. JHTML::_('select.genericList', $searchOpts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
