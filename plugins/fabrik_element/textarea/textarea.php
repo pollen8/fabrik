@@ -114,7 +114,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data = parent::renderListData($data, $thisRow, $opts);
 		$params = $this->getParams();
 
 		if ($params->get('textarea-tagify') == true)
@@ -147,8 +146,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 			if ($data !== '' && ($truncateWhere === 1 || $truncateWhere === 3))
 			{
-				$opts = $this->truncateOpts();
-				$data = fabrikString::truncate($data, $opts);
+				$truncateOpts = $this->truncateOpts();
+				$data = fabrikString::truncate($data, $truncateOpts);
 				$listModel = $this->getListModel();
 
 				if (ArrayHelper::getValue($opts, 'link', 1))
@@ -158,7 +157,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			}
 		}
 
-		return $data;
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**
