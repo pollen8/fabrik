@@ -30,7 +30,7 @@ $pw2Attributes = implode("\n", $pw2Attributes);
 if ($d->showStrengthMeter) :
 	if ($d->j3) :
 		?>
-		<div class="strength progress progress-striped <?php echo $d->bootstrapClass; ?>" style="margin-top:20px; margin-left:6px"></div>
+		<div class="strength progress progress-striped <?php echo $d->bootstrapClass; ?>" style="margin-left:6px; <?php echo $d->extraStyle; ?>"></div>
 	<?php
 	else :
 		?>

@@ -87,6 +87,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			return '***********';
 		}
 
+		$extraClass = 'strength ' . $params->get('bootstrap_class', '');
+		$extraStyle = 'margin-top: 20px;';
+
 		FabrikHelperHTML::jLayoutJs(
 			'fabrik-progress-bar-strong',
 			'fabrik-progress-bar',
@@ -94,8 +97,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				'context' => 'success',
 				'value' => 100,
 				'stripped' => true,
-				'extraClass' => 'strength',
-				'extraStyle' => 'margin-top:20px;width:40%;'
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
 			)
 		);
 		FabrikHelperHTML::jLayoutJs(
@@ -105,8 +108,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				'context' => 'info',
 				'value' => 70,
 				'stripped' => true,
-				'extraClass' => 'strength',
-				'extraStyle' => 'margin-top:20px;width:40%;'
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
 			)
 		);
 		FabrikHelperHTML::jLayoutJs(
@@ -116,8 +119,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				'context' => 'info',
 				'value' => 30,
 				'stripped' => true,
-				'extraClass' => 'strength',
-				'extraStyle' => 'margin-top:20px;width:40%;'
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
 			)
 		);
 		FabrikHelperHTML::jLayoutJs(
@@ -127,8 +130,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				'context' => 'warning',
 				'value' => 10,
 				'stripped' => true,
-				'extraClass' => 'strength',
-				'extraStyle' => 'margin-top:20px;width:40%;'
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
 			)
 		);
 
@@ -150,6 +153,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$element->name                 = $origName;
 		$layoutData->j3                = FabrikWorker::j3();
 		$layoutData->bootstrapClass    = $params->get('bootstrap_class', '');
+		$layoutData->extraStyle        = $extraStyle;
 		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
 		return $layout->render($layoutData);
