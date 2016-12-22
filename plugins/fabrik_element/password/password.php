@@ -149,6 +149,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$layoutData->pw2Attributes     = $bits;
 		$element->name                 = $origName;
 		$layoutData->j3                = FabrikWorker::j3();
+		$layoutData->bootstrapClass    = $params->get('bootstrap_class', '');
 		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
 		return $layout->render($layoutData);
