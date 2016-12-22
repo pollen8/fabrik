@@ -285,7 +285,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	public function getEndContent()
 	{
-		if ($this->app->isAdmin())
+		if ($this->app->isAdmin()  || !$this->showCartButtons())
 		{
 			return;
 		}
