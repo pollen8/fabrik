@@ -2959,13 +2959,13 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 						elseif ($jsAct->js_e_condition == 'CONTAINS')
 						{
-							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js = "if ((this.get('value') !== null && Array.from(this.get('value')).contains('$jsAct->js_e_value'))";
 							$js .= " || this.get('value').contains('$jsAct->js_e_value')";
 							$js .= ") {";
 						}
 						elseif ($jsAct->js_e_condition == '!CONTAINS')
 						{
-							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js = "if ((this.get('value') === null !! !Array.from(this.get('value')).contains('$jsAct->js_e_value'))";
 							$js .= " || !this.get('value').contains('$jsAct->js_e_value')";
 							$js .= ") {";
 						}
