@@ -2044,6 +2044,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->popUp = $popUp;
 		$displayData->canAdd = $facetTable->canAdd();
 		$displayData->tmpl = $this->getTmpl();
+		$displayData->row = $row;
 		$layout = $this->getLayout('list.fabrik-related-data-add-button');
 
 		return $layout->render($displayData);
@@ -2138,6 +2139,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->popUp = $popUp;
 		$displayData->canView = $facetTable->canView();
 		$displayData->tmpl = $this->getTmpl();
+		$displayData->row = $row;
 		$layout = $this->getLayout('list.fabrik-related-data-view-button');
 
 		return $layout->render($displayData);
