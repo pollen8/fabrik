@@ -2378,7 +2378,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$v = $this->getROElement($data, $repeatCounter);
 			//$v = $v == '' ? '&nbsp;' : $v;
 
-			return '<div id="' . $htmlId . '">' . $v . '</div>';
+			return '<div class="fabrikElementReadOnly" id="' . $htmlId . '">' . $v . '</div>';
 		}
 	}
 
