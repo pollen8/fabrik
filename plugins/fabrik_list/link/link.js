@@ -36,6 +36,13 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 			}.bind(this));
 
 			if (this.options.link !== '') {
+				// Only one custom window open at the same time.
+				jQuery.each(Fabrik.Windows, function (key, win) {
+					if (key.test(/^custom\./)) {
+						win.close();
+					}
+				});
+
 				var thisLink = this.options.link;
 				jQuery.each(rows[ids[0]], function (key, value){
 					if (key === '__pk_val') {
@@ -50,7 +57,7 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 					thisLink += 'tmpl=component&ajax=1';
 					thisLink += '&format=partial';
 					var winOpts = {
-						'id'        : 'add.' + this.list.id,
+						'id'        : 'custom.' + this.list.id,
 						'title'     : this.options.windowTitle,
 						'loadMethod': loadMethod,
 						'contentURL': thisLink,

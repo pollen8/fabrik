@@ -106,7 +106,7 @@ class PlgFabrik_ListLink extends plgFabrik_List
 		$params = $this->getParams();
 		$opts->link = $params->get('table_link_link', '');
 		$opts->fabrikLink = $params->get('table_link_isfabrik', '0') === '1';
-		$opts->windowTitle = $params->get('table_link_fabrik_window_title', '');
+		$opts->windowTitle = FText::_($params->get('table_link_fabrik_window_title', ''));
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListLink($opts)";
 
