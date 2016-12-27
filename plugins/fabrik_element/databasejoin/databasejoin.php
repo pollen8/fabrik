@@ -3612,7 +3612,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$parentKey  = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(true, false);
+		$fullElName = $this->_db->qn($this->getFullName(true, false));
 		$sql        = "(SELECT GROUP_CONCAT(" . $jKey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable
 		LEFT JOIN " . $dbName . " AS lookup ON lookup." . $this->getJoinValueFieldName() . " = $joinTable." . $this->getElement()->name . " WHERE "
 			. $joinTable . ".parent_id = " . $parentKey . ")";
@@ -3662,11 +3662,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 */
 	protected function buildQueryElementConcatId()
 	{
-		$str        = parent::buildQueryElementConcatId();
+		//$str        = parent::buildQueryElementConcatId();
 		$joinTable  = $this->getJoinModel()->getJoin()->table_join;
 		$parentKey  = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(true, false) . '_id';
-		$str .= ", (SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE " . $joinTable
+		$fullElName = $this->_db->qn($this->getFullName(true, false) . '_id');
+		$str = "(SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE " . $joinTable
 			. ".parent_id = " . $parentKey . ") AS $fullElName";
 
 		return $str;

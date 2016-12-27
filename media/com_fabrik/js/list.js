@@ -111,6 +111,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     this._updateRows(history.state);
                 }
 
+	            this.mediaScan();
+
                 Fabrik.fireEvent('fabrik.list.loaded', [this]);
             },
 

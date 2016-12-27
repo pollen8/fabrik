@@ -423,7 +423,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 			if ($newRecord)
 			{
-				if (($alwaysToday || $defaultToday) || $formModel->hasErrors())
+				//if (($alwaysToday || $defaultToday) || $formModel->hasErrors())
+				if (($alwaysToday || $defaultToday))
 				{
 					// User supplied defaults should be in GMT, they are only applied if no other default found.
 					return true;

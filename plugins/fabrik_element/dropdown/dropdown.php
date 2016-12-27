@@ -84,7 +84,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 
 			$tmpLabel = FArrayHelper::getValue($labels, $i);
-			$disable = FArrayHelper::getValue($endIs, $i);
+			$disable = FArrayHelper::getValue($endIs, $i, false);
 
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);

@@ -6602,12 +6602,24 @@ class FabrikFEModelList extends JModelForm
 				if (is_object($elModel))
 				{
 					$name = $elModel->getFullName(true, false);
-					$pName = $elModel->isJoin() ? $db->qn($elModel->getJoinModel()->getJoin()->table_join . '___params') : '';
+					//$pName = $elModel->isJoin() ? $db->qn($elModel->getJoinModel()->getJoin()->table_join . '___params') : '';
+
 
 					foreach ($asFields as $f)
 					{
-						if ((strstr($f, $db->qn($name)) || strstr($f, $db->qn($name . '_raw'))
-							|| ($elModel->isJoin() && strstr($f, $pName))))
+						if (
+							(
+								strstr($f, $db->qn($name))
+								|| strstr($f, $db->qn($name . '_raw'))
+							)
+							||
+							(
+								$elModel->isJoin() && (
+									strstr($f, $db->qn($name . '___params'))
+									|| strstr($f, $db->qn($name . '_id'))
+								)
+							)
+						)
 						{
 							$newFields[] = $f;
 						}

@@ -1,6 +1,8 @@
 {
     "require": {
         "popphp/pop-shipping": "^2.0",
-        "omnipay/omnipay": "~2.3"
+        "omnipay/omnipay": "~2.3",
+        "stripe/stripe-php": "v4.3.0",
+        "twilio/sdk": "5.4.2"
     }
 }

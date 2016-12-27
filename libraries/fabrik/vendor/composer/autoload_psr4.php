@@ -6,10 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Twilio\\' => array($vendorDir . '/twilio/sdk/Twilio'),
     'Symfony\\Polyfill\\Php55\\' => array($vendorDir . '/symfony/polyfill-php55'),
     'Symfony\\Polyfill\\Php54\\' => array($vendorDir . '/symfony/polyfill-php54'),
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
+    'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
     'Pop\\Shipping\\' => array($vendorDir . '/popphp/pop-shipping/src'),
     'Omnipay\\WorldPay\\' => array($vendorDir . '/omnipay/worldpay/src'),
     'Omnipay\\TwoCheckout\\' => array($vendorDir . '/omnipay/2checkout/src'),

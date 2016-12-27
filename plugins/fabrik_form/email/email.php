@@ -482,6 +482,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			 */
 			$controller->_model = $model;
 			$controller->_model->data = $this->getProcessData();
+			//$controller->_model->data = null;
 
 			// Store in output buffer
 			ob_start();

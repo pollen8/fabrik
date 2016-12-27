@@ -746,7 +746,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string    sub query
 	 */
-	protected function buildQueryElementConcatId()
+	protected function buildQueryElementConcatRaw()
 	{
 		$joinTable  = $this->getJoinModel()->getJoin()->table_join;
 		$dbTable    = $this->actualTableName();
@@ -755,6 +755,21 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $joinTable . ' WHERE parent_id = ' . $pkField
 		. ') AS ' . $fullElName;
+	}
+
+	/**
+	 * Build the sub query which is used when merging in
+	 * repeat element records from their joined table into the one field.
+	 * Overwritten in database join element to allow for building
+	 * the join to the table containing the stored values required ids
+	 *
+	 * @since   2.1.1
+	 *
+	 * @return  string    sub query
+	 */
+	protected function buildQueryElementConcatId()
+	{
+		return '';
 	}
 
 	/**
@@ -807,7 +822,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			$joinTable  = $this->getJoinModel()->getJoin()->table_join;
-			$fullElName = FArrayHelper::getValue($opts, 'alias', $k);
+			//$fullElName = FArrayHelper::getValue($opts, 'alias', $k);
+			$fullElName = FArrayHelper::getValue($opts, 'alias', $fullElName);
 			$str        = $this->buildQueryElementConcat($jKey);
 		}
 		else
@@ -843,9 +859,15 @@ class PlgFabrik_Element extends FabrikPlugin
 			if ($this->isJoin())
 			{
 				$pkField     = $this->groupConcactJoinKey();
+				$str         = $this->buildQueryElementConcatRaw();
+				$aFields[]   = $str;
+				$as  = $db->qn($dbTable . '___' . $this->element->name . '_raw');
+				$aAsFields[] = $as;
+
 				$str         = $this->buildQueryElementConcatId();
 				$aFields[]   = $str;
-				$aAsFields[] = $fullElName;
+				$as  = $db->qn($dbTable . '___' . $this->element->name . '_id');
+				$aAsFields[] = $as;
 
 				$as  = $db->qn($dbTable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $joinTable . ' WHERE parent_id = '

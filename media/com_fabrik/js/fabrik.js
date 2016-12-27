@@ -424,7 +424,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         }
 
         // Only one edit window open at the same time.
-        jQuery(Fabrik.Windows, function (key, win) {
+        jQuery.each(Fabrik.Windows, function (key, win) {
             win.close();
         });
 
