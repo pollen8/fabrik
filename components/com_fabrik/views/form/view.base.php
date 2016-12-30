@@ -972,7 +972,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'reset',
 			'class' => 'btn-warning button clearSession',
 			'name' => 'Reset',
-			'label' => $resetLabel
+			'label' => $resetLabel,
+			'formModel' => $model
 		);
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == '1' ? $btnLayout->render($layoutData) : '';
@@ -987,7 +988,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'submit',
 			'class' => 'button',
 			'name' => 'Copy',
-			'label' => $copyLabel
+			'label' => $copyLabel,
+			'formModel' => $model
 		);
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
 			? $btnLayout->render($layoutData) : '';
@@ -1003,7 +1005,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => $model->isAjax() ? 'button' : 'submit',
 			'class' => 'button',
 			'name' => 'apply',
-			'label' => $applyLabel
+			'label' => $applyLabel,
+			'formModel' => $model
 		);
 
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
@@ -1020,7 +1023,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'submit',
 			'class' => 'btn-danger button',
 			'name' => 'delete',
-			'label' => $deleteLabel
+			'label' => $deleteLabel,
+			'formModel' => $model
 		);
 
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $thisRowId != ''
@@ -1038,7 +1042,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'button',
 			'class' => 'clearSession',
 			'name' => '',
-			'label' => FText::_('COM_FABRIK_CLEAR_MULTI_PAGE_SESSION')
+			'label' => FText::_('COM_FABRIK_CLEAR_MULTI_PAGE_SESSION'),
+			'formModel' => $model
 		);
 
 		$multiPageSession = $model->sessionModel && $model->sessionModel->last_page > 0;
@@ -1049,7 +1054,8 @@ class FabrikViewFormBase extends FabrikView
 			'class' => 'button',
 			'name' => 'Goback',
 			'label' => $goBackLabel,
-			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction()
+			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction(),
+			'formModel' => $model
 		);
 
 		$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
@@ -1071,7 +1077,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => $model->isAjax() ? 'button' : 'submit',
 				'class' => 'btn-primary button ' . $submitClass,
 				'name' => 'Submit',
-				'label' => $submitLabel
+				'label' => $submitLabel,
+				'formModel' => $model
 			);
 
 			$form->submitButton = $btnLayout->render($layoutData);
@@ -1087,7 +1094,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPagePrevious button',
 				'name' => 'fabrikPagePrevious',
-				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
+				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV')),
+				'formModel' => $model
 			);
 			$form->prevButton = $btnLayout->render($layoutData);
 
@@ -1095,7 +1103,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPageNext button',
 				'name' => 'fabrikPageNext',
-				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next')
+				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next'),
+				'formModel' => $model
 			);
 
 			$form->nextButton = $btnLayout->render($layoutData);
