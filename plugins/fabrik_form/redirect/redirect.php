@@ -57,7 +57,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$this->data['save_and_next'] = $params->get('save_and_next', '0');
 		$this->data['save_in_session'] = $params->get('save_insession');
 		$this->data['jump_page'] = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
-		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
+		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder(FText::_($params->get('thanks_message')), $this->data);
 
 		if (!$this->shouldRedirect($params))
 		{
