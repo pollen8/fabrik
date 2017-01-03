@@ -2895,7 +2895,7 @@ class FabrikFEModelList extends JModelForm
 
 			$orderDirs = explode(',', $input->getString('order_dir', $input->getString('orderdir', '')));
 
-			if ($orderDirs[0] == '')
+			if ($orderDirs[0] == '' || $orderDirs[0] == '-')
 			{
 				$orderDirs = json_decode($table->order_dir, true);
 			}
