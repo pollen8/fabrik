@@ -3079,6 +3079,12 @@ class FabrikFEModelList extends JModelForm
 		{
 			$context = 'com_' . $package . '.list' . $id . '.order.' . $postOrderBy;
 			$this->session->set($context, $postOrderDir);
+			// if the order is being cleared, remove the query string so list defaults get applied
+			if ($postOrderDir === '-')
+			{
+				$input->set('orderby', '');
+				$input->set('orderdir', '');
+			}
 		}
 	}
 
