@@ -70,7 +70,7 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		// Set the download file name based on the document title
 
-		$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
+		$layout                 = $model->getLayout('form.fabrik-pdf-title');
 		$displayData         = new stdClass;
 		$displayData->doc	= $this->doc;
 		$displayData->model	= $this->getModel();
