@@ -2989,7 +2989,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						elseif ($jsAct->js_e_condition == '!CONTAINS')
 						{
 							$js = "if (this.get('value') === null ";
-							$js .= " !! (!Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js .= " || (!Array.from(this.get('value')).contains('$jsAct->js_e_value')";
 							$js .= " || !this.get('value').contains('$jsAct->js_e_value'))";
 							$js .= ") {";
 						}
