@@ -107,7 +107,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 
 		if (!empty($rowId))
 		{
-			$query->where($db->qn($pk) . ' != ' . $db->q($rowId));
+			$query->where(FabrikString::safeQuoteName($pk) . ' != ' . $db->q($rowId));
 		}
 
 		$db->setQuery($query);
