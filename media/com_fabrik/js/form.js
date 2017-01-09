@@ -553,8 +553,13 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
          * button which resets the form and submits it using the removeSession task.
          */
         watchClearSession: function () {
+	        if (this.options.multipage_save === 0) {
+		        return;
+	        }
+
             var self = this,
                 form = jQuery(this.form);
+
             form.find('.clearSession').on('click', function (e) {
                 e.preventDefault();
                 form.find('input[name=task]').val('removeSession');
