@@ -423,8 +423,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 			if ($newRecord)
 			{
-				//if (($alwaysToday || $defaultToday) || $formModel->hasErrors())
-				if (($alwaysToday || $defaultToday))
+				if (($alwaysToday || $defaultToday) || $formModel->hasErrors())
+				//if (($alwaysToday || $defaultToday))
 				{
 					// User supplied defaults should be in GMT, they are only applied if no other default found.
 					return true;
@@ -612,7 +612,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ((is_array($value) && empty($value)) || (!is_array($value) && trim($value) == ''))
+		if (
+			(is_array($value) && empty($value))
+			|| (
+				is_array($value)
+				&& FArrayHelper::getValue($value, 'date', '') === ''
+				&& FArrayHelper::getValue($value, 'time', '') === ''
+			)
+			|| (!is_array($value) && trim($value) === '')
+		)
 		{
 			return '';
 		}
