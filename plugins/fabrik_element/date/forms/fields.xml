@@ -151,6 +151,7 @@
 				description="PLG_ELEMENT_DATE_CSV_OFFSET_TZ_DESC"
 				label="PLG_ELEMENT_DATE_CSV_OFFSET_TZ_LABEL">
 					<option value="0">PLG_ELEMENT_DATE_CSV_FORMAT_NORMAL</option>
+					<option value="3">PLG_ELEMENT_DATE_CSV_FORMAT_NORMAL_LIST</option>
 					<option value="1">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_GMT</option>
 					<option value="2">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_LOCAL</option>
 			</field>
