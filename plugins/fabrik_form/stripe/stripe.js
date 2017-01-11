@@ -72,12 +72,14 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					}
 				}.bind(this));
 
+				/*
 				var changeBtn = this.form.getElement('.fabrikStripeChange');
 				if (typeOf(changeBtn) !== 'null') {
 					changeBtn.addEvent('click', function (e) {
 						self.selectRecord(e);
 					});
 				}
+				*/
 
 				window.addEventListener('popstate', function () {
 					this.handler.close();
