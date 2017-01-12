@@ -14,16 +14,24 @@ defined('_JEXEC') or die;
 
 $d = $displayData;
 
+
 if (class_exists('NumberFormatter'))
 {
 	$formatter = new NumberFormatter($d->langTag, NumberFormatter::CURRENCY);
 	$d->amount = $formatter->formatCurrency($d->amount, $d->currencyCode);
-
-	echo FText::sprintf('PLG_FORM_EXISTING_CUSTOMER_PURCHASE', $d->amount, $d->card->last4);
 }
+
+$d->bottomText = str_ireplace('{stripe_amount}', $d->amount, $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_last4}', $d->card->last4, $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
+
+echo $d->bottomText;
+
 ?>
+<!--
 <div class="fabrikStripeButtonContainer">
 	<button class="fabrikStripeChange">
 		<span>Update CC</span>
 	</button>
 </div>
+-->

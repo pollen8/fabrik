@@ -14,6 +14,17 @@ defined('_JEXEC') or die;
 
 $d = $displayData;
 
+if (class_exists('NumberFormatter'))
+{
+	$formatter = new NumberFormatter($d->langTag, NumberFormatter::CURRENCY);
+	$d->amount = $formatter->formatCurrency($d->amount, $d->currencyCode);
+}
+
+$d->bottomText = str_ireplace('{stripe_amount}', $d->amount, $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
+
+echo $d->bottomText;
+
 /*
 <script
 	src="https://checkout.stripe.com/checkout.js"
@@ -25,6 +36,8 @@ $d = $displayData;
 ?>
 <button class="stripe-pay">Pay</button>
 */
+
+
 ?>
 
 
