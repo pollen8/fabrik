@@ -44,8 +44,8 @@
 
 			<field type="text"
 			       name="table_link_fabrik_window_title"
-			       label="PLG_FABRIK_LIST_LINK_LINK_LABEL"
-			       description="PLG_FABRIK_LIST_LINK_LINK_DESC"
+			       label="PLG_FABRIK_LIST_LINK_TITLE_LABEL"
+			       description="PLG_FABRIK_LIST_LINK_TITLE_DESC"
 			       repeat="true"
 			       size="30" />
 
