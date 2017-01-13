@@ -29,6 +29,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			var self = this;
 			this.options = jQuery.extend(this.options, options);
 			Fabrik.FabrikStripeForm = null;
+			Fabrik.FabrikStripeFormSubmitting = false;
 
 			if (this.options.useCheckout) {
 				this.handler = StripeCheckout.configure({
@@ -54,12 +55,12 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 						Fabrik.FabrikStripeForm.mockSubmit();
 					},
 					closed : function () {
-						Fabrik.FabrikStripeForm = null;
+						Fabrik.FabrikStripeFormSubmitting = true;
 					}
 				});
 
 				Fabrik.addEvent('fabrik.form.submit.start', function (form, event, btn) {
-					if (typeof Fabrik.FabrikStripeForm === 'undefined' || Fabrik.FabrikStripeForm === null) {
+					if (typeof Fabrik.FabrikStripeForm === 'undefined' || Fabrik.FabrikStripeFormSubmitting !== true) {
 						Fabrik.FabrikStripeForm = form;
 						this.handler.open({
 							name           : this.options.name,
