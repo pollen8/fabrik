@@ -288,6 +288,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$formModel->updateFormData($chargeEmailField, $tokenEmail, true, true);
 		}
 
+		$this->updateCustomerCustom($userId);
+
 		$opts = new stdClass;
 		$opts->listid = $listModel->getId();
 		$opts->formid = $formModel->getId();
@@ -668,6 +670,32 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$cDb->setQuery($cQuery);
 
 		return $cDb->loadResult();
+	}
+
+	private function updateCustomerCustom($userId)
+	{
+		$params       = $this->getParams();
+		$cDb          = FabrikWorker::getDbo(false, $params->get('stripe_customers_connection'));
+		$cQuery       = $cDb->getQuery(true);
+		$cUserIdField = FabrikString::shortColName($params->get('stripe_customers_userid'));
+		$customField  = FabrikString::shortColName($params->get('stripe_customers_custom_field'));
+		$customValue  = $params->get('stripe_customers_custom_value', '');
+
+		if (empty($cUserIdField) || empty($customField) || empty($customValue))
+		{
+			return;
+		}
+
+		$w           = new FabrikWorker;
+		$customValue = $w->parseMessageForPlaceHolder($customValue, $this->data);
+
+		$cQuery
+			->clear()
+			->update($cDb->quoteName($this->getCustomerTableName()))
+			->set($cDb->quoteName($customField) . ' = ' . $cDb->quote($customValue))
+			->where($cDb->quoteName($cUserIdField) . ' = ' . $cDb->quote($userId));
+		$cDb->setQuery($cQuery);
+		$cDb->execute();
 	}
 
 	private function updateCustomerId($userId, $customerId, $opts)

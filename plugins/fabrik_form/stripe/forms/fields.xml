@@ -244,6 +244,21 @@
 			       type="element"/>
 
 			<field connection="params_stripe_customers_connection"
+			       description="PLG_FORM_STRIPE_CUSTOMERS_CUSTOM_FIELD_DESC"
+			       label="PLG_FORM_STRIPE_CUSTOMERS_CUSTOM_FIELD_LABEL"
+			       name="stripe_customers_custom_field"
+			       repeat="true"
+			       table="params_stripe_customers_table"
+			       type="element"/>
+
+			<field name="stripe_customers_custom_value"
+			       type="text"
+			       default=""
+			       description="PLG_FORM_STRIPE_CUSTOMERS_CUSTOM_VALUE_DESC"
+			       label="PLG_FORM_STRIPE_CUSTOMERS_CUSTOM_VALUE_LABEL"
+			       repeat="true"/>
+
+			<field connection="params_stripe_customers_connection"
 			       description="PLG_FORM_STRIPE_CUSTOMERS_BILLING_NAME_DESC"
 			       label="PLG_FORM_STRIPE_CUSTOMERS_BILLING_NAME_LABEL"
 			       name="stripe_customers_billing_name"
