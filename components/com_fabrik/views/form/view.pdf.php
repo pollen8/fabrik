@@ -47,8 +47,8 @@ class FabrikViewForm extends FabrikViewFormBase
 			/** @var FabrikFEModelList $model */
 			$model       = $this->getModel();
 			$params      = $model->getParams();
-			$size        = $params->get('pdf_size', 'A4');
-			$orientation = $params->get('pdf_orientation', 'portrait');
+			$size        = $this->app->input->get('pdf_size', $params->get('pdf_size', 'A4'));
+			$orientation = $this->app->input->get('pdf_orientation', $params->get('pdf_orientation', 'portrait'));
 			$document->setPaper($size, $orientation);
 			$this->output();
 		}
