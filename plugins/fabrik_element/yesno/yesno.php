@@ -491,7 +491,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	protected function dataAttributes()
 	{
-		return array('data-toggle="buttons"');
+		return array(
+			'data-toggle="buttons"',
+			'style="padding-top:0px!important"'
+		);
 	}
 
 }
