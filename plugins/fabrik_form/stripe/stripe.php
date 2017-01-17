@@ -189,6 +189,17 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 					$this->updateCustomerId($userId, $customerId, $tokenOpts);
 				}
+				else
+				{
+					if ($params->get('stripe_customers_allow_update_cc', '0') === '1')
+					{
+						$this->customer         = \Stripe\Customer::retrieve($customerId); // stored in your application
+						$this->customer->source = $tokenId;
+						$this->customer->save();
+
+						$this->updateCustomerId($userId, $customerId, $tokenOpts);
+					}
+				}
 
 				$this->charge = \Stripe\Charge::create(array(
 					"amount"      => $amountMultiplied,
@@ -345,6 +356,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		}
 
 		$opts = new stdClass();
+
+		$opts->formid = $formModel->getId();
 
 		$w      = new FabrikWorker;
 		$userId = $this->user->get('id');
@@ -546,9 +559,25 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				return false;
 			}
 
+			$opts->useCheckout = false;
+
+			if ($params->get('stripe_customers_allow_update_cc', '0') === '1')
+			{
+				$opts->updateCheckout = true;
+				$opts->panelLabel = FText::_(
+					$params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME")
+				);
+				FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+			}
+			else
+			{
+				$opts->updateCheckout = false;
+			}
 
 			$layout     = $this->getLayout('existing-customer');
 			$layoutData = new stdClass();
+			$layoutData->useUpdateButton = $opts->updateCheckout;
+			$layoutData->updateButtonName = FText::_($params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME"));
 			$layoutData->card = $card;
 			$layoutData->amount = $amount;
 			$layoutData->currencyCode = $currencyCode;
@@ -766,7 +795,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		try
 		{
-			if ($params->get('stripe_customer_insert', '') === '1')
+			if ($params->get('stripe_customers_insert', '') === '1')
 			{
 				$cQuery
 					->select('*')

@@ -27,11 +27,12 @@ $d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
 
 echo $d->bottomText;
 
+if ($d->useUpdateButton) :
 ?>
-<!--
 <div class="fabrikStripeButtonContainer">
 	<button class="fabrikStripeChange">
-		<span>Update CC</span>
+		<span><?php echo $d->updateButtonName; ?></span>
 	</button>
 </div>
--->
+<?php
+endif;

@@ -28,6 +28,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		initialize: function (options) {
 			var self = this;
 			this.options = jQuery.extend(this.options, options);
+			this.form = Fabrik.getBlock('form_' + this.options.formid);
 			Fabrik.FabrikStripeForm = null;
 			Fabrik.FabrikStripeFormSubmitting = false;
 
@@ -77,18 +78,50 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					}
 				}.bind(this));
 
-				/*
-				var changeBtn = this.form.getElement('.fabrikStripeChange');
-				if (typeOf(changeBtn) !== 'null') {
-					changeBtn.addEvent('click', function (e) {
-						self.selectRecord(e);
-					});
-				}
-				*/
-
 				window.addEventListener('popstate', function () {
 					this.handler.close();
 				});
+			}
+			else if (this.options.updateCheckout)
+			{
+				var changeBtn = this.form.form.getElement('.fabrikStripeChange');
+				if (typeOf(changeBtn) !== 'null') {
+					this.handler = StripeCheckout.configure({
+						key   : this.options.publicKey,
+						image : 'https://stripe.com/img/documentation/checkout/marketplace.png',
+						locale: 'auto',
+						token : function (token, opts) {
+							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+								'name' : 'stripe_token_id',
+								'value': token.id,
+								'type' : 'hidden'
+							}));
+							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+								'name' : 'stripe_token_email',
+								'value': token.email,
+								'type' : 'hidden'
+							}));
+							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+								'name' : 'stripe_token_opts',
+								'value': JSON.encode(opts),
+								'type' : 'hidden'
+							}));
+						}
+					});
+					changeBtn.addEvent('click', function (e) {
+						e.preventDefault();
+						Fabrik.FabrikStripeForm = this.form;
+						this.handler.open({
+							name           : this.options.name,
+							description    : this.options.item,
+							zipCode        : this.options.zipCode,
+							allowRememberMe: this.options.allowRememberMe,
+							email          : this.options.email,
+							panelLabel     : this.options.panelLabel,
+							billingAddress : this.options.billingAddress
+						});
+					}.bind(this));
+				}
 			}
 		}
 
