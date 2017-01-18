@@ -154,6 +154,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
 					}
+					
+					if ($fd == 'D month YYYY')
+					{
+						$detailValue = $dayDisplay . ' ' . $monthDisplay . ' ' . $year;
+					}
 
 					if ($fd == 'Month d, YYYY')
 					{
@@ -568,6 +573,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$mdy = $month . '.' . $day . '.' . $year;
 		$dmy_slash = $day . '/' . $month . '/' . $year;
 		$dMonthYear = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
+		$dMonthYear2 = $dayDisplay . ' ' . $monthDisplay . ' ' . $year;
 		$monthDYear = $monthDisplay . ' ' . $dayDisplay . ', ' . $year;
 		$dMonth = $dayDisplay . '  ' . $monthDisplay;
 
@@ -587,6 +593,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					break;
 				case 'D. month YYYY':
 					$dateDisplay = $dMonthYear;
+					break;
+				case 'D month YYYY':
+					$dateDisplay = $dMonthYear2;
 					break;
 				case 'Month d, YYYY':
 					$dateDisplay = $monthDYear;
