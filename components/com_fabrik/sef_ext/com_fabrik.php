@@ -9,7 +9,7 @@
  * Fabrik 3.5.1
  *
  * This is a sh404SEF native plugin file for Fabrik component (http://fabrikar.com)
- * Plugin version 2.2 - December 2013
+ * Plugin version 3.0 - December 2016
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -197,8 +197,8 @@ $view   = isset($view) ? @$view : null;
 $formid = isset($formid) ? @$formid : null;
 $rowid  = isset($rowid) ? @$rowid : null;
 
+// remove extra data from rowid to keep the actual ID
 $rowid = (int)$rowid;
-
 
 // Get fabrik SEF configuration - used to include/exclude list's names in SEF urls
 $config = JComponentHelper::getParams('com_fabrik');
@@ -293,6 +293,17 @@ switch ($view)
 		break;
 
 	case 'visualization':
+		// start by inserting the menu element title (can be set in Fabrik options)
+		if ($config->get('fabrik_sef_prepend_menu_title_viz') == 1 && $Itemid != '')
+		{
+			$task = isset($task) ? $task : null;
+			$shSampleName = shGetComponentPrefix($option);
+			$shSampleName = empty($shSampleName) ? getMenuTitle($option, $task, $Itemid, null, $shLangName) : $shSampleName;
+			$shSampleName = (empty($shSampleName) || $shSampleName == '/') ? 'Fabrik':$shSampleName;
+			
+			$title[] = $shSampleName;
+		}
+		
 		if (isset($id))
 		{
 			switch ($config->get('fabrik_sef_format_viz'))
@@ -307,13 +318,13 @@ switch ($view)
 					$title[] = $rowid . '-viz';
 					break;
 				case 'label-id':
-					$title[] = $title[] = FText::_(shFetchVizName($id)) . '-' . $id;
+					$title[] = FText::_(shFetchVizName($id)) . '-' . $id;
 					break;
 				case 'id-label':
-					$title[] = $title[] = $id . '-' . FText::_(shFetchVizName($id));
+					$title[] = $id . '-' . FText::_(shFetchVizName($id));
 					break;
 				case 'label_only':
-					$title[] = $title[] = FText::_(shFetchVizName($id));
+					$title[] = FText::_(shFetchVizName($id));
 					break;
 			}
 			shMustCreatePageId('set', true);
