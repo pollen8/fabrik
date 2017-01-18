@@ -508,7 +508,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             if (res.count < res.total) {
                                 self.triggerCSVExport(res.count);
                             } else {
-                                var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + self.id +
+                                var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + self.id +
                                     '&start=' + res.count + '&Itemid=' + self.options.Itemid;
                                 var msg = '<div class="alert alert-success" style="padding:10px;margin-bottom:3px"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
                                 msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
