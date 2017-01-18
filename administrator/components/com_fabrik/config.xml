@@ -541,6 +541,16 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+		
+		<field name="fabrik_sef_prepend_menu_title_viz"
+			type="radio"
+			default="0"
+			class="radio btn-group"
+			description="COM_FABRIK_SEF_PREPEND_MENU_TITLE_VIZ_DESC"
+			label="COM_FABRIK_SEF_PREPEND_MENU_TITLE_VIZ_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
 
 		<field name="fabrik_sef_tablename_on_forms"
 			type="radio"
