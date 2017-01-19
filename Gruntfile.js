@@ -288,6 +288,11 @@ var refreshFiles = function () {
 
     fs.copySync('administrator/components/com_fabrik/', './fabrik_build/output/component/admin', {
         'filter': function (f) {
+            //console.log('admin file: ' + f);
+            if (f.indexOf('\\com_fabrik\\update\\') !== -1) {
+                console.log('*********' + f);
+                return false;
+            }
             return f.indexOf('.zip') === -1;
         }
     });
@@ -313,18 +318,18 @@ var refreshFiles = function () {
 
     console.log('copying list templates');
     // explicitly include list 2.5 templates
-    fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25');
-    fs.copySync('./components/com_fabrik/views/list/tmpl25/default.xml',
-        './fabrik_build/output/component/site/views/list/tmpl25/default.xml');
-    fs.copySync('./components/com_fabrik/views/list/tmpl25/_advancedsearch.php',
-        './fabrik_build/output/component/site/views/list/tmpl25/_advancedsearch.php');
-    var tmpls = ['admin', 'adminmodule', 'bluesky', 'default', 'div'];
-    for (var i = 0; i < tmpls.length; i++) {
-        tmpl = tmpls[i];
-        fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
-        fs.copySync('./components/com_fabrik/views/list/tmpl25/' + tmpl,
-            './fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
-    }
+    //fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25');
+    //fs.copySync('./components/com_fabrik/views/list/tmpl25/default.xml',
+    //    './fabrik_build/output/component/site/views/list/tmpl25/default.xml');
+    //fs.copySync('./components/com_fabrik/views/list/tmpl25/_advancedsearch.php',
+    //    './fabrik_build/output/component/site/views/list/tmpl25/_advancedsearch.php');
+    //var tmpls = ['admin', 'adminmodule', 'bluesky', 'default', 'div'];
+    //for (var i = 0; i < tmpls.length; i++) {
+    //    tmpl = tmpls[i];
+    //    fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
+    //    fs.copySync('./components/com_fabrik/views/list/tmpl25/' + tmpl,
+    //        './fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
+    //}
 
     // explicitly include 3.0 list templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl');
@@ -342,6 +347,7 @@ var refreshFiles = function () {
 
     console.log('copying form templates');
     // explicitly include 2.5 form templates
+    /*
     fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl25');
     fs.copySync('./components/com_fabrik/views/form/tmpl25/default.xml',
         './fabrik_build/output/component/site/views/form/tmpl25/default.xml');
@@ -361,6 +367,7 @@ var refreshFiles = function () {
                 }
             });
     }
+    */
 
     // explicitly include 3.0 form templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl');
@@ -415,25 +422,44 @@ var  library = function (version, grunt) {
 
 var component = function (version, grunt) {
     // Need to move the package.xml file out of the component to avoid nasties
-    fs.move('./fabrik_build/output/component/admin/fabrik.xml',
-        './fabrik_build/output/component/fabrik.xml', function () {
-            fs.move('./fabrik_build/output/admin/com_fabrik.manifest.class.php',
-                './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
-                    fs.move('./fabrik_build/output/component/admin/com_fabrik.manifest.class.php',
-                        './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
-                            fs.move('./fabrik_build/output/component/admin/pkg_fabrik.xml',
-                                './fabrik_build/output/pkg_fabrik/pkg_fabrik.xml', function () {
-                                    fs.move('./fabrik_build/output/component/admin/pkg_fabrik_sink.xml',
-                                        './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
-                                            zipPromises.push(zipPlugin('fabrik_build/output/component/',
-                                                'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
+    fs.move(
+        './fabrik_build/output/component/admin/fabrik.xml',
+        './fabrik_build/output/component/fabrik.xml',
+        function () {
+            fs.move(
+                './fabrik_build/output/admin/com_fabrik.manifest.class.php',
+                './fabrik_build/output/component/com_fabrik.manifest.class.php',
+                function () {
+                    fs.move('' +
+                        './fabrik_build/output/component/admin/com_fabrik.manifest.class.php',
+                        './fabrik_build/output/component/com_fabrik.manifest.class.php',
+                        function () {
+                            fs.move(
+                                './fabrik_build/output/component/admin/pkg_fabrik.xml',
+                                './fabrik_build/output/pkg_fabrik/pkg_fabrik.xml',
+                                function () {
+                                    fs.move(
+                                        './fabrik_build/output/component/admin/pkg_fabrik_sink.xml',
+                                        './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml',
+                                        function () {
+                                            zipPromises.push(
+                                                zipPlugin(
+                                                    'fabrik_build/output/component/',
+                                                    'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'
+                                                )
+                                            );
                                             //library(version, grunt)
-;                                            packages(version, grunt);
-                                        });
-                                });
-                        });
-                });
-        });
+;                                           packages(version, grunt);
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    );
+                }
+            );
+        }
+    );
 };
 
 var packages = function (version, grunt) {
