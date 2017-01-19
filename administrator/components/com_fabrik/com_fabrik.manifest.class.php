@@ -187,11 +187,6 @@ class Com_FabrikInstallerScript
 			}
 		}
 
-		if (JFile::exists(JPATH_ROOT . '/administrator/components/com_fabrik/header.php'))
-		{
-			JFile::delete(JPATH_ROOT . '/administrator/components/com_fabrik/header.php');
-		}
-
 		return true;
 	}
 

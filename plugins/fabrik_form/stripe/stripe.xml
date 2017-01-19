@@ -2,7 +2,7 @@
 <extension group="fabrik_form" method="upgrade" type="plugin" version="3">
 	<name>plg_fabrik_form_stripe</name>
 	<author>Media A-Team, Inc.</author>
-	<creationDate>December 2016</creationDate>
+	<creationDate>January 2017</creationDate>
 	<copyright>Copyright (C) 2005-2017 Media A-Team, Inc. - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
