@@ -182,7 +182,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				{
 					$this->customer = \Stripe\Customer::create(array(
 						'source' => $tokenId,
-						'email'  => $tokenEmail
+						'email'  => $tokenEmail,
+						'metadata' => array(
+							'userid' => $userId
+						)
 					));
 
 					$customerId = $this->customer->id;
@@ -211,9 +214,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					"customer"    => $customerId,
 					"description" => $item,
 					"metadata"    => array(
-						"listid" => $listModel->getId(),
-						"formid" => $formModel->getId(),
-						"rowid"  => $this->data['rowid']
+						"listid" => (string) $listModel->getId(),
+						"formid" => (string) $formModel->getId(),
+						"rowid"  => (string) $this->data['rowid'],
+						"userid" => (string) $userId
 					)
 				));
 			}
@@ -225,9 +229,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					"source"      => $tokenId,
 					"description" => $item,
 					"metadata"    => array(
-						"listid" => $listModel->getId(),
-						"formid" => $formModel->getId(),
-						"rowid"  => $this->data['rowid']
+						"listid" => (string) $listModel->getId(),
+						"formid" => (string) $formModel->getId(),
+						"rowid"  => (string) $this->data['rowid'],
+						"userid" => (string) $userId
 					)
 				));
 			}
@@ -303,7 +308,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->rowid = $this->data['rowid'];
 		$opts->charge = $this->charge;
 		$opts->customer = $customer;
-		$msgType   = 'fabrik.stripe.charge.success';
+		$msgType   = 'fabrik.stripe.charge.success.prestore';
 		$msg       = new stdClass;
 		$msg->opts  = $opts;
 		$msg->data = $this->data;
@@ -317,17 +322,43 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	{
 		if (isset($this->charge))
 		{
-			$formModel      = $this->getModel();
+			$formModel = $this->getModel();
+			$listModel = $formModel->getListModel();
+			$userId    = JFactory::getUser()->get('id');
+
+			// if this was a new row, we need to update the metadata with the new rowid
+			if (empty($this->data['rowid']))
+			{
+				try
+				{
+					$this->charge->metadata = array(
+						"listid" => (string) $listModel->getId(),
+						"formid" => (string) $formModel->getId(),
+						"rowid"  => (string) $formModel->formData['rowid'],
+						"userid" => (string) $userId
+					);
+					$this->charge->save();
+				}
+				catch (Exception $e)
+				{
+					// meh
+					$this->app->enqueueMessage('Error updating metadata');
+				}
+			}
+
 			//$rowid = $formModel->getRowId();
-			$opts           = new stdClass;
-			$opts->listid   = $this->getModel()->getListModel()->getId();
-			$opts->formid   = (string) $this->getModel()->getId();
-			$opts->rowid    = (string) $formModel->formData['rowid'];
-			$opts->chargeId = $this->charge->id;
-			$msgType        = 'fabrik.stripe.charge.success.stored';
-			$msg            = new stdClass;
-			$msg->opts      = $opts;
-			$msg            = json_encode($msg);
+			$opts            = new stdClass;
+			$opts->listid    = $this->getModel()->getListModel()->getId();
+			$opts->formid    = (string) $this->getModel()->getId();
+			$opts->rowid     = (string) $formModel->formData['rowid'];
+			$opts->chargeId  = $this->charge->id;
+			$opts->timestamp = time();
+			$opts->date      = date('Y-m-d H:i:s');
+			$opts->userid    = $userId;
+			$msgType         = 'fabrik.stripe.charge.success.stored';
+			$msg             = new stdClass;
+			$msg->opts       = $opts;
+			$msg             = json_encode($msg);
 			$this->doLog($msgType, $msg);
 		}
 	}
