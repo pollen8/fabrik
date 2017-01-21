@@ -597,6 +597,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					$params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME")
 				);
 				FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+				JText::script('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED');
 			}
 			else
 			{

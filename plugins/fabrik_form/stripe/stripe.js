@@ -106,6 +106,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 								'value': JSON.encode(opts),
 								'type' : 'hidden'
 							}));
+							jQuery('.fabrikStripeLast4').text(Joomla.JText._('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED'));
 						}
 					});
 					changeBtn.addEvent('click', function (e) {

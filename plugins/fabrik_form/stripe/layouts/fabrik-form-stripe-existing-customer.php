@@ -22,7 +22,7 @@ if (class_exists('NumberFormatter'))
 }
 
 $d->bottomText = str_ireplace('{stripe_amount}', $d->amount, $d->bottomText);
-$d->bottomText = str_ireplace('{stripe_last4}', $d->card->last4, $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_last4}', '<span class="fabrikStripeLast4">' . $d->card->last4 . '</span>', $d->bottomText);
 $d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
 
 echo $d->bottomText;
