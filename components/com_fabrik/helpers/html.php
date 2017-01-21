@@ -2531,9 +2531,23 @@ EOD;
 		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
 		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
 		$bits = explode("&", $bits);
+		$rootBits = array();
+
+		if (isset($rootUrl))
+		{
+			$rootBits = explode('?', $rootUrl);
+			$rootBits = FArrayHelper::getValue($rootBits, 1, '', 'string');
+			$rootBits = explode("&", $rootBits);
+		}
 
 		for ($b = count($bits) - 1; $b >= 0; $b--)
 		{
+			if (in_array($bits[$b], $rootBits))
+			{
+				unset($bits[$b]);
+				continue;
+			}
+
 			$parts = explode("=", $bits[$b]);
 
 			if (count($parts) > 1)
@@ -2557,7 +2571,7 @@ EOD;
 			}
 		}
 
-		$url = $root . '?' . implode('&', $bits);
+		$url = empty($bits) ? $root : $root . FabrikString::qsSepChar($root) . implode('&', $bits);
 
 		return $url;
 	}

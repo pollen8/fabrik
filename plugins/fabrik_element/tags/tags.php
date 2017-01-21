@@ -552,14 +552,15 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	protected function tagListURL()
 	{
 		$listModel = $this->getListModel();
+		$listId = $listModel->getId();
 
 		if ($this->app->isAdmin())
 		{
-			$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $listModel->getId();
+			$url = 'index.php?option=com_fabrik&task=list.view&listid=' . $listId . '&limitstart' . $listId . '=0';
 		}
 		else
 		{
-			$url = 'index.php?option=com_' . $this->package . '&amp;view=list&amp;listid=' . $listModel->getId();
+			$url = 'index.php?option=com_' . $this->package . '&view=list&listid=' . $listId . '&limitstart' . $listId . '=0';
 			$url = JRoute::_($url);
 		}
 		return $url;
