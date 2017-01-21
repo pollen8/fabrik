@@ -104,7 +104,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($amount === false)
 			{
-				$msgType   = 'fabrik.stripe.onAfterProcess';
+				$msgType   = 'fabrik.stripe.cost.eval';
 				$msg       = new stdClass;
 				$msg->data = $this->data;
 				$msg->msg  = "Eval amount code returned false.";
@@ -193,11 +193,15 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				{
 					if ($params->get('stripe_customers_allow_update_cc', '0') === '1')
 					{
-						$this->customer         = \Stripe\Customer::retrieve($customerId); // stored in your application
-						$this->customer->source = $tokenId;
-						$this->customer->save();
+						// if they used "update CC" button, we'll have a token
+						if (!empty($tokenId))
+						{
+							$this->customer         = \Stripe\Customer::retrieve($customerId); // stored in your application
+							$this->customer->source = $tokenId;
+							$this->customer->save();
 
-						$this->updateCustomerId($userId, $customerId, $tokenOpts);
+							$this->updateCustomerId($userId, $customerId, $tokenOpts);
+						}
 					}
 				}
 
@@ -234,14 +238,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$body = $e->getJsonBody();
 			$err  = $body['error'];
 
-			/*
-			print('Status is:' . $e->getHttpStatus() . "\n");
-			print('Type is:' . $err['type'] . "\n");
-			print('Code is:' . $err['code'] . "\n");
-			// param is '' in this case
-			print('Param is:' . $err['param'] . "\n");
-			print('Message is:' . $err['message'] . "\n");
-			*/
 			$this->doLog('fabrik.form.stripe.charge.declined', json_encode($body));
 			$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_DECLINED', $err['message']);
 		}
@@ -307,7 +303,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->rowid = $this->data['rowid'];
 		$opts->charge = $this->charge;
 		$opts->customer = $customer;
-		$msgType   = 'fabrik.stripe.onBeforeStore';
+		$msgType   = 'fabrik.stripe.charge.success';
 		$msg       = new stdClass;
 		$msg->opts  = $opts;
 		$msg->data = $this->data;
@@ -321,12 +317,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	{
 		if (isset($this->charge))
 		{
+			$formModel      = $this->getModel();
+			//$rowid = $formModel->getRowId();
 			$opts           = new stdClass;
 			$opts->listid   = $this->getModel()->getListModel()->getId();
-			$opts->formid   = $this->getModel()->getId();
-			$opts->rowid    = $this->data['rowid'];
+			$opts->formid   = (string) $this->getModel()->getId();
+			$opts->rowid    = (string) $formModel->formData['rowid'];
 			$opts->chargeId = $this->charge->id;
-			$msgType        = 'fabrik.stripe.onAfterProcess';
+			$msgType        = 'fabrik.stripe.charge.success.stored';
 			$msg            = new stdClass;
 			$msg->opts      = $opts;
 			$msg            = json_encode($msg);
