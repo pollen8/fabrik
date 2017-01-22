@@ -880,7 +880,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$isNew          = $user->get('id') < 1;
 		$params         = $this->getParams();
 		$this->gidfield = $this->getFieldName('juser_field_usertype');
-		$defaultGroup   = (int) $params->get('juser_field_default_group');
+		// if editing, set the default to the existing user's groups
+		$defaultGroup   = $isNew ? (array) $params->get('juser_field_default_group') : $user->groups;
 		$groupIds       = (array) $this->getFieldValue('juser_field_usertype', $formModel->formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
@@ -912,8 +913,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		else
 		{
-			// If editing an existing user and no gid field being used,  use default group id
-			$data[] = $defaultGroup;
+			/*
+			 * Mo 'usertype' field was set, so use default, which is either the default ocnfigured
+			 * in the plugin (for new users), or an existing users current groups.
+			 *
+			 */
+			$data = (array) $defaultGroup;
 		}
 
 		return $data;
