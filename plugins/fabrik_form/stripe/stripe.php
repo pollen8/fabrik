@@ -76,13 +76,13 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		if ($testMode)
 		{
-			$publicKey = $params->get('stripe_test_publishable_key', '');
-			$secretKey = $params->get('stripe_test_secret_key', '');
+			$publicKey = trim($params->get('stripe_test_publishable_key', ''));
+			$secretKey = trim($params->get('stripe_test_secret_key', ''));
 		}
 		else
 		{
-			$publicKey = $params->get('stripe_publishable_key', '');
-			$secretKey = $params->get('stripe_secret_key', '');
+			$publicKey = trim($params->get('stripe_publishable_key', ''));
+			$secretKey = trim($params->get('stripe_secret_key', ''));
 		}
 
 		$tokenId   = FArrayHelper::getValue($this->data, 'stripe_token_id', '');
@@ -98,7 +98,19 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		 * Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
 		 * Returning false will log an error and bang out with a runtime exception.
 		 */
-		if ($params->get('stripe_cost_eval', 0) == 1)
+
+		if ($params->get('stripe_cost_eval_to_element', '0') === '1')
+		{
+			$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
+			$amount    = FArrayHelper::getValue($this->data, $amountKey);
+			$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+
+			if (is_array($amount))
+			{
+				$amount = array_shift($amount);
+			}
+		}
+		else if ($params->get('stripe_cost_eval', 0) == 1)
 		{
 			$amount = @eval($amount);
 
@@ -133,7 +145,18 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$item = $params->get('stripe_item');
 		$item = $w->parseMessageForPlaceHolder($item, $this->data);
 
-		if ($params->get('paypal_item_eval', 0) == 1)
+		if ($params->get('stripe_item_eval_to_element', '0') === '1')
+		{
+			$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
+			$amount    = FArrayHelper::getValue($this->data, $amountKey);
+			$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+
+			if (is_array($amount))
+			{
+				$amount = array_shift($amount);
+			}
+		}
+		else if ($params->get('stripe_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
 		}
@@ -400,13 +423,13 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		if ($testMode)
 		{
-			$opts->publicKey = $params->get('stripe_test_publishable_key', '');
-			$secretKey = $params->get('stripe_test_secret_key', '');
+			$opts->publicKey = trim($params->get('stripe_test_publishable_key', ''));
+			$secretKey = trim($params->get('stripe_test_secret_key', ''));
 		}
 		else
 		{
-			$opts->publicKey = $params->get('stripe_publishable_key', '');
-			$secretKey = $params->get('stripe_secret_key', '');
+			$opts->publicKey = trim($params->get('stripe_publishable_key', ''));
+			$secretKey = trim($params->get('stripe_secret_key', ''));
 		}
 
 		$opts->name = FText::_($params->get('stripe_dialog_name', ''));
@@ -451,6 +474,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				{
 					$formModel->data[$amountKey] = $amount;
 				}
+				$formModel->data[$amountKey . '_raw'] = $amount;
 			}
 		}
 		else
@@ -488,6 +512,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			if (!empty($itemKey))
 			{
 				$formModel->data[$itemKey] = $item;
+				$formModel->data[$itemKey . '_raw'] = $item;
 			}
 		}
 		else
@@ -507,19 +532,13 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		$opts->billingAddress = $params->get('stripe_collect_billing_address', '0') === '1';
 
-		/*
-		 *  $stripe_customer = \Stripe\Customer::retrieve($existing_customer['stripe_id']);
-      $card = $stripe_customer->sources->retrieve($stripe_customer->default_source);
-      ?>
+		$customerTableName = $this->getCustomerTableName();
+		$doCustomer = $customerTableName !== false && !empty($userId);
 
-      <form action="charge.php" method="POST">
-        Would you like to pay $535.00 with your card ending in <?php echo $card->last4 ?>?
-        <input type="hidden" name="customer_id" value="<?php echo $stripe_customer->id ?>" />
-        <input type="submit" name="submit" value="Yes!" />
-      </form>
-		 */
-
-		$customerId = $this->getCustomerId($userId);
+		if ($doCustomer)
+		{
+			$customerId = $this->getCustomerId($userId);
+		}
 
 		if (!empty($customerId))
 		{
@@ -551,34 +570,36 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			catch (\Stripe\Error\RateLimit $e)
 			{
 				// Too many requests made to the API too quickly
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_RATE_LIMITED');
+				$chargeErrMsg = FText::_('PLG_FORM_STRIPE_RATE_LIMITED');
 			}
 			catch (\Stripe\Error\InvalidRequest $e)
 			{
 				// Invalid parameters were supplied to Stripe's API
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_INTERNAL_ERR');
+				$body = $e->getJsonBody();
+				$err  = $body['error'];
+				$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_CUSTOMER',$err['message'] );
 			}
 			catch (\Stripe\Error\Authentication $e)
 			{
 				// Authentication with Stripe's API failed
 				// (maybe you changed API keys recently)
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_INTERNAL_ERR');
+				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
 			}
 			catch (\Stripe\Error\ApiConnection $e)
 			{
 				// Network communication with Stripe failed
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_INTERNAL_ERR');
+				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_CONNECTION');
 			}
 			catch (\Stripe\Error\Base $e)
 			{
 				// Display a very generic error to the user, and maybe send
 				// yourself an email
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_INTERNAL_ERR');
+				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 			catch (Exception $e)
 			{
 				// Something else happened, completely unrelated to Stripe
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_INTERNAL_ERR');
+				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 
 			if (!empty($chargeErrMsg))
@@ -606,6 +627,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			$layout     = $this->getLayout('existing-customer');
 			$layoutData = new stdClass();
+			$layoutData->testMode = $testMode;
 			$layoutData->useUpdateButton = $opts->updateCheckout;
 			$layoutData->updateButtonName = FText::_($params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME"));
 			$layoutData->card = $card;
@@ -621,6 +643,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$opts->useCheckout = true;
 			$layout     = $this->getLayout('checkout');
 			$layoutData = new stdClass();
+			$layoutData->testMode = $testMode;
 			$layoutData->amount = $amount;
 			$layoutData->currencyCode = $currencyCode;
 			$layoutData->langTag = JFactory::getLanguage()->getTag();
