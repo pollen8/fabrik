@@ -9479,7 +9479,14 @@ class FabrikFEModelList extends JModelForm
 			if ($format == true)
 			{
 				$row = $fabrikDb->loadObject();
-				$row = array($row);
+				if (is_null($row))
+				{
+					$row = array();
+				}
+				else
+				{
+					$row = array($row);
+				}
 				$this->formatData($row);
 				/* $$$ hugh - if table is grouped, formatData will have turned $row into an
 				 * assoc array, so can't assume 0 is first key.

@@ -147,7 +147,9 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			}
 		}
 
-		if (empty($data))
+		$testEmpty = (array) $data;
+
+		if (empty($testEmpty))
 		{
 			echo "{}";
 		}
