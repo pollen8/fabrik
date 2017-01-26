@@ -22,8 +22,8 @@ $d = $displayData;
 	data-iscustom="<?php if ($d->isCustom) echo '1'; else echo '0'; ?>"
 	href="<?php echo $d->link; ?>"
 	<?php if ($d->target !== '') : ?>
-		target="<?php echo $d->target; ?>">
+		target="<?php echo $d->target; ?>"
 	<?php endif; ?>
-	>
+>
 <?php echo $d->data; ?>
 </a>
