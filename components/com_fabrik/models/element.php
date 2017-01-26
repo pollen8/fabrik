@@ -4429,7 +4429,20 @@ class PlgFabrik_Element extends FabrikPlugin
 				case 'like':
 					// @TODO test this with subquery
 					$condition = "LIKE";
-					$value     = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->q('%' . $value . '%');
+					//$value     = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->q('%' . $value . '%');
+					// if they want NOQUOTES on a LIKE, assume they are building their own CONCAT or whatever with %'s
+					switch ($eval)
+					{
+						case FABRIKFILTER_QUERY:
+							$value = '(' . $value . ')';
+							break;
+						case FABRKFILTER_NOQUOTES:
+							$value = $value;
+							break;
+						default:
+							$value = $db->q('%' . $value . '%');
+							break;
+					}
 					break;
 				case '>':
 				case '&gt;':
