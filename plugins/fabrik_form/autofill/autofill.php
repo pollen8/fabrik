@@ -55,6 +55,8 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$opts->map     = $params->get('autofill_map');
 		$opts->cnn     = $params->get('autofill_cnn');
 		$opts->table   = $params->get('autofill_table', '');
+		$opts->showNotFound = $params->get('autofill_show_not_found', '0') === '1';
+		$opts->notFoundMsg = $params->get('autofill_not_found_msg', '');
 
 		$opts->editOrig              = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm               = (bool) $params->get('autofill_confirm', true);
@@ -98,6 +100,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 */
 	public function onajax_getAutoFill()
 	{
+		$params  = $this->getParams();
 		$input   = $this->app->input;
 		$cnn     = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
