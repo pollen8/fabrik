@@ -599,7 +599,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			{
 				// Invalid parameters were supplied to Stripe's API
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.ratelimit';
+				$logErrType   = 'fabrik.form.stripe.customer.err.invalid';
 				$body = $e->getJsonBody();
 				$err  = $body['error'];
 				$customerErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_CUSTOMER',$err['message'] );
