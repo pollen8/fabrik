@@ -57,10 +57,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$params     = $this->getParams();
 		$formModel  = $this->getModel();
 		$listModel  = $formModel->getListModel();
-		$table      = $listModel->getTable();
 		$input      = $this->app->input;
-		$db         = $listModel->getDb();
-		$query      = $db->getQuery(true);
 		$this->data = $this->getProcessData();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 
@@ -194,6 +191,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		\Stripe\Stripe::setApiKey($secretKey);
 
+		$logErrMsg = '';
+		$logErrType = '';
 		$chargeErrMsg = '';
 		$customer = null;
 
@@ -265,46 +264,75 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			// Since it's a decline, \Stripe\Error\Card will be caught
 			$body = $e->getJsonBody();
 			$err  = $body['error'];
-
-			$this->doLog('fabrik.form.stripe.charge.declined', json_encode($body));
+			$logErrMsg = json_encode($body);
+			$logErrType = 'fabrik.form.stripe.charge.err.declined';
 			$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_DECLINED', $err['message']);
 		}
 		catch (\Stripe\Error\RateLimit $e)
 		{
 			// Too many requests made to the API too quickly
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.ratelimit';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_RATE_LIMITED');
 		}
 		catch (\Stripe\Error\InvalidRequest $e)
 		{
 			// Invalid parameters were supplied to Stripe's API
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.request';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 		catch (\Stripe\Error\Authentication $e)
 		{
 			// Authentication with Stripe's API failed
 			// (maybe you changed API keys recently)
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.authentication';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
 		}
 		catch (\Stripe\Error\ApiConnection $e)
 		{
 			// Network communication with Stripe failed
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.connection';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_NETWORK');
 		}
 		catch (\Stripe\Error\Base $e)
 		{
 			// Display a very generic error to the user, and maybe send
 			// yourself an email
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.base';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 		catch (Exception $e)
 		{
 			// Something else happened, completely unrelated to Stripe
+			$logErrMsg = $e->getMessage();
+			$logErrType = 'fabrik.form.stripe.charge.err.exception';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 
 		if (!empty($chargeErrMsg))
 		{
 			$formModel->setFormErrorMsg($chargeErrMsg);
+
+			$opts = new stdClass;
+			$opts->listid = $listModel->getId();
+			$opts->formid = $formModel->getId();
+			$opts->rowid = $this->data['rowid'];
+			$opts->userid   = $userId;
+			$opts->charge = $this->charge;
+			$opts->customer = $customer;
+			$opts->amount   = $amount;
+			$opts->item     = $item;
+			$msg       = new stdClass;
+			$msg->opts  = $opts;
+			$msg->data = $this->data;
+			$msg->err  = $logErrMsg;
+			$msg       = json_encode($msg);
+
+			$this->doLog($logErrType, $msg);
 
 			return false;
 		}
@@ -329,6 +357,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->listid = $listModel->getId();
 		$opts->formid = $formModel->getId();
 		$opts->rowid = $this->data['rowid'];
+		$opts->userid   = $userId;
 		$opts->charge = $this->charge;
 		$opts->customer = $customer;
 		$msgType   = 'fabrik.stripe.charge.success.prestore';
@@ -348,6 +377,15 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$formModel = $this->getModel();
 			$listModel = $formModel->getListModel();
 			$userId    = JFactory::getUser()->get('id');
+			$opts            = new stdClass;
+			$opts->listid    = $this->getModel()->getListModel()->getId();
+			$opts->formid    = (string) $this->getModel()->getId();
+			$opts->rowid     = (string) $formModel->formData['rowid'];
+			$opts->userid    = $userId;
+			$opts->chargeId  = $this->charge->id;
+			$opts->timestamp = time();
+			$opts->date      = date('Y-m-d H:i:s');
+			$opts->userid    = $userId;
 
 			// if this was a new row, we need to update the metadata with the new rowid
 			if (empty($this->data['rowid']))
@@ -366,18 +404,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				{
 					// meh
 					$this->app->enqueueMessage('Error updating metadata');
+					$msgType         = 'fabrik.stripe.charge.success.err.metadata';
+					$msg             = new stdClass;
+					$msg->opts       = $opts;
+					$msg             = json_encode($msg);
+					$this->doLog($msgType, $msg);
 				}
 			}
 
-			//$rowid = $formModel->getRowId();
-			$opts            = new stdClass;
-			$opts->listid    = $this->getModel()->getListModel()->getId();
-			$opts->formid    = (string) $this->getModel()->getId();
-			$opts->rowid     = (string) $formModel->formData['rowid'];
-			$opts->chargeId  = $this->charge->id;
-			$opts->timestamp = time();
-			$opts->date      = date('Y-m-d H:i:s');
-			$opts->userid    = $userId;
 			$msgType         = 'fabrik.stripe.charge.success.stored';
 			$msg             = new stdClass;
 			$msg->opts       = $opts;
@@ -540,6 +574,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$customerId = $this->getCustomerId($userId);
 		}
 
+		$logErrMsg = '';
+		$logErrType = '';
+		$customerErrMsg = '';
+
 		if (!empty($customerId))
 		{
 			$opts->useCheckout = false;
@@ -550,61 +588,74 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				$customer = \Stripe\Customer::retrieve($customerId);
 				$card     = $customer->sources->retrieve($customer->default_source);
 			}
-			catch (\Stripe\Error\Card $e)
-			{
-				// Since it's a decline, \Stripe\Error\Card will be caught
-				$body = $e->getJsonBody();
-				$err  = $body['error'];
-
-				/*
-				print('Status is:' . $e->getHttpStatus() . "\n");
-				print('Type is:' . $err['type'] . "\n");
-				print('Code is:' . $err['code'] . "\n");
-				// param is '' in this case
-				print('Param is:' . $err['param'] . "\n");
-				print('Message is:' . $err['message'] . "\n");
-				*/
-				$this->doLog('fabrik.form.stripe.charge.declined', json_encode($body));
-				$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_DECLINED', $err['message']);
-			}
 			catch (\Stripe\Error\RateLimit $e)
 			{
 				// Too many requests made to the API too quickly
-				$chargeErrMsg = FText::_('PLG_FORM_STRIPE_RATE_LIMITED');
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.ratelimit';
+				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_RATE_LIMITED');
 			}
 			catch (\Stripe\Error\InvalidRequest $e)
 			{
 				// Invalid parameters were supplied to Stripe's API
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.ratelimit';
 				$body = $e->getJsonBody();
 				$err  = $body['error'];
-				$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_CUSTOMER',$err['message'] );
+				$customerErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_CUSTOMER',$err['message'] );
 			}
 			catch (\Stripe\Error\Authentication $e)
 			{
 				// Authentication with Stripe's API failed
 				// (maybe you changed API keys recently)
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.authentication';
+				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
 			}
 			catch (\Stripe\Error\ApiConnection $e)
 			{
 				// Network communication with Stripe failed
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_CONNECTION');
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.connection';
+				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_NETWORK');
 			}
 			catch (\Stripe\Error\Base $e)
 			{
 				// Display a very generic error to the user, and maybe send
 				// yourself an email
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.base';
+				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 			catch (Exception $e)
 			{
 				// Something else happened, completely unrelated to Stripe
-				$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
+				$logErrMsg    = $e->getMessage();
+				$logErrType   = 'fabrik.form.stripe.customer.err.exception';
+				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 
-			if (!empty($chargeErrMsg))
+
+			if (!empty($customerErrMsg))
 			{
-				$this->app->enqueueMessage($chargeErrMsg, 'message');
+				$this->app->enqueueMessage($customerErrMsg, 'message');
+
+				$opts = new stdClass;
+				$opts->listid = $formModel->getListModel->getId();
+				$opts->formid = $formModel->getId();
+				$opts->rowid = $formModel->getRowId();
+				$opts->cusomerid = $customerId;
+				$opts->customer = $customer;
+				$opts->amount   = $amount;
+				$opts->item     = $item;
+				$opts->userid   = $userId;
+				$msg       = new stdClass;
+				$msg->opts  = $opts;
+				$msg->data = $this->data;
+				$msg->err  = $logErrMsg;
+				$msg       = json_encode($msg);
+
+				$this->doLog($logErrType, $msg);
 
 				return false;
 			}

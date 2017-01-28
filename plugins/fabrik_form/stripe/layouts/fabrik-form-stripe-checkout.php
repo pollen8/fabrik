@@ -23,21 +23,17 @@ if (class_exists('NumberFormatter'))
 $d->bottomText = str_ireplace('{stripe_amount}', $d->amount, $d->bottomText);
 $d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
 
-echo $d->bottomText;
-
-/*
-<script
-	src="https://checkout.stripe.com/checkout.js"
-	class="stripe-button"
-	data-key="<?php echo $d['publishable_key']; ?>"
-	data-description="<?php echo $d->description; ?>"
-	data-amount="<?php echo $d->amount; ?>">
-</script>
-?>
-<button class="stripe-pay">Pay</button>
-*/
-
+if ($d->testMode) :
+	?>
+	<div class="fabriStripeTestMode">
+		<?php echo FText::_('PLG_FORM_STRIPE_TEST_MODE_TEXT'); ?>
+	</div>
+	<?php
+endif;
 
 ?>
+<div class="fabrikStripeBottomText">
+	<?php echo $d->bottomText; ?>
+</div>
 
 
