@@ -641,7 +641,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				$this->app->enqueueMessage($customerErrMsg, 'message');
 
 				$opts = new stdClass;
-				$opts->listid = $formModel->getListModel->getId();
+				$opts->listid = $formModel->getListModel()->getId();
 				$opts->formid = $formModel->getId();
 				$opts->rowid = $formModel->getRowId();
 				$opts->cusomerid = $customerId;
