@@ -340,8 +340,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$layoutData->images = $images;
 			$layoutData->image = $image;
 		}
-
-		$layoutData->linkURL = $params->get('link_url', '');
+		
+		$layoutData->linkURL = $w->parseMessageForPlaceHolder($params->get('link_url', ''), $data);
 
 
 		return $layout->render($layoutData);
