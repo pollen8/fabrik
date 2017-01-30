@@ -842,14 +842,14 @@ define(['jquery'], function (jQuery) {
         hide: function () {
             var c = this.getContainer();
             if (c) {
-                c.hide();
+                jQuery(c).hide();
             }
         },
 
         show: function () {
             var c = this.getContainer();
             if (c) {
-                c.show();
+                jQuery(c).show();
             }
         },
 
