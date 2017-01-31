@@ -468,6 +468,12 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
         dateInLimits: function (date) {
             var d = new moment(date);
 
+            var result = Fabrik.fireEvent('fabrik.viz.fullcalendar.dateinlimits', [this, date]).eventResults;
+            if (result.contains(false))
+            {
+                return false;
+            }
+
             if (this.options.dateLimits.min !== '') {
                 var min = new moment(this.options.dateLimits.min);
                 if (d.isBefore(min)) {
