@@ -177,7 +177,10 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
          * and not id.
          */
         getCloneName: function () {
-            var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+            // there's something messing up when wysiwyg in repeat and we delete before adding
+            //var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+	        //var name = this.options.wysiwyg ? this.options.htmlId : this.options.element
+            var name = this.options.wysiwyg && this.options.isGroupJoin ? this.options.htmlId : this.options.element;
             return name;
         },
 
