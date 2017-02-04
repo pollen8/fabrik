@@ -1091,6 +1091,15 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
+				else if ($this->access->use && $location == 'form')
+				{
+					$formModel = $this->getFormModel();
+					$pluginManager = FabrikWorker::getPluginManager();
+					if (in_array(false, $pluginManager->runPlugins('onElementCanUse', $formModel, 'form', $this)))
+					{
+						$this->access->use = false;
+					}
+				}
 			}
 		}
 
