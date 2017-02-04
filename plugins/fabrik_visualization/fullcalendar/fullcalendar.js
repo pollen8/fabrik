@@ -105,9 +105,14 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             var slotMoment = null, slotView = null;
 
             function dayClickCallback(date, e, view) {
-                slotMoment = date;
-                slotView = view.name;
-                self.calendar.on('mousemove', forgetSlot);
+                if (e.type === 'touchend') {
+	                self.openAddEvent(e, view.name, date);
+                }
+                else {
+	                slotMoment = date;
+	                slotView = view.name;
+	                self.calendar.on('mousemove', forgetSlot);
+                }
             }
 
             function forgetSlot() {
@@ -427,6 +432,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
             switch (e.type) {
                 case 'dblclick':
+                case 'touchend':
                     theDay = theMoment;
                     break;
                 case 'click':
