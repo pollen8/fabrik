@@ -996,8 +996,15 @@ EOD;
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
-			//JHTML::_('behavior.calendar');
-			self::calendar();
+			if (version_compare(JVERSION, '3.7', '>='))
+			{
+				self::calendar();
+			}
+			else
+			{
+				JHTML::_('behavior.calendar');
+			}
+
 			$liveSiteReq['Chosen'] = $mediaFolder . '/chosen-loader';
 			$liveSiteReq['Fabrik'] = $mediaFolder . '/fabrik';
 
