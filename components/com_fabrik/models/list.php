@@ -5577,6 +5577,11 @@ class FabrikFEModelList extends JModelForm
 			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot, 'menu', $spoof_check);
 		}
 
+		if (!FabrikWorker::isJSON($properties))
+		{
+			$properties = '';
+		}
+
 		return $properties;
 	}
 
