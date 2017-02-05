@@ -790,14 +790,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         },
 
         doShowTime: function () {
-            this.dropdown.show();
+            jQuery(this.dropdown).show();
             this.timeActive = true;
             Fabrik.fireEvent('fabrik.date.showtime', this);
         },
 
         hideTime: function () {
             this.timeActive = false;
-            this.dropdown.hide();
+            jQuery(this.dropdown).hide();
             if (this.options.validations !== false) {
                 this.form.doElementValidation(this.element.id);
             }
