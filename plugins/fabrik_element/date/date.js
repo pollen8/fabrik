@@ -795,6 +795,9 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             Fabrik.fireEvent('fabrik.date.showtime', this);
         },
 
+        /**
+         * Hide time picker
+         */
         hideTime: function () {
             this.timeActive = false;
             jQuery(this.dropdown).hide();
