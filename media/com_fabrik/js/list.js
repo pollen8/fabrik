@@ -948,11 +948,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
 
                     var data = this.form.toQueryString();
 
-                    if (task === 'list.doPlugin') {
+                    //if (task === 'list.doPlugin') {
                         data += '&setListRefFromRequest=1';
                         data += '&listref=' + this.options.listRef;
                         data += '&Itemid=' + this.options.Itemid;
-                    }
+                    //}
 
                     if (task === 'list.filter' && this.advancedSearch !== false) {
                         var advSearchForm = document.getElement('form.advancedSearch_' + this.options.listRef);
