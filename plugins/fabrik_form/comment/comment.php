@@ -141,6 +141,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			case 'jcomment':
 				$this->_jcomment();
 				break;
+			case 'komento':
+				$this->_komento();
+				break;
 		}
 
 		return true;
@@ -1021,6 +1024,46 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			throw new RuntimeException('JComment is not installed on your system');
 		}
+	}
+
+	/**
+	 * Prepare JComment system
+	 *
+	 * @return  void
+	 */
+	protected function _komento()
+	{
+		$formModel = $this->getModel();
+		$rowId = $formModel->getRowId();
+
+		$triggerName = __FUNCTION__;
+		require_once(JPATH_ROOT . '/components/com_komento/bootstrap.php');
+
+		// If you would like to perform a check to make sure this is the trigger that should
+		// call Komento, make sure that you have getEventTrigger method in your abstract layer file.
+		/*
+		$application = Komento::loadApplication('com_fabrik');
+		if (!$application->getEventTrigger() == $triggerName)
+		{
+			return false;
+		}
+		*/
+		$options = array(
+			'trigger' => $triggerName
+		);
+
+		// Komento::commentify will return the HTML content of Komento, it is up to your component
+		// that triggers this event to echo the HTML contents.
+		// $article has to be an object that consists of the following
+		// properties: id, catid, introtext, text
+
+		$article = new stdClass();
+		$article->rowid = $formModel->getId() . ':' . $rowId;
+		$article->formid = $formModel->getId();
+		$article->introtext = 'komento introtext';
+		$article->text = 'komento text';
+
+		$this->data = Komento::commentify('com_fabrik', $article, $options);
 	}
 
 	/**

@@ -11,6 +11,7 @@
 					<option value="disqus">PLG_FORM_COMMENT_DISQUS</option>
 					<option value="intensedebate">PLG_FORM_COMMENT_INTENSE_DEBATE</option>
 					<option value="jcomment">JCOMMENT</option>
+					<option value="komento">PLG_FORM_COMMENT_KOMENTO</option>
 					<option value="internal">PLG_FORM_COMMENT_LOCAL_COMMENTING</option>
 			</field>
 
@@ -59,6 +60,29 @@
 			       usestep="true"
 			       addbrackets="true"
 			       label="PLG_FORM_COMMENT_JCOMMENT_THREAD_TITLE_LABEL"/>
+
+		</fieldset>
+
+		<fieldset name="plg-form-comment-komento" label="PLG_FORM_COMMENT_KOMENTO">
+
+			<field name="comment_komento_notify"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       label="PLG_FORM_COMMENT_COMENTO_NOTIFY_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="comment_komento_title"
+			       type="listfields"
+			       repeat="true"
+			       mode="gui"
+			       at="true"
+			       valueformat="tableelement"
+			       usestep="true"
+			       addbrackets="true"
+			       label="PLG_FORM_COMMENT_KOMENTO_THREAD_TITLE_LABEL"/>
 
 		</fieldset>
 

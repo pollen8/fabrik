@@ -144,13 +144,13 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		if ($params->get('stripe_item_eval_to_element', '0') === '1')
 		{
-			$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
-			$amount    = FArrayHelper::getValue($this->data, $amountKey);
-			$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+			$itemKey = FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'));
+			$item    = FArrayHelper::getValue($this->data, $itemKey);
+			$item    = FArrayHelper::getValue($this->data, $itemKey . '_raw', $item);
 
-			if (is_array($amount))
+			if (is_array($item))
 			{
-				$amount = array_shift($amount);
+				$amount = array_shift($item);
 			}
 		}
 		else if ($params->get('stripe_item_eval', 0) == 1)
