@@ -267,6 +267,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
+		$singleCrop = false;
+
+		if (array_key_exists('params', $value))
+		{
+			$singleCrop = true;
+			$imgParams = (array) FArrayHelper::getValue($value, 'params');
+			$value = (array) FArrayHelper::getValue($value, 'file');
+		}
+
 		// Repeat_image_repeat_image___params
 		$rawValues = count($value) == 0 ? array() : FArrayHelper::array_fill(0, count($value), 0);
 		$fileData  = $this->getFormModel()->data;
@@ -275,7 +284,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!is_array($rawValues))
 		{
-			$rawValues = explode(GROUPSPLITTER, $rawValues);
+			$rawValues = FabrikWorker::JSONtoData($rawValues, true);
 		}
 		else
 		{
@@ -286,6 +295,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			if (array_key_exists(0, $rawValues) && is_array(FArrayHelper::getValue($rawValues, 0)))
 			{
 				$rawValues = $rawValues[0];
+			}
+		}
+
+		// single ajax
+		foreach ($rawValues as &$rawValue)
+		{
+			if (is_array($rawValue) && array_key_exists('file', $rawValue))
+			{
+				$rawValue = FArrayHelper::getValue($rawValue, 'file', '');
 			}
 		}
 
@@ -350,14 +368,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 					else
 					{
-						if (is_object($value[$x]))
+						if ($singleCrop)
 						{
 							// Single crop image (not sure about the 0 settings in here)
-							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]->file);
+							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
-							$o->path = $value[$x]->file;
+							$o->path = $value[$x];
 
 							if ($fileInfo = $this->getStorage()->getFileInfo($o->path))
 							{
@@ -369,9 +387,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							}
 
 							$o->type           = strstr($fileInfo['mime_type'], 'image/') ? 'image' : 'file';
-							$o->url            = $this->getStorage()->pathToURL($value[$x]->file);
+							$o->url            = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid       = 0;
-							$o->params         = json_decode($value[$x]->params);
+							$o->params         = json_decode($imgParams[$x]);
 							$oFiles->$iCounter = $o;
 							$iCounter++;
 						}
@@ -2410,7 +2428,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$singleCropImg = $singleCropImg[0];
+				if (is_array($singleCropImg))
+				{
+					// failed validation *sigh*
+					if (array_key_exists('id', $singleCropImg))
+					{
+						$singleCropImg = FArrayHelper::getValue($singleCropImg, 'id', '');
+						$singleCropImg = array_keys($singleCropImg);
+					}
+
+					$value = FArrayHelper::getValue($singleCropImg, 0, '');
+				}
 			}
 		}
 
