@@ -599,6 +599,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$iconFile  = (string) $params->get('icon_file', '');
 
+		if ($iconFile === '{extension}')
+		{
+			$iconFile = FArrayHelper::getValue(pathinfo(trim(strip_tags($data))), 'extension', '');
+		}
+
 		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
 		{
 			$this->iconsSet = false;
