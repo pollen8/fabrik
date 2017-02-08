@@ -57,7 +57,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         convertAllowedDates: function () {
             for (var i = 0; i < this.options.allowedDates.length; i++) {
                 this.options.allowedDates[i] = new Date(this.options.allowedDates[i]);
-                // apply the TZ offset, otherwise if (say) GMT -6, 2017-02-15 will become 2017-01-15 18:00:00
+                // apply the TZ offset, otherwise if (say) GMT -6, 2017-02-15 will become 2017-01-14 18:00:00
 	            this.options.allowedDates[i].setTime(
 		            this.options.allowedDates[i].getTime() + this.options.allowedDates[i].getTimezoneOffset()*60*1000
                 );
