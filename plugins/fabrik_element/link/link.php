@@ -105,7 +105,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 		if (is_array($data))
 		{
-			if (count($data) == 1)
+			// for historical reasons ...
+			if (count($data) === 0)
+			{
+				$data['label'] = '';
+				$data['link'] = '';
+			}
+			else if (count($data) === 1)
 			{
 				$data['label'] = FArrayHelper::getValue($data, 'link');
 			}
