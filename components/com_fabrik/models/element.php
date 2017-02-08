@@ -601,7 +601,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($iconFile === '{extension}')
 		{
-			$iconFile = FArrayHelper::getValue(pathinfo(trim(strip_tags($data))), 'extension', '');
+			$iconFileInfo = pathinfo(trim(strip_tags($data)));
+			$iconFile = FArrayHelper::getValue($iconFileInfo, 'extension', '');
 		}
 
 		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
