@@ -57,6 +57,10 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         convertAllowedDates: function () {
             for (var i = 0; i < this.options.allowedDates.length; i++) {
                 this.options.allowedDates[i] = new Date(this.options.allowedDates[i]);
+                // apply the TZ offset, otherwise if (say) GMT -6, 2017-02-15 will become 2017-01-15 18:00:00
+	            this.options.allowedDates[i].setTime(
+		            this.options.allowedDates[i].getTime() + this.options.allowedDates[i].getTimezoneOffset()*60*1000
+                );
             }
         },
 
@@ -317,7 +321,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.cal.weekNumbers = params.weekNumbers;
 
             if (params.multiple) {
-                cal.multiple = {};
+                this.cal.multiple = {};
                 for (i = params.multiple.length; --i >= 0;) {
                     var d = params.multiple[i];
                     var ds = d.print('%Y%m%d');
