@@ -437,7 +437,7 @@ class FabrikFEModelVisualization extends FabModel
 			$listParams = $listModel->getParams();
 			$preFilter = FArrayHelper::getValue($preFilters, $c);
 			$preFilter = ArrayHelper::fromObject(json_decode($preFilter));
-			$conditions = (array) $preFilter['filter-conditions'];
+			$conditions = FArrayHelper::getValue($preFilter, 'filter-conditions', array(), 'array');
 
 			if (!empty($conditions))
 			{
