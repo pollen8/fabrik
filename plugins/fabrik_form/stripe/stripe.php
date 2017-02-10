@@ -429,6 +429,11 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	{
 		$this->html = '';
 
+		if ($this->app->input->get('format', 'html') === 'pdf')
+		{
+			return;
+		}
+
 		$params     = $this->getParams();
 		$formModel  = $this->getModel();
 		$input      = $this->app->input;
