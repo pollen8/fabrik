@@ -496,7 +496,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 
 			// Load the HTML into DOMPdf and render it.
-			$domPdf->load_html(utf8_decode($html));
+			// $$$trob: convert as in libraries\joomla\document\pdf\pdf.php
+			$html = mb_convert_encoding($html,'HTML-ENTITIES','UTF-8');
+			$domPdf->load_html($html);
 			$domPdf->render();
 
 			// Store the file in the tmp folder so it can be attached
