@@ -579,4 +579,44 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	{
 		return true;
 	}
+
+	/**
+	 * Get database field description
+	 *
+	 * @return  string  db field type
+	 */
+	public function getFieldDescription()
+	{
+		$p       = $this->getParams();
+		$objType = 'TEXT';
+
+		switch ($p->get('textarea_field_type', 'TEXT'))
+		{
+			case 'TEXT':
+			default:
+				if ($this->encryptMe())
+				{
+					$objType = "BLOB";
+				}
+				else
+				{
+					$objType = "TEXT";
+				}
+				break;
+			case 'MEDIUMTEXT':
+				if ($this->encryptMe())
+				{
+					$objType = "MEDIUMBLOB";
+				}
+				else
+				{
+					$objType = "MEDIUMTEXT";
+				}
+				break;
+		}
+
+		return $objType;
+	}
+
+
 }
