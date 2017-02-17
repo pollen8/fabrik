@@ -63,6 +63,12 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 			{
 				// API failed, so don't show a checkbox
 				$this->html = JText::_('PLG_FORM_MAILCHIMP_API_FAIL');
+
+				// if in debug, give some feedback
+				if (FabrikHelperHTML::isDebug(true))
+				{
+					$this->app->enqueueMessage('Mailchimp: ' . $api->errorMessage, 'notice');
+				}
 			}
 		}
 		else
@@ -131,8 +137,10 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$emailData = $this->getProcessData();
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
+		$subscribe = array_key_exists('fabrik_mailchimp_signup', $post);
+		$confirm = $params->get('mailchimp_userconfirm', '0') === '1';
 
-		if ((bool) $params->get('mailchimp_userconfirm', true) === false)
+		if ($formModel->isNewRecord() && $confirm && !$subscribe)
 		{
 			return;
 		}
@@ -154,7 +162,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$email    = $formModel->formDataWithTableName[$emailKey];
 		$api      = new MCAPI($params->get('mailchimp_apikey'));
 
-		if (!array_key_exists('fabrik_mailchimp_signup', $post))
+		if (!$formModel->isNewRecord() && $confirm && !$subscribe)
 		{
 			$retval = $api->listUnsubscribe($listId, $email, true, true, true);
 		}
@@ -220,7 +228,15 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 		if ($api->errorCode)
 		{
-			$this->app->enqueueMessage($api->errorCode, 'Mailchimp: ' . $api->errorMessage, 'notice');
+			// if in debug, give some feedback
+			if (FabrikHelperHTML::isDebug(true))
+			{
+				$this->app->enqueueMessage('Mailchimp: ' . $api->errorMessage, 'notice');
+			}
+			else
+			{
+				$this->app->enqueueMessage(FText::_('PLG_FORM_MAILCHIMP_API_FAIL'));
+			}
 
 			if ((bool) $params->get('mailchimp_fail_on_error', true) === true)
 			{
