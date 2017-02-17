@@ -103,11 +103,12 @@ class FPagination extends JPagination
 	{
 		$app                  = JFactory::getApplication();
 		$this->listRef        = $listRef;
+		$this->tmpl           = $tmpl;
 		$list                 = array();
 		$list['limit']        = $this->limit;
 		$list['limitstart']   = $this->limitstart;
 		$list['total']        = $this->total;
-		$list['limitfield']   = $this->showDisplayNum ? $this->getLimitBox() : '';
+		$list['limitfield']   = $this->showDisplayNum ? $this->getLimitBox($tmpl) : '';
 		$list['pagescounter'] = $this->getPagesCounter();
 
 		if ($this->showTotal)
@@ -134,9 +135,11 @@ class FPagination extends JPagination
 	/**
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
+	 * @param   string $tmpl    List template
+	 *
 	 * @return    string    The html for the limit # input box
 	 */
-	public function getLimitBox()
+	public function getLimitBox($tmpl = 'default')
 	{
 		$paths                      = array();
 		$displayData                = new stdClass;
@@ -146,9 +149,7 @@ class FPagination extends JPagination
 		$displayData->viewAll       = $this->viewAll;
 		$displayData->limit         = $this->limit;
 
-		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-limitbox', $paths);
+		$layout = $this->getLayout('pagination.fabrik-pagination-limitbox');
 
 		return $layout->render($displayData);
 	}
@@ -164,9 +165,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-active', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-item-active');
 
 		return $layout->render($displayData);
 	}
@@ -184,9 +183,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-inactive', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-item-inactive');
 
 		return $layout->render($displayData);
 	}
@@ -323,9 +320,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->list = $list;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-links');
 
 		return $layout->render($displayData);
 	}
@@ -446,9 +441,7 @@ class FPagination extends JPagination
 		$displayData->showTotal    = $this->showTotal;
 		$displayData->limit        = $this->limit;
 
-		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
+		$layout = $this->getLayout('pagination.fabrik-pagination-footer');
 
 		return $layout->render($displayData);
 	}
@@ -493,5 +486,22 @@ class FPagination extends JPagination
 		{
 			return $default;
 		}
+	}
+
+	/**
+	 * Get a pagination JLayout file
+	 *
+	 * @param   string  $type  form/details/list
+	 * @param   array   $paths  Optional paths to add as includes
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
+		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->tmpl . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+
+		return $layout;
 	}
 }
