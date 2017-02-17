@@ -138,41 +138,19 @@ class FPagination extends JPagination
 	 */
 	public function getLimitBox()
 	{
-		// Initialize variables
-		$limits = array();
-		$values = array();
+		$paths                      = array();
+		$displayData                = new stdClass;
+		$displayData->id            = $this->id;
+		$displayData->startLimit    = $this->startLimit;
+		$displayData->showAllOption = $this->showAllOption;
+		$displayData->viewAll       = $this->viewAll;
+		$displayData->limit         = $this->limit;
 
-		for ($i = 5; $i <= 30; $i += 5)
-		{
-			$values[] = $i;
-		}
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
-		$values[] = 50;
-		$values[] = 100;
+		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-limitbox', $paths);
 
-		if (!in_array($this->startLimit, $values))
-		{
-			$values[] = $this->startLimit;
-		}
-
-		asort($values);
-
-		foreach ($values as $v)
-		{
-			$limits[] = JHTML::_('select.option', $v);
-		}
-
-		if ($this->showAllOption == true)
-		{
-			$limits[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_ALL'));
-		}
-
-		$selected   = $this->viewAll ? '-1' : $this->limit;
-		$js         = '';
-		$attributes = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
-		$html       = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attributes, 'value', 'text', $selected);
-
-		return $html;
+		return $layout->render($displayData);
 	}
 
 	/**
