@@ -25,10 +25,11 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
         Extends: FbElement,
 
         options: {
-            use_input_mask        : false,
-            input_mask_definitions: '',
-            geocomplete           : false,
-            mapKey                : false
+            use_input_mask         : false,
+            input_mask_definitions : '',
+            input_mask_autoclear   : false,
+            geocomplete            : false,
+            mapKey                 : false
         },
 
         initialize: function (element, options) {
@@ -44,7 +45,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                     definitions = JSON.parse(this.options.input_mask_definitions);
                     jQuery.extend(jQuery.mask.definitions, definitions);
                 }
-                jQuery('#' + element).mask(this.options.input_mask);
+                jQuery('#' + element).mask(this.options.input_mask, {autoclear: this.options.input_mask_autoclear});
             }
             if (this.options.geocomplete) {
                 this.gcMade = false;
@@ -92,7 +93,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                             jQuery.mask.definitions[k] = v;
                         });
                     }
-                    jQuery('#' + element.id).mask(this.options.input_mask);
+                    jQuery('#' + element.id).mask(this.options.input_mask, {autoclear: this.options.input_mask_autoclear});
                 }
             }
             if (this.options.geocomplete) {
