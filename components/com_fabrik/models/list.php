@@ -6785,6 +6785,10 @@ class FabrikFEModelList extends JModelForm
 
 				if ($responsiveClass !== '')
 				{
+					$displayData = new stdClass;
+					$displayData->responsiveClass = $responsiveClass;
+					$layout = $this->getLayout('fabrik-responsive-class');
+					$responsiveClass = $layout->render($displayData);
 					$responsiveClass .= ' ';
 				}
 
