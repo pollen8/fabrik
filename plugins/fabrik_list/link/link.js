@@ -48,7 +48,7 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 					if (key === '__pk_val') {
 						key = 'rowid';
 					}
-					var re = new RegExp('\{' + key + '\}');
+					var re = new RegExp('\{' + key + '\}', 'g');
 					thisLink = thisLink.replace(re, value);
 				});
 				if (this.options.fabrikLink && this.list.options.ajax_links) {
