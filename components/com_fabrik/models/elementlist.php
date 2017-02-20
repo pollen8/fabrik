@@ -369,7 +369,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			if ($params->get('filter_groupby') != -1)
 			{
-				ArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
+				$rows = ArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
 
 			$this->getFilterDisplayValues($default, $rows);
