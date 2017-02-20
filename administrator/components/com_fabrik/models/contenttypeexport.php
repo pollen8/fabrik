@@ -214,6 +214,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		// We don't want to export the main table, as a new one is created when importing the content type
 		$this->listModel = $formModel->getListModel();
 		$mainTable       = $this->listModel->getTable()->get('db_table_name');
+		$mainTableConnection = $this->listModel->getTable()->get('connection_id');
 		$contentType     = $this->doc->createElement('contenttype');
 		$tables          = FabrikContentTypHelper::iniTableXML($this->doc, $mainTable);
 
@@ -234,7 +235,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 				$elements[] = $elementModel->getElement()->getProperties();
 			}
 
-			$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables, $mainTable));
+			$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables, $mainTable, $mainTableConnection));
 		}
 
 		$contentType->appendChild($tables);
@@ -280,7 +281,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 	 *
 	 * @return DOMElement
 	 */
-	private function createFabrikGroupXML($data, $elements, $tables, $mainTable = '')
+	private function createFabrikGroupXML($data, $elements, $tables, $mainTable = '', $mainTableConnection=1)
 	{
 		$tableParams = array('table_join', 'join_from_table');
 
@@ -295,7 +296,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 			{
 				if ($join->get($tableParam) !== $mainTable)
 				{
-					$this->createTableXML($tables, $join->get($tableParam));
+					$this->createTableXML($tables, $join->get($tableParam), $mainTableConnection);
 				}
 			}
 
