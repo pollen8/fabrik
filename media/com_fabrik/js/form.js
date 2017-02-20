@@ -61,6 +61,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
             this.fx = {};
             this.fx.elements = [];
+            this.fx.hidden = [];
             this.fx.validations = {};
             this.setUpAll();
             this._setMozBoxWidths();
@@ -2307,6 +2308,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     submit.disabled = 'disabled';
                     submit.setStyle('opacity', 0.5);
                 }
+                Fabrik.fireEvent('fabrik.form.togglesubmit', [this, on]);
             }
         }
     });
