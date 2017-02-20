@@ -334,7 +334,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 
 			if ($params->get('join_db_name') !== $mainTable)
 			{
-				$this->createTableXML($tables, $params->get('join_db_name'));
+				$this->createTableXML($tables, $params->get('join_db_name'),$params->get('join_conn_id'));
 			}
 		};
 
@@ -361,7 +361,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 	 *
 	 * @throws Exception
 	 */
-	private function createTableXML(&$tables, $tableName)
+	private function createTableXML(&$tables, $tableName,$tableConnId = 1)
 	{
 		if (in_array($tableName, self::$exportedTables))
 		{
@@ -371,15 +371,17 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		self::$exportedTables[] = $tableName;
 		//$exporter    = $this->db->getExporter();
 
+		$tabDbo= FabrikWorker::getDbo(false, $tableConnId);
 
 		// Until the J! exporters are fixed, we only handle Mysqli (with out extended class)
-		if (!($this->db instanceof JDatabaseDriverMysqli))
+		if (!($tabDbo instanceof JDatabaseDriverMysqli))
 		{
 			throw new Exception('Sorry, we currently only support the Mysqli database driver for export');
 		}
 
 		$exporter = new JDatabaseExporterMysqli2;
-		$exporter->setDbo($this->db);
+
+		$exporter->setDbo($tabDbo);
 		$exporter->from($tableName);
 		$tableDoc = new DOMDocument();
 		$xml = (string) $exporter;
