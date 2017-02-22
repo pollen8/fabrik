@@ -82,12 +82,13 @@
 								<option value="lessthanequals">LESS THAN OR EQUALS</option>
 								<option value="in">IN</option>
 								<option value="not_in">NOT IN</option>
+								<option value="thisyear">COM_FABRIK_LIST_THIS_YEAR</option>
 								<option value="earlierthisyear">COM_FABRIK_LIST_EARLIER_THIS_YEAR</option>
 								<option value="laterthisyear">COM_FABRIK_LIST_LATER_THIS_YEAR</option>
 								<option value="yesterday">COM_FABRIK_YESTERDAY</option>
 								<option value="today">COM_FABRIK_TODAY</option>
 								<option value="tomorrow">COM_FABRIK_TOMORROW</option>
-								<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
+								<option value="thismonth">COM_FABRIK_THIS_MONTH</option>
 								<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
 								<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
 								<option value="nextweek1">COM_FABRIK_NEXT_MONTH</option>

@@ -869,6 +869,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				case 'laterthisyear':
 					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
 					break;
+				case 'thisyear':
+					$search = array(date('Y'), '', '');
+					return $this->_dayMonthYearFilterQuery($key, $search);
+					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));
 					return $this->_dayMonthYearFilterQuery($key, $search);
