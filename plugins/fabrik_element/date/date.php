@@ -540,7 +540,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			// 5.3 only
 			if (class_exists('DateInterval'))
 			{
-				$dateInterval         = new DateInterval('PT' . $hours . 'H');
+				// need to use minutes, as DateInterval will barf on fractional hours like 5.5 (India)
+				$dateInterval         = new DateInterval('PT' . $hours * 60 . 'M');
 				$dateInterval->invert = $invert;
 				$date->sub($dateInterval);
 			}
@@ -816,7 +817,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->align       = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay    = intval($params->get('date_firstday'));
-		$opts->ifFormat    = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
+		$opts->ifFormat    = $params->get('date_form_format', $params->get('date_table_format', 'Y-m-d'));
 		$opts->timeFormat  = 24;
 		$opts->ifFormat    = FabDate::dateFormatToStrftimeFormat($opts->ifFormat);
 		$opts->dateAllowFunc = $params->get('date_allow_func');
@@ -1172,6 +1173,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$params       = $this->getParams();
 		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
+
+		$timeZone     = !$storeAsLocal ? new DateTimeZone($this->config->get('offset')) : null;
 
 		if (!$params->get('date_showtime', 0) || $storeAsLocal)
 		{
