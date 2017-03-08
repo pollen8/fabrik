@@ -3002,6 +3002,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$obs = $matches[0];
 			}
 
+			$concatSql = $params->get($this->concatLabelParam, '');
+
+			if (!empty($concatSql))
+			{
+				if (preg_match_all("/{[^}\s]+}/i", $concatSql, $matches) !== 0)
+				{
+					$obs = array_merge($obs, $matches[0]);
+				}
+			}
+
 			$obs = array_unique($obs);
 
 			foreach ($obs as $key => &$m)
@@ -3023,8 +3033,35 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$opts->observe = array_values($obs);
+		$opts->changeEvent = $this->getChangeEvent();
 
 		return $opts;
+	}
+
+	/**
+	 * Return JS event required to trigger a 'change'
+	 *
+	 * @return  string
+	 */
+
+	public function getChangeEvent()
+	{
+		$params = $this->getParams();
+
+		switch ($params->get('database_join_display_type', 'dropdown'))
+		{
+			case 'dropdown':
+				$trigger = 'change';
+				break;
+			case 'auto-complete':
+				$trigger = 'blur';
+				break;
+			default:
+				$trigger = 'click';
+				break;
+		}
+
+		return $trigger;
 	}
 
 	/**

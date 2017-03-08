@@ -14,13 +14,14 @@ define(['jquery'], function (jQuery) {
         Implements: [Events, Options],
 
         options: {
-            element   : null,
-            defaultVal: '',
-            value     : '',
-            label     : '',
-            editable  : false,
-            isJoin    : false,
-            joinId    : 0
+	        element    : null,
+	        defaultVal : '',
+	        value      : '',
+	        label      : '',
+	        editable   : false,
+	        isJoin     : false,
+	        joinId     : 0,
+	        changeEvent: 'change'
         },
 
         /**
@@ -829,9 +830,9 @@ define(['jquery'], function (jQuery) {
             return this.element.get('tag') === 'select' ? 'click' : 'focus';
         },
 
-        getChangeEvent: function () {
-            return 'change';
-        },
+	    getChangeEvent: function () {
+		    return this.options.changeEvent;
+	    },
 
         select: function () {
         },

@@ -12,7 +12,7 @@
 $d = $displayData;
 
 if ($d->showNav) :
-?>
+	?>
 <div class="list-footer">
 	<div class="limit">
 		<div class="input-prepend input-append">
