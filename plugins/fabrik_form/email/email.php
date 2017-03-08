@@ -436,6 +436,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
+		$model->setRowId($this->data['rowid']);
 		$document = JFactory::getDocument();
 		$docType = $document->getType();
 		$document->setType('pdf');
@@ -481,8 +482,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			 * here instead of poking in to the _model, but I don't think there is a setModel for controllers?
 			 */
 			$controller->_model = $model;
-			$controller->_model->data = $this->getProcessData();
-			//$controller->_model->data = null;
+
+			/**
+			 * Unfortunately, we need to reload the data, so it's in the right format.  Can't use the
+			 * submitted data.  "One of these days" we need to have a serious look at normalizing the data formats,
+			 * so submitted data is in the same format (once processed) as data read from the database.
+			 */
+			$controller->_model->data = $this->model->getData();
 
 			// Store in output buffer
 			ob_start();

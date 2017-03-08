@@ -269,7 +269,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$singleCrop = false;
 
-		if (array_key_exists('params', $value))
+		if (is_array($value) && array_key_exists('params', $value))
 		{
 			$singleCrop = true;
 			$imgParams = (array) FArrayHelper::getValue($value, 'params');
