@@ -700,7 +700,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 			if ($content !== '')
 			{
-				$messageTemplate = str_replace('{content}', $messageTemplate, $content);
+				$messageTemplate = str_replace('{content}', $content, $messageTemplate);
 			}
 		}
 
