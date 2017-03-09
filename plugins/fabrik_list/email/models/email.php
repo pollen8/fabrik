@@ -105,12 +105,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
+		$params = $this->getParams();
+		$w      = new FabrikWorker;
 		FabrikHelperHTML::slimbox();
 		parent::onLoadJavascriptInstance($args);
-		$opts              = $this->getElementJSOptions();
-		$opts->renderOrder = $this->renderOrder;
-		$opts              = json_encode($opts);
-		$this->jsInstance  = "new FbListEmail($opts)";
+		$opts               = $this->getElementJSOptions();
+		$opts->renderOrder  = $this->renderOrder;
+		$opts->additionalQS = $w->parseMessageForPlaceHolder($params->get('list_email_additional_qs', ''));
+		$opts               = json_encode($opts);
+		$this->jsInstance   = "new FbListEmail($opts)";
 
 		return true;
 	}

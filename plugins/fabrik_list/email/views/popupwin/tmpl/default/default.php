@@ -130,6 +130,7 @@ $params = $this->params;
 		<input type="hidden" name="renderOrder" value="<?php echo $this->renderOrder ?>" />
 		<input type="hidden" name="id" value="<?php echo $this->listid ?>" />
 		<input type="hidden" name="recordids" value="<?php echo $this->recordids ?>" />
+		<input type="hidden" name="additionalQS" value="<?php echo $this->additionalQS; ?>" />
 		<?php
 		if (!$this->showToField) :
 			?>
