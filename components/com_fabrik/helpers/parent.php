@@ -895,6 +895,29 @@ class FabrikWorker
 	}
 
 	/**
+	 * Utility function for replacing language tags.
+	 * {lang} - Joomla code for user's selected language, like en-GB
+	 * {langtag} - as {lang} with with _ instead of -
+	 * {shortlang} - first two letters of {lang}, like en
+	 * {multilang} - multilang URL code
+	 *
+	 * @param   string $msg Message to parse
+	 *
+	 * @return    string    parsed message
+	 */
+	public static function replaceWithLanguageTags($msg)
+	{
+		$replacements = self::langReplacements();
+
+		foreach ($replacements as $key => $value)
+		{
+			$msg = str_replace($key, $value, $msg);
+		}
+
+		return $msg;
+	}
+
+	/**
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with unsafe data
 	 *
@@ -1006,11 +1029,6 @@ class FabrikWorker
 		$config    = JFactory::getConfig();
 		$session   = JFactory::getSession();
 		$token     = $session->get('session.token');
-		$langtag   = JFactory::getLanguage()->getTag();
-		$lang      = str_replace('-', '_', $langtag);
-		$shortlang = explode('_', $lang);
-		$shortlang = $shortlang[0];
-		$multilang = FabrikWorker::getMultiLangURLCode();
 
 		$replacements = array(
 			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
@@ -1021,10 +1039,6 @@ class FabrikWorker
 			'{where_i_came_from}' => $app->input->server->get('HTTP_REFERER', '', 'string'),
 			'{date}' => date('Ymd'),
 			'{mysql_date}' => date('Y-m-d H:i:s'),
-			'{lang}' => $lang,
-			'{langtag}' => $langtag,
-			'{multilang}' => $multilang,
-			'{shortlang}' => $shortlang,
 			'{session.token}' => $token,
 		);
 
@@ -1036,6 +1050,29 @@ class FabrikWorker
 				$replacements['{$_SERVER-&gt;' . $key . '}'] = $val;
 			}
 		}
+
+		return array_merge($replacements, self::langReplacements());
+	}
+
+	/**
+	 * Returns array of language tag replacements
+	 *
+	 * @return array
+	 */
+	public static function langReplacements()
+	{
+		$langtag   = JFactory::getLanguage()->getTag();
+		$lang      = str_replace('-', '_', $langtag);
+		$shortlang = explode('_', $lang);
+		$shortlang = $shortlang[0];
+		$multilang = FabrikWorker::getMultiLangURLCode();
+
+		$replacements = array(
+			'{lang}' => $lang,
+			'{langtag}' => $langtag,
+			'{multilang}' => $multilang,
+			'{shortlang}' => $shortlang,
+		);
 
 		return $replacements;
 	}

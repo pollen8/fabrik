@@ -213,7 +213,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
-			$lang  = JString::strtolower($params->get('recaptcha_lang', 'en'));
+			$lang  = FabrikWorker::replaceWithLanguageTags(JString::strtolower($params->get('recaptcha_lang', 'en')));
 			$error = null;
 
 			if ($this->user->get('id') != 0 && $params->get('captcha-showloggedin', 0) == false)
@@ -235,6 +235,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$displayData->id       = $id;
 			$displayData->name     = $name;
 			$displayData->site_key = $params->get('recaptcha_publickey');
+			$displayData->lang     = FabrikWorker::replaceWithLanguageTags(JString::strtolower($params->get('recaptcha_lang', 'en')));
 
 			return $layout->render($displayData);
 		}
@@ -385,7 +386,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 */
 	public function getValidationErr()
 	{
-		return FText::_('PLG_ELEMENT_CAPTCHA_FAILED');
+		$params = $this->getParams();
+		$method = $params->get('captcha-method', 'standard');
+		return FText::_('PLG_ELEMENT_CAPTCHA_' . strtoupper($method) . 'FAILED');
 	}
 
 	/**

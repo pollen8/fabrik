@@ -126,7 +126,7 @@
 				name="recaptcha_theme"
 				type="list"
 				default="red"
-				description="RECAPTCHA_THEME_DESC"
+				description="PLG_ELEMENT_RECAPTCHA_THEME_DESC"
 				label="PLG_ELEMENT_RECAPTCHA_THEME">
 				<option value="red">Red</option>
 				<option value="white">White</option>
@@ -137,7 +137,7 @@
 			<field name="recaptcha_lang"
 				type="text"
 				default="en"
-				description="RECAPTCHA_LANG_DESC"
+				description="PLG_ELEMENT_RECAPTCHA_LANG_DESC"
 				label="PLG_ELEMENT_RECAPTCHA_LANG"
 				size="2" />
 
