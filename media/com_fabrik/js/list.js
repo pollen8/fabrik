@@ -1257,7 +1257,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     gcounter++;
                     for (i = 0; i < groupData.length; i++) {
                         var row = $H(groupData[i]);
-                        item = self.injectItemData(itemTemplate, row);
+                        item = self.injectItemData(itemTemplate, row, tmpl);
                         items.push(item);
                     }
 
@@ -1313,9 +1313,10 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
              * Inject item data into the item data template
              * @param {jQuery} template
              * @param {object} row
+             * @param {string}  div or row template
              * @return {jQuery}
              */
-            injectItemData: function (template, row) {
+            injectItemData: function (template, row, tmpl) {
                 var r, cell, c, j;
                 jQuery.each(row.data, function (key, val) {
                     cell = template.find('.' + key);
@@ -1344,13 +1345,22 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (typeof(this.options.itemTemplate) === 'string') {
                     c = template.find('.fabrik_row').addBack(template);
                     c.prop('id', row.id);
-                    c.removeClass('oddRow0');
-                    c.removeClass('oddRow1');
-                    var newClass = row['class'].split(/\s+/);
-                    for (j = 0; j < newClass.length; j++) {
-                        if (!c.hasClass(newClass[j])) {
-                            c.addClass(newClass[j]);
-                        }
+                    if (tmpl !== 'div') {
+	                    c.removeClass();
+	                    var newClass = row['class'].split(/\s+/);
+	                    for (j = 0; j < newClass.length; j++) {
+		                    c.addClass(newClass[j]);
+	                    }
+                    }
+                    else {
+	                    c.removeClass('oddRow0');
+	                    c.removeClass('oddRow1');
+	                    var newClass = row['class'].split(/\s+/);
+	                    for (j = 0; j < newClass.length; j++) {
+		                    if (!c.hasClass(newClass[j])) {
+			                    c.addClass(newClass[j]);
+		                    }
+	                    }
                     }
                     r = template.clone();
                 } else {
