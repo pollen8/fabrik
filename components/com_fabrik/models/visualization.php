@@ -453,6 +453,7 @@ class FabrikFEModelVisualization extends FabModel
 				$listParams->set('filter-value', $preFilter['filter-value']);
 				$listParams->set('filter-access', $preFilter['filter-access']);
 				$listParams->set('filter-eval', $preFilter['filter-eval']);
+				$listParams->set('filter-join', $preFilter['filter-join']);
 			}
 
 			$c ++;
