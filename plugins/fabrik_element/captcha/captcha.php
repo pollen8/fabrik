@@ -388,7 +388,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$method = $params->get('captcha-method', 'standard');
-		return FText::_('PLG_ELEMENT_CAPTCHA_' . strtoupper($method) . 'FAILED');
+		return FText::_('PLG_ELEMENT_CAPTCHA_' . strtoupper($method) . '_FAILED');
 	}
 
 	/**
