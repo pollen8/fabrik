@@ -61,7 +61,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.duplicatedGroups = $H({});
             this.addingOrDeletingGroup = false;
             this.addedGroups = [];
-
+	        this.watchRepeatNumsDone = false;
             this.fx = {};
             this.fx.elements = [];
             this.fx.hidden = [];
@@ -150,9 +150,32 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 this.watchGoBackButton();
             }
 
+
             this.watchPrintButton();
             this.watchPdfButton();
             this.watchTabs();
+            this.watchRepeatNums();
+        },
+
+        watchRepeatNums: function () {
+	        Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+	            if (form.id === this.id && !this.watchRepeatNumsDone) {
+		            Object.each(this.options.numRepeatEls, function (name, key) {
+			            if (name !== '') {
+				            var el = this.formElements.get(name);
+				            if (el) {
+                                el.addNewEventAux(el.getChangeEvent(), function(event) {
+                                    var v = el.getValue();
+                                    this.options.minRepeat[key] = v.toInt();
+	                                this.options.maxRepeat[key] = v.toInt();
+	                                this.duplicateGroupsToMin();
+                                }.bind(this, el, key));
+				            }
+			            }
+		            }.bind(form));
+		            this.watchRepeatNumsDone = true;
+	            }
+	        }.bind(this));
         },
 
         /**
@@ -1673,7 +1696,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 var min = this.options.minRepeat[groupId].toInt();
+                var max = this.options.maxRepeat[groupId].toInt();
                 var group = this.form.getElement('#group' + groupId);
+                var subGroup;
 
                 /**
                  * $$$ hugh - added ability to override min count
@@ -1688,7 +1713,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     // Create mock event
                     deleteButton = this.form.getElement('#group' + groupId + ' .deleteGroup');
                     deleteEvent = typeOf(deleteButton) !== 'null' ? new Event.Mock(deleteButton, 'click') : false;
-                    var subGroup = group.getElement('.fabrikSubGroup');
+                    subGroup = group.getElement('.fabrikSubGroup');
                     // Remove only group
                     this.deleteGroup(deleteEvent, group, subGroup);
 
@@ -1704,6 +1729,18 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                             this.duplicateGroup(add_e, false);
                         }
                     }
+                }
+                else if (max > 0 && repeat_rows > max) {
+	                // Delete groups
+	                for (i = repeat_rows; i > max; i--) {
+		                var b = jQuery(this.form.getElements('#group' + groupId + ' .deleteGroup')).last()[0];
+		                var del_btn = jQuery(b).find('[data-role=fabrik_delete_group]')[0];
+		                subGroup = jQuery(group.getElements('.fabrikSubGroup')).last()[0];
+		                if (typeOf(del_btn) !== 'null') {
+		                    var del_e = new Event.Mock(del_btn, 'click');
+			                this.deleteGroup(del_e, group, subGroup);
+		                }
+	                }
                 }
 
                 this.setRepeatGroupIntro(group, groupId);
@@ -1758,10 +1795,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
             } else {
                 var toel = subGroup.getPrevious();
+                /*
                 var myFx = new Fx.Tween(subGroup, {
                     'property': 'opacity',
                     duration  : 300,
                     onComplete: function () {
+                    */
                         if (subgroups.length > 1) {
                             subGroup.dispose();
                         }
@@ -1793,8 +1832,10 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                             }
                         }.bind(this));
                         Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
+                        /*
                     }.bind(this)
                 }).start(1, 0);
+                */
                 if (toel) {
                     // Only scroll the window if the previous element is not visible
                     var win_scroll = document.id(window).getScroll().y;

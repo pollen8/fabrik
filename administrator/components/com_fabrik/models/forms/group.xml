@@ -144,6 +144,13 @@
 			       description="COM_FABRIK_REPEAT_GROUP_MIN_DESC"
 			       size="2"/>
 
+			<field name="repeat_num_element"
+			       type="listfields"
+			       valueformat="tableelement"
+			       label="COM_FABRIK_REPEAT_GROUP_REPEAT_NUM_ELEMENT_LABEL"
+			       description="COM_FABRIK_REPEAT_GROUP_REPEAT_NUM_ELEMENT_LABEL"
+			/>
+
 			<field name="repeat_error_message"
 			       type="text"
 			       label="COM_FABRIK_REPEAT_GROUP_MINMAX_ERR_LABEL"

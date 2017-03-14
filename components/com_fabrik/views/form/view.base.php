@@ -790,6 +790,7 @@ class FabrikViewFormBase extends FabrikView
 			$hidden[$g->id]         = $g->startHidden;
 			$maxRepeat[$g->id]      = $g->maxRepeat;
 			$minRepeat[$g->id]      = $g->minRepeat;
+			$numRepeatEls[$g->id]   = FabrikString::safeColNameToArrayKey($g->numRepeatElement);
 			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
 			$minMaxErrMsg[$g->id]   = $g->minMaxErrMsg;
 		}
@@ -799,6 +800,7 @@ class FabrikViewFormBase extends FabrikView
 		$opts->minRepeat      = $minRepeat;
 		$opts->showMaxRepeats = $showMaxRepeats;
 		$opts->minMaxErrMsg   = $minMaxErrMsg;
+		$opts->numRepeatEls   = $numRepeatEls;
 
 		// $$$ hugh adding these so calc element can easily find joined and repeated join groups
 		// when it needs to add observe events ... don't ask ... LOL!
