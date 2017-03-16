@@ -211,6 +211,10 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 			}
 			catch (Exception $e)
 			{
+				if (FabrikHelperHTML::isDebug())
+				{
+					JFactory::getApplication()->enqueueMessage($e->getMessage());
+				}
 				return false;
 			}
 		}
@@ -221,12 +225,19 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		// Move the file
 		try
 		{
-			$this->s3->putObject([
+			$s3Params = [
 				'SourceFile' => $tmpFile,
 				'Bucket' => $this->getBucketName(),
 				'Key' => $this->urlToKey($filepath),
 				'ACL' => $this->getAcl()
-			]);
+			];
+
+			if ($this->isEncrypted())
+			{
+				$s3Params['ServerSideEncryption'] = 'AES256';
+			}
+
+			$this->s3->putObject($s3Params);
 		}
 		catch (Exception $e)
 		{
@@ -280,12 +291,19 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	{
 		try
 		{
-			$this->s3->putObject([
+			$s3Params = [
 				'Body' => $buffer,
 				'Bucket' => $this->getBucketName(),
 				'Key' => $this->urlToKey($file),
 				'ACL' => $this->getAcl()
-			]);
+			];
+
+			if ($this->isEncrypted())
+			{
+				$s3Params['ServerSideEncryption'] = 'AES256';
+			}
+
+			$this->s3->putObject($s3Params);
 		}
 		catch (Exception $e)
 		{
@@ -335,7 +353,6 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		{
 			case 1:
 				$acl = 'private';
-
 				break;
 			case 2:
 			default:
@@ -347,6 +364,18 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 
 		return $acl;
+	}
+
+	/**
+	 * Get the S3 Acl setting
+	 *
+	 * @return string
+	 */
+
+	protected function isEncrypted()
+	{
+		$params = $this->getParams();
+		return $params->get('fileupload_aws_encrypt', '0') === '1';
 	}
 
 	/**
@@ -616,7 +645,7 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$params = $this->getParams();
 		static $presigned = array();
 
-		if ($lifetime = (int) $params->get('fileupload_amazon_auth_url', 0))
+		if ($this->getAcl() === 'private' && $lifetime = (int) $params->get('fileupload_amazon_auth_url', 0))
 		{
 			if (!array_key_exists($filepath, $presigned))
 			{
