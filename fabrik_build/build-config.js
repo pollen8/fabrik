@@ -1,5 +1,12 @@
 module.exports = {
-    'pluginFolders'   : ['element', 'cron', 'form', 'list', 'validationrule', 'visualization'],
+    'pluginFolders'   : [
+        'element',
+        'cron',
+        'form',
+        'list',
+        'validationrule',
+        'visualization'
+    ],
     'corePackageFiles': [
         'mod_fabrik_form_{version}.zip',
         'mod_fabrik_list_{version}.zip',
