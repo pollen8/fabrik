@@ -12,6 +12,7 @@ return array(
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Pop\\Shipping\\' => array($vendorDir . '/popphp/pop-shipping/src'),
     'Omnipay\\WorldPay\\' => array($vendorDir . '/omnipay/worldpay/src'),
     'Omnipay\\TwoCheckout\\' => array($vendorDir . '/omnipay/2checkout/src'),
@@ -38,4 +39,9 @@ return array(
     'Omnipay\\CardSave\\' => array($vendorDir . '/omnipay/cardsave/src'),
     'Omnipay\\Buckaroo\\' => array($vendorDir . '/omnipay/buckaroo/src'),
     'Omnipay\\AuthorizeNet\\' => array($vendorDir . '/omnipay/authorizenet/src'),
+    'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),
+    'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
+    'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
+    'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
+    'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
 );

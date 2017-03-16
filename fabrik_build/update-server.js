@@ -156,6 +156,48 @@ var component = function (grunt) {
     writeXml(xmlFile, props, version);
 };
 
+var library = function (grunt) {
+	var version = grunt.config.get('pkg.version'),
+		jversion = grunt.config.get('jversion'),
+		xmlFile,
+		props = {
+			'name'          : 'Fabrik',
+			'description': 'Fabrik Library',
+			'element'    : 'lib_fabrik',
+			'type'       : 'library',
+			'version'    : version,
+			'downloads'  : {
+				'downloadurl': {
+					'$': {'type': 'full', 'format': 'zip'},
+					'_': 'http://fabrikar.com/media/downloads/lib_fabrik_' + version + '.zip'
+				}
+			},
+			'maintainer' : 'Fabrikar.com',
+			'maintainerurl': 'http://fabrikar.com',
+			'targetplatform': {
+				'$': {
+					'name'   : 'joomla',
+					'version': jversion
+				}
+			}
+		};
+	extensions.push({
+		'$': {
+			'client'  : 'administrator',
+			'name'    : 'fabrik',
+			'element' : 'lib_fabrik',
+			'type'    : 'library',
+			'folder'  : '',
+			'version' : version,
+			detailsurl: 'http://fabrikar.com/update/fabrik31/lib_fabrik.xml'
+		}
+	});
+
+	xmlFile = updateDir + 'lib_fabrik.xml';
+	writeXml(xmlFile, props, version);
+};
+
+
 var fabrikModules = function (grunt) {
     console.log('.....fabrikModules......');
     var version = grunt.config.get('pkg.version'),

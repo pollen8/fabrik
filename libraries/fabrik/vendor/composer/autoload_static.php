@@ -10,6 +10,11 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
         'edc6464955a37aa4d5fbf39d40fb6ee7' => __DIR__ . '/..' . '/symfony/polyfill-php55/bootstrap.php',
         '3e2471375464aac821502deb0ac64275' => __DIR__ . '/..' . '/symfony/polyfill-php54/bootstrap.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -27,6 +32,7 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         ),
         'P' => 
         array (
+            'Psr\\Http\\Message\\' => 17,
             'Pop\\Shipping\\' => 13,
         ),
         'O' => 
@@ -57,6 +63,20 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
             'Omnipay\\Buckaroo\\' => 17,
             'Omnipay\\AuthorizeNet\\' => 21,
         ),
+        'J' => 
+        array (
+            'JmesPath\\' => 9,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+        ),
+        'A' => 
+        array (
+            'Aws\\' => 4,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -83,6 +103,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'Stripe\\' => 
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Pop\\Shipping\\' => 
         array (
@@ -187,6 +211,26 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'Omnipay\\AuthorizeNet\\' => 
         array (
             0 => __DIR__ . '/..' . '/omnipay/authorizenet/src',
+        ),
+        'JmesPath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Aws\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
         ),
     );
 
