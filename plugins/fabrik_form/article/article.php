@@ -139,10 +139,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			'state' => '1',
 			'metadesc' => '',
 			'metakey' => '',
-			'tags' => ''
+			'tags' => '',
+			'alias' => ''
 		);
 
 		$data['images'] = json_encode($this->images());
+		$data['language'] = $this->getLang();
+		$data['access'] = $this->getLevel();
 
 		$isNew = is_null($id) ? true : false;
 
@@ -507,6 +510,66 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	}
 
 	/**
+	 * Get selected language
+	 *
+	 * @return string
+	 */
+	protected function getLang()
+	{
+            $params     = $this->getParams();
+            $lang = '*';
+            $languageElement = $params->get('language_element');
+            
+            if (empty($languageElement))
+            {
+                $language = $params->get('language');
+                if (!empty($language))
+                {
+                    $lang = $language;
+                }
+            }
+            else
+            {
+                $language = $this->findElementData($languageElement);
+                if (!empty($language))
+                {
+                    $lang = $language;
+                }
+            }
+            return $lang;
+	}
+	
+	/**
+	 * Get selected access level
+	 *
+	 * @return string
+	 */
+	protected function getLevel()
+	{
+            $params     = $this->getParams();
+            $levelID = '1';
+            $levelElement = $params->get('level_element');
+            
+            if (empty($levelElement))
+            {
+                $level = $params->get('level');
+                if (!empty($level))
+                {
+                    $levelID = $level;
+                }
+            }
+            else
+            {
+                $level = $this->findElementData($levelElement);
+                if (!empty($level))
+                {
+                    $levelID = $level;
+                }
+            }
+            return $levelID;
+	}
+	
+	/**
 	 * Method to change the title & alias.
 	 *
 	 * @param   integer $id    Article id
@@ -518,7 +581,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function generateNewTitle($id, $catId, &$data)
 	{
 		$table         = JTable::getInstance('Content');
-		$alias         = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
+		$alias	       = empty($data['alias']) ? $data['title'] : $data['alias'];
+		$alias         = JApplication::stringURLSafe(JStringNormalise::toDashSeparated( $alias ));
+
 		$data['alias'] = $alias;
 		$title         = $data['title'];
 		$titles        = array();
