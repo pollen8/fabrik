@@ -1041,13 +1041,10 @@ class FabrikFEModelGroup extends FabModel
 		$group->minMaxErrMsg = FText::_($group->minMaxErrMsg);
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
-		$group->isNewRecord = $formModel->isNewRecord();
 		$intro = FabrikString::translate($params->get('intro'));
-		$intro = $this->parseIntroOutroPlaceHolders($intro, $group->editable, $group->isNewRecord);
-		$group->intro = $intro;
+		$group->intro = $formModel->parseIntroOutroPlaceHolders($intro, $group->editable, $formModel->isNewRecord());
 		$outro = FText::_($params->get('outro'));
-		$outro = $this->parseIntroOutroPlaceHolders($outro, $group->editable, $group->isNewRecord);
-		$group->outro = $outro;
+		$group->outro = $formModel->parseIntroOutroPlaceHolders($outro, $group->editable, $formModel->isNewRecord());
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
 		$group->showLegend = $this->showLegend($group);
@@ -1064,55 +1061,6 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $group;
-	}
-
-	/**
-	 * Parse into and outro text
-	 *
-	 * @param   string  $text  Text to parse
-	 *
-	 * @return  string
-	 */
-	protected function parseIntroOutroPlaceHolders($text, $isEditable, $isNewRecord)
-	{
-		if (!$isEditable)
-		{
-			$remove = "/{new:\s*.*?}/is";
-			$text = preg_replace($remove, '', $text);
-			$remove = "/{edit:\s*.*?}/is";
-			$text = preg_replace($remove, '', $text);
-			$match = "/{details:\s*.*?}/is";
-			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
-		}
-		else
-		{
-			$match = $isNewRecord ? 'new' : 'edit';
-			$remove = $isNewRecord  ? 'edit' : 'new';
-			$match = "/{" . $match . ":\s*.*?}/is";
-			$remove = "/{" . $remove . ":\s*.*?}/is";
-			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
-			$text = preg_replace($remove, '', $text);
-			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
-		}
-		return $text;
-	}
-	
-	/**
-	 * Used from getIntro as preg_replace_callback function to strip
-	 * undesired text from group label intro
-	 *
-	 * @param   array  $match  Preg matched strings
-	 *
-	 * @return  string  intro text
-	 */
-	private function _getIntroOutro($match)
-	{
-		$m = explode(":", $match[0]);
-		array_shift($m);
-		$m = implode(":", $m);
-		$m = FabrikString::rtrimword($m, "}");
-		$m = preg_replace('/\[(\S+?)\]/', '{${1}}', $m);
-		return $m;
 	}
 	
 	/**
