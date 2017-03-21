@@ -2462,13 +2462,13 @@ class FabrikFEModelList extends JModelForm
 						{
 							$v = str_replace('`', '', $tmpPks[$pk][0]);
 							$v = explode('.', $v);
-							$v[0] = $v[0] . '_0';
+							// $v[0] = $v[0] . '_0';
 							$tmpPks[$pk][0] = $db->qn($v[0] . '.' . $v[1]);
 						}
 
 						$v = str_replace('`', '', $pk);
 						$v = explode('.', $v);
-						$v[0] = $v[0] . '_' . count($tmpPks[$pk]);
+						$v[0] = $v[0] . '_' . (count($tmpPks[$pk]) == 0 ? '' : count($tmpPks[$pk]) - 1);
 						$tmpPks[$pk][] = $db->qn($v[0] . '.' . $v[1]);
 					}
 				}
