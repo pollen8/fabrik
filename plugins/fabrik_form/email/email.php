@@ -461,6 +461,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			foreach ($document->_styleSheets as $url => $ss)
 			{
+				if (!strstr($url, COM_FABRIK_LIVESITE))
+				{
+					$url = COM_FABRIK_LIVESITE . $url;
+				}
+
 				$url = htmlspecialchars_decode($url);
 				$formCss[] = file_get_contents($url);
 			}
