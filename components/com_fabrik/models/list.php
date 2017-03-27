@@ -3252,7 +3252,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters);
+		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, true, false);
 		$where = str_replace('WHERE', '', $sql);
 
 		if ($where != '')
@@ -3412,7 +3412,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$addWhere = $query == false ? true : false;
-		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
+		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere, true);
 		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
 
 		if (!$query)
@@ -3436,10 +3436,11 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   array  &$filters        filters
 	 * @param   bool   $startWithWhere  start the statement with 'where' (true is for j1.5 way of making queries, false for j1.6+)
+	 * @param   bool   $incPlugin       include the pluginQueryWhere statements
 	 *
 	 * @return  array	nofilter, filter sql
 	 */
-	private function _filtersToSQL(&$filters, $startWithWhere = true)
+	private function _filtersToSQL(&$filters, $startWithWhere = true, $incPlugin = true)
 	{
 		$prefilters = $this->groupFilterSQL($filters, 'prefilter');
 		$menuFilters = $this->groupFilterSQL($filters, 'menuPrefilter');
@@ -3462,7 +3463,7 @@ class FabrikFEModelList extends JModelForm
 		$sql = array_merge($prefilters, $postFilers);
 		$pluginQueryWhere = trim(implode(' AND ', $this->pluginQueryWhere));
 
-		if ($pluginQueryWhere !== '')
+		if ($pluginQueryWhere !== '' && $incPlugin)
 		{
 			$pluginQueryWhere = '(' . $pluginQueryWhere . ')';
 
