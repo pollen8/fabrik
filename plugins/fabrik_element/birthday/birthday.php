@@ -404,7 +404,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * such value as '' and therefore setting element to save null hadn't expected impact. Simple return; returns null as it should. 
 	 *
 	 *
-	 * @return  string	yyyy-mm-dd
+	 * @return  string	yyyy-mm-dd or null or 0000-00-00 if needed and set
 	 */
 
 	private function _indStoreDBFormat($val)
