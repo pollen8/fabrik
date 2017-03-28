@@ -105,12 +105,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
+		$params = $this->getParams();
+		$w      = new FabrikWorker;
 		FabrikHelperHTML::slimbox();
 		parent::onLoadJavascriptInstance($args);
-		$opts              = $this->getElementJSOptions();
-		$opts->renderOrder = $this->renderOrder;
-		$opts              = json_encode($opts);
-		$this->jsInstance  = "new FbListEmail($opts)";
+		$opts               = $this->getElementJSOptions();
+		$opts->renderOrder  = $this->renderOrder;
+		$opts->additionalQS = $w->parseMessageForPlaceHolder($params->get('list_email_additional_qs', ''));
+		$opts               = json_encode($opts);
+		$this->jsInstance   = "new FbListEmail($opts)";
 
 		return true;
 	}
@@ -640,7 +643,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$sendSMS       = $params->get('emailtable_email_or_sms', 'email') == 'sms';
 		$input         = $this->app->input;
 		$coverMessage  = $input->get('message', '', 'raw');
-		$coverMessage  = nl2br($coverMessage);
+		$coverMessage  = FabrikString::safeNl2br($coverMessage);
 		$oldStyle      = $this->_oldStyle();
 		$emailTemplate = $this->_emailTemplate();
 		$w             = new FabrikWorker;
@@ -692,7 +695,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if ($toType == 'table' || $toType == 'table_picklist')
 		{
-			$to = $input->get('list_email_to', '', 'array');
+			$to = $input->get('list_email_to', array(), 'array');
 		}
 		else
 		{
@@ -851,7 +854,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		list($phpMsg, $message) = $this->_message();
 		$w             = new FabrikWorker;
 		$input         = $this->app->input;
-		$coverMessage  = nl2br($input->get('message', '', 'html'));
+		$coverMessage  = FabrikString::safeNl2br($input->get('message', '', 'html'));
 		$emailTemplate = $this->_emailTemplate();
 		$oldStyle      = $this->_oldStyle();
 
@@ -903,7 +906,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$preamble     = $params->get('emailtable_message_preamble', '');
 		$postamble    = $params->get('emailtable_message_postamble', '');
 		$mergedMsg    = $preamble . $mergedMsg . $postamble;
-		$coverMessage = nl2br($input->get('message', '', 'html'));
+		$coverMessage = FabrikString::safeNl2br($input->get('message', '', 'html'));
 		$cc           = null;
 		$bcc          = null;
 

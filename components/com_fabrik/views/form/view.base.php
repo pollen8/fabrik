@@ -435,7 +435,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->showPrint)
 		{
-			$text            = FabrikHelperHTML::image('print.png');
+			$text            = FabrikHelperHTML::image('print');
 			$this->printLink = '<a href="#" class="btn btn-default" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 
@@ -760,7 +760,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
-		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') : 'alert.png';
 		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
 
 		$imgs               = new stdClass;
@@ -790,6 +790,7 @@ class FabrikViewFormBase extends FabrikView
 			$hidden[$g->id]         = $g->startHidden;
 			$maxRepeat[$g->id]      = $g->maxRepeat;
 			$minRepeat[$g->id]      = $g->minRepeat;
+			$numRepeatEls[$g->id]   = FabrikString::safeColNameToArrayKey($g->numRepeatElement);
 			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
 			$minMaxErrMsg[$g->id]   = $g->minMaxErrMsg;
 		}
@@ -799,6 +800,7 @@ class FabrikViewFormBase extends FabrikView
 		$opts->minRepeat      = $minRepeat;
 		$opts->showMaxRepeats = $showMaxRepeats;
 		$opts->minMaxErrMsg   = $minMaxErrMsg;
+		$opts->numRepeatEls   = $numRepeatEls;
 
 		// $$$ hugh adding these so calc element can easily find joined and repeated join groups
 		// when it needs to add observe events ... don't ask ... LOL!
@@ -970,9 +972,10 @@ class FabrikViewFormBase extends FabrikView
 
 		$layoutData = (object) array(
 			'type' => 'reset',
-			'class' => 'btn-warning button',
+			'class' => 'btn-warning button clearSession',
 			'name' => 'Reset',
-			'label' => $resetLabel
+			'label' => $resetLabel,
+			'formModel' => $model
 		);
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == '1' ? $btnLayout->render($layoutData) : '';
@@ -987,7 +990,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'submit',
 			'class' => 'button',
 			'name' => 'Copy',
-			'label' => $copyLabel
+			'label' => $copyLabel,
+			'formModel' => $model
 		);
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
 			? $btnLayout->render($layoutData) : '';
@@ -1003,7 +1007,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => $model->isAjax() ? 'button' : 'submit',
 			'class' => 'button',
 			'name' => 'apply',
-			'label' => $applyLabel
+			'label' => $applyLabel,
+			'formModel' => $model
 		);
 
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
@@ -1020,7 +1025,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'submit',
 			'class' => 'btn-danger button',
 			'name' => 'delete',
-			'label' => $deleteLabel
+			'label' => $deleteLabel,
+			'formModel' => $model
 		);
 
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $thisRowId != ''
@@ -1038,7 +1044,8 @@ class FabrikViewFormBase extends FabrikView
 			'type' => 'button',
 			'class' => 'clearSession',
 			'name' => '',
-			'label' => FText::_('COM_FABRIK_CLEAR_MULTI_PAGE_SESSION')
+			'label' => FText::_('COM_FABRIK_CLEAR_MULTI_PAGE_SESSION'),
+			'formModel' => $model
 		);
 
 		$multiPageSession = $model->sessionModel && $model->sessionModel->last_page > 0;
@@ -1049,7 +1056,8 @@ class FabrikViewFormBase extends FabrikView
 			'class' => 'button',
 			'name' => 'Goback',
 			'label' => $goBackLabel,
-			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction()
+			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction(),
+			'formModel' => $model
 		);
 
 		$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
@@ -1071,7 +1079,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => $model->isAjax() ? 'button' : 'submit',
 				'class' => 'btn-primary button ' . $submitClass,
 				'name' => 'Submit',
-				'label' => $submitLabel
+				'label' => $submitLabel,
+				'formModel' => $model
 			);
 
 			$form->submitButton = $btnLayout->render($layoutData);
@@ -1087,7 +1096,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPagePrevious button',
 				'name' => 'fabrikPagePrevious',
-				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
+				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV')),
+				'formModel' => $model
 			);
 			$form->prevButton = $btnLayout->render($layoutData);
 
@@ -1095,7 +1105,8 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPageNext button',
 				'name' => 'fabrikPageNext',
-				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next')
+				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next'),
+				'formModel' => $model
 			);
 
 			$form->nextButton = $btnLayout->render($layoutData);

@@ -267,6 +267,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
+		$singleCrop = false;
+
+		if (is_array($value) && array_key_exists('params', $value))
+		{
+			$singleCrop = true;
+			$imgParams = (array) FArrayHelper::getValue($value, 'params');
+			$value = (array) FArrayHelper::getValue($value, 'file');
+		}
+
 		// Repeat_image_repeat_image___params
 		$rawValues = count($value) == 0 ? array() : FArrayHelper::array_fill(0, count($value), 0);
 		$fileData  = $this->getFormModel()->data;
@@ -275,7 +284,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!is_array($rawValues))
 		{
-			$rawValues = explode(GROUPSPLITTER, $rawValues);
+			$rawValues = FabrikWorker::JSONtoData($rawValues, true);
 		}
 		else
 		{
@@ -286,6 +295,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			if (array_key_exists(0, $rawValues) && is_array(FArrayHelper::getValue($rawValues, 0)))
 			{
 				$rawValues = $rawValues[0];
+			}
+		}
+
+		// single ajax
+		foreach ($rawValues as &$rawValue)
+		{
+			if (is_array($rawValue) && array_key_exists('file', $rawValue))
+			{
+				$rawValue = FArrayHelper::getValue($rawValue, 'file', '');
 			}
 		}
 
@@ -350,14 +368,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 					else
 					{
-						if (is_object($value[$x]))
+						if ($singleCrop)
 						{
 							// Single crop image (not sure about the 0 settings in here)
-							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]->file);
+							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
-							$o->path = $value[$x]->file;
+							$o->path = $value[$x];
 
 							if ($fileInfo = $this->getStorage()->getFileInfo($o->path))
 							{
@@ -369,9 +387,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							}
 
 							$o->type           = strstr($fileInfo['mime_type'], 'image/') ? 'image' : 'file';
-							$o->url            = $this->getStorage()->pathToURL($value[$x]->file);
+							$o->url            = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid       = 0;
-							$o->params         = json_decode($value[$x]->params);
+							$o->params         = json_decode($imgParams[$x]);
 							$oFiles->$iCounter = $o;
 							$iCounter++;
 						}
@@ -541,10 +559,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($params->get('fu_show_image_in_table', '0') != '2')
 		{
-			$data     = json_encode($data);
-			// icons will already have been set in _renderListData
-			$opts['icon'] = 0;
-			$rendered = parent::renderListData($data, $thisRow, $opts);
+			$layoutData               = new stdClass;
+			$layoutData->data         = $data;
+			$layoutData->elementModel = $this;
+			$layout                   = $this->getLayout('list');
+			$rendered                 = $layout->render($layoutData);
+
+			if (empty($rendered))
+			{
+				$data = json_encode($data);
+				// icons will already have been set in _renderListData
+				$opts['icon'] = 0;
+				$rendered     = parent::renderListData($data, $thisRow, $opts);
+			}
 		}
 
 		return $rendered;
@@ -2401,7 +2428,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$singleCropImg = $singleCropImg[0];
+				if (is_array($singleCropImg))
+				{
+					// failed validation *sigh*
+					if (array_key_exists('id', $singleCropImg))
+					{
+						$singleCropImg = FArrayHelper::getValue($singleCropImg, 'id', '');
+						$singleCropImg = array_keys($singleCropImg);
+					}
+
+					$value = FArrayHelper::getValue($singleCropImg, 0, '');
+				}
 			}
 		}
 
@@ -3365,4 +3402,53 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 	}
+
+	/**
+	 * Build the sub query which is used when merging in
+	 * repeat element records from their joined table into the one field.
+	 * Overwritten in database join element to allow for building
+	 * the join to the table containing the stored values required ids
+	 *
+	 * @since   2.1.1
+	 *
+	 * @return  string    sub query
+	 */
+	protected function buildQueryElementConcatId()
+	{
+		//$str        = parent::buildQueryElementConcatId();
+		$joinTable  = $this->getJoinModel()->getJoin()->table_join;
+		$parentKey  = $this->buildQueryParentKey();
+		$fullElName = $this->_db->qn($this->getFullName(true, false) . '_id');
+		$str = "(SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE " . $joinTable
+			. ".parent_id = " . $parentKey . ") AS $fullElName";
+
+		return $str;
+	}
+
+	/**
+	 * Get the parent key element name
+	 *
+	 * @return string
+	 */
+	protected function buildQueryParentKey()
+	{
+		$item      = $this->getListModel()->getTable();
+		$parentKey = $item->db_primary_key;
+
+		if ($this->isJoin())
+		{
+			$groupModel = $this->getGroupModel();
+
+			if ($groupModel->isJoin())
+			{
+				// Need to set the joinTable to be the group's table
+				$groupJoin = $groupModel->getJoinModel();
+				$parentKey = $groupJoin->getJoin()->params->get('pk');
+			}
+		}
+
+		return $parentKey;
+	}
+
+
 }

@@ -293,6 +293,13 @@ class FabrikControllerList extends JControllerLegacy
 		$format = $input->get('format', 'html');
 		$defaultRef = 'index.php?option=com_' . $package . '&view=list&listid=' . $model->getId() . '&format=' . $format;
 
+		$itemid = $input->get('Itemid', '');
+
+		if (!empty($itemid))
+		{
+			$defaultRef .= '&Itemid=' . $itemid;
+		}
+
 		if ($format !== 'raw')
 		{
 			$ref = $input->post->get('fabrik_referrer', $defaultRef, 'string');

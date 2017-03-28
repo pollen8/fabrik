@@ -154,6 +154,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
 					}
+					
+					if ($fd == 'D month YYYY')
+					{
+						$detailValue = $dayDisplay . ' ' . $monthDisplay . ' ' . $year;
+					}
 
 					if ($fd == 'Month d, YYYY')
 					{
@@ -290,7 +295,16 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _dayOptions()
 	{
 		$params = $this->getParams();
-		$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
+		$days = array(
+			JHTML::_(
+				'select.option',
+				'',
+				FText::_($params->get('birthday_daylabel', 'PLG_ELEMENT_BIRTHDAY_DAY')),
+				'value',
+				'text',
+				true
+			)
+		);
 
 		for ($i = 1; $i < 32; $i++)
 		{
@@ -308,7 +322,16 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _monthOptions()
 	{
 		$params = $this->getParams();
-		$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', FText::_('MONTH'))));
+		$months = array(
+			JHTML::_(
+				'select.option',
+				'',
+				FText::_($params->get('birthday_monthlabel', 'PLG_ELEMENT_BIRTHDAY_MONTH')),
+				'value',
+				'text',
+				true
+			)
+		);
 		$monthLabels = $this->_monthLabels();
 
 		for ($i = 0; $i < count($monthLabels); $i++)
@@ -326,8 +349,17 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _yearOptions()
 	{
 		$params = $this->getParams();
-		$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', FText::_('YEAR'))));
-
+		$years = array(JHTML::_('select.option', '', FText::_($params->get('birthday_yearlabel', 'PLG_ELEMENT_BIRTHDAY_YEAR'))));
+		$years = array(
+			JHTML::_(
+				'select.option',
+				'',
+				FText::_($params->get('birthday_yearlabel', 'PLG_ELEMENT_BIRTHDAY_YEAR')),
+				'value',
+				'text',
+				true
+			)
+		);
 		// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
 		$date = date('Y') + (int) $params->get('birthday_forward', 0);
 		$yearOpt = $params->get('birthday_yearopt');
@@ -542,6 +574,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$mdy = $month . '.' . $day . '.' . $year;
 		$dmy_slash = $day . '/' . $month . '/' . $year;
 		$dMonthYear = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
+		$dMonthYear2 = $dayDisplay . ' ' . $monthDisplay . ' ' . $year;
 		$monthDYear = $monthDisplay . ' ' . $dayDisplay . ', ' . $year;
 		$dMonth = $dayDisplay . '  ' . $monthDisplay;
 
@@ -561,6 +594,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					break;
 				case 'D. month YYYY':
 					$dateDisplay = $dMonthYear;
+					break;
+				case 'D month YYYY':
+					$dateDisplay = $dMonthYear2;
 					break;
 				case 'Month d, YYYY':
 					$dateDisplay = $monthDYear;
@@ -706,7 +742,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @return  string	Filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -833,6 +869,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					break;
 				case 'laterthisyear':
 					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
+					break;
+				case 'thisyear':
+					$search = array(date('Y'), '', '');
+					return $this->_dayMonthYearFilterQuery($key, $search);
 					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));

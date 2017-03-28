@@ -110,10 +110,10 @@ $params = $this->params;
 					<input class="inputbox fabrikinput" name="attachment[]" type="file" id="attachment" />
 				</label>
 				<a href="#" class="addattachment">
-					<?php echo FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_ADD')); ?>
+					<?php echo FabrikHelperHTML::image('plus', 'form', @$this->tmpl, FText::_('COM_FABRIK_ADD')); ?>
 				</a>
 				<a href="#" class="delattachment">
-					<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_DELETE')); ?>
+					<?php echo FabrikHelperHTML::image('minus-sign', 'form', @$this->tmpl, FText::_('COM_FABRIK_DELETE')); ?>
 				</a>
 			</div>
 			<?php
@@ -130,6 +130,7 @@ $params = $this->params;
 		<input type="hidden" name="renderOrder" value="<?php echo $this->renderOrder ?>" />
 		<input type="hidden" name="id" value="<?php echo $this->listid ?>" />
 		<input type="hidden" name="recordids" value="<?php echo $this->recordids ?>" />
+		<input type="hidden" name="additionalQS" value="<?php echo $this->additionalQS; ?>" />
 		<?php
 		if (!$this->showToField) :
 			?>

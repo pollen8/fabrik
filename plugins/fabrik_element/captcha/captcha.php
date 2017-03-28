@@ -213,7 +213,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
-			$lang  = JString::strtolower($params->get('recaptcha_lang', 'en'));
+			$lang  = FabrikWorker::replaceWithLanguageTags(JString::strtolower($params->get('recaptcha_lang', 'en')));
 			$error = null;
 
 			if ($this->user->get('id') != 0 && $params->get('captcha-showloggedin', 0) == false)
@@ -228,24 +228,6 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return $this->fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error, $ssl);
 			}
 		}
-		elseif ($params->get('captcha-method') == 'playthru')
-		{
-			if ($this->user->get('id') != 0 && $params->get('captcha-showloggedin', 0) == false)
-			{
-				return '<input class="inputbox text" type="hidden" name="' . $name . '" id="' . $id . '" value="" />';
-			}
-
-			if (!defined('AYAH_PUBLISHER_KEY'))
-			{
-				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
-				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
-			}
-
-			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ayah_php_bundle_1.1.7/ayah.php';
-			$ayah = new AYAH;
-
-			return $ayah->getPublisherHTML();
-		}
 		elseif ($params->get('captcha-method') == 'nocaptcha')
 		{
 			$layout                = $this->getLayout('nocaptcha');
@@ -253,6 +235,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$displayData->id       = $id;
 			$displayData->name     = $name;
 			$displayData->site_key = $params->get('recaptcha_publickey');
+			$displayData->lang     = FabrikWorker::replaceWithLanguageTags(JString::strtolower($params->get('recaptcha_lang', 'en')));
 
 			return $layout->render($displayData);
 		}
@@ -347,11 +330,13 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/ReCaptcha.php';
 				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod.php';
 				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod/Post.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod/Socket.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod/SocketPost.php';
 				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestParameters.php';
 				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/Response.php';
 
 				$privateKey = $params->get('recaptcha_privatekey');
-				$noCaptcha  = new \ReCaptcha\ReCaptcha($privateKey);
+				$noCaptcha  = new \ReCaptcha\ReCaptcha($privateKey, new \ReCaptcha\RequestMethod\SocketPost());
 				$response   = $input->get('g-recaptcha-response');
 				$server     = $input->server->get('REMOTE_ADDR');
 				$resp       = $noCaptcha->verify($response, $server);
@@ -381,19 +366,6 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			return false;
 		}
-		elseif ($params->get('captcha-method') == 'playthru')
-		{
-			if (!defined('AYAH_PUBLISHER_KEY'))
-			{
-				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
-				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
-			}
-
-			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ayah_php_bundle_1.1.7/ayah.php';
-			$ayah = new AYAH;
-
-			return $ayah->scoreResult();
-		}
 		else
 		{
 			$this->getParams();
@@ -414,7 +386,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 */
 	public function getValidationErr()
 	{
-		return FText::_('PLG_ELEMENT_CAPTCHA_FAILED');
+		$params = $this->getParams();
+		$method = $params->get('captcha-method', 'standard');
+		return FText::_('PLG_ELEMENT_CAPTCHA_' . strtoupper($method) . '_FAILED');
 	}
 
 	/**

@@ -69,9 +69,14 @@ class FabrikViewList extends FabrikViewListBase
 					$o->data = $data[$groupKey][$i];
 				}
 
+				// should really stick this in a layout to match how it is built in list.fabrik-group-by-heading
 				if (array_key_exists($groupKey, $model->groupTemplates))
 				{
-					$o->groupHeading = $model->groupTemplates[$groupKey] . ' ( ' . count($group) . ' )';
+					$o->groupHeading = $model->groupTemplates[$groupKey];
+					if ($params->get('group_by_show_count','1') == '1')
+					{
+						$o->groupHeading .= '<span class="groupCount">( ' . count($group) . ' )</span>';
+					}
 				}
 
 				$o->cursor = $i + $nav->limitstart;

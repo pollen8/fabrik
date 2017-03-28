@@ -334,15 +334,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	public function preFormatFormJoins($data, $row)
 	{
 		$params = $this->getParams();
-		$format = trim($params->get('calc_format_string'));
 		$element_data = $data;
 
 		if ($params->get('calc_on_save_only', 0))
 		{
-			if ($format != '')
-			{
-				$element_data = sprintf($format, $element_data);
-			}
+			$element_data = $this->getFormattedValue($element_data);
 
 			return parent::preFormatFormJoins($element_data, $row);
 		}
@@ -373,10 +369,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
 
-			if ($format != '')
-			{
-				$res = sprintf($format, $res);
-			}
+			$res = $this->getFormattedValue($res);
 
 			// $$$ hugh - need to set _raw, might be needed if (say) calc is being used as 'use_as_row_class'
 			// See comments in formatData() in table model, we might could move this to a renderRawListData() method.
@@ -418,13 +411,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
-		$value = $this->getValue($data, $repeatCounter);
-		$format = $params->get('calc_format_string');
-
-		if ($format != '')
-		{
-			$value = sprintf($format, $value);
-		}
+		$value = $this->getFormattedValue($this->getValue($data, $repeatCounter));
 
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -518,10 +505,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$input = $this->app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
-		$params = $this->getParams();
-		$w = new FabrikWorker;
-		$filter = JFilterInput::getInstance();
-		$d = $filter->clean($_REQUEST, 'array');
+		$params    = $this->getParams();
+		$w         = new FabrikWorker;
+		$filter    = JFilterInput::getInstance();
+		$d         = $filter->clean($_REQUEST, 'array');
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);
 		$this->getFormModel()->data = $d;
@@ -532,8 +519,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		$c = FabrikHelperHTML::isDebug() ? eval($calc): @eval($calc);
-		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
+		$c    = FabrikHelperHTML::isDebug() ? eval($calc) : @eval($calc);
+		$c    = preg_replace('#(\/\*.*?\*\/)#', '', $c);
+		$c    = $this->getFormattedValue($c);
+
 		echo $c;
 	}
 
@@ -682,6 +671,25 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
+	 * Get the formatted value
+	 *
+	 * @param  $value
+	 *
+	 * @since 3.5
+	 */
+	public function getFormattedValue($value)
+	{
+		$format = $this->getFormatString();
+
+		if (!empty($format))
+		{
+			$value = sprintf($format, $value);
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Get JS code for ini element list js
 	 * Overwritten in plugin classes
 	 *
@@ -738,7 +746,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				$key = $listRef . $row->__pk_val;
 				$row->rowid = $row->__pk_val;
 
-				$return->$key = $this->_getV(ArrayHelper::fromObject($row), 0);
+				$return->$key = $this->getFormattedValue($this->_getV(ArrayHelper::fromObject($row), 0));
 			}
 		}
 
@@ -766,6 +774,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			$value = $this->_getV($data, $repeatCounter);
 		}
+
+		$value = $this->getFormattedValue($value);
 
 		return $value;
 	}

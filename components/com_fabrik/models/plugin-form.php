@@ -569,6 +569,37 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
+	 * Get an element name
+	 *
+	 * @param   string $pname Params property name to look up
+	 * @param   bool   $short Short (true) or full (false) element name, default false/full
+	 *
+	 * @return    string    element full name
+	 */
+	public function getFieldName($pname, $short = false)
+	{
+		$params = $this->getParams();
+
+		if ($params->get($pname) == '')
+		{
+			return '';
+		}
+
+		$value = $params->get($pname);
+
+		if (is_numeric($value))
+		{
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($value);
+
+			return $short ? $elementModel->getElement()->name : $elementModel->getFullName();
+		}
+		else
+		{
+			return $short ? FabrikString::shortColName($value) : FabrikString::safeColNameToArrayKey($value);
+		}
+	}
+
+	/**
 	 * Replace a plugin parameter value with data parsed via parseMessageForPlaceholder
 	 *
 	 * @param string $pName Parameter name

@@ -3,7 +3,6 @@
 .settings/
 .tx/
 *.txt
-*.xml
 *.jpg
 .htaccess
 php.ini
@@ -25,7 +24,7 @@ includes/*
 language/*
 libraries/*
 !libraries/dompdf/
-!libraries/fabrik/fabrik/*
+!libraries/fabrik/
 !libraries/joomla
 libraries/joomla/*
 !libraries/joomla/document

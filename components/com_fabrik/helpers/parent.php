@@ -366,7 +366,7 @@ class FabrikWorker
 		$matches3 = array();
 
 		// E.g. now
-		preg_match("/[now|ago|midnight|yesterday|today]/i", $date, $matches);
+		preg_match("/(now|ago|midnight|yesterday|today)/i", $date, $matches);
 
 		// E.g. +2 Week
 		preg_match("/[+|-][0-9]* (week\b|year\b|day\b|month\b)/i", $date, $matches2);
@@ -768,6 +768,7 @@ class FabrikWorker
 				if (!$unsafe)
 				{
 					$msg = self::replaceWithUnsafe($msg);
+					$msg = self::replaceWithSession($msg);
 				}
 
 				$msg = preg_replace("/{}/", "", $msg);
@@ -894,6 +895,29 @@ class FabrikWorker
 	}
 
 	/**
+	 * Utility function for replacing language tags.
+	 * {lang} - Joomla code for user's selected language, like en-GB
+	 * {langtag} - as {lang} with with _ instead of -
+	 * {shortlang} - first two letters of {lang}, like en
+	 * {multilang} - multilang URL code
+	 *
+	 * @param   string $msg Message to parse
+	 *
+	 * @return    string    parsed message
+	 */
+	public static function replaceWithLanguageTags($msg)
+	{
+		$replacements = self::langReplacements();
+
+		foreach ($replacements as $key => $value)
+		{
+			$msg = str_replace($key, $value, $msg);
+		}
+
+		return $msg;
+	}
+
+	/**
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with unsafe data
 	 *
@@ -908,6 +932,66 @@ class FabrikWorker
 		foreach ($replacements as $key => $value)
 		{
 			$msg = str_replace($key, $value, $msg);
+		}
+
+		return $msg;
+	}
+
+	/**
+	 * Called from parseMessageForPlaceHolder to iterate through string to replace
+	 * {placeholder} with session data
+	 *
+	 * @param   string $msg Message to parse
+	 *
+	 * @return    string    parsed message
+	 */
+	public static function replaceWithSession($msg)
+	{
+		if (strstr($msg, '{$session->'))
+		{
+			$session   = JFactory::getSession();
+			$sessionData = array(
+				'id' => $session->getId(),
+				'token' => $session->get('session.token'),
+				'formtoken' => JSession::getFormToken()
+			);
+
+			foreach ($sessionData as $key => $value)
+			{
+				$msg = str_replace('{$session->' . $key . '}', $value, $msg);
+			}
+
+			$msg = preg_replace_callback(
+				'/{\$session-\>(.*?)}/',
+				function($matches) use ($session) {
+					$bits       = explode(':', $matches[1]);
+
+					if (count($bits) > 1)
+					{
+						$sessionKey = $bits[1];
+						$nameSpace  = $bits[0];
+					}
+					else
+					{
+						$sessionKey = $bits[0];
+						$nameSpace  = 'default';
+					}
+
+					$val        = $session->get($sessionKey, '', $nameSpace);
+
+					if (is_string($val))
+					{
+						return $val;
+					}
+					else if (is_numeric($val))
+					{
+						return (string) $val;
+					}
+
+					return '';
+				},
+				$msg
+			);
 		}
 
 		return $msg;
@@ -945,11 +1029,6 @@ class FabrikWorker
 		$config    = JFactory::getConfig();
 		$session   = JFactory::getSession();
 		$token     = $session->get('session.token');
-		$lang      = JFactory::getLanguage()->getTag();
-		$lang      = str_replace('-', '_', $lang);
-		$shortlang = explode('_', $lang);
-		$shortlang = $shortlang[0];
-		$multilang = FabrikWorker::getMultiLangURLCode();
 
 		$replacements = array(
 			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
@@ -960,9 +1039,6 @@ class FabrikWorker
 			'{where_i_came_from}' => $app->input->server->get('HTTP_REFERER', '', 'string'),
 			'{date}' => date('Ymd'),
 			'{mysql_date}' => date('Y-m-d H:i:s'),
-			'{lang}' => $lang,
-			'{multilang}' => $multilang,
-			'{shortlang}' => $shortlang,
 			'{session.token}' => $token,
 		);
 
@@ -974,6 +1050,29 @@ class FabrikWorker
 				$replacements['{$_SERVER-&gt;' . $key . '}'] = $val;
 			}
 		}
+
+		return array_merge($replacements, self::langReplacements());
+	}
+
+	/**
+	 * Returns array of language tag replacements
+	 *
+	 * @return array
+	 */
+	public static function langReplacements()
+	{
+		$langtag   = JFactory::getLanguage()->getTag();
+		$lang      = str_replace('-', '_', $langtag);
+		$shortlang = explode('_', $lang);
+		$shortlang = $shortlang[0];
+		$multilang = FabrikWorker::getMultiLangURLCode();
+
+		$replacements = array(
+			'{lang}' => $lang,
+			'{langtag}' => $langtag,
+			'{multilang}' => $multilang,
+			'{shortlang}' => $shortlang,
+		);
 
 		return $replacements;
 	}
@@ -2030,9 +2129,12 @@ class FabrikWorker
 		 * a multipart MIME type, with an alt body for plain text.  If we don't do this,
 		 * the default behavior is to send it as just text/html, which causes spam filters
 		 * to downgrade it.
+		 * @@@trob: insert \n before  <br to keep newlines(strip_tag may then strip <br> or <br /> etc, decode html
 		 */
 		if ($mode)
 		{
+			$body = str_ireplace(array("<br />","<br>","<br/>"), "\n<br />", $body);
+			$body = html_entity_decode($body);
 			$mailer->AltBody = JMailHelper::cleanText(strip_tags($body));
 		}
 

@@ -275,7 +275,10 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                         el.val('');
                     }
                 } else {
-                    el.find('img').prop('src', val);
+                    var img = el.closest('div.fabrikSubElementContainer').find('img');
+                    if (img) {
+                        img.prop('src', val);
+                    }
                 }
             }
         },
@@ -402,7 +405,8 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                             } else {
                                 a = jQuery(document.createElement('span'));
                                 title = jQuery(document.createElement('a')).attr({
-                                    'href': file.url
+                                    'href': file.url,
+			      'target': '_blank'
                                 }).text(file.name);
                             }
 
@@ -681,7 +685,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                     'repeatCounter': this.options.repeatCounter
                 }
             });
-            var li = e.target.closest('.plupload_delete');
+            var li = jQuery(e.target).closest('.plupload_delete');
             li.remove();
 
             // Remove hidden fields as well

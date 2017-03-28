@@ -1045,7 +1045,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of buildQuery()
-		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches))
+		if (preg_match('/(ORDER\s+BY)(.*)/is', $where, $matches))
 		{
 			$this->orderBy = $this->parseThisTable($matches[0], $join);
 			$where         = str_replace($this->orderBy, '', $where);
@@ -1075,13 +1075,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
-			if (preg_match('/(ORDER\s+BY)(.*)/i', $filterWhere, $matches))
+			if (preg_match('/(ORDER\s+BY)(.*)/is', $filterWhere, $matches))
 			{
 				$this->orderBy = $this->parseThisTable($matches[0], $join);
 				$filterWhere         = str_replace($this->orderBy, '', $filterWhere);
 				$filterWhere         = str_replace($matches[0], '', $filterWhere);
 			}
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			//$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			$where .= !empty($where) ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
 
 		if ($where == '')
@@ -2162,7 +2163,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @return  string    filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$params                    = $this->getParams();
 		$element                   = $this->getElement();
@@ -2218,7 +2219,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				break;
 			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
-				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal, $container);
 				$return       = array_merge($return, $autoComplete);
 				break;
 		}
@@ -2340,6 +2341,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			/* $$$ hugh - Sanity check - won't this screw things up if we have a complex preFilter with multiple filters using AND grouping? */
 			$preFilterWhere = str_replace('AND', 'WHERE', $preFilterWhere);
+		}
+		else
+		{
+			if (!preg_match('/^WHERE\s+/i', $where))
+			{
+				$where = 'WHERE ' . $where;
+			}
 		}
 
 		$where .= $preFilterWhere;
@@ -2994,6 +3002,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$obs = $matches[0];
 			}
 
+			$concatSql = $params->get($this->concatLabelParam, '');
+
+			if (!empty($concatSql))
+			{
+				if (preg_match_all("/{[^}\s]+}/i", $concatSql, $matches) !== 0)
+				{
+					$obs = array_merge($obs, $matches[0]);
+				}
+			}
+
 			$obs = array_unique($obs);
 
 			foreach ($obs as $key => &$m)
@@ -3015,8 +3033,35 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$opts->observe = array_values($obs);
+		$opts->changeEvent = $this->getChangeEvent();
 
 		return $opts;
+	}
+
+	/**
+	 * Return JS event required to trigger a 'change'
+	 *
+	 * @return  string
+	 */
+
+	public function getChangeEvent()
+	{
+		$params = $this->getParams();
+
+		switch ($params->get('database_join_display_type', 'dropdown'))
+		{
+			case 'dropdown':
+				$trigger = 'change';
+				break;
+			case 'auto-complete':
+				$trigger = 'blur';
+				break;
+			default:
+				$trigger = 'click';
+				break;
+		}
+
+		return $trigger;
 	}
 
 	/**
@@ -3604,7 +3649,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$parentKey  = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(true, false);
+		$fullElName = $this->_db->qn($this->getFullName(true, false));
 		$sql        = "(SELECT GROUP_CONCAT(" . $jKey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable
 		LEFT JOIN " . $dbName . " AS lookup ON lookup." . $this->getJoinValueFieldName() . " = $joinTable." . $this->getElement()->name . " WHERE "
 			. $joinTable . ".parent_id = " . $parentKey . ")";
@@ -3654,11 +3699,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 */
 	protected function buildQueryElementConcatId()
 	{
-		$str        = parent::buildQueryElementConcatId();
+		//$str        = parent::buildQueryElementConcatId();
 		$joinTable  = $this->getJoinModel()->getJoin()->table_join;
 		$parentKey  = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(true, false) . '_id';
-		$str .= ", (SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE " . $joinTable
+		$fullElName = $this->_db->qn($this->getFullName(true, false) . '_id');
+		$str = "(SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE " . $joinTable
 			. ".parent_id = " . $parentKey . ") AS $fullElName";
 
 		return $str;

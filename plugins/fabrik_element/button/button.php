@@ -43,7 +43,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$displayData->class = $class;
 		$displayData->id = $id;
 		$displayData->name = $name;
-		$displayData->label = $element->label;
+		$displayData->label = FText::_($element->label);;
 		$displayData->icon = $icon;
 		$displayData->type = $type;
 

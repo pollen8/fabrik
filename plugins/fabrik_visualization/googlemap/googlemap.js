@@ -5,202 +5,232 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbGoogleMapViz = new Class({
+var FbGoogleMapViz;
+FbGoogleMapViz = new Class({
 	Implements: Options,
-	options: {
-		'lat': 0,
-		'lon': 0,
-		'clustering': false,
-		'maptypecontrol': false,
-		'scrollwheel': false,
-		'overviewcontrol': false,
-		'scalecontrol': false,
-		'center': 'middle',
-		'ajax_refresh': false,
-		'use_polygon': false,
-		'polyline': [],
-		'polylinewidth': [],
-		'polylinecolour': [],
-		'polygonopacity': [],
-		'polygonfillcolour': [],
-		'refresh_rate': 10000,
-		'use_cookies': true,
-		'use_groups': false,
-		'overlays': [],
-		'overlay_urls': [],
-		'overlay_labels': [],
-		'overlay_events': [],
-		'zoom' : 1,
-		'zoomStyle': 0,
+	options   : {
+		'lat'               : 0,
+		'lon'               : 0,
+		'clustering'        : false,
+		'maptypecontrol'    : false,
+		'scrollwheel'       : false,
+		'overviewcontrol'   : false,
+		'scalecontrol'      : false,
+		'center'            : 'middle',
+		'ajax_refresh'      : false,
+		'ajaxDefer'         : false,
+		'use_polygon'       : false,
+		'polyline'          : [],
+		'polylinewidth'     : [],
+		'polylinecolour'    : [],
+		'polygonopacity'    : [],
+		'polygonfillcolour' : [],
+		'refresh_rate'      : 10000,
+		'use_cookies'       : true,
+		'use_groups'        : false,
+		'overlays'          : [],
+		'overlay_urls'      : [],
+		'overlay_labels'    : [],
+		'overlay_events'    : [],
+		'zoom'              : 1,
+		'zoomStyle'         : 0,
 		'radius_fill_colors': [],
-		'streetView': false,
-		'traffic': false,
-		'key': false,
-		'styles': []
+		'streetView'        : false,
+		'traffic'           : false,
+		'key'               : false,
+		'showLocation'      : false,
+		'styles'            : []
 	},
 
 	initialize: function (element, options) {
-		this.element_map = element;
-		this.element = document.id(element);
+			this.element_map = element;
+			this.element = document.id(element);
 
-		this.clusterMarkerCursor = 0;
-		this.clusterMarkers = [];
-		this.markers = [];
-		this.distanceWidgets = [];
-		this.icons = [];
-		this.setOptions(options);
+			this.clusterMarkerCursor = 0;
+			this.clusterMarkers = [];
+			this.markers = [];
+			this.distanceWidgets = [];
+			this.icons = [];
+			this.setOptions(options);
+			this.container = document.id(this.options.container);
+			this.subContainer = document.id(this.options.container + '_sub');
 
-		this.updater = new Request.JSON({url: '',
-			data : {
-				'option': 'com_fabrik',
-				'format': 'raw',
-				'task': 'ajax_getMarkers',
-				'view': 'visualization',
-				'controller': 'visualization.googlemap',
-				'visualizationid': this.options.id
-			},
-			onSuccess: function (json) {
-				this.clearIcons();
-				this.clearPolyLines();
-				this.options.icons = json;
-				this.addIcons();
-				this.setPolyLines();
-				if (this.options.ajax_refresh_center) {
-					this.center();
-				}
-				Fabrik.fireEvent('fabrik.viz.googlemap.ajax.refresh', [this]);
-				Fabrik.loader.stop(this.container);
-			}.bind(this)
-		});
-
-		if (this.options.ajax_refresh) {
-			this.timer = this.update.periodical(this.options.refresh_rate, this);
-		}
-
-		if (typeof(Slimbox) !== 'undefined') {
-			Slimbox.scanPage();
-		} else if (typeof(Mediabox) !== 'undefined') {
-			Mediabox.scanPage();
-		}
-
-		// Clear filter list
-		this.container = document.id(this.options.container);
-		if (typeOf(this.container) !== 'null') {
-			var form = this.container.getElement('form[name=filter]');
-			var c = this.container.getElement('.clearFilters');
-			if (c) {
-				c.addEvent('click', function (e) {
-					this.container.getElements('.fabrik_filter').each(function (f) {
-						f.value = '';
-					});
-					e.stop();
-					form.submit();
-				}.bind(this));
-			}
-
-			// Watch filter submit
-			var submit = this.container.getElements('input.fabrik_filter_submit');
-			if (typeOf(submit) !== 'null') {
-				submit.addEvent('click', function (e) {
-					var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
-					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
-						form.submit();
-					} else {
-						e.stop();
+			this.updater = new Request.JSON({
+				url      : '',
+				data     : {
+					'option'         : 'com_fabrik',
+					'format'         : 'raw',
+					'task'           : 'ajax_getMarkers',
+					'view'           : 'visualization',
+					'controller'     : 'visualization.googlemap',
+					'visualizationid': this.options.id
+				},
+				onSuccess: function (json) {
+					this.clearIcons();
+					this.clearPolyLines();
+					this.options.icons = json;
+					this.addIcons();
+					this.setPolyLines();
+					if (this.options.ajax_refresh_center) {
+						this.center();
 					}
-				});
+					Fabrik.fireEvent('fabrik.viz.googlemap.ajax.refresh', [this]);
+					Fabrik.loader.stop(this.subContainer);
+				}.bind(this)
+			});
+
+			if (this.options.ajax_refresh) {
+				this.timer = this.update.periodical(this.options.refresh_rate, this);
 			}
 
-		}
+			if (typeof(Slimbox) !== 'undefined') {
+				Slimbox.scanPage();
+			} else if (typeof(Mediabox) !== 'undefined') {
+				Mediabox.scanPage();
+			}
 
-		Fabrik.loadGoogleMap(this.options.key, function () {
-			this.iniGMap();
-		}.bind(this));
+			// Clear filter list
+			if (typeOf(this.container) !== 'null') {
+				var form = this.container.getElement('form[name=filter]');
+				var c = this.container.getElement('.clearFilters');
+				if (c) {
+					c.addEvent('click', function (e) {
+						this.container.getElements('.fabrik_filter').each(function (f) {
+							f.value = '';
+						});
+						e.stop();
+						form.submit();
+					}.bind(this));
+				}
 
-	},
+				// Watch filter submit
+				var submit = this.container.getElements('input.fabrik_filter_submit');
+				if (typeOf(submit) !== 'null') {
+					submit.addEvent('click', function (e) {
+						var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
+						if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
+							form.submit();
+						} else {
+							e.stop();
+						}
+					});
+				}
+
+			}
+
+			Fabrik.loadGoogleMap(this.options.key, function () {
+				this.iniGMap();
+			}.bind(this));
+
+		},
 
 	iniGMap: function () {
-		switch (this.options.maptype) {
-		case 'G_NORMAL_MAP':
-		/* falls through */
-		default:
-			this.options.maptype = google.maps.MapTypeId.ROADMAP;
-			break;
-		case 'G_SATELLITE_MAP':
-			this.options.maptype = google.maps.MapTypeId.SATELLITE;
-			break;
-		case 'G_HYBRID_MAP':
-			this.options.maptype = google.maps.MapTypeId.HYBRID;
-			break;
-		case 'G_TERRAIN_MAP':
-			this.options.maptype = google.maps.MapTypeId.TERRAIN;
-			break;
-		}
+			switch (this.options.maptype) {
+				case 'G_NORMAL_MAP':
+				/* falls through */
+				default:
+					this
+						.options.maptype = google.maps.MapTypeId.ROADMAP;
+					break;
+				case 'G_SATELLITE_MAP':
+					this.options.maptype = google.maps.MapTypeId.SATELLITE;
+					break;
+				case 'G_HYBRID_MAP':
+					this.options.maptype = google.maps.MapTypeId.HYBRID;
+					break;
+				case 'G_TERRAIN_MAP':
+					this.options.maptype = google.maps.MapTypeId.TERRAIN;
+					break;
+			}
 
-		if (typeOf(this.element_map) === 'null') {
-			return;
-		}
-		var mapOpts = {
-			center: new google.maps.LatLng(this.options.lat, this.options.lon),
-			zoom: this.options.zoomlevel.toInt(),
-			mapTypeId: this.options.maptype,
-			scaleControl: this.options.scalecontrol,
-			mapTypeControl: this.options.maptypecontrol,
-			overviewMapControl: this.options.overviewcontrol,
-			scrollwheel: this.options.scrollwheel,
-			zoomControl: this.options.zoom,
-			streetViewControl: this.options.streetView,
-			zoomControlOptions: {style: this.options.zoomStyle}
-		};
-		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
-		this.map.setOptions({'styles': this.options.styles});
-		
-		if (this.options.traffic) {
-			  var trafficLayer = new google.maps.TrafficLayer();
-			  trafficLayer.setMap(this.map);	
-		}
+			if (typeOf(this.element_map) === 'null') {
+				return;
+			}
+			var mapOpts = {
+				center            : new google.maps.LatLng(this.options.lat, this.options.lon),
+				zoom              : this.options.zoomlevel.toInt(),
+				mapTypeId         : this.options.maptype,
+				scaleControl      : this.options.scalecontrol,
+				mapTypeControl    : this.options.maptypecontrol,
+				overviewMapControl: this.options.overviewcontrol,
+				scrollwheel       : this.options.scrollwheel,
+				zoomControl       : this.options.zoom,
+				streetViewControl : this.options.streetView,
+				zoomControlOptions: {style: this.options.zoomStyle}
+			};
+			this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
+			this.map.setOptions({'styles': this.options.styles});
 
-		this.infoWindow = new google.maps.InfoWindow({
-			content: ''
-		});
-		this.bounds = new google.maps.LatLngBounds();
+			if (this.options.traffic) {
+				var trafficLayer = new google.maps.TrafficLayer();
+				trafficLayer.setMap(this.map);
+			}
 
-		this.addIcons();
-		this.addOverlays();
+			this.infoWindow = new google.maps.InfoWindow({
+				content: ''
+			});
+			this.bounds = new google.maps.LatLngBounds();
 
-		google.maps.event.addListener(this.map, "click", function (e) {
-			this.setCookies(e);
-		}.bind(this));
+			this.addIcons();
+			this.addOverlays();
 
-		google.maps.event.addListener(this.map, "moveend", function (e) {
-			this.setCookies(e);
-		}.bind(this));
+			google.maps.event.addListener(this.map, "click", function (e) {
+				this.setCookies(e);
+			}.bind(this));
 
-		google.maps.event.addListener(this.map, "zoomend", function (e) {
-			this.setCookies(e);
-		}.bind(this));
+			google.maps.event.addListener(this.map, "moveend", function (e) {
+				this.setCookies(e);
+			}.bind(this));
 
-		this.infoWindow = new google.maps.InfoWindow({
-			content: ''
-		});
-		
-		if (this.options.use_cookies) {
-			// $$$ jazzbass - get previous stored location
-			var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
-			var mymaplat = Cookie.read("mymaplat_" + this.options.id);
-			var mymaplng = Cookie.read("mymaplng_" + this.options.id);
+			google.maps.event.addListener(this.map, "zoomend", function (e) {
+				this.setCookies(e);
+			}.bind(this));
 
-			if (mymaplat && mymaplat !== '0' && mymapzoom !== '0') {
-				this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()));
-				this.map.setZoom(mymapzoom.toInt());
+			this.infoWindow = new google.maps.InfoWindow({
+				content: ''
+			});
+
+			if (this.options.use_cookies) {
+				// $$$ jazzbass - get previous stored location
+				var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
+				var mymaplat = Cookie.read("mymaplat_" + this.options.id);
+				var mymaplng = Cookie.read("mymaplng_" + this.options.id);
+
+				if (mymaplat && mymaplat !== '0' && mymapzoom !== '0') {
+					this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()));
+					this.map.setZoom(mymapzoom.toInt());
+				} else {
+					this.center();
+				}
 			} else {
 				this.center();
 			}
-		} else {
-			this.center();
-		}
-		this.setPolyLines();
-	},
+			this.setPolyLines();
+
+
+			if (this.options.showLocation) {
+				var self = this;
+				requirejs(['lib/geolocation-marker/geolocation-marker-min'], function (GeolocationMarker) {
+					self.geoMarker = new GeolocationMarker(
+						self.map,
+						{
+							'icon': {
+								'url': Fabrik.liveSite + 'media/com_fabrik/images/gpsloc.png',
+								'size': new google.maps.Size(34, 34),
+								'scaledSize': new google.maps.Size(17, 17),
+								'origin': new google.maps.Point(0, 0),
+								'anchor': new google.maps.Point(8, 8)
+							}
+						}
+					);
+				});
+			}
+
+			if (this.options.ajaxDefer)
+			{
+				this.update();
+			}
+		},
 
 	setPolyLines: function () {
 		this.polylines = [];
@@ -220,7 +250,13 @@ var FbGoogleMapViz = new Class({
 				this.polylines.push(polyline);
 			}
 			else {
-				var polygon = new google.maps.Polygon({paths: glatlng, 'strokeColor': colour, 'strokeWeight': width, strokeOpacity: opacity, fillColor: fillColor});
+				var polygon = new google.maps.Polygon({
+					paths         : glatlng,
+					'strokeColor' : colour,
+					'strokeWeight': width,
+					strokeOpacity : opacity,
+					fillColor     : fillColor
+				});
 				polygon.setMap(this.map);
 				this.polygons.push(polygon);
 			}
@@ -245,7 +281,7 @@ var FbGoogleMapViz = new Class({
 	},
 
 	update: function () {
-		Fabrik.loader.start(this.container);
+		Fabrik.loader.start(this.subContainer);
 		this.updater.send();
 	},
 
@@ -253,13 +289,16 @@ var FbGoogleMapViz = new Class({
 		this.markers.each(function (marker) {
 			marker.setMap(null);
 		});
+		if (this.options.clustering) {
+			this.cluster.clearMarkers();
+		}
 		this.bounds = new google.maps.LatLngBounds(null);
 	},
 
 	noData: function () {
 		return this.options.icons.length === 0;
 	},
-	
+
 	addIcons: function () {
 		this.markers = [];
 		this.clusterMarkers = [];
@@ -278,9 +317,9 @@ var FbGoogleMapViz = new Class({
 			var i = 0;
 			for (i = 1; i <= 5; ++i) {
 				styles.push({
-					'url': Fabrik.liveSite + "components/com_fabrik/libs/googlemaps/markerclustererplus/images/m" + i + ".png",
+					'url'   : Fabrik.liveSite + "components/com_fabrik/libs/googlemaps/markerclustererplus/images/m" + i + ".png",
 					'height': sizes[i - 1],
-					'width': sizes[i - 1]
+					'width' : sizes[i - 1]
 				});
 			}
 			var zoom = null;
@@ -302,7 +341,13 @@ var FbGoogleMapViz = new Class({
 					size = parseInt(this.options.cluster_splits, 10);
 				}
 			}
-			this.cluster = new MarkerClusterer(this.map, this.clusterMarkers, {'splits': this.options.cluster_splits, 'icon_increment': this.options.icon_increment, maxZoom: zoom, gridSize: size, styles: styles});
+			this.cluster = new MarkerClusterer(this.map, this.clusterMarkers, {
+				'splits'        : this.options.cluster_splits,
+				'icon_increment': this.options.icon_increment,
+				maxZoom         : zoom,
+				gridSize        : size,
+				styles          : styles
+			});
 		}
 		if (this.options.fitbounds) {
 			this.map.fitBounds(this.bounds);
@@ -313,38 +358,38 @@ var FbGoogleMapViz = new Class({
 		//set the map to center on the center of all the points
 		var c;
 		switch (this.options.center) {
-		case 'middle':
-			if (this.noData()) {
-				c = new google.maps.LatLng(this.options.lat, this.options.lon);
-			}
-			else {
-				c = this.bounds.getCenter();
-			}
-			break;
-		case 'userslocation':
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {enableHighAccuracy: true});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-				c = this.bounds.getCenter();
-			}
-			break;
-		case 'querystring':
-			c = new google.maps.LatLng(this.options.lat, this.options.lon);
-			break;
-		default:
-			if (this.noData()) {
-				c = new google.maps.LatLng(this.options.lat, this.options.lon);
-			}
-			else {
-				var lasticon = this.options.icons.getLast();
-				if (lasticon) {
-					c = new google.maps.LatLng(lasticon[0], lasticon[1]);
-				} else {
+			case 'middle':
+				if (this.noData()) {
+					c = new google.maps.LatLng(this.options.lat, this.options.lon);
+				}
+				else {
 					c = this.bounds.getCenter();
 				}
-			}
-			break;
+				break;
+			case 'userslocation':
+				if (geo_position_js.init()) {
+					geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {enableHighAccuracy: true});
+				} else {
+					fconsole('Geo location functionality not available');
+					c = this.bounds.getCenter();
+				}
+				break;
+			case 'querystring':
+				c = new google.maps.LatLng(this.options.lat, this.options.lon);
+				break;
+			default:
+				if (this.noData()) {
+					c = new google.maps.LatLng(this.options.lat, this.options.lon);
+				}
+				else {
+					var lasticon = this.options.icons.getLast();
+					if (lasticon) {
+						c = new google.maps.LatLng(lasticon[0], lasticon[1]);
+					} else {
+						c = this.bounds.getCenter();
+					}
+				}
+				break;
 		}
 		this.map.setCenter(c);
 	},
@@ -402,27 +447,27 @@ var FbGoogleMapViz = new Class({
 		}.bind(this));
 		if (this.options.clustering) {
 			this.clusterMarkers.push(marker);
-			this.clusterMarkerCursor ++;
+			this.clusterMarkerCursor++;
 		}
 		if (this.options.show_radius) {
 			this.addRadius(marker, radius, c);
 		}
-		this.periodCounter ++;
+		this.periodCounter++;
 		return marker;
 	},
 
 	addRadius: function (marker, radius, c) {
 		if (this.options.show_radius && radius > 0) {
 			var circle = new google.maps.Circle({
-				map: this.map,
-				radius: radius,
+				map      : this.map,
+				radius   : radius,
 				fillColor: this.options.radius_fill_colors[c]
 			});
 			circle.bindTo('center', marker, 'position');
 		}
 	},
 
-	slimboxFunc:  function () {
+	slimboxFunc: function () {
 		// periodical function to observe the infowindow html to apply lightbox fx to images
 		var links = $$("a").filter(function (el) {
 			return el.rel && el.rel.test(/^lightbox/i);
@@ -440,7 +485,7 @@ var FbGoogleMapViz = new Class({
 				});
 			}
 		}
-		this.periodCounter ++;
+		this.periodCounter++;
 	},
 
 	toggleOverlay: function (e) {
@@ -460,8 +505,8 @@ var FbGoogleMapViz = new Class({
 				var pv = this.options.overlay_preserveviewports[k] === '1';
 				var so = this.options.overlay_suppressinfowindows[k] === '1';
 				this.options.overlays[k] = new google.maps.KmlLayer({
-					url: overlay_url,
-					preserveViewport: pv,
+					url                : overlay_url,
+					preserveViewport   : pv,
 					suppressInfoWindows: so
 				});
 				this.options.overlays[k].setMap(this.map);
@@ -500,7 +545,7 @@ var FbGoogleMapViz = new Class({
 				linkText = i.groupkey;
 
 				var lookup = i.groupkey;
-				
+
 				if (typeOf(lookup) === 'string') {
 					lookup = lookup.replace(/[^0-9a-zA-Z_]/g, '');
 				}
@@ -529,8 +574,8 @@ var FbGoogleMapViz = new Class({
 							document.getElements('.' + cname).show();
 						}
 					},
-					'href': '#',
-					'class': 'groupedLink' + k
+					'href'  : '#',
+					'class' : 'groupedLink' + k
 				}).set('html', linkText);
 
 				// Store the group key for later use in the toggle co
@@ -568,8 +613,7 @@ var FbGoogleMapViz = new Class({
 	 *
 	 * @return  void
 	 */
-	toggleGrouped: function (clicked)
-	{
+	toggleGrouped: function (clicked) {
 		this.infoWindow.close();
 		document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
 		if (clicked) {
@@ -586,7 +630,7 @@ var FbGoogleMapViz = new Class({
 			fn.delay(1500);
 		}.bind(this));
 	},
-	
+
 	/**
 	 * Required for use with plugin's clear filters plugin code.
 	 */

@@ -1035,6 +1035,7 @@ class FabrikFEModelGroup extends FabModel
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->minRepeat = $params->get('repeat_min', '') === '' ? 1 : (int) $params->get('repeat_min', '');
+		$group->numRepeatElement = $params->get('repeat_num_element', '');
 		$group->showMaxRepeats  = $params->get('show_repeat_max', '0') == '1';
 		$group->minMaxErrMsg = $params->get('repeat_error_message', '');
 		$group->minMaxErrMsg = FText::_($group->minMaxErrMsg);

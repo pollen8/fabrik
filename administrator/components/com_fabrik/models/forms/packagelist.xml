@@ -43,6 +43,7 @@
 							<option value="&lt;=">LESS THAN OR EQUALS</option>
 							<option value="in">IN</option>
 							<option value="not_in">NOT IN</option>
+							<option value="thisyear">COM_FABRIK_THIS_YEAR</option>
 							<option value="earlierthisyear">COM_FABRIK_EARLIER_THIS_YEAR</option>
 							<option value="laterthisyear">COM_FABRIK_LATER_THIS_YEAR</option>
 							<option value="yesterday">COM_FABRIK_YESTERDAY</option>

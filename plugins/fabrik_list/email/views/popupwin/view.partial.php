@@ -31,6 +31,7 @@ class FabrikViewPopupwin extends JViewLegacy
 	 */
 	public function display($tmpl = 'default')
 	{
+		$w           = new FabrikWorker;
 		$app         = JFactory::getApplication();
 		$model       = $this->getModel();
 		$input       = $app->input;
@@ -63,6 +64,7 @@ class FabrikViewPopupwin extends JViewLegacy
 		$this->params          = $model->getParams();
 		$this->listEmailTo     = $model->formModel->getElementList('list_email_to');
 		$this->addressBook     = $model->addressBook();
+		$this->additionalQS    = $w->parseMessageForPlaceHolder($this->params->get('list_email_additional_qs', ''));
 
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJs();

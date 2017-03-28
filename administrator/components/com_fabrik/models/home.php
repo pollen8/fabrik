@@ -191,8 +191,8 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$form->submit_button_label = "Submit";
 		$form->published           = 1;
 
-		$form->form_template      = "default";
-		$form->view_only_template = "default";
+		$form->form_template      = "bootstrap";
+		$form->view_only_template = "bootstrap";
 
 		$form->store();
 
@@ -226,7 +226,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$list->published      = 1;
 		$list->rows_per_page  = 10;
 		$list->params         = $listModel->getDefaultParams();
-		$list->template       = 'default';
+		$list->template       = 'bootstrap';
 
 		$list->store();
 		echo "<li>Table for 'Contact Us' created</li></div>";

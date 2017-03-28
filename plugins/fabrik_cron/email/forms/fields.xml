@@ -76,6 +76,11 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="cronemail-update-code"
+			       type="fabrikeditor"
+			       description="PLG_CRON_EMAIL_UPDATE_CODE_DESC"
+			       label="PLG_CRON_EMAIL_UPDATE_CODE_LABEL" />
+
 		</fieldset>
 	</fields>
 </form>

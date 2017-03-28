@@ -28,6 +28,14 @@
 				label="PLG_LIST_EMAIL_IMAGE_LABEL"
 				repeat="true" size="20"
 			/>
+
+			<field name="list_email_additional_qs"
+			       type="text"
+			       default=""
+			       description="PLG_LIST_EMAIL_ADDITIONAL_QS_DESC"
+			       label="PLG_LIST_EMAIL_ADDITIONAL_QS_LABEL"
+			       repeat="true" size="20"
+			/>
 							
 			<field name="emailtable_condition"
 				type="fabrikeditor"

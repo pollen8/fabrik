@@ -51,13 +51,16 @@ class FabrikFEModelCSVExport extends FabModel
 	public $model;
 
 	/**
-	 * Get csv export step
+	 * Get csv export step from params or URL
 	 *
 	 * @return  integer  Export step
 	 */
 	public function getStep()
 	{
-		return (int) $this->model->getParams()->get('csv_export_step', $this->step);
+		$input = $this->app->input;
+		$step_param = $this->model->getParams()->get('csv_export_step', $this->step);
+		$step_url = $input->get('csv_export_step', $step_param);
+		return (int) $step_url;
 	}
 
 	/**
@@ -211,6 +214,17 @@ class FabrikFEModelCSVExport extends FabModel
 				if ($params->get('csv_format_json', '1') === '1')
 				{
 					array_walk($a, array($this, 'implodeJSON'), $end_of_line);
+				}
+
+				$this->model->csvExportRow = $a;
+				$pluginResults = FabrikWorker::getPluginManager()->runPlugins('onExportCSVRow', $this->model, 'list', $a);
+				if (in_array(false, $pluginResults))
+				{
+					continue;
+				}
+				else
+				{
+					$a = $this->model->csvExportRow;
 				}
 
 				$str .= implode($this->delimiter, array_map(array($this, 'quote'), array_values($a)));
@@ -715,6 +729,17 @@ class FabrikFEModelCSVExport extends FabModel
 		if ($input->get('inccalcs') == 1)
 		{
 			array_unshift($h, FText::_('Calculation'));
+		}
+
+		$this->model->csvExportHeadings = $h;
+		$pluginResults = FabrikWorker::getPluginManager()->runPlugins('onExportCSVHeadings', $this->model, 'list', $a);
+		if (in_array(false, $pluginResults))
+		{
+			return false;
+		}
+		else
+		{
+			$h = $this->model->csvExportHeadings;
 		}
 
 		$h = array_map(array($this, "quote"), $h);

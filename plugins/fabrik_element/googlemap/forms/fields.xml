@@ -243,6 +243,16 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="fb_gm_auto_center"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_ELEMENT_GOOGLE_MAP_AUTO_CENTER_DESC"
+			       label="PLG_ELEMENT_GOOGLE_MAP_AUTO_CENTER_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset label="Default location" name="plg-element-googlemap-default">

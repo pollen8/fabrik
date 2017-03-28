@@ -68,28 +68,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	protected $blockfield = '';
 
 	/**
-	 * Get an element name
-	 *
-	 * @param   string $pname Params property name to look up
-	 * @param   bool   $short Short (true) or full (false) element name, default false/full
-	 *
-	 * @return    string    element full name
-	 */
-	private function getFieldName($pname, $short = false)
-	{
-		$params = $this->getParams();
-
-		if ($params->get($pname) == '')
-		{
-			return '';
-		}
-
-		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
-
-		return $short ? $elementModel->getElement()->name : $elementModel->getFullName();
-	}
-
-	/**
 	 * Synchronize J! users with F! table if empty
 	 *
 	 * @return  void
@@ -442,6 +420,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$this->emailfield = $this->getFieldName('juser_field_email');
 		$this->emailvalue = $this->getFieldValue('juser_field_email', $formModel->formData);
 
+		$this->requireresetfield = $this->getFieldName('juser_field_requirereset');
+		$this->requireresetvalue = $this->getFieldValue('juser_field_requirereset', $formModel->formData);
+
 		$data['id'] = $originalId;
 
 		$data['gid']  = $this->setGroupIds($me, $user);
@@ -487,6 +468,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$user->set('registerDate', $this->date->toSql());
 			$this->setActivation($data);
 		}
+		else
+		{
+			if (!empty($this->requireresetfield))
+			{
+				$data['requireReset'] = $this->requireresetvalue;
+			}
+		}
+
 
 		$this->trimNamePassword($user, $data);
 
@@ -812,6 +801,18 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$data['block']      = 0;
 		}
 
+		if (empty($this->requireresetfield))
+		{
+			if ($params->get('juser_require_reset', '') === '1')
+			{
+				$data['requireReset'] = 1;
+			}
+		}
+		else
+		{
+			$data['requireReset'] = $this->requireresetvalue;
+		}
+
 		return $data;
 	}
 
@@ -879,7 +880,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$isNew          = $user->get('id') < 1;
 		$params         = $this->getParams();
 		$this->gidfield = $this->getFieldName('juser_field_usertype');
-		$defaultGroup   = (int) $params->get('juser_field_default_group');
+		// if editing, set the default to the existing user's groups
+		$defaultGroup   = $isNew ? (array) $params->get('juser_field_default_group') : $user->groups;
 		$groupIds       = (array) $this->getFieldValue('juser_field_usertype', $formModel->formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
@@ -911,8 +913,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		else
 		{
-			// If editing an existing user and no gid field being used,  use default group id
-			$data[] = $defaultGroup;
+			/*
+			 * Mo 'usertype' field was set, so use default, which is either the default ocnfigured
+			 * in the plugin (for new users), or an existing users current groups.
+			 *
+			 */
+			$data = (array) $defaultGroup;
 		}
 
 		return $data;

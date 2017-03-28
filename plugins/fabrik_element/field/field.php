@@ -305,6 +305,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$opts->use_input_mask = true;
 			$opts->input_mask = $inputMask;
 			$opts->input_mask_definitions = $params->get('text_input_mask_definitions', '{}');
+			$opts->input_mask_autoclear = $params->get('text_input_mask_autoclear', '0') === '1';
 		}
 		else
 		{

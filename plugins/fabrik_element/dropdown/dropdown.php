@@ -84,7 +84,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 
 			$tmpLabel = FArrayHelper::getValue($labels, $i);
-			$disable = FArrayHelper::getValue($endIs, $i);
+			$disable = FArrayHelper::getValue($endIs, $i, false);
 
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);
@@ -109,7 +109,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			{
 				if (!in_array($sel, $values) && $sel !== '')
 				{
-					$opts[] = JHTML::_('select.option', $sel, $sel);
+					$opts[] = JHTML::_('select.option', htmlspecialchars($sel, ENT_QUOTES), $sel);
 					$aRoValues[] = $this->getReadOnlyOutput($sel, $sel);
 				}
 			}

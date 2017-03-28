@@ -600,6 +600,33 @@ class FabrikString extends JString
 	}
 
 	/**
+	 * Encode a query string (that already has &s in it)
+	 *
+	 * @param $qs
+	 *
+	 * @return string
+	 */
+	public static function encodeqs($qs)
+	{
+		if (empty($qs))
+		{
+			return '';
+		}
+
+		$new_qs = array();
+
+		foreach (explode('&', $qs) as $arg)
+		{
+			$bits = explode('=', $arg);
+			$key = FArrayHelper::getValue($bits, 0, '');
+			$val = FArrayHelper::getValue($bits, 1, '');
+			$new_qs[] = $key . '=' . urlencode($val);
+		}
+
+		return implode('&', $new_qs);
+	}
+
+	/**
 	 * Takes a complete URL, and urlencodes any query string args
 	 *
 	 * @param   string  $url  To encode
@@ -614,17 +641,7 @@ class FabrikString extends JString
 
 			if (!empty($qs))
 			{
-				$new_qs = array();
-
-				foreach (explode('&', $qs) as $arg)
-				{
-					$bits = explode('=', $arg);
-					$key = FArrayHelper::getValue($bits, 0, '');
-					$val = FArrayHelper::getValue($bits, 1, '');
-					$new_qs[] = $key . '=' . urlencode($val);
-				}
-
-				$url = $site . '?' . implode('&', $new_qs);
+				$url = $site . '?' . self::encodeqs($qs);
 			}
 		}
 
@@ -1023,6 +1040,46 @@ class FabrikString extends JString
 		return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) !== false ? $_SERVER['REMOTE_ADDR'] : '';
 	}
 
+	public static function getRowClass($value, $prefix)
+	{
+		$value = preg_replace('/[^A-Z|a-z|0-9]/', '-', $value);
+		$value = FabrikString::ltrim($value, '-');
+		$value = FabrikString::rtrim($value, '-');
+
+		// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
+		// $$$ hugh can't have class names which start with a number, so need preg_match, not is_numeric()
+		if (preg_match('#^\d#', $value))
+		{
+			$value = $prefix . $value;
+		}
+		else
+		{
+			// 12/10/2016 - for consistency, start adding the prefixed version every time
+			$value .= " " . $prefix . $value;
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Apply nl2br only outside of chevroned tags, eq. not between <...>
+	 *
+	 * @param $string
+	 *
+	 * @return mixed
+	 */
+	public static function safeNl2br($string)
+	{
+		return preg_replace_callback(
+			'#(\r\n?|\n)(?![^<]*>|[^<>]*</)#s',
+			function ($matches) {
+				return nl2br($matches[0]);
+			},
+			$string
+		);
+	}
+
 }
 
 /**
@@ -1082,6 +1139,4 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
-
-
 }

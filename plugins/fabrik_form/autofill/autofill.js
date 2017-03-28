@@ -19,7 +19,9 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			editOrig             : false,
 			fillOnLoad           : false,
 			confirm              : true,
-			autofill_lookup_field: 0
+			autofill_lookup_field: 0,
+			showNotFound         : false,
+			notFoundMsg          : ''
 		},
 
 		/**
@@ -234,8 +236,12 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			var repeatNum = this.element.getRepeatNum(),
 				key, val, k2, origKey;
 
-			if (this.json.length === 0) {
-				window.alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
+			if (jQuery.isEmptyObject(this.json)) {
+				if (this.options.showNotFound) {
+					var msg = this.options.notFoundMsg === '' ? Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND') : this.options.notFoundMsg;
+					window.alert(msg);
+				}
+				return;
 			}
 
 			for (key in this.json) {

@@ -111,6 +111,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     this._updateRows(history.state);
                 }
 
+	            this.mediaScan();
+
                 Fabrik.fireEvent('fabrik.list.loaded', [this]);
             },
 
@@ -927,7 +929,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     if (this.form['limitstart' + this.id]) {
                         form.find('#limitstart' + this.id).val(0);
                     }
-                } else {
+                }
+                else if (task === 'list.view') {
+                    Fabrik['filter_listform_' + this.options.listRef].onSubmit();
+                }
+                else {
                     if (task !== '') {
                         this.form.task.value = task;
                     }
@@ -942,10 +948,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
 
                     var data = this.form.toQueryString();
 
-                    if (task === 'list.doPlugin') {
+                    //if (task === 'list.doPlugin') {
                         data += '&setListRefFromRequest=1';
                         data += '&listref=' + this.options.listRef;
-                    }
+                        data += '&Itemid=' + this.options.Itemid;
+                    //}
 
                     if (task === 'list.filter' && this.advancedSearch !== false) {
                         var advSearchForm = document.getElement('form.advancedSearch_' + this.options.listRef);
@@ -1100,13 +1107,17 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         'task'    : 'list.view',
                         'format'  : 'raw',
                         'listid'  : this.id,
-                        'group_by': this.options.groupedBy,
                         'listref' : this.options.listRef
                     };
                 data['limit' + this.id] = this.options.limitLength;
 
                 if (extraData) {
                     Object.append(data, extraData);
+                }
+
+                if (this.options.groupedBy !== '')
+                {
+                    data['grouped_by'] = this.options.groupedBy;
                 }
 
                 new Request({
@@ -1230,6 +1241,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 // testing with $H back in again for grouped by data? Yeah works for
                 // grouped data!!
                 var gdata = this.options.isGrouped || this.options.groupedBy !== '' ? $H(data.data) : data.data;
+                //var gdata = data.data;
                 var gcounter = 0;
                 gdata.each(function (groupData, groupKey) {
                     tbody = self.options.isGrouped ? self.list.getElements('.fabrik_groupdata')[gcounter] : self.tbody;
@@ -1245,7 +1257,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     gcounter++;
                     for (i = 0; i < groupData.length; i++) {
                         var row = $H(groupData[i]);
-                        item = self.injectItemData(itemTemplate, row);
+                        item = self.injectItemData(itemTemplate, row, tmpl);
                         items.push(item);
                     }
 
@@ -1301,9 +1313,10 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
              * Inject item data into the item data template
              * @param {jQuery} template
              * @param {object} row
+             * @param {string}  div or row template
              * @return {jQuery}
              */
-            injectItemData: function (template, row) {
+            injectItemData: function (template, row, tmpl) {
                 var r, cell, c, j;
                 jQuery.each(row.data, function (key, val) {
                     cell = template.find('.' + key);
@@ -1315,8 +1328,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             // handle our view/edit links with data-rowid
                             href = jQuery(val).prop('href');
                             var rowid = jQuery(val).data('rowid');
-                            cell.prop('href', href);
-                            cell.data('rowid', rowid);
+                            // need to only do this for our links, not custom detail links
+                            jQuery.each(cell, function (thisKey, thisCell) {
+                                if (jQuery(thisCell).data('iscustom') === 0) {
+                                    jQuery(thisCell).prop('href', href);
+                                    jQuery(thisCell).data('rowid', rowid);
+                                }
+                            });
                         }
                         catch (err) {
                             // val wasn't an A tag, so just treat it as an href
@@ -1327,10 +1345,22 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (typeof(this.options.itemTemplate) === 'string') {
                     c = template.find('.fabrik_row').addBack(template);
                     c.prop('id', row.id);
-                    c.removeClass();
-                    var newClass = row['class'].split(' ');
-                    for (j = 0; j < newClass.length; j++) {
-                        c.addClass(newClass[j]);
+                    if (tmpl !== 'div') {
+	                    c.removeClass();
+	                    var newClass = row['class'].split(/\s+/);
+	                    for (j = 0; j < newClass.length; j++) {
+		                    c.addClass(newClass[j]);
+	                    }
+                    }
+                    else {
+	                    c.removeClass('oddRow0');
+	                    c.removeClass('oddRow1');
+	                    var newClass = row['class'].split(/\s+/);
+	                    for (j = 0; j < newClass.length; j++) {
+		                    if (!c.hasClass(newClass[j])) {
+			                    c.addClass(newClass[j]);
+		                    }
+	                    }
                     }
                     r = template.clone();
                 } else {

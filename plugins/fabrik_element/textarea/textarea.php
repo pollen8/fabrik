@@ -60,7 +60,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
 		$data = array_map('trim', $data);
 		$data = array_unique($data);
-		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
+		$img = FabrikWorker::j3() ? 'bookmark' : 'tag.png';
 		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		$tmplData = new stdClass;
 		$tmplData->tags = array();
@@ -114,7 +114,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data = parent::renderListData($data, $thisRow, $opts);
 		$params = $this->getParams();
 
 		if ($params->get('textarea-tagify') == true)
@@ -129,7 +128,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				{
 					for ($i = 0; $i < count($data); $i++)
 					{
-						$data[$i] = nl2br($data[$i]);
+						$data[$i] = FabrikString::safeNl2br($data[$i]);
 					}
 				}
 				else
@@ -139,7 +138,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 						$this->convertDataToString($data);
 					}
 
-					$data = nl2br($data);
+					$data = FabrikString::safeNl2br($data);
 				}
 			}
 
@@ -147,8 +146,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 			if ($data !== '' && ($truncateWhere === 1 || $truncateWhere === 3))
 			{
-				$opts = $this->truncateOpts();
-				$data = fabrikString::truncate($data, $opts);
+				$truncateOpts = $this->truncateOpts();
+				$data = fabrikString::truncate($data, $truncateOpts);
 				$listModel = $this->getListModel();
 
 				if (ArrayHelper::getValue($opts, 'link', 1))
@@ -158,7 +157,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			}
 		}
 
-		return $data;
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**
@@ -282,7 +281,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				if (!$this->useWysiwyg(false))
 				{
-					$value = nl2br($value);
+					$value = FabrikString::safeNl2br($value);
 				}
 
 				if ($value !== ''
@@ -580,4 +579,44 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	{
 		return true;
 	}
+
+	/**
+	 * Get database field description
+	 *
+	 * @return  string  db field type
+	 */
+	public function getFieldDescription()
+	{
+		$p       = $this->getParams();
+		$objType = 'TEXT';
+
+		switch ($p->get('textarea_field_type', 'TEXT'))
+		{
+			case 'TEXT':
+			default:
+				if ($this->encryptMe())
+				{
+					$objType = "BLOB";
+				}
+				else
+				{
+					$objType = "TEXT";
+				}
+				break;
+			case 'MEDIUMTEXT':
+				if ($this->encryptMe())
+				{
+					$objType = "MEDIUMBLOB";
+				}
+				else
+				{
+					$objType = "MEDIUMTEXT";
+				}
+				break;
+		}
+
+		return $objType;
+	}
+
+
 }

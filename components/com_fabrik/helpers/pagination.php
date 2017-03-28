@@ -103,11 +103,12 @@ class FPagination extends JPagination
 	{
 		$app                  = JFactory::getApplication();
 		$this->listRef        = $listRef;
+		$this->tmpl           = $tmpl;
 		$list                 = array();
 		$list['limit']        = $this->limit;
 		$list['limitstart']   = $this->limitstart;
 		$list['total']        = $this->total;
-		$list['limitfield']   = $this->showDisplayNum ? $this->getLimitBox() : '';
+		$list['limitfield']   = $this->showDisplayNum ? $this->getLimitBox($tmpl) : '';
 		$list['pagescounter'] = $this->getPagesCounter();
 
 		if ($this->showTotal)
@@ -134,45 +135,23 @@ class FPagination extends JPagination
 	/**
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
+	 * @param   string $tmpl    List template
+	 *
 	 * @return    string    The html for the limit # input box
 	 */
-	public function getLimitBox()
+	public function getLimitBox($tmpl = 'default')
 	{
-		// Initialize variables
-		$limits = array();
-		$values = array();
+		$paths                      = array();
+		$displayData                = new stdClass;
+		$displayData->id            = $this->id;
+		$displayData->startLimit    = $this->startLimit;
+		$displayData->showAllOption = $this->showAllOption;
+		$displayData->viewAll       = $this->viewAll;
+		$displayData->limit         = $this->limit;
 
-		for ($i = 5; $i <= 30; $i += 5)
-		{
-			$values[] = $i;
-		}
+		$layout = $this->getLayout('pagination.fabrik-pagination-limitbox');
 
-		$values[] = 50;
-		$values[] = 100;
-
-		if (!in_array($this->startLimit, $values))
-		{
-			$values[] = $this->startLimit;
-		}
-
-		asort($values);
-
-		foreach ($values as $v)
-		{
-			$limits[] = JHTML::_('select.option', $v);
-		}
-
-		if ($this->showAllOption == true)
-		{
-			$limits[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_ALL'));
-		}
-
-		$selected   = $this->viewAll ? '-1' : $this->limit;
-		$js         = '';
-		$attributes = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
-		$html       = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attributes, 'value', 'text', $selected);
-
-		return $html;
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -186,9 +165,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-active', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-item-active');
 
 		return $layout->render($displayData);
 	}
@@ -206,9 +183,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-inactive', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-item-inactive');
 
 		return $layout->render($displayData);
 	}
@@ -345,9 +320,7 @@ class FPagination extends JPagination
 	{
 		$displayData       = new stdClass;
 		$displayData->list = $list;
-		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links', $paths);
+		$layout            = $this->getLayout('pagination.fabrik-pagination-links');
 
 		return $layout->render($displayData);
 	}
@@ -466,10 +439,9 @@ class FPagination extends JPagination
 		$displayData->links        = $list['pageslinks'];
 		$displayData->showNav      = $this->showNav;
 		$displayData->showTotal    = $this->showTotal;
+		$displayData->limit        = $this->limit;
 
-		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
+		$layout = $this->getLayout('pagination.fabrik-pagination-footer');
 
 		return $layout->render($displayData);
 	}
@@ -514,5 +486,22 @@ class FPagination extends JPagination
 		{
 			return $default;
 		}
+	}
+
+	/**
+	 * Get a pagination JLayout file
+	 *
+	 * @param   string  $type  form/details/list
+	 * @param   array   $paths  Optional paths to add as includes
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
+		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->tmpl . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+
+		return $layout;
 	}
 }

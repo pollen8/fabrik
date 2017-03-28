@@ -402,6 +402,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                     }
 
                     self.activePopUp = false;
+                    Fabrik.fireEvent('fabrik.dbjoin.update', [self, json]);
                 }
             }).post();
         },

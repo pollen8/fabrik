@@ -563,6 +563,11 @@ td.repeat-reduce ul.fabrikRepeatData li {
 /************  Misc. Workarounds *************************/
 /*********************************************************/
 
+/** add a top margin for read only elements **/
+.fabrikElementReadOnly {
+	margin-top: 5px;
+}
+
 /** Workaround for Gantry's date class stomping on our date element class **/
 .fabrikGroup ul li.date {
 	font-weight: normal;

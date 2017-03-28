@@ -16,8 +16,9 @@ $group = $this->group;
 ?>
 <tr class="fabrikSubGroupElements fabrikSubGroup">
 <?php foreach ($this->elements as $element) :
+	$style = $element->hidden ? 'style="display:none"' : '';
 	?>
-	<td class="<?php echo $element->containerClass; ?>">
+	<td class="<?php echo $element->containerClass; ?>" <?php echo $style?>>
 	<?php
 	if ($this->tipLocation == 'above') :
 	?>

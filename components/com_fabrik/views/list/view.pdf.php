@@ -40,16 +40,17 @@ class FabrikViewList extends FabrikViewListBase
 
 		if (parent::display($tpl) !== false)
 		{
+			FabrikhelperHTML::loadBootstrapCSS(true);
 			$model = $this->getModel();
 			$params = $model->getParams();
-			$size = $params->get('pdf_size', 'A4');
-			$orientation = $params->get('pdf_orientation', 'portrait');
+			$size        = $this->app->input->get('pdf_size', $params->get('pdf_size', 'A4'));
+			$orientation = $this->app->input->get('pdf_orientation', $params->get('pdf_orientation', 'portrait'));
 			$this->doc->setPaper($size, $orientation);
 			$this->nav = '';
 			$this->showPDF = false;
 			$this->showRSS = false;
 			$this->emptyLink = false;
-			$this->filters = array();
+			//$this->filters = array();
 			$this->showFilters = false;
 			$this->hasButtons = false;
 			$this->output();

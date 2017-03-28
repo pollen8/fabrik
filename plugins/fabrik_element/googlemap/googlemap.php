@@ -296,7 +296,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$this->OSRefJs();
 
 		$mapShown = $this->isEditable() || (!$this->isEditable() && $v != '');
-
+		$opts->mapShown = $mapShown;
 		$opts->lat = (float) $o->coords[0];
 		$opts->lon = (float) $o->coords[1];
 		$opts->lat_dms = (float) $dms->coords[0];

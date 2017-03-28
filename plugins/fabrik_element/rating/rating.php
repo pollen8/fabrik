@@ -346,6 +346,11 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$css = $this->canRate($rowId) ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
 
+		if ($value === 'NaN')
+		{
+			$value = '0';
+		}
+
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
 
 		$listId = $this->getlistModel()->getTable()->id;

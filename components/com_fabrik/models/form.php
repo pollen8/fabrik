@@ -1241,7 +1241,20 @@ class FabrikFEModelForm extends FabModelForm
 
 		if ($form->record_in_database == '1')
 		{
-			$this->processToDB();
+			$rowid = $this->processToDB();
+			/*
+			 * I want to add the following, but have a feeling some things will break if I do.
+			 * Currently when adding a new form, getRowId() will never give you the new rowid,
+			 * which kinda sucks.  But ... I'm pretty sure if I set it, then there's existing code
+			 * which will break it does yield the new rowid after submission.  Need to test this
+			 * thoroughly before enabling it.
+			 */
+			/*
+			if ($this->getRowId() === '')
+			{
+				$this->setRowId($rowid);
+			}
+			*/
 		}
 
 		// Clean the cache.
@@ -4071,7 +4084,10 @@ class FabrikFEModelForm extends FabModelForm
 			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
-		$w = new FabrikWorker;
+		$this->data['fabrik_view_url'] = $this->getListModel()->viewDetailsLink($this->data);
+		$this->data['fabrik_edit_url'] = $this->getListModel()->editLink($this->data);
+
+		$w    = new FabrikWorker;
 		$text = $w->parseMessageForPlaceHolder($text, $this->data, true);
 
 		// Jaanus: to remove content plugin code from intro and/or outro when plugins are not processed
@@ -4102,7 +4118,7 @@ class FabrikFEModelForm extends FabModelForm
 		array_shift($m);
 		$m = implode(":", $m);
 		$m = FabrikString::rtrimword($m, "}");
-		$m = preg_replace('/\[(\S+)\]/', '{${1}}', $m);
+		$m = preg_replace('/\[(\S+?)\]/', '{${1}}', $m);
 		return $m;
 	}
 
@@ -5139,13 +5155,15 @@ class FabrikFEModelForm extends FabModelForm
 	 * If trying to add/edit a record when the user doesn't have rights to do so,
 	 * what message, if any should we show.
 	 *
+	 * @param  bool  $force  if true don't check if messages suppressed
+	 *
 	 * @since  3.0.7
 	 *
 	 * @return string
 	 */
-	public function aclMessage()
+	public function aclMessage($force = false)
 	{
-		if (!$this->showACLMsg())
+		if (!$force && !$this->showACLMsg())
 		{
 			return '';
 		}
@@ -5363,5 +5381,12 @@ class FabrikFEModelForm extends FabModelForm
 		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
 
 		return $layout;
+	}
+
+	public function recordInDatabase()
+	{
+		$form = $this->getForm();
+
+		return $form->record_in_database === '1';
 	}
 }

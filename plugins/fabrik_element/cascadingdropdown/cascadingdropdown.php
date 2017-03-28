@@ -613,13 +613,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * Get the full name of the element to observe. When this element changes
 	 * state, the cdd should perform an ajax lookup to update its options
 	 *
+	 * @param   bool  $repeat  include repeat []
 	 * @return  string
 	 */
-	protected function getWatchFullName()
+	protected function getWatchFullName($repeat = true)
 	{
 		$elementModel = $this->getWatchElement();
 
-		return $elementModel->getFullName();
+		return $elementModel->getFullName(true, $repeat);
 	}
 
 	/**
@@ -704,7 +705,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$params = $this->getParams();
-		$watch = $this->getWatchFullName();
+		$watch = $this->getWatchFullName(false);
 		$whereVal = null;
 		$groups = $this->getFormModel()->getGroupsHiarachy();
 		$formModel = $this->getFormModel();

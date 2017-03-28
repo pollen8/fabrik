@@ -13,6 +13,12 @@
 defined('_JEXEC') or die('Restricted access');
 $d = $displayData;
 
+// special case for handling old default icon name
+if ($d->list_detail_link_icon === 'search.png')
+{
+	$d->list_detail_link_icon = 'search';
+}
+
 ?>
 <a data-loadmethod="<?php echo $d->loadMethod;?>"
 	class="<?php echo $d->class;?> btn-default" <?php echo $d->detailsAttributes; ?>

@@ -74,9 +74,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rawData = FabrikWorker::JSONtoData($rawData, true);
 		$displayData        = new stdClass;
 		$displayData->tmpl  = isset($this->tmpl) ? $this->tmpl : '';
-		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout             = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
-		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
+		$displayData->format = $this->app->input->get('format', '');;
+		$layout = $this->getLayout('list');
 		$labelData = array();
 
 		foreach ($rawData as $d)
@@ -99,24 +98,25 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 *
 	 * @return string formatted value
 	 */
-	public function renderListData_pdf($data, $thisRow)
+	public function renderListData_pdf_not($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		$raw = $this->getFullName() . '_raw';
+		$raw = $this->getFullName(true, false) . '_raw';
 		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
+		$opts['forceImage'] = true;
 
 		if ($data == '1')
 		{
-			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
-
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
+			$icon = '1.png';
+			$props['alt'] = FText::_('JYES');
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $props, false, $opts);
 		}
 		else
 		{
-			$icon = $j3 ? 'remove.png' : '0_8bit.png';
-
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
+			$icon = '0.png';
+			$props['alt'] = FText::_('JNO');
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $props, false, $opts);
 		}
 	}
 
@@ -222,10 +222,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$displayData->value = $value;
 		$displayData->tmpl = @$this->tmpl;
 		$displayData->format = $this->app->input->get('format', '');;
-		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout = new FabrikLayoutFile('fabrik_element_yesno_details', $basePath);
-		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
-
+		$layout = $this->getLayout('details');
 		return $layout->render($displayData);
 	}
 
@@ -285,7 +282,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 *
 	 * @return  string	Filter html
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$listModel = $this->getlistModel();
 		$elName = $this->getFullName(true, false);
@@ -489,7 +486,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	protected function dataAttributes()
 	{
-		return array('data-toggle="buttons"');
+		return array(
+			'data-toggle="buttons"',
+			'style="padding-top:0px!important"'
+		);
 	}
 
 }

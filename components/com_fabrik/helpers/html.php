@@ -858,6 +858,111 @@ EOD;
 		return self::isDebug() ? 'media/com_fabrik/js' : 'media/com_fabrik/js/dist';
 	}
 
+	public static function calendar()
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+		$document = JFactory::getDocument();
+		$tag      = JFactory::getLanguage()->getTag();
+		$attribs  = array('title' => JText::_('JLIB_HTML_BEHAVIOR_GREEN'), 'media' => 'all');
+		JHtml::_('stylesheet', 'system/calendar-jos.css', array('version' => 'auto', 'relative' => true), $attribs);
+		JHtml::_('script', $tag . '/calendar.js', array('version' => 'auto', 'relative' => true));
+		JHtml::_('script', $tag . '/calendar-setup.js', array('version' => 'auto', 'relative' => true));
+		$translation = static::calendartranslation();
+		if ($translation)
+		{
+			$document->addScriptDeclaration($translation);
+		}
+		static::$loaded[__METHOD__] = true;
+	}
+
+	/**
+	 * Internal method to translate the JavaScript Calendar
+	 *
+	 * @return  string  JavaScript that translates the object
+	 *
+	 * @since   1.5
+	 */
+	protected static function calendartranslation()
+	{
+		static $jsscript = 0;
+		// Guard clause, avoids unnecessary nesting
+		if ($jsscript)
+		{
+			return false;
+		}
+		$jsscript = 1;
+		// To keep the code simple here, run strings through JText::_() using array_map()
+		$callback = array('JText', '_');
+		$weekdays_full = array_map(
+			$callback, array(
+				'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',
+			)
+		);
+		$weekdays_short = array_map(
+			$callback,
+			array(
+				'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN',
+			)
+		);
+		$months_long = array_map(
+			$callback, array(
+				'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+				'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
+			)
+		);
+		$months_short = array_map(
+			$callback, array(
+				'JANUARY_SHORT', 'FEBRUARY_SHORT', 'MARCH_SHORT', 'APRIL_SHORT', 'MAY_SHORT', 'JUNE_SHORT',
+				'JULY_SHORT', 'AUGUST_SHORT', 'SEPTEMBER_SHORT', 'OCTOBER_SHORT', 'NOVEMBER_SHORT', 'DECEMBER_SHORT',
+			)
+		);
+		// This will become an object in Javascript but define it first in PHP for readability
+		$today = " " . JText::_('JLIB_HTML_BEHAVIOR_TODAY') . " ";
+		$text = array(
+			'INFO'           => JText::_('JLIB_HTML_BEHAVIOR_ABOUT_THE_CALENDAR'),
+			'ABOUT'          => "DHTML Date/Time Selector\n"
+				. "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n"
+				. "For latest version visit: http://www.dynarch.com/projects/calendar/\n"
+				. "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details."
+				. "\n\n"
+				. JText::_('JLIB_HTML_BEHAVIOR_DATE_SELECTION')
+				. JText::_('JLIB_HTML_BEHAVIOR_YEAR_SELECT')
+				. JText::_('JLIB_HTML_BEHAVIOR_MONTH_SELECT')
+				. JText::_('JLIB_HTML_BEHAVIOR_HOLD_MOUSE'),
+			'ABOUT_TIME'      => "\n\n"
+				. "Time selection:\n"
+				. "- Click on any of the time parts to increase it\n"
+				. "- or Shift-click to decrease it\n"
+				. "- or click and drag for faster selection.",
+			'PREV_YEAR'       => JText::_('JLIB_HTML_BEHAVIOR_PREV_YEAR_HOLD_FOR_MENU'),
+			'PREV_MONTH'      => JText::_('JLIB_HTML_BEHAVIOR_PREV_MONTH_HOLD_FOR_MENU'),
+			'GO_TODAY'        => JText::_('JLIB_HTML_BEHAVIOR_GO_TODAY'),
+			'NEXT_MONTH'      => JText::_('JLIB_HTML_BEHAVIOR_NEXT_MONTH_HOLD_FOR_MENU'),
+			'SEL_DATE'        => JText::_('JLIB_HTML_BEHAVIOR_SELECT_DATE'),
+			'DRAG_TO_MOVE'    => JText::_('JLIB_HTML_BEHAVIOR_DRAG_TO_MOVE'),
+			'PART_TODAY'      => $today,
+			'DAY_FIRST'       => JText::_('JLIB_HTML_BEHAVIOR_DISPLAY_S_FIRST'),
+			'WEEKEND'         => JFactory::getLanguage()->getWeekEnd(),
+			'CLOSE'           => JText::_('JLIB_HTML_BEHAVIOR_CLOSE'),
+			'TODAY'           => JText::_('JLIB_HTML_BEHAVIOR_TODAY'),
+			'TIME_PART'       => JText::_('JLIB_HTML_BEHAVIOR_SHIFT_CLICK_OR_DRAG_TO_CHANGE_VALUE'),
+			'DEF_DATE_FORMAT' => "%Y-%m-%d",
+			'TT_DATE_FORMAT'  => JText::_('JLIB_HTML_BEHAVIOR_TT_DATE_FORMAT'),
+			'WK'              => JText::_('JLIB_HTML_BEHAVIOR_WK'),
+			'TIME'            => JText::_('JLIB_HTML_BEHAVIOR_TIME'),
+		);
+		return 'Calendar._DN = ' . json_encode($weekdays_full) . ';'
+			. ' Calendar._SDN = ' . json_encode($weekdays_short) . ';'
+			. ' Calendar._FD = 0;'
+			. ' Calendar._MN = ' . json_encode($months_long) . ';'
+			. ' Calendar._SMN = ' . json_encode($months_short) . ';'
+			. ' Calendar._TT = ' . json_encode($text) . ';';
+	}
+
 	/**
 	 * Load Fabrik's framework (js and base css file)
 	 *
@@ -891,7 +996,15 @@ EOD;
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
-			JHTML::_('behavior.calendar');
+			if (version_compare(JVERSION, '3.7', '>='))
+			{
+				self::calendar();
+			}
+			else
+			{
+				JHTML::_('behavior.calendar');
+			}
+
 			$liveSiteReq['Chosen'] = $mediaFolder . '/chosen-loader';
 			$liveSiteReq['Fabrik'] = $mediaFolder . '/fabrik';
 
@@ -1244,10 +1357,10 @@ EOD;
 	 *
 	 * @return  void
 	 */
-	public static function loadBootstrapCSS()
+	public static function loadBootstrapCSS($force = false)
 	{
 		$app = JFactory::getApplication();
-		if ($app->input->get('loadbootstrapcss', '') !== '')
+		if ($force || $app->input->get('loadbootstrapcss', '') !== '')
 		{
 			$doc = JFactory::getDocument();
 			JHtmlBootstrap::loadCss(true, $doc->direction);
@@ -2136,7 +2249,9 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false);
+		// if there's a file of this name in our paths, or forceImage is set, don't use icon, use image
+		$src = self::getImagePath($file, $type, $tmpl);
+		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false) || !empty($src);
 
 		if (FabrikWorker::j3() && $forceImage !== true)
 		{
@@ -2158,7 +2273,6 @@ EOD;
 			}
 		}
 
-		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);
 
@@ -2530,9 +2644,23 @@ EOD;
 		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
 		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
 		$bits = explode("&", $bits);
+		$rootBits = array();
+
+		if (isset($rootUrl))
+		{
+			$rootBits = explode('?', $rootUrl);
+			$rootBits = FArrayHelper::getValue($rootBits, 1, '', 'string');
+			$rootBits = explode("&", $rootBits);
+		}
 
 		for ($b = count($bits) - 1; $b >= 0; $b--)
 		{
+			if (in_array($bits[$b], $rootBits))
+			{
+				unset($bits[$b]);
+				continue;
+			}
+
 			$parts = explode("=", $bits[$b]);
 
 			if (count($parts) > 1)
@@ -2556,7 +2684,7 @@ EOD;
 			}
 		}
 
-		$url = $root . '?' . implode('&', $bits);
+		$url = empty($bits) ? $root : $root . FabrikString::qsSepChar($root) . implode('&', $bits);
 
 		return $url;
 	}
@@ -2659,15 +2787,16 @@ EOD;
 	/**
 	 * Make an <a> tag
 	 *
-	 * @param   string $href URL
-	 * @param   string $lbl  Link text
-	 * @param   array  $opts Link properties key = value
+	 * @param   string $href      URL
+	 * @param   string $lbl       Link text
+	 * @param   array  $opts      Link properties key = value
+	 * @param   bool   $normalize if true, tweak scheme to match J! URI
 	 *
 	 * @since  3.1
 	 *
 	 * @return string  <a> tag or empty string if not $href
 	 */
-	public static function a($href, $lbl = '', $opts = array())
+	public static function a($href, $lbl = '', $opts = array(), $normalize = false)
 	{
 		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 		{
@@ -2680,6 +2809,15 @@ EOD;
 			jimport('joomla.mail.helper');
 
 			return JHTML::_('email.cloak', $href);
+		}
+
+		if ($normalize)
+		{
+			$parsedUrl = parse_url(JUri::root());
+			if ($parsedUrl['scheme'] === 'https')
+			{
+				$href = str_ireplace('http://', 'https://', $href);
+			}
 		}
 
 		if (empty($lbl))

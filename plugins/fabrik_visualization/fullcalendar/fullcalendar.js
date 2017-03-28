@@ -105,9 +105,14 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             var slotMoment = null, slotView = null;
 
             function dayClickCallback(date, e, view) {
-                slotMoment = date;
-                slotView = view.name;
-                self.calendar.on('mousemove', forgetSlot);
+                if (e.type === 'touchend') {
+	                self.openAddEvent(e, view.name, date);
+                }
+                else {
+	                slotMoment = date;
+	                slotView = view.name;
+	                self.calendar.on('mousemove', forgetSlot);
+                }
             }
 
             function forgetSlot() {
@@ -251,6 +256,15 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 }
                 body.getElement('#viewstart').innerHTML = dispStartDate + dispStartTime;
                 body.getElement('#viewend').innerHTML = dispEndDate + dispEndTime;
+                var pt = jQuery(body).find('[data-role=fabrik-popup-template]');
+                if (pt) {
+                    if (e.popupTemplate !== '') {
+                        jQuery(pt).prepend(e.popupTemplate);
+                    }
+                    else {
+                        jQuery(pt).hide();
+                    }
+                }
                 jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML'));
 
                 buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons']);
@@ -418,6 +432,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
             switch (e.type) {
                 case 'dblclick':
+                case 'touchend':
                     theDay = theMoment;
                     break;
                 case 'click':
@@ -458,6 +473,12 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
         dateInLimits: function (date) {
             var d = new moment(date);
+
+            var result = Fabrik.fireEvent('fabrik.viz.fullcalendar.dateinlimits', [this, date]).eventResults;
+            if (result.contains(false))
+            {
+                return false;
+            }
 
             if (this.options.dateLimits.min !== '') {
                 var min = new moment(this.options.dateLimits.min);

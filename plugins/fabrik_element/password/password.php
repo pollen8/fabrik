@@ -87,6 +87,54 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			return '***********';
 		}
 
+		$extraClass = 'strength ' . $params->get('bootstrap_class', '');
+		$extraStyle = 'margin-top: 20px;';
+
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-progress-bar-strong',
+			'fabrik-progress-bar',
+			(object) array(
+				'context' => 'success',
+				'value' => 100,
+				'stripped' => true,
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
+			)
+		);
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-progress-bar-medium',
+			'fabrik-progress-bar',
+			(object) array(
+				'context' => 'info',
+				'value' => 70,
+				'stripped' => true,
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
+			)
+		);
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-progress-bar-weak',
+			'fabrik-progress-bar',
+			(object) array(
+				'context' => 'info',
+				'value' => 30,
+				'stripped' => true,
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
+			)
+		);
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-progress-bar-more',
+			'fabrik-progress-bar',
+			(object) array(
+				'context' => 'warning',
+				'value' => 10,
+				'stripped' => true,
+				'extraClass' => $extraClass,
+				'extraStyle' => $extraStyle
+			)
+		);
+
 		$bits                = $this->inputProperties($repeatCounter, 'password');
 		$bits['value']       = $value;
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
@@ -104,6 +152,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$layoutData->pw2Attributes     = $bits;
 		$element->name                 = $origName;
 		$layoutData->j3                = FabrikWorker::j3();
+		$layoutData->bootstrapClass    = $params->get('bootstrap_class', '');
+		$layoutData->extraStyle        = $extraStyle;
 		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
 		return $layout->render($layoutData);

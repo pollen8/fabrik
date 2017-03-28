@@ -413,7 +413,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$col = $params->get('join_val_column');
 		$v = $input->get('v', '', '', 'string');
 		$rowId = $this->getFormModel()->getRowId();
-		$joinPkVal = $this->getJoinedGroupPkVal($repeatCounter);
+		//$joinPkVal = $this->getJoinedGroupPkVal($repeatCounter);
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowId == '')
 		if ($rowId !== '')

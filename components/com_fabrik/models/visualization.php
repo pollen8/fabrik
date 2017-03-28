@@ -302,7 +302,7 @@ class FabrikFEModelVisualization extends FabModel
 
 		$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 		$opts = array('alt' => FText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
-		$img = FabrikHelperHTML::image('find.png', 'list', '', $opts);
+		$img = FabrikHelperHTML::image('find', 'list', '', $opts);
 
 		if (count($links) === 1)
 		{
@@ -437,7 +437,7 @@ class FabrikFEModelVisualization extends FabModel
 			$listParams = $listModel->getParams();
 			$preFilter = FArrayHelper::getValue($preFilters, $c);
 			$preFilter = ArrayHelper::fromObject(json_decode($preFilter));
-			$conditions = (array) $preFilter['filter-conditions'];
+			$conditions = FArrayHelper::getValue($preFilter, 'filter-conditions', array(), 'array');
 
 			if (!empty($conditions))
 			{
@@ -453,6 +453,7 @@ class FabrikFEModelVisualization extends FabModel
 				$listParams->set('filter-value', $preFilter['filter-value']);
 				$listParams->set('filter-access', $preFilter['filter-access']);
 				$listParams->set('filter-eval', $preFilter['filter-eval']);
+				$listParams->set('filter-join', $preFilter['filter-join']);
 			}
 
 			$c ++;

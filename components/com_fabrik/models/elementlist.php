@@ -353,7 +353,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 *
 	 * @return  string	Filter HTML
 	 */
-	public function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true, $container = '')
 	{
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
@@ -369,7 +369,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			if ($params->get('filter_groupby') != -1)
 			{
-				ArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
+				$rows = ArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
 
 			$this->getFilterDisplayValues($default, $rows);
@@ -412,7 +412,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
-				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal, $container);
 				$return = array_merge($return, $autoComplete);
 				break;
 		}

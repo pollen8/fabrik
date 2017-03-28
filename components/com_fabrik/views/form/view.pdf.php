@@ -39,14 +39,16 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		if (parent::display($tpl) !== false)
 		{
+			FabrikhelperHTML::loadBootstrapCSS(true);
+
 			/** @var JDocumentpdf $document */
 			$document = $this->doc;
 
 			/** @var FabrikFEModelList $model */
 			$model       = $this->getModel();
 			$params      = $model->getParams();
-			$size        = $params->get('pdf_size', 'A4');
-			$orientation = $params->get('pdf_orientation', 'portrait');
+			$size        = $this->app->input->get('pdf_size', $params->get('pdf_size', 'A4'));
+			$orientation = $this->app->input->get('pdf_orientation', $params->get('pdf_orientation', 'portrait'));
 			$document->setPaper($size, $orientation);
 			$this->output();
 		}
@@ -68,7 +70,7 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		// Set the download file name based on the document title
 
-		$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
+		$layout                 = $model->getLayout('form.fabrik-pdf-title');
 		$displayData         = new stdClass;
 		$displayData->doc	= $this->doc;
 		$displayData->model	= $this->getModel();

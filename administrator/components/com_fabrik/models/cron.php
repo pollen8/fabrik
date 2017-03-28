@@ -137,6 +137,11 @@ class FabrikAdminModelCron extends FabModelAdmin
 			$date            = JFactory::getDate();
 			$data['lastrun'] = $date->toSql();
 		}
+		else
+		{
+			$timeZone = new DateTimeZone($this->config->get('offset'));
+			$data['lastrun']     = JFactory::getDate($data['lastrun'], $timeZone)->toSql(false);
+		}
 
 		$data['params'] = json_encode($data['params']);
 

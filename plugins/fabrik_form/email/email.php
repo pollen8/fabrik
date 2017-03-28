@@ -436,6 +436,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
+		$model->setRowId($this->data['rowid']);
 		$document = JFactory::getDocument();
 		$docType = $document->getType();
 		$document->setType('pdf');
@@ -460,6 +461,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			foreach ($document->_styleSheets as $url => $ss)
 			{
+				if (!strstr($url, COM_FABRIK_LIVESITE))
+				{
+					$url = COM_FABRIK_LIVESITE . $url;
+				}
+
 				$url = htmlspecialchars_decode($url);
 				$formCss[] = file_get_contents($url);
 			}
@@ -481,7 +487,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			 * here instead of poking in to the _model, but I don't think there is a setModel for controllers?
 			 */
 			$controller->_model = $model;
-			$controller->_model->data = $this->getProcessData();
+
+			/**
+			 * Unfortunately, we need to reload the data, so it's in the right format.  Can't use the
+			 * submitted data.  "One of these days" we need to have a serious look at normalizing the data formats,
+			 * so submitted data is in the same format (once processed) as data read from the database.
+			 */
+			$controller->_model->data = $this->model->getData();
 
 			// Store in output buffer
 			ob_start();
@@ -495,7 +507,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 
 			// Load the HTML into DOMPdf and render it.
-			$domPdf->load_html(utf8_decode($html));
+			// $$$trob: convert as in libraries\joomla\document\pdf\pdf.php
+			$html = mb_convert_encoding($html,'HTML-ENTITIES','UTF-8');
+			$domPdf->load_html($html);
 			$domPdf->render();
 
 			// Store the file in the tmp folder so it can be attached
