@@ -302,7 +302,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_daylabel', 'PLG_ELEMENT_BIRTHDAY_DAY')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 
@@ -329,7 +329,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_monthlabel', 'PLG_ELEMENT_BIRTHDAY_MONTH')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 		$monthLabels = $this->_monthLabels();
@@ -357,7 +357,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_yearlabel', 'PLG_ELEMENT_BIRTHDAY_YEAR')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 		// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
@@ -400,10 +400,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * @TODO: if NULL value is the first in repeated group then in list view whole group is empty.
 	 * Could anyone find a solution? I give up :-(
 	 * Paul 20130904 I fixed the id fields and I am getting a string passed in as $val here yyyy-m-d.
-	 * Jaanus: $save could be date or nothing (null). Previous return '' wrote always '0000-00-00' as DATE field doesn't know ''. 
-	 * If an empty element is set to save null it should return null. 
 	 *
-	 * @return  null or string	yyyy-mm-dd 
+	 *
+	 * @return  string	yyyy-mm-dd
 	 */
 
 	private function _indStoreDBFormat($val)
@@ -414,18 +413,18 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			if ($params->get('empty_is_null', '1') == 0 || !in_array('', $val))
 			{
-				$save = $val[2] . '-' . $val[1] . '-' . $val[0];
+				return $val[2] . '-' . $val[1] . '-' . $val[0];
 			}
 		}
 		else
 		{
 			if ($params->get('empty_is_null', '1') == '0' || !in_array('', explode('-',$val)))
 			{
-				$save = $val;
+				return $val;
 			}
 		}
 
-		return $save;
+		return;
 	}
 
 	/**
@@ -869,10 +868,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					break;
 				case 'laterthisyear':
 					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
-					break;
-				case 'thisyear':
-					$search = array(date('Y'), '', '');
-					return $this->_dayMonthYearFilterQuery($key, $search);
 					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));
