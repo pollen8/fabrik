@@ -2,9 +2,6 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
-$d->day_options[0]->disable = false;
-$d->month_options[0]->disable = false;
-$d->year_options[0]->disable = false;
 ?>
 
 <div class="fabrikSubElementContainer" id="<?php echo $d->id;?>">
