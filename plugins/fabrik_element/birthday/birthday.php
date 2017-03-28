@@ -400,6 +400,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * @TODO: if NULL value is the first in repeated group then in list view whole group is empty.
 	 * Could anyone find a solution? I give up :-(
 	 * Paul 20130904 I fixed the id fields and I am getting a string passed in as $val here yyyy-m-d.
+	 * Jaanus: saved data could be date or nothing (null). Previous return '' wrote always '0000-00-00' as DATE field doesn't know ''. 
+	 * such value as '' and therefore setting element to save null hadn't expected impact. Simple return; returns null as it should. 
 	 *
 	 *
 	 * @return  string	yyyy-mm-dd
