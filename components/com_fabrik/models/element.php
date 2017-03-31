@@ -2412,7 +2412,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// $$$ rob changed from span wrapper to div wrapper as element's content may contain divs which give html error
 
 			// Placeholder to be updated by ajax code
-			$v = $this->getROElement($data, $repeatCounter);
+			$v = html_entity_decode($this->getROElement($data, $repeatCounter));
 			//$v = $v == '' ? '&nbsp;' : $v;
 
 			return '<div class="fabrikElementReadOnly" id="' . $htmlId . '">' . $v . '</div>';
