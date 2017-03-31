@@ -719,7 +719,7 @@ class FabrikViewListBase extends FabrikView
 
 		unset($buttonProperties['title']);
 		$buttonProperties['alt'] = FText::_('COM_FABRIK_FILTER');
-		$this->buttons->filter   = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
+		$this->buttons->filter   = FabrikHelperHTML::image('filter', 'list', $this->tmpl, $buttonProperties);
 
 		$addLabel                  = $model->addLabel();
 		$buttonProperties['title'] = '<span>' . $addLabel . '</span>';
