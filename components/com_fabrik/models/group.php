@@ -1041,8 +1041,10 @@ class FabrikFEModelGroup extends FabModel
 		$group->minMaxErrMsg = FText::_($group->minMaxErrMsg);
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
-		$group->intro = $text = FabrikString::translate($params->get('intro'));
-		$group->outro = FText::_($params->get('outro'));
+		$intro = FabrikString::translate($params->get('intro'));
+		$group->intro = $formModel->parseIntroOutroPlaceHolders($intro, $group->editable, $formModel->isNewRecord());
+		$outro = FText::_($params->get('outro'));
+		$group->outro = $formModel->parseIntroOutroPlaceHolders($outro, $group->editable, $formModel->isNewRecord());
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
 		$group->showLegend = $this->showLegend($group);
@@ -1060,7 +1062,7 @@ class FabrikFEModelGroup extends FabModel
 
 		return $group;
 	}
-
+	
 	/**
 	 * Get the label positions, if set to global then return form's label positions
 	 *

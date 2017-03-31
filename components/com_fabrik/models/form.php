@@ -4061,7 +4061,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
-	protected function parseIntroOutroPlaceHolders($text)
+	public function parseIntroOutroPlaceHolders($text)
 	{
 
 		if (!$this->isEditable())

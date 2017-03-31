@@ -302,7 +302,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_daylabel', 'PLG_ELEMENT_BIRTHDAY_DAY')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 
@@ -329,7 +329,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_monthlabel', 'PLG_ELEMENT_BIRTHDAY_MONTH')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 		$monthLabels = $this->_monthLabels();
@@ -357,7 +357,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				FText::_($params->get('birthday_yearlabel', 'PLG_ELEMENT_BIRTHDAY_YEAR')),
 				'value',
 				'text',
-				true
+				false
 			)
 		);
 		// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
@@ -400,9 +400,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * @TODO: if NULL value is the first in repeated group then in list view whole group is empty.
 	 * Could anyone find a solution? I give up :-(
 	 * Paul 20130904 I fixed the id fields and I am getting a string passed in as $val here yyyy-m-d.
+	 * Jaanus: saved data could be date or nothing (null). Previous return '' wrote always '0000-00-00' as DATE field doesn't know ''. 
+	 * such value as '' and therefore setting element to save null hadn't expected impact. Simple return; returns null as it should. 
 	 *
 	 *
-	 * @return  string	yyyy-mm-dd
+	 * @return  string	yyyy-mm-dd or null or 0000-00-00 if needed and set
 	 */
 
 	private function _indStoreDBFormat($val)
@@ -424,7 +426,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 		}
 
-		return '';
+		return;
 	}
 
 	/**
@@ -868,10 +870,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					break;
 				case 'laterthisyear':
 					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
-					break;
-				case 'thisyear':
-					$search = array(date('Y'), '', '');
-					return $this->_dayMonthYearFilterQuery($key, $search);
 					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));
