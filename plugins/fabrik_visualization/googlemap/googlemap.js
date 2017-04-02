@@ -46,6 +46,7 @@ FbGoogleMapViz = new Class({
 			this.element_map = element;
 			this.element = document.id(element);
 
+			this.plugins = [];
 			this.clusterMarkerCursor = 0;
 			this.clusterMarkers = [];
 			this.markers = [];
