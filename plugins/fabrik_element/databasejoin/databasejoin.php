@@ -3101,6 +3101,23 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->getElement(true);
 		$filter  = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
+		$groupModel = $this->getGroupModel();
+
+		if ($groupModel->isJoin())
+		{
+			if ($groupModel->canRepeat())
+			{
+				$groupElements = $groupModel->getMyElements();
+				$repeatCounter = $this->app->input->get('repeatCounter', '0');
+
+				foreach ($groupElements as $elementModel)
+				{
+					$name = $elementModel->getFullName(true, false);
+					$request[$name] = FArrayHelper::getValue($request, $name . '_' . $repeatCounter, '');
+					$request[$name . '_raw'] = FArrayHelper::getValue($request, $name . '_' . $repeatCounter . '_raw', '');
+				}
+			}
+		}
 
 		echo json_encode($this->_getOptions($request));
 	}

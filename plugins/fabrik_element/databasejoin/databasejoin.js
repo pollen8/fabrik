@@ -341,7 +341,8 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                     'plugin'    : 'databasejoin',
                     'method'    : 'ajax_getOptions',
                     'element_id': this.options.id,
-                    'formid'    : this.options.formid
+                    'formid'    : this.options.formid,
+                    'repeatCounter' : this.options.repeatCounter
                 };
             data = Object.append(formdata, data);
 
