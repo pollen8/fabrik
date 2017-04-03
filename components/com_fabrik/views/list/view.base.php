@@ -715,7 +715,7 @@ class FabrikViewListBase extends FabrikView
 
 		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_GROUP_BY') . '</span>';
 		$buttonProperties['alt']   = FText::_('COM_FABRIK_GROUP_BY');
-		$this->buttons->groupby    = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
+		$this->buttons->groupby    = FabrikHelperHTML::image('list-view', 'list', $this->tmpl, $buttonProperties);
 
 		unset($buttonProperties['title']);
 		$buttonProperties['alt'] = FText::_('COM_FABRIK_FILTER');
