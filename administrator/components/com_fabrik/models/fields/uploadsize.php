@@ -42,6 +42,7 @@ class JFormFieldUploadsize extends JFormField
 	{
 		$val = trim($val);
 		$last = JString::strtolower(JString::substr($val, -1));
+		$val  = JString::substr($val, 0, -1);
 
 		if ($last == 'g')
 		{
