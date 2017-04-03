@@ -1117,7 +1117,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
 
                 if (this.options.groupedBy !== '')
                 {
-                    data['grouped_by'] = this.options.groupedBy;
+                    data['group_by'] = this.options.groupedBy;
                 }
 
                 new Request({
