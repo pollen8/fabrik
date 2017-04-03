@@ -295,7 +295,7 @@ class FabrikPlugin extends JPlugin
 		$type    = str_replace('fabrik_', '', $this->_type);
 
 		$form         = $this->getPluginForm($repeatCounter);
-		$repeatScript = '';
+		$repeatScript = array();
 
 		// Copy over the data into the params array - plugin fields can have data in either
 		// jform[params][name] or jform[name]
