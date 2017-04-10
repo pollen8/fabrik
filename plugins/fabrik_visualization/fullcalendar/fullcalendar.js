@@ -59,7 +59,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     events: function (start, end, timezone, callback) {
                         new Request({
                             url        : this.options.url.add + '&listid=' + eventList.value + '&eventListKey=' +
-                            eventListKey,
+                            eventListKey + '&startDate=' + start.format() + '&endDate=' + end.format(),
                             evalScripts: true,
                             onSuccess  : function (e, json) {
                                 if (typeOf(json) !== 'null') {
