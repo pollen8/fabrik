@@ -362,6 +362,12 @@ class PlgContentFabrik extends JPlugin
 				$rows  = $model->getData();
 				$group = array_shift($rows);
 				$row   = array_shift($group);
+
+				if (empty($row))
+				{
+					return;
+				}
+
 				$res   = $row->$element;
 			}
 			else
