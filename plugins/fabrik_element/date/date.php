@@ -2032,7 +2032,17 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$v               = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
 		$date            = JFactory::getDate($v);
 		*/
-		$date->add(new DateInterval('PT24H'));
+		$hours = 'PT' . abs($add) * 24 . 'H';
+
+		if ($add < 0)
+		{
+			$date->sub(new DateInterval($hours));
+		}
+		else
+		{
+			$date->add(new DateInterval($hours));
+		}
+
 		return $date->toSql($storeAsLocal);
 	}
 
