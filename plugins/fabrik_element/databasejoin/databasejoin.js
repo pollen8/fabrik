@@ -757,11 +757,25 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
             var v = null;
             this.getElement();
             if (!this.options.editable) {
-                return this.options.value;
+	            switch (this.options.displayType) {
+		            case 'multilist':
+		            case 'checkbox':
+			            return this.options.value;
+		            case 'dropdown':
+		            case 'auto-complete':
+		            case 'radio':
+		            default:
+		                if (this.options.value.length !== 0) {
+			                return this.options.value.getLast();
+		                }
+		                return '';
+	            }
             }
+
             if (typeOf(this.element) === 'null') {
                 return '';
             }
+
             switch (this.options.displayType) {
                 case 'dropdown':
                 /* falls through */
