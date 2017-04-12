@@ -1387,7 +1387,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						break;
 				}
 
-				$html[] = $this->renderFrontEndSelect($data);
+				$html[] = $this->renderFrontEndSelect($data, $repeatCounter);
 			}
 			elseif ($this->canView())
 			{
@@ -1405,10 +1405,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * Render the front end select / add buttons in a JLayout file
 	 *
 	 * @param   array $data row data in case template override wants it
+	 * @param   string  $repeatCounter  repeat count, in case override wants it
 	 *
 	 * @return  string
 	 */
-	protected function renderFrontEndSelect($data)
+	protected function renderFrontEndSelect($data, $repeatCounter = 0)
 	{
 		$params                      = $this->getParams($data);
 		$displayData                 = new stdClass;
@@ -1420,6 +1421,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$popupListId                 = (empty($popupForm) || !isset($forms[$popupForm])) ? '' : $forms[$popupForm]->listid;
 		$layout                      = $this->getLayout('form-front-end-select');
 		$displayData->tmpl           = $this->tmpl;
+		$displayData->repeatCounter  = $repeatCounter;
 
 		if ($this->app->isAdmin())
 		{
