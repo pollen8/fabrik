@@ -20,13 +20,13 @@ $d = $displayData;
 	for ($s = 0; $s < $d->avg; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
-		echo FabrikHelperHTML::image("star.png", 'list', $d->tmpl, $imgOpts);
+		echo FabrikHelperHTML::image("star", 'list', $d->tmpl, $imgOpts);
 	}
 
 	for ($s = $d->avg; $s < 5; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
-		echo FabrikHelperHTML::image("star-empty.png", 'list', $d->tmpl, $imgOpts);
+		echo FabrikHelperHTML::image("star-empty", 'list', $d->tmpl, $imgOpts);
 	}
 
 	if (!$d->ratingNoneFirst && $d->canRate)
