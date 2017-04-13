@@ -206,6 +206,11 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 			this.field = document.id(this.options.element);
 			this.setup();
 			this.parent();
+		},
+
+		reset: function () {
+			this.resetEvents();
+			this.update(this.options.defaultVal);
 		}
 	});
 
