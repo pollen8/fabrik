@@ -298,6 +298,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		$params = $this->getParams();
 		$input  = $this->app->input;
 
+		// if this is the submit from the confirmation plugin, we already validated when rendering confirmation page
+		if ($this->app->input->get('fabrik_confirmation', '') === '2')
+		{
+			return true;
+		}
+
 		if (!$this->canUse())
 		{
 			return true;
