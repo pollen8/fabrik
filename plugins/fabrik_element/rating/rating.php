@@ -589,7 +589,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			list($value, $total) = $this->getRatingAverage($value, $listId, $formId, $rowId);
 		}
 
-		$opts = new stdClass;
+		$opts         = $this->getElementJSOptions($repeatCounter);
 
 		if (!FabrikWorker::j3())
 		{
