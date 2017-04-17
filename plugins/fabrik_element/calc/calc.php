@@ -94,28 +94,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			// $default = $this->getDefaultValue($data, $repeatCounter);
 			$this->swapValuesForLabels($data);
-
-			// $$$ hugh need to remove repeated joined data which is not part of this repeatCount
-			$groupModel = $this->getGroup();
-
-			if ($groupModel->isJoin())
-			{
-				if ($groupModel->canRepeat())
-				{
-					foreach ($data as $name => $values)
-					{
-						// $$$ Paul - Because $data contains stuff other than placeholders, we have to exclude e.g. fabrik_repeat_group
-						// $$$ hugh - @FIXME we should probably get the group's elements and iterate through those rather than $data
-						if (is_array($values) && count($values) > 1 & isset($values[$repeatCounter]) && $name != 'fabrik_repeat_group')
-						{
-							$data[$name] = $data[$name][$repeatCounter];
-						}
-					}
-				}
-			}
-
 			$this->setStoreDatabaseFormat($data, $repeatCounter);
-			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
+			$default = $w->parseMessageForRepeats($params->get('calc_calculation'), $data, $this, $repeatCounter);
+			$default = $w->parseMessageForPlaceHolder($default, $data, true, true);
 
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
