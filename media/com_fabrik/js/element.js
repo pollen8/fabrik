@@ -648,6 +648,14 @@ define(['jquery'], function (jQuery) {
                         }
                     }
 
+                    var tabDiv = this.getTabDiv();
+                    if (tabDiv) {
+                        var tab = this.getTab(tabDiv);
+                        if (tab) {
+                            tab.addClass('fabrikErrorGroup');
+                        }
+                    }
+
                     break;
                 case 'fabrikSuccess':
                     container.addClass('success').removeClass('info').removeClass('error');
@@ -886,6 +894,29 @@ define(['jquery'], function (jQuery) {
                     }.bind(this));
                 }
             }.bind(this)).delay(500);
+        },
+
+        getTab: function(tab_div) {
+            var tab_dl;
+	        if (Fabrik.bootstrapped) {
+		        var a = jQuery('a[href$=#' + tab_div.id + ']');
+		        tab_dl = a.closest('[data-role=fabrik_tab]');
+	        } else {
+		        tab_dl = tab_div.getPrevious('.tabs');
+	        }
+	        if (tab_dl) {
+	            return tab_dl;
+            }
+            return false;
+        },
+
+        getTabDiv: function() {
+	        var c = Fabrik.bootstrapped ? '.tab-pane' : '.current';
+	        var tab_div = this.element.getParent(c);
+	        if (tab_div) {
+	            return tab_div;
+            }
+            return false;
         },
 
         /**

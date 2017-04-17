@@ -1401,6 +1401,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                                     return;
                                 }
                                 // Process errors if there are some
+	                            jQuery(this.form.getElements('[data-role=fabrik_tab]')).removeClass('fabrikErrorGroup')
                                 var errfound = false;
                                 if (json.errors !== undefined) {
 
