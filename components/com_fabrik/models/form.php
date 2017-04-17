@@ -3093,6 +3093,9 @@ class FabrikFEModelForm extends FabModelForm
 		 * $$$ hugh - we need to remove any elements from the query string,
 		 * if the user doesn't have access, otherwise ACL's on elements can
 		 * be bypassed by just setting value on form load query string!
+		 *
+		 * Also remove all form data if task is form.process, in case some plugin is trying to reload
+		 * form data.
 		 */
 
 		$clean_request = $f->clean($_REQUEST, 'array');
@@ -3104,7 +3107,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($elementModel !== false)
 			{
-				if (!$elementModel->canUse())
+				if (!$elementModel->canUse() || $this->app->input->get('task', '') === 'form.process')
 				{
 					unset($clean_request[$key]);
 				}
