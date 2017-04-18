@@ -321,9 +321,11 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					el.update(val);
 
 					if (el.baseElementId !== this.element.baseElementId) {
-						// Trigger change events to automatically fire any other chained auto-fill form plugins
+						// Trigger change events to automatically fire anything watching this element
 						el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
-					}
+						if (el.getBlurEvent() !== el.getChangeEvent()) {
+							el.element.fireEvent(el.getChangeEvent(), new Event.Mock(el.element, el.getChangeEvent()));
+						}					}
 					return true;
 				}
 			} else {
@@ -336,8 +338,11 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 						el.update(val);
 
 						if (el.baseElementId !== self.element.baseElementId) {
-							// Trigger change events to automatically fire any other chained auto-fill form plugins
+							// Trigger change events to automatically fire anything watching this element
 							el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
+							if (el.getBlurEvent() !== el.getChangeEvent()) {
+								el.element.fireEvent(el.getChangeEvent(), new Event.Mock(el.element, el.getChangeEvent()));
+							}
 						}
 					});
 					return true;
