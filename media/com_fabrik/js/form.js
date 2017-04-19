@@ -512,7 +512,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     break;
             }
             fx.lastMethod = method;
-            Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
+            Fabrik.fireEvent('fabrik.form.doelementfx', [this, method, id, groupfx]);
         },
 
         /**
