@@ -4008,7 +4008,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
 					$fromTable = $aJoin->table_join;
-					$elName    = str_replace($origTable . '.', $fromTable . '.', $elName2);
+					$elName    = preg_replace('/^' . $origTable . '\./', $fromTable . '.', $elName2);
 				}
 			}
 		}
