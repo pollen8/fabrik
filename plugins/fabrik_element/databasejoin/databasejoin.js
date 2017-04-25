@@ -532,6 +532,8 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                             if (Fabrik.Windows[winId]) {
                                 Fabrik.Windows[winId].close();
                             }
+	                        self.element.fireEvent('change', new Event.Mock(self.element, 'change'));
+	                        self.element.fireEvent('blur', new Event.Mock(self.element, 'blur'));
                         }
                     });
 

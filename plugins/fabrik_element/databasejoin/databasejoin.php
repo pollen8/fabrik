@@ -597,7 +597,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$db->setQuery($sql);
-		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
+		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . ' databasejoin element: get options query');
 		$this->optionVals[$sqlKey] = $db->loadObjectList();
 		FabrikHelperHTML::debug($this->optionVals, 'databasejoin elements');
 
