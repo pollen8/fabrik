@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<updates>
+	<update>
+		<name>Fabrik Library</name>
+		<description>Fabrik Library</description>
+		<element>lib_fabrik</element>
+		<type>library</type>
+		<version>3.5.3</version>
+		<downloads>
+			<downloadurl format="zip" type="full">
+				http://fabrikar.com/media/downloads/lib_fabrik_3.5.2.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Hugh Messenger</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+</updates>

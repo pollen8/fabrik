@@ -10,7 +10,7 @@ build/
 cache/*
 administrator/*
 !administrator/components/com_fabrik/
-administrator/components/com_fabrik/update/
+!administrator/components/com_fabrik/*
 components/*
 !components/com_fabrik
 components/com_fabrik/js/*
