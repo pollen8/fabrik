@@ -474,11 +474,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		{
 			if (!$storeAsLocal)
 			{
-				$val = JFactory::getDate('now', $timeZone);
+				$val = JFactory::getDate('now');
 			}
 			else
 			{
-				$val = JFactory::getDate('now');
+				$val = JFactory::getDate('now', $timeZone);
 			}
 
 			$val = $val->toSql(true);
