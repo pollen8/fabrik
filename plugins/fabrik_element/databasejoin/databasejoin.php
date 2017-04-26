@@ -1045,7 +1045,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$where          = ($this->mustApplyWhere($whereAccess, $element->id) && $incWhere) ? $params->get('database_join_where_sql') : '';
 		$join           = $this->getJoin();
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
-		$repeatCounter  = FArrayHelper::getValue($opts, 0, 0);
+		$repeatCounter  = FArrayHelper::getValue($opts, 'repeatCounter', 0);
 
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/is', $where, $matches))
