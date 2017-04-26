@@ -138,4 +138,5 @@
   <extension name="Fabrik Admin QuickIcon Module" element="mod_fabrik_quickicon" type="module" folder="" version="3.5.2" client="administrator" detailsurl="http://fabrikar.com/update/fabrik31/mod_fabrik_admin_quickicon.xml"/>
   <extension name="Fabrik Admin Visualization Module" element="mod_fabrik_visualization" type="module" folder="" version="3.5.2" client="administrator" detailsurl="http://fabrikar.com/update/fabrik31/mod_fabrik_admin_visualization.xml"/>
   <extension client="administrator" name="fabrik" element="com_fabrik" type="component" folder="" version="3.5.2" detailsurl="http://fabrikar.com/update/fabrik31/com_fabrik.xml"/>
+  <extension name="Fabrik Library" element="lib_fabrik" type="library" folder="" version="3.5.2" detailsurl="http://fabrikar.com/update/fabrik31/lib_fabrik.xml"/>
 </extensionset>
