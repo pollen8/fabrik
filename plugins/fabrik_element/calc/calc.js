@@ -122,13 +122,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             // For placeholders lets set repeat joined groups to their full element name
 
             var data = {
-                'option'    : 'com_fabrik',
-                'format'    : 'raw',
-                'task'      : 'plugin.pluginAjax',
-                'plugin'    : 'calc',
-                'method'    : 'ajax_calc',
-                'element_id': this.options.id,
-                'formid'    : this.form.id
+	            'option'       : 'com_fabrik',
+	            'format'       : 'raw',
+	            'task'         : 'plugin.pluginAjax',
+	            'plugin'       : 'calc',
+	            'method'       : 'ajax_calc',
+	            'element_id'   : this.options.id,
+	            'formid'       : this.form.id,
+	            'repeatCounter': this.options.repeatCounter
             };
             data = Object.append(formData, data);
             Fabrik.loader.start(this.element.getParent(), Joomla.JText._('COM_FABRIK_LOADING'));

@@ -486,11 +486,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$input = $this->app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
-		$params    = $this->getParams();
-		$w         = new FabrikWorker;
-		$filter    = JFilterInput::getInstance();
-		$d         = $filter->clean($_REQUEST, 'array');
-		$formModel = $this->getFormModel();
+		$params        = $this->getParams();
+		$w             = new FabrikWorker;
+		$filter        = JFilterInput::getInstance();
+		$d             = $filter->clean($_REQUEST, 'array');
+		$formModel     = $this->getFormModel();
+		$repeatCounter = $this->app->input->get('repeatCounter', '0');
 		$formModel->addEncrytedVarsToArray($d);
 		$this->getFormModel()->data = $d;
 		$this->swapValuesForLabels($d);
