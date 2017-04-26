@@ -428,6 +428,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 case 'xhr':
                     self.window.width(self.options.width);
                     self.window.height(self.options.height);
+                    // for some biaarre reason the onCContentLoaded option sometimes disappears
+                    self.onContentLoaded = self.options.onContentLoaded;
                     Fabrik.loader.start(self.contentEl);
                     new jQuery.ajax({
                         'url'   : this.options.contentURL,
@@ -438,7 +440,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.contentEl.append(r);
                         self.watchTabs();
                         self.center();
-                        self.options.onContentLoaded.apply(self);
+                        self.onContentLoaded.apply(self);
                     });
                     break;
                 // Deprecated - causes all sorts of issues with window resizing.
