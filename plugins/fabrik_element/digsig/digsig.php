@@ -217,7 +217,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		if (empty($rowId))
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FDIGSIG_NO_SUCH_FILE'));
+			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
 			$this->app->redirect($url);
 			exit;
 		}

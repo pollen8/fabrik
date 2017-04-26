@@ -244,7 +244,7 @@
 			
 			<field name="calOptions"
 				type="text"
-				class="input-medium"
+				class="input-large"
 				default=""
 				description="PLG_VISUALIZATION_FULLCALENDAR_CAL_OPTIONS_DESC"
 				label="PLG_VISUALIZATION_FULLCALENDAR_CAL_OPTIONS_LABEL" />
