@@ -53,18 +53,16 @@ class VideoRenderModel extends FabModel
 	 */
 	public function render(&$model, &$params, $file)
 	{
-		$src = $model->getStorage()->getFileUrl($file);
-		ini_set('display_errors', true);
-		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
-		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
+		$getID3 = FabrikWorker::getID3Instance();
 
-		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysqli.php', __FILE__, true);
-		$config = $this->config;
-		$host = $config->get('host');
-		$database = $config->get('db');
-		$username = $config->get('user');
-		$password = $config->get('password');
-		$getID3 = new getID3_cached_mysqli($host, $database, $username, $password);
+		if ($getID3 === false)
+		{
+			$this->output = FText::_('COM_FABRIK_LIBRARY_NOT_INSTALLED');
+
+			return;
+		}
+
+		$src = $model->getStorage()->getFileUrl($file);
 
 		// Analyse file and store returned data in $ThisFileInfo
 		$relPath = JPATH_SITE . $file;

@@ -53,18 +53,16 @@ class FlashRenderModel extends FabModel
 	 */
 	public function render(&$model, &$params, $file)
 	{
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		ini_set('display_errors', true);
-		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
-		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
+		$getID3 = FabrikWorker::getID3Instance();
 
-		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
-		$config = $this->config;
-		$host = $config->get('host');
-		$database = $config->get('db');
-		$username = $config->get('user');
-		$password = $config->get('password');
-		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
+		if ($getID3 === false)
+		{
+			$this->output = FText::_('COM_FABRIK_LIBRARY_NOT_INSTALLED');
+
+			return;
+		}
+
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 
 		// Analyse file and store returned data in $ThisFileInfo
 		$relPath = str_replace("\\", "/", JPATH_SITE . $file);

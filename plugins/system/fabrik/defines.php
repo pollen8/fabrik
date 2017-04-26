@@ -23,6 +23,7 @@ if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/'))
 define("COM_FABRIK_BASE", JPATH_SITE . DIRECTORY_SEPARATOR);
 define("COM_FABRIK_FRONTEND", COM_FABRIK_BASE . 'components/com_fabrik');
 define("COM_FABRIK_BACKEND", COM_FABRIK_BASE . 'administrator/components/com_fabrik');
+define("COM_FABRIK_LIBRARY", COM_FABRIK_BASE . 'libraries/fabrik');
 define("COM_FABRIK_LIVESITE", JURI::root());
 define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme', 'host', 'port')));
 define("FABRIKFILTER_TEXT", 0);
