@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="library" method="upgrade" version="3.7">
+<extension type="library" method="upgrade" version="3">
 	<name>Fabrik library</name>
 	<libraryname>fabrik</libraryname>
 	<author>Media A-Team, Inc.</author>

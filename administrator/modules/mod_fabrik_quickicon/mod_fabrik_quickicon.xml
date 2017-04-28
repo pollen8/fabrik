@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension client="administrator" method="upgrade" type="module" version="3.7">
+<extension client="administrator" method="upgrade" type="module" version="3">
 	<name>mod_fabrik_quickicon</name>
 	<author>Media A-Team, Inc.</author>
 	<creationDate>April 2017</creationDate>
