@@ -402,6 +402,7 @@ define(['jquery'], function (jQuery) {
                 this.element.addClass('chzn-select');
                 this.element.getParent().getElement('.chzn-container').destroy();
                 jQuery('#' + this.element.id).chosen();
+                jQuery(this.element).addClass('chzn-done');
                 var changeEvent = this.getChangeEvent();
                 jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
                     document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent,
