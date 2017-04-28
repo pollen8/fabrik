@@ -22,6 +22,7 @@ require(['fab/fabrik', 'jquery'], function (Fabrik, $) {
 						allOptions = options;
 					}
 					$(v).chosen(allOptions);
+					$(v).addClass('chzn-done');
 				});
 				return true;
 			}
@@ -35,6 +36,7 @@ require(['fab/fabrik', 'jquery'], function (Fabrik, $) {
 		 */
 		Fabrik.buildAjaxChosen = function (selector, options, func) {
 			if ($(selector).ajaxChosen !== undefined) {
+				$(selector).addClass('chzn-done');
 				return $(selector).ajaxChosen(options, func);
 			}
 		};
