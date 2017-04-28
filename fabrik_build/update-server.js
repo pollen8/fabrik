@@ -20,6 +20,8 @@ module.exports = function (grunt) {
     console.log('-- Update Server: Fabrik Modules created');
     component(grunt);
     console.log('-- Update Server: Component created');
+	library(grunt);
+	console.log('-- Update Server: Library created');
     makePackageList(extensions);
     console.log('-- Update Server: Package list created');
     // Copy back
@@ -183,7 +185,7 @@ var library = function (grunt) {
 		};
 	extensions.push({
 		'$': {
-			'client'  : 'administrator',
+			'client'  : 'site',
 			'name'    : 'fabrik',
 			'element' : 'lib_fabrik',
 			'type'    : 'library',

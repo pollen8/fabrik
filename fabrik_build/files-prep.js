@@ -8,6 +8,7 @@ module.exports = function (grunt) {
     fabrikPlugins(grunt);
     fabrikModules(grunt);
     component(grunt);
+    library(grunt);
 };
 
 /**
@@ -95,4 +96,8 @@ var component = function (grunt) {
     updateAFile('administrator/components/com_fabrik/pkg_fabrik.xml', grunt);
     updateAFile('administrator/components/com_fabrik/pkg_fabrik_sink.xml', grunt);
     updateAFile('administrator/components/com_fabrik/fabrik.xml', grunt);
+}
+
+var library = function (grunt) {
+	updateAFile('libraries/fabrik/fabrik.xml', grunt);
 }
