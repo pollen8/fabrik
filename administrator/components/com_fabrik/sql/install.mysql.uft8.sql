@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_elements` (
 	`access` INT(1) NOT NULL default '0',
 	`use_in_page_title` INT(1) NOT NULL default '0',
 	`parent_id` MEDIUMINT(6) NOT NULL,
-	`params` TEXT NOT NULL,
+	`params` MEDIUMTEXT NOT NULL,
 	PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_form_sessions` (
 	`row_id` INT(10) NOT NULL,
 	`last_page` INT(4) NOT NULL,
 	`referring_url` VARCHAR(255) NOT NULL,
-	`data` TEXT NOT NULL,
+	`data` MEDIUMTEXT NOT NULL,
 	`time_date` TIMESTAMP NOT NULL,
 	PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
