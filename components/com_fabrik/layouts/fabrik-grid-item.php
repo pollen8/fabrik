@@ -31,6 +31,6 @@ if (array_key_exists('label', $d->classes))
 
 $html = $d->elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
 ?>
-<label class="fabrikgrid_<?php echo $d->value . ' ' . $labelClass; ?>">
+<label class="fabrikgrid_<?php echo FabrikString::clean($d->value) . ' ' . $labelClass; ?>">
 	<?php echo $html; ?>
 </label>
