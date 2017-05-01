@@ -703,6 +703,12 @@ class FabrikWorker
 							if (array_key_exists($tmpElName, $searchData) && is_array($searchData[$tmpElName]) && array_key_exists($repeatCounter, $searchData[$tmpElName]))
 							{
 								$tmpVal = $searchData[$tmpElName][$repeatCounter];
+
+								if (is_array($tmpVal))
+								{
+									$tmpVal = implode(',', $tmpVal);
+								}
+
 								$msg    = str_replace('{' . $tmpElName . '}', $tmpVal, $msg);
 							}
 						}
