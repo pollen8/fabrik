@@ -69,7 +69,7 @@ class JDocumentpdf extends JDocumentHTML
 	{
 		$this->engine = FabrikPDFHelper::iniDomPdf(true);
 
-		return $this->engine();
+		return $this->engine;
 	}
 
 	/**

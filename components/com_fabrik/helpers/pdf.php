@@ -43,12 +43,12 @@ class FabrikPDFHelper
 
 		$config = JFactory::getConfig();
 
-		$options = new Dompdf\Options();
+		$options = new Options();
 		$options->set('isRemoteEnabled', true);
 		$options->set('fontCache', $config->get('tmp_path'));
 		$options->set('tempDir', $config->get('tmp_path'));
 
-		return new Dompdf\Dompdf($options);
+		return new Dompdf($options);
 	}
 
 	/**
