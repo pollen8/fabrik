@@ -36,9 +36,6 @@ class FabrikPDFHelper
 
 	public static function iniDomPdf($puke = false)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
 		if (!FabrikWorker::canPdf($puke))
 		{
 			return false;
