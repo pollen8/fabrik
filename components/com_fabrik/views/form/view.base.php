@@ -462,24 +462,25 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->showPDF)
 		{
-			FabrikWorker::canPdf();
-
-			if ($this->app->isAdmin())
+			if (FabrikWorker::canPdf(false))
 			{
-				$this->pdfURL = 'index.php?option=com_' . $this->package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId();
-			}
-			else
-			{
-				$this->pdfURL = 'index.php?option=com_' . $this->package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf';
-			}
+				if ($this->app->isAdmin())
+				{
+					$this->pdfURL = 'index.php?option=com_' . $this->package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId();
+				}
+				else
+				{
+					$this->pdfURL = 'index.php?option=com_' . $this->package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf';
+				}
 
-			$this->pdfURL           = JRoute::_($this->pdfURL);
-			$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-icon');
-			$pdfDisplayData         = new stdClass;
-			$pdfDisplayData->pdfURL = $this->pdfURL;
-			$pdfDisplayData->tmpl   = $this->tmpl;
+				$this->pdfURL           = JRoute::_($this->pdfURL);
+				$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-icon');
+				$pdfDisplayData         = new stdClass;
+				$pdfDisplayData->pdfURL = $this->pdfURL;
+				$pdfDisplayData->tmpl   = $this->tmpl;
 
-			$this->pdfLink = $layout->render($pdfDisplayData);
+				$this->pdfLink = $layout->render($pdfDisplayData);
+			}
 		}
 	}
 

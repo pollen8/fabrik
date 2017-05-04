@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -12,28 +12,60 @@ defined('JPATH_PLATFORM') or die;
 /**
  * JDocument system message renderer
  *
- * @package     Joomla.Platform
- * @subpackage  Document
- * @since       11.1
+ * @since  3.5
  */
 class JDocumentRendererMessage extends JDocumentRenderer
 {
 	/**
 	 * Renders the error stack and returns the results as a string
 	 *
-* @param   string  $name     Not used.
-* @param   array   $params   Associative array of values
-* @param   string  $content  Not used.
+	 * @param   string  $name     Not used.
+	 * @param   array   $params   Associative array of values
+	 * @param   string  $content  Not used.
 	 *
 	 * @return  string  The output of the script
 	 *
-	 * @since   11.1
+	 * @since   3.5
 	 */
-	public function render($name, $params = array (), $content = null)
+	public function render($name, $params = array(), $content = null)
+	{
+		$msgList     = $this->getData();
+		$displayData = array(
+			'msgList' => $msgList,
+			'name'    => $name,
+			'params'  => $params,
+			'content' => $content,
+		);
+
+		$app        = JFactory::getApplication();
+		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/message.php';
+
+		if (file_exists($chromePath))
+		{
+			include_once $chromePath;
+		}
+
+		if (function_exists('renderMessage'))
+		{
+			JLog::add('renderMessage() is deprecated. Override system message rendering with layouts instead.', JLog::WARNING, 'deprecated');
+
+			return renderMessage($msgList);
+		}
+
+		return JLayoutHelper::render('joomla.system.message', $displayData);
+	}
+
+	/**
+	 * Get and prepare system message data for output
+	 *
+	 * @return  array  An array contains system message
+	 *
+	 * @since   3.5
+	 */
+	private function getData()
 	{
 		// Initialise variables.
-		$buffer = null;
-		$lists = null;
+		$lists = array();
 
 		// Get the message queue
 		$messages = JFactory::getApplication()->getMessageQueue();
@@ -50,32 +82,6 @@ class JDocumentRendererMessage extends JDocumentRenderer
 			}
 		}
 
-		// Build the return string
-		$buffer .= "\n<div id=\"system-message-container\">";
-
-		// If messages exist render them
-		if (is_array($lists))
-		{
-			$buffer .= "\n<dl id=\"system-message\">";
-			foreach ($lists as $type => $msgs)
-			{
-				if (count($msgs))
-				{
-					$buffer .= "\n<dt class=\"" . strtolower($type) . "\">" . FText::_($type) . "</dt>";
-					$buffer .= "\n<dd class=\"" . strtolower($type) . " message\">";
-					$buffer .= "\n\t<ul>";
-					foreach ($msgs as $msg)
-					{
-						$buffer .= "\n\t\t<li>" . $msg . "</li>";
-					}
-					$buffer .= "\n\t</ul>";
-					$buffer .= "\n</dd>";
-				}
-			}
-			$buffer .= "\n</dl>";
-		}
-
-		$buffer .= "\n</div>";
-		return $buffer;
+		return $lists;
 	}
 }

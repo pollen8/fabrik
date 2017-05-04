@@ -31,6 +31,8 @@ libraries/joomla/*
 libraries/joomla/document/*
 !libraries/joomla/document/partial/
 !libraries/joomla/document/partial/*
+!libraries/joomla/document/pdf/
+!libraries/joomla/document/pdf/*
 libraries/dompdf/lib/fonts/log.htm
 logs
 modules/*

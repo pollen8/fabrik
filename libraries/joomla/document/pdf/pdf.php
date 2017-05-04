@@ -69,7 +69,7 @@ class JDocumentpdf extends JDocumentHTML
 		if (FabrikPDFHelper::iniDomPdf())
 		{
 			// Default settings are a portrait layout with an A4 configuration using millimeters as units
-			$this->engine = new DOMPDF;
+			$this->engine = new Dompdf\Dompdf();
 
 			return true;
 		}
@@ -132,8 +132,6 @@ class JDocumentpdf extends JDocumentHTML
  		$this->_metaTags['http-equiv'] = array();
 		$this->_metaTags['http-equiv']['content-type'] = 'text/html';
 
-		// Testing using futural font.
- 		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
 		$pdf = $this->engine;
 		$data = parent::render();
 		FabrikPDFHelper::fullPaths($data);
