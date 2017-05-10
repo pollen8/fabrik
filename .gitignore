@@ -9,7 +9,6 @@ php.ini
 build/
 cache/*
 administrator/*
-!administrator/components/com_fabrik/*
 !administrator/components/com_fabrik/
 components/*
 !components/com_fabrik
