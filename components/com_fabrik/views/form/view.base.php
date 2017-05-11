@@ -1091,6 +1091,14 @@ class FabrikViewFormBase extends FabrikView
 			$form->submitButton = '';
 		}
 
+		$layoutData = (object) array(
+			'formModel' => $model,
+			'row' => $row,
+			'rowid' => $thisRowId,
+			'itemid' => $itemId
+		);
+		$this->customButtons = $model->getLayout('form.fabrik-custom-button')->render($layoutData);
+
 		if ($this->isMultiPage)
 		{
 			$layoutData       = (object) array(
@@ -1119,9 +1127,18 @@ class FabrikViewFormBase extends FabrikView
 		}
 
 		// $$$ hugh - hide actions section is we're printing, or if not actions selected
-		$noButtons = (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton) && empty($form->gobackButton)
-			&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton)
-			&& empty($form->resetButton) && empty($form->clearMultipageSessionButton));
+		$noButtons = (
+			empty($form->nextButton)
+			&& empty($form->prevButton)
+			&& empty($form->submitButton)
+			&& empty($form->gobackButton)
+			&& empty($form->deleteButton)
+			&& empty($form->applyButton)
+			&& empty($form->copyButton)
+			&& empty($form->resetButton)
+			&& empty($form->clearMultipageSessionButton)
+			&& empty($form->customButtons)
+		);
 
 		$this->hasActions = ($input->get('print', '0') == '1' || $noButtons) ? false : true;
 

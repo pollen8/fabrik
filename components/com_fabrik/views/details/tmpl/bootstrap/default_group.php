@@ -25,7 +25,7 @@ foreach ($this->elements as $element) :
 		$this->element->containerClass = str_replace('fabrikElementContainer', '', $this->element->containerClass);
 	}
 
-	$element->fullWidth = $element->span == 'span12' || $element->span == '';
+	$element->fullWidth = $element->span == FabrikHelperHTML::getGridSpan(12) || $element->span == '';
 	$style = $element->hidden ? 'style="display:none"' : '';
 
 	if ($element->startRow) : ?>
