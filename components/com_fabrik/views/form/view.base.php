@@ -1097,7 +1097,7 @@ class FabrikViewFormBase extends FabrikView
 			'rowid' => $thisRowId,
 			'itemid' => $itemId
 		);
-		$this->customButtons = $model->getLayout('form.fabrik-custom-button')->render($layoutData);
+		$form->customButtons = $model->getLayout('form.fabrik-custom-button')->render($layoutData);
 
 		if ($this->isMultiPage)
 		{
