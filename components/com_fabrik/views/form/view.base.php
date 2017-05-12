@@ -776,7 +776,8 @@ class FabrikViewFormBase extends FabrikView
 		// then we want to know the id of the window so we can set its showSpinner() method
 
 		// 3.0 changed to fabrik_window_id (automatically appended by Fabrik.Window xhr request to load window data
-		$opts->fabrik_window_id = $input->get('fabrik_window_id', '');
+		// use getRaw to preserve URL /'s, as window JS will keep them in id
+		$opts->fabrik_window_id = $input->getRaw('fabrik_window_id', '');
 		$opts->submitOnEnter    = (bool) $params->get('submit_on_enter', false);
 
 		// For editing groups with joined data and an empty joined record (i.e. no joined records)
