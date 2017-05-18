@@ -670,6 +670,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if ($params->get('icon_hovertext', true))
 					{
+						//$aHref  = 'javascript:void(0)';
 						$aHref  = '#';
 						$target = '';
 
@@ -3347,7 +3348,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$id      = $this->getHTMLId() . 'value';
 
-		if ($element->filter_type === 'dropdown')
+		if ($element->filter_type === 'dropdown' || $element->filter_type === 'multiselect')
 		{
 			$advancedClass = $this->getAdvancedSelectClass();
 			$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
