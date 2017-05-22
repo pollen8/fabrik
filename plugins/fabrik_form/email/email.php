@@ -161,9 +161,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=form&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
 		$editLink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
 		$viewLink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
