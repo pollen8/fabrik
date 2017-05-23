@@ -6288,10 +6288,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db              = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 
+		/*
 		if (strlen($element->params) > 65535)
 		{
 			throw new RuntimeException(sprintf(FText::_('COM_FABRIK_ELEMENT_PARAMS_TOO_BIG'), $this->getId()));
 		}
+		*/
 
 		$query           = $db->getQuery(true);
 		$query->update('#__{package}_elements')->set('params = ' . $db->q($element->params))->where('id = ' . (int) $element->id);
