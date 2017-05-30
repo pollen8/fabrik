@@ -5173,6 +5173,16 @@ class FabrikFEModelList extends JModelForm
 				$this->app->setUserState($key, array_values($val));
 			}
 		}
+
+		FabrikWorker::getPluginManager()->runPlugins(
+			'onStoreRequestData',
+			$this,
+			'list',
+			array (
+				'context' => $context,
+				'request' => $request
+			)
+		);
 	}
 
 	/**
