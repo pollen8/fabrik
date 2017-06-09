@@ -3107,7 +3107,9 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($elementModel !== false)
 			{
-				if (!$elementModel->canUse() || $this->app->input->get('task', '') === 'form.process')
+				if (!$elementModel->canUse()
+					|| $this->app->input->get('task', '') === 'form.process'
+					|| $this->app->input->get('task', '') === 'process')
 				{
 					unset($clean_request[$key]);
 				}
