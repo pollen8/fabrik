@@ -3099,6 +3099,7 @@ class FabrikFEModelForm extends FabModelForm
 		 */
 
 		$clean_request = $f->clean($_REQUEST, 'array');
+		$qs_request = array();
 
 		foreach ($clean_request as $key => $value)
 		{
@@ -3113,6 +3114,10 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					unset($clean_request[$key]);
 				}
+				else
+                {
+                    $qs_request[$key] = $value;
+                }
 			}
 		}
 
@@ -3283,6 +3288,8 @@ class FabrikFEModelForm extends FabModelForm
 							// $$$ hugh - special case when using -1, if user doesn't have a record yet
 							if ($this->isUserRowId())
 							{
+							    // set data to just elements that have been set on the qs (and "cleaned" / ACL checked)
+							    $this->data = $qs_request;
 								return;
 							}
 							else
