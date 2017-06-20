@@ -497,6 +497,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$model->data = null;
 			$controller->_model->data = $model->getData();
 
+			/*
+			 * Allows us to bypass "view records" ACL settings for creating the details view
+			 */
+			$model->getListModel()->setLocalPdf();
+
 			// Store in output buffer
 			ob_start();
 			$controller->display();
