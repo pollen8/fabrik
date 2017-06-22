@@ -6092,7 +6092,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 
-        JDEBUG ? $profiler->mark("renderListData: end: {$this->element->name}") : null;
+        JDEBUG ? $profiler->mark("renderListData: parent: end: {$this->element->name}") : null;
 
         return $this->renderListDataFinal($data);
 	}

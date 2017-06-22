@@ -708,6 +708,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			'sepChar' => ArrayHelper::getValue($opts, 'sepChar', ' ')
 		);
 
+        JDEBUG ? $profiler->mark("renderListData: parent: end: {$this->element->name}") : null;
+
 		return $layout->render((object) $displayData);
 	}
 
