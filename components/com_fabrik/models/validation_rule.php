@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Registry\Registry;
+use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -96,7 +96,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		$params = $this->getParams();
-		$condition = $params->get($this->pluginName . '-validation_condition');
+		$condition = trim($params->get($this->pluginName . '-validation_condition'));
 
 		if ($condition == '')
 		{
