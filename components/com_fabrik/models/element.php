@@ -6092,9 +6092,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 
+		$final = $this->renderListDataFinal($data);
         JDEBUG ? $profiler->mark("renderListData: parent: end: {$this->element->name}") : null;
 
-        return $this->renderListDataFinal($data);
+        return $final;
 	}
 
 	/**
@@ -6107,7 +6108,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected function renderListDataFinal($data)
 	{
-		if (is_array($data))
+        $profiler = JProfiler::getInstance('Application');
+        JDEBUG ? $profiler->mark("renderListDataFinal: parent: start: {$this->element->name}") : null;
+
+        if (is_array($data))
 		{
 			if (count($data) > 1)
 			{
@@ -6152,7 +6156,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$res      = $layout->render($displayData);
 		}
 
-		return $res;
+        JDEBUG ? $profiler->mark("renderListDataFinal: parent: end: {$this->element->name}") : null;
+
+        return $res;
 	}
 
 	/**

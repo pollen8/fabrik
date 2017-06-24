@@ -1182,7 +1182,9 @@ class FabrikFEModelList extends JModelForm
 	protected function formatData(&$data)
 	{
 		$profiler = JProfiler::getInstance('Application');
-		$input = $this->app->input;
+        JDEBUG ? $profiler->mark("formatData: start") : null;
+
+        $input = $this->app->input;
 		jimport('joomla.filesystem.file');
 		$form = $this->getFormModel();
 		$tableParams = $this->getParams();
@@ -1346,7 +1348,7 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($data, 'table:data');
 		}
 
-		JDEBUG ? $profiler->mark('end format data') : null;
+		JDEBUG ? $profiler->mark('formatData: end') : null;
 	}
 
 	/**
@@ -1358,7 +1360,10 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected function addSelectBoxAndLinks(&$data)
 	{
-		$j3 = FabrikWorker::j3();
+        $profiler = JProfiler::getInstance('Application');
+        JDEBUG ? $profiler->mark('addSelectboxAndLinks: start') : null;
+
+        $j3 = FabrikWorker::j3();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
 		$buttonAction = $this->actionMethod();
@@ -1412,6 +1417,7 @@ class FabrikFEModelList extends JModelForm
 				// Done each row as its result can change
 				$canEdit = $this->canEdit($row);
 				$canView = $this->canView($row);
+				$canDelete = $this->canDelete($row);
 				$pKeyVal = array_key_exists($tmpKey, $row) ? $row->$tmpKey : '';
 				$pkCheck = array();
 				$pkCheck[] = '<div style="display:none">';
@@ -1450,7 +1456,9 @@ class FabrikFEModelList extends JModelForm
 						. htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />' . $pkCheck : '';
 
 				// Add in some default links if no element chosen to be a link
-				$link = $this->viewDetailsLink($data[$groupKey][$i]);
+                JDEBUG ? $profiler->mark('addSelectboxAndLinks: building edit link') : null;
+
+                $link = $this->viewDetailsLink($data[$groupKey][$i]);
 				$edit_link = $this->editLink($data[$groupKey][$i]);
 				$row->fabrik_view_url = $link;
 				$row->fabrik_edit_url = $edit_link;
@@ -1474,6 +1482,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($j3)
 				{
+                    JDEBUG ? $profiler->mark('addSelectboxAndLinks: building edit link: layout start') : null;
 					$displayData = new stdClass;
 					$displayData->loadMethod = $loadMethod;
 					$displayData->class = $class;
@@ -1489,6 +1498,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->list_edit_link_icon = $params->get('list_edit_link_icon', 'edit');
 					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
+                    JDEBUG ? $profiler->mark('addSelectboxAndLinks: building edit link: layout end') : null;
 				}
 				else
 				{
@@ -1498,7 +1508,9 @@ class FabrikFEModelList extends JModelForm
 						. ' ' . $editText . '</a>';
 				}
 
-				$viewLabel = $this->viewLabel($data[$groupKey][$i]);
+                JDEBUG ? $profiler->mark('addSelectboxAndLinks: building view link') : null;
+
+                $viewLabel = $this->viewLabel($data[$groupKey][$i]);
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
@@ -1533,7 +1545,9 @@ class FabrikFEModelList extends JModelForm
 
 
 				// 3.0 actions now in list in one cell
-				$row->fabrik_actions = array();
+                JDEBUG ? $profiler->mark('addSelectboxAndLinks: building actions') : null;
+
+                $row->fabrik_actions = array();
 				$actionMethod = $this->actionMethod();
 
 				if ($canView || $canEdit)
@@ -1580,7 +1594,7 @@ class FabrikFEModelList extends JModelForm
 					$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 				}
 
-				if ($this->canDelete($row))
+				if ($canDelete)
 				{
 					if ($buttonAction == 'dropdown')
 					{
@@ -1724,8 +1738,10 @@ class FabrikFEModelList extends JModelForm
 					$row->fabrik_actions = '';
 				}
 			}
-		}
-	}
+        }
+
+        JDEBUG ? $profiler->mark('addSelectBoxAndLinks: end') : null;
+    }
 
 	/**
 	 * Should the list link load in an i-frame or a xhr
@@ -4192,6 +4208,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function canDelete($row = null)
 	{
+
 		/**
 		 * Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
 		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL

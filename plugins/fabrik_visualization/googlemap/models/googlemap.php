@@ -377,10 +377,12 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			* which isn't set for list display, which then wouldn't get rendered unless we do this.
 			*/
 
+			/*
 			if (FabrikString::usesElementPlaceholders($template))
 			{
 				$listModel->formatAll(true);
 			}
+            */
 
 			$template_nl2br = FArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
 			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
