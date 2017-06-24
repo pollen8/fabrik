@@ -398,7 +398,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$data = $listModel->getData(
 			    array (
 			        'rollover' => false,
-                    'custom_layout' => false
+                    'custom_layout' => false,
+                    'add_box_and_links' => strstr($template, '{fabrik_')
                 )
             );
 			$this->txt = array();

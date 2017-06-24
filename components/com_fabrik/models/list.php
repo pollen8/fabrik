@@ -1349,7 +1349,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($this->outputFormat != 'pdf' && $this->outputFormat != 'csv' && $this->outputFormat != 'feed')
 		{
-			$this->addSelectBoxAndLinks($data);
+			$this->addSelectBoxAndLinks($data, $opts);
 			FabrikHelperHTML::debug($data, 'table:data');
 		}
 
@@ -1360,12 +1360,20 @@ class FabrikFEModelList extends JModelForm
 	 * Add the select box and various links into the data array
 	 *
 	 * @param   array  &$data  list's row objects
+     * $param   array  $opts   list rendering options
 	 *
 	 * @return  void
 	 */
-	protected function addSelectBoxAndLinks(&$data)
-	{
+	protected function addSelectBoxAndLinks(&$data, $opts = array())
+    {
         $profiler = JProfiler::getInstance('Application');
+
+        if (!FArrayHelper::getValue($opts, 'add_box_and_links', 1))
+        {
+            JDEBUG ? $profiler->mark('addSelectboxAndLinks: skipping') : null;
+            return;
+        }
+
         JDEBUG ? $profiler->mark('addSelectboxAndLinks: start') : null;
 
         $j3 = FabrikWorker::j3();
