@@ -104,7 +104,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 		}
 
-		return $this->renderListDataFinal($data);
+		return $this->renderListDataFinal($data, $opts);
 	}
 
 	/**

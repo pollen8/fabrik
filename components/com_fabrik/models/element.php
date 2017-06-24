@@ -6092,7 +6092,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 
-		$final = $this->renderListDataFinal($data);
+		$final = $this->renderListDataFinal($data, $opts);
         JDEBUG ? $profiler->mark("renderListData: parent: end: {$this->element->name}") : null;
 
         return $final;
@@ -6102,11 +6102,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Final prepare data function called from renderListData(), converts data to string and if needed
 	 * encases in <ul> (for repeating data)
 	 *
-	 * @param   array $data list cell data
+	 * @param   array  $data  list cell data
+     * $param   array  $opts  list options
 	 *
 	 * @return  string    cell data
 	 */
-	protected function renderListDataFinal($data)
+	protected function renderListDataFinal($data, $opts)
 	{
         $profiler = JProfiler::getInstance('Application');
         JDEBUG ? $profiler->mark("renderListDataFinal: parent: start: {$this->element->name}") : null;
@@ -6143,10 +6144,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			$r = $data;
 		}
 
-		$layout            = $this->getLayout('list');
-		$displayData       = new stdClass;
-		$displayData->text = $r;
-		$res               = $layout->render($displayData);
+        $displayData = new stdClass;
+        $displayData->text = $r;
+
+        if (ArrayHelper::getValue($opts, 'custom_layout', 1)) {
+            $layout = $this->getLayout('list');
+            $res = $layout->render($displayData);
+        }
+        else
+        {
+            $res = '';
+        }
 
 		// If no custom list layout found revert to the default list renderer
 		if ($res === '')
