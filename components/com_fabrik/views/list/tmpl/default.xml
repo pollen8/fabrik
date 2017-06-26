@@ -59,7 +59,14 @@
 				label="COM_FABRIK_MENU_LIST_TMPL_LABEL"
 				description="COM_FABRIK_MENU_LIST_TMPL_DESC"
 			/>
-				
+
+			<field name="fabriklayout"
+				   type="fabriktemplate"
+				   view="form"
+				   label="COM_FABRIK_MENU_LIST_FORM_TMPL_LABEL"
+				   description="COM_FABRIK_MENU_LIST_FORM_TMPL_DESC"
+			/>
+
 			<field name="resetfilters"
 				type="radio"
 				class="btn-group"
