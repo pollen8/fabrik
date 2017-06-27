@@ -7479,7 +7479,25 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$join = $this->getJoin();
 
-		// The submitted element's values
+		/*
+		 * The submitted element's values
+		 *
+		 * NOTE - if we are coming from a list row copy, the _raw data is actually the map table
+		 * id's, not the FK's, because we used form model getData to load it.  So we need to stuff the
+		 * actual FK's (in the _id array) back into _raw
+		 */
+
+        if (array_key_exists('fabrik_copy_from_table', $formData))
+        {
+            $idName = $name . '_id';
+            $idValues = FArrayHelper::getValue($formData, $idName, array());
+
+            if (!empty($idValues))
+            {
+                $formData[$rawName] = $idValues;
+            }
+        }
+
 		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
 		// set $emptyish to false so if no selection, we don't save a bogus empty row
 		$allJoinValues = FabrikWorker::JSONtoData($d, true, false);
