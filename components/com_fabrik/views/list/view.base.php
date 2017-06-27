@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Registry\Registry;
+use Joomla\Registry\Registry;
 
 jimport('joomla.application.component.view');
 
@@ -549,6 +549,11 @@ class FabrikViewListBase extends FabrikView
 				// If some data is shown then ensure that menu links reset filters (combined with require filters) doesn't produce an empty data set for the pdf
 				$pdfLink .= '&resetfilters=0';
 			}
+
+			if ($this->app->input->get('group_by', '') !== '')
+            {
+                $pdfLink .= '&group_by=' . $this->app->input->get('group_by', '');
+            }
 
 			$this->pdfLink = JRoute::_($pdfLink);
 		}
