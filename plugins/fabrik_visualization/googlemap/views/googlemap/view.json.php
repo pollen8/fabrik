@@ -50,6 +50,6 @@ class FabrikViewGooglemap extends JViewLegacy
 			return false;
 		}
 
-		echo $model->getJSIcons();
+		echo json_encode($model->getJSIcons());
 	}
 }
