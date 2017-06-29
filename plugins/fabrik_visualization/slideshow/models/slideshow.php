@@ -213,6 +213,13 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 
 				$picData = str_replace("\\", "/", $picData);
+
+                // just in case ...
+                if (!JFile::exists(JPATH_SITE . $picData))
+                {
+                    continue;
+                }
+
 				$pic_opts = array();
 
 				if (!empty($slideshow_viz_caption) && isset($pic->$slideshow_viz_caption))
