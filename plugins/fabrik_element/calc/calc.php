@@ -777,4 +777,29 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		return 'TEXT';
 	}
+
+    /**
+     * Is the element consider to be empty for purposes of rendering on the form,
+     * i.e. for assigning classes, etc.  Can be overridden by individual elements.
+     *
+     * @param   array $data          Data to test against
+     * @param   int   $repeatCounter Repeat group #
+     *
+     * @return  bool
+     */
+    public function dataConsideredEmpty($data, $repeatCounter)
+    {
+        $parts = explode("\n", $data);
+
+        // see if all it contains is the "\n" and loader gif added in render ...
+        if (count($parts) === 2)
+        {
+            if (empty($parts[0]) && strstr($parts[1], 'loader'))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
