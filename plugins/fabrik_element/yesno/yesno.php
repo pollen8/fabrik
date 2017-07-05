@@ -77,7 +77,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rawData = FabrikWorker::JSONtoData($rawData, true);
 		$displayData        = new stdClass;
 		$displayData->tmpl  = isset($this->tmpl) ? $this->tmpl : '';
-		$displayData->format = $this->app->input->get('format', '');;
+		$displayData->format = $this->app->input->get('format', '');
+		$params = $this->getParams();
+		$displayData->yes_image = $params->get('yes_image', '');      
+        	$displayData->no_image = $params->get('no_image', '');  
+        	$displayData->image_height = $params->get('image_height', ''); 		
 		$layout = $this->getLayout('list');
 		$labelData = array();
 
