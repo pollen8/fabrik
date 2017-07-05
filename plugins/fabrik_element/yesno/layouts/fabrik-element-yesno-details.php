@@ -27,13 +27,17 @@ if ($d->format == 'pdf') :
 	FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 endif;
 
+$yes_image = ($d->yes_image == '') ? 'checkmark.png' : $d->yes_image ;
+$no_image = ($d->no_image == '') ? 'remove.png' : $d->no_image ;
+if(!empty($d->image_height)) $properties['style'] = FText::_('height:'.$d->image_height.'px!important');
+
 if ($data == '1') :
-	$icon = $j3 && $format != 'pdf' ? 'checkmark' : '1.png';
+	$icon = $j3 && $format != 'pdf' ? $yes_image : '1.png';
 	$properties['alt'] = FText::_('JYES');
 
 	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
 else :
-	$icon = $j3 && $format != 'pdf' ? 'remove' : '0.png';
+	$icon = $j3 && $format != 'pdf' ? $no_image : '0.png'; 
 	$properties['alt'] = FText::_('JNO');
 
 	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
