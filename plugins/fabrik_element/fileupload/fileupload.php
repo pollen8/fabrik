@@ -996,30 +996,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input                = $this->app->input;
 		$params               = $this->getParams();
 		$this->_validationErr = '';
+        $isAjax               = $params->get('ajax_upload', '0') === '1';
 		$errors               = array();
+		$ok                   = true;
 
-		$name  = $this->getFullName(true, false);
-		$ok    = true;
-		$files = $input->files->get($name, array(), 'raw');
+		if ($isAjax)
+        {
+            $fileName = $_FILES['file']['name'];
+            $fileSize = $_FILES['file']['size'];
+        }
+        else
+        {
+            $name  = $this->getFullName(true, false);
+            $files = $input->files->get($name, array(), 'raw');
 
-		if (array_key_exists($repeatCounter, $files))
-		{
-			$file = FArrayHelper::getValue($files, $repeatCounter);
-		}
-		else
-		{
-			// Single upload
-			$file = $files;
-		}
+            if (array_key_exists($repeatCounter, $files)) {
+                $file = FArrayHelper::getValue($files, $repeatCounter);
+            } else {
+                // Single upload
+                $file = $files;
+            }
 
-		// Perhaps an ajax upload? In any event $file empty was giving errors with upload element in multipage form.
-		if (!array_key_exists('name', $file) || empty($file['name']))
-		{
-			return true;
-		}
-
-		$fileName = $file['name'];
-		$fileSize = $file['size'];
+            $fileName = $file['name'];
+            $fileSize = $file['size'];
+        }
 
 		if (!$this->_fileUploadFileTypeOK($fileName))
 		{
