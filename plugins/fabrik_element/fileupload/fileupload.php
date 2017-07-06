@@ -464,6 +464,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->listName         = $this->getListModel()->getTable()->db_table_name;
 		$opts->useWIP           = (bool) $params->get('upload_use_wip', '0') == '1';
 		$opts->page_url         = COM_FABRIK_LIVESITE;
+		$opts->ajaxToken        = JSession::getFormToken();
 
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
@@ -2626,6 +2627,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_upload()
 	{
+        // Check for request forgeries
+        if ($this->getFormModel()->spoofCheck())
+        {
+            JSession::checkToken('request') or die('Invalid Token');
+        }
+
+	    if (!$this->canUse()) {
+	        exit;
+        }
+
 		$input = $this->app->input;
 
 		/*

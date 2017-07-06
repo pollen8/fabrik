@@ -345,7 +345,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                 browse_button      : elementId + '_browseButton',
                 container          : elementId + '_container',
                 drop_element       : elementId + '_dropList_container',
-                url                : 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
+                url                : 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&' + this.options.ajaxToken + '=1&method=ajax_upload&element_id=' + this.options.elid,
                 max_file_size      : this.options.max_file_size + 'kb',
                 unique_names       : false,
                 flash_swf_url      : this.options.ajax_flash_path,
