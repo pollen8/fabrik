@@ -1002,6 +1002,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($isAjax)
         {
+            // @TODO figure out validating size properly for multi-chunk AJAX uploads
             $fileName = $_FILES['file']['name'];
             $fileSize = $_FILES['file']['size'];
         }
