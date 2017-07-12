@@ -56,7 +56,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 
-		if ($params->get('ajax_upload') && (int) $params->get('ajax_max', 4) > 1)
+		if ($this->isAjax() && (int) $params->get('ajax_max', 4) > 1)
 		{
 			return true;
 		}
@@ -169,7 +169,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$s->deps = array();
 		$params  = $this->getParams();
 
-		if ($params->get('ajax_upload'))
+		if ($this->isAjax())
 		{
 			$runtimes       = $params->get('ajax_runtime', 'html5');
 			$folder         = 'element/fileupload/lib/plupload/js/';
@@ -436,7 +436,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->folderSelect          = $params->get('upload_allow_folderselect', 0);
 		$opts->quality               = (float) $params->get('image_quality') / 100;
 		$opts->dir                   = JPATH_SITE . '/' . $params->get('ul_directory');
-		$opts->ajax_upload           = (bool) $params->get('ajax_upload', false);
+		$opts->ajax_upload           = $this->isAjax();
 		$opts->ajax_runtime          = $params->get('ajax_runtime', 'html5');
 		$opts->ajax_silverlight_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->ajax_flash_path       = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
@@ -597,7 +597,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$format = $params->get('ul_export_encode_csv', 'base64');
 		$raw    = $this->getFullName(true, false) . '_raw';
 
-		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
+		if ($this->isAjax() && $params->get('ajax_max', 4) == 1)
 		{
 			// Single ajax upload
 			if (is_object($data))
@@ -809,7 +809,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// storage adaptor can add a second or two per file, per row to table render time.
 		$skip_exists_check = (int) $params->get('fileupload_skip_check', '0');
 
-		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
+		if ($this->isAjax() && $params->get('ajax_max', 4) == 1)
 		{
 			// Not sure but after update from 2.1 to 3 for podion data was an object
 			if (is_object($data))
@@ -997,15 +997,23 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input                = $this->app->input;
 		$params               = $this->getParams();
 		$this->_validationErr = '';
-        $isAjax               = $params->get('ajax_upload', '0') === '1';
 		$errors               = array();
 		$ok                   = true;
 
-		if ($isAjax)
+		if ($this->isAjax())
         {
             // @TODO figure out validating size properly for multi-chunk AJAX uploads
-            $fileName = $_FILES['file']['name'];
-            $fileSize = $_FILES['file']['size'];
+            $file = $input->files->get('file');
+
+            if (!empty($file)) {
+                $fileName = $_FILES['file']['name'];
+                $fileSize = $_FILES['file']['size'];
+            }
+            else
+            {
+                // if no 'file', this is part of form submission, we've already validated during AJAX upload
+                return true;
+            }
         }
         else
         {
@@ -1155,7 +1163,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input  = $this->app->input;
 		$params = $this->getParams();
 
-		if ($this->canCrop() == false && $input->get('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
+		if ($this->canCrop() == false && $input->get('task') !== 'pluginAjax' && $this->isAjax())
 		{
 			$filter = JFilterInput::getInstance();
 			$post   = $filter->clean($_POST, 'array');
@@ -1455,7 +1463,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		/* If we've turned on crop but not set ajax upload then the cropping wont work so we shouldn't return
 		 * otherwise no standard image processed
 		 */
-		if ($this->crop($name) && $params->get('ajax_upload'))
+		if ($this->crop($name) && $this->isAjax())
 		{
 			// Stops form data being updated with blank data.
 			return false;
@@ -1829,7 +1837,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			else
 			{
 				// Single ajax upload
-				if ($params->get('ajax_upload'))
+				if ($this->isAjax())
 				{
 					$d = (array) $input->get($name, array(), 'array');
 
@@ -2172,7 +2180,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel                = $this->getGroup();
 		$element                   = $this->getElement();
 		$params                    = $this->getParams();
-		$isAjax                    = $params->get('ajax_upload', '0') === '1';
+		$isAjax                    = $this->isAjax();
 
 		$use_wip        = $params->get('upload_use_wip', '0') == '1';
 		$device_capture = $params->get('ul_device_capture', '0');
@@ -2240,7 +2248,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			return $rendered;
 		}
 
-		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
+		if (($params->get('fu_show_image') !== '0' && !$this->isAjax()) || !$this->isEditable())
 		{
 			foreach ($values as $v)
 			{
@@ -2292,7 +2300,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		// if show images is off, still want to render a filename when editable, so they know a file has been uploaded
-		if (($params->get('fu_show_image') == '0' && !$params->get('ajax_upload')) && $this->isEditable())
+		if (($params->get('fu_show_image') == '0' && !$this->isAjax()) && $this->isEditable())
 		{
 			foreach ($values as $v)
 			{
@@ -2387,7 +2395,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$str[] = '<input name="' . $uploadName . '" type="hidden" class="folderpath"/>';
 		}
 
-		if ($params->get('ajax_upload'))
+		if ($this->isAjax())
 		{
 			$str   = array();
 			$str[] = $allRenders;
@@ -2427,7 +2435,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 
 		// If its a single upload crop element
-		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
+		if ($this->isAjax() && $params->get('ajax_max', 4) == 1)
 		{
 			$singleCropImg = $value;
 
@@ -2629,31 +2637,41 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_upload()
 	{
-        // Check for request forgeries
-        if ($this->getFormModel()->spoofCheck())
+        $input  = $this->app->input;
+        $o      = new stdClass;
+        $this->setId($input->getInt('element_id'));
+        $this->loadMeForAjax();
+
+        if (!$this->isAjax())
         {
-            JSession::checkToken('request') or die('Invalid Token');
+            $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+            echo json_encode($o);
+
+            return;
+        }
+
+        // Check for request forgeries
+        if (!JSession::checkToken('request'))
+        {
+            $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+            echo json_encode($o);
+
+            return;
         }
 
 	    if (!$this->canUse()) {
-	        exit;
+            $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+            echo json_encode($o);
+
+            return;
         }
 
-		$input = $this->app->input;
-
-		/*
-		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
-		 *
-		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
-		 * <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
-		 */
-		/* error_reporting(0); */
-		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
-		error_reporting(E_ERROR | E_PARSE);
-
-		$o = new stdClass;
-		$this->setId($input->getInt('element_id'));
-		$this->loadMeForAjax();
+        /*
+         * Turn error reporting off, as some folk get spurious warnings like this:
+         *
+         * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
+         */
+        error_reporting(E_ERROR | E_PARSE);
 
 		if (!$this->validate())
 		{
@@ -2688,7 +2706,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if (empty($filePath))
 			{
-				$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+                // zap the temp file, just to be safe (might be a malicious PHP file)
+                JFile::delete($file['tmp_name']);
+
+                $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
 				echo json_encode($o);
 
 				return;
@@ -3289,7 +3310,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 
-		return $params->get('ajax_upload') && ($params->get('ajax_max', 4) > 1);
+		return $this->isAjax() && ($params->get('ajax_max', 4) > 1);
 	}
 
 	/**
@@ -3467,6 +3488,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return $parentKey;
 	}
+
+	private function isAjax()
+    {
+        return $this->getParams()->get('ajax_upload', '0') === '1';
+    }
 
 
 }
