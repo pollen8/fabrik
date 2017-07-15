@@ -927,6 +927,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				$msg .= '<br /><pre>' . $e->getMessage() . '</pre>';
 			}
+
+			if ($this->config->get('debug'))
+            {
+
+            }
 			throw new RuntimeException($msg, 500);
 		}
 
@@ -1975,7 +1980,8 @@ class FabrikFEModelList extends JModelForm
 		// $$$ Jannus - see http://fabrikar.com/forums/showthread.php?t=20751
 		$distinct = $listModel->mergeJoinedData() ? 'DISTINCT ' : '';
 		$item = $listModel->getTable();
-		$query->select($k2 . ' AS linkKey, ' . $linkKey . ' AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')->from($item->db_table_name);
+		$query->select($k2 . ' AS linkKey, ' . $linkKey . ' AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')
+            ->from($db->quoteName($item->db_table_name));
 		$query = $listModel->buildQueryJoin($query);
 		$listModel->set('includeCddInJoin', true);
 		$query->group($linkKey);
