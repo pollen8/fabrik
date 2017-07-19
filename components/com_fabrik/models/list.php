@@ -982,6 +982,13 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$this->data = $fabrikDb->loadObjectList('', 'stdClass', false);
 
+		// fire a plugin hook before we format the data
+		$args       = new stdClass;
+		$args->data = $this->data;
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onLoadedData', $this, 'list', $args);
+		$pluginManager->runPlugins('onLoadedListData', $this->getFormModel(), 'form', $args);
+
 		// $$$ rob better way of getting total records
 		if ($this->mergeJoinedData())
 		{
