@@ -469,6 +469,12 @@
 			description="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_DESC"
 			label="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_LABEL" />
 
+		<field name="autocomplete_max_rows"
+			   size="3"
+			   default="10"
+			   description="COM_FABRIK_AUTOCOMPLETE_MAX_ROWS_DESC"
+			   label="COM_FABRIK_AUTOCOMPLETE_MAX_ROWS_LABEL" />
+
 		<field name="requirejs_base_uri"
 			size="50"
 			default=""

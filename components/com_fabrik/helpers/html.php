@@ -2007,6 +2007,12 @@ EOD;
 			$json->minTriggerChars = (int) $usersConfig->get('autocomplete_min_trigger_chars', '1');
 		}
 
+        if (!array_key_exists('max', $opts))
+        {
+            $usersConfig           = JComponentHelper::getParams('com_fabrik');
+            $json->max = (int) $usersConfig->get('autocomplete_max_rows', '1');
+        }
+
 		$app       = JFactory::getApplication();
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = 'index.php?option=com_' . $package . '&format=raw';
