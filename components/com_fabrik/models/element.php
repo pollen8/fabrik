@@ -1893,7 +1893,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$rollover = '';
+			$rollOver = '';
 		}
 
 		return $rollOver;
