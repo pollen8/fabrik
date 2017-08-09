@@ -2708,6 +2708,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join      = $this->getJoinModel()->getJoin();
 		$joinTable = $db->qn($join->table_join);
 		$shortName = $db->qn($this->getElement()->name);
+		$tableAlias = $join->table_join;
 
 		if (is_null($groupBy))
 		{
@@ -2726,12 +2727,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$jKey  = $this->getLabelOrConcatVal();
 			$jKey  = !strstr($jKey, 'CONCAT') ? $label : $jKey;
 			$label = str_replace($join->table_join, $to, $jKey);
+			$tableAlias = $to;
 		}
 
 		$query->select($joinTable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($joinTable)
 			->join('LEFT', $to . ' ON ' . $key . ' = ' . $joinTable . '.' . $shortName);
 
-		$this->buildQueryWhere(array(), true, null, array('mode' => 'filter'), $query);
+		$this->buildQueryWhere(array(), true, $tableAlias, array('mode' => 'filter'), $query);
 
 		if (!is_null($condition) && !is_null($value))
 		{
