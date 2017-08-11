@@ -33,6 +33,15 @@ if ($d->format == 'pdf' || strpos($yes_image,'.')>0 ) :
 	FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 endif;
 
+/* (Bauer notes: Added because FabrikHelperHTML::image will unset properties['alt'] (why I don't know) 
+ * - which makes it difficult to identify the value of the element in list or detail view.
+ *  Not sure which of these, or both should be used - I vote for added class.)
+ */
+if($j3) {
+	$properties['class'] = 'yn_val'.$data;
+	$properties['title'] = ($data == '0') ? FText::_('JNO') : FText::_('JYES');
+}
+
 if ($data == '1') :
 	$icon = $j3 && $format != 'pdf' ? $yes_image : '1.png';
 	$properties['alt'] = $yes_label;
