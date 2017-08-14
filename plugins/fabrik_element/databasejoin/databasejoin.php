@@ -1726,9 +1726,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->isEditable())
 		{
 			$multiSize     = (int) $params->get('dbjoin_multilist_size', 6);
+			$multiMax      = $params->get('dbjoin_multiselect_max', '0');
 			$advancedClass = $this->getAdvancedSelectClass();
 			$attributes    = 'class="' . $class . ' ' . $advancedClass . '" size="' . $multiSize . '" multiple="true"';
-			//$attributes    .= ' data-chosen-options=\'{"max_selected_options":3}\'';
+
+			if (!empty($advancedClass) && (int)$multiMax > 0)
+			{
+				$attributes .= ' data-chosen-options=\'{"max_selected_options":' . $multiMax . '}\'';
+			}
+
 			$html[]        = JHTML::_('select.genericlist', $tmp, $elName, $attributes, 'value', 'text', $default, $id);
 		}
 		else
