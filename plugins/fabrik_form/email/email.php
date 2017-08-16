@@ -440,7 +440,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$document->setType('pdf');
 		$input = $this->app->input;
 
-		$orig['details'] = $input->get('view');
+		$orig['view'] = $input->get('view');
 		$orig['format'] = $input->get('format');
 
 		$input->set('view', 'details');
