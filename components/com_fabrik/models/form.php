@@ -352,7 +352,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @var string
 	 */
-	private $tmpl = null;
+	public $tmpl = null;
 
 	/**
 	 * Constructor
@@ -563,9 +563,9 @@ class FabrikFEModelForm extends FabModelForm
 						$tmpl = $item->view_only_template == '' ? $default : $item->view_only_template;
 					}
 				}
-			}
 
-			$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
+				$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
+			}
 
 			// Finally see if the options are overridden by a querystring var
 			$baseTmpl = $tmpl;
