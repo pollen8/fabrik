@@ -88,7 +88,7 @@ class PlgFabrik_ListLink extends plgFabrik_List
 
 	public function canSelectRows()
 	{
-		return true;
+		return false;
 	}
 
 	/**
