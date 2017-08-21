@@ -146,7 +146,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$service->setMap($this->getMap($formModel));
 		$filters = array_merge($opts['credentials'], $filters);
 		$method = $params->get('webservice_get_method');
-		$startPoint = $params->get('webservice_start_point');
+		$startPoint = $params->get('webservice_start_point', '');
 		$serviceData = $service->get($method, $filters, $startPoint, null);
 		$update = (bool) $params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
