@@ -2182,6 +2182,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
+		$params       = $this->getParams();
+		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
 		$this->encryptFieldName($key);
 
 		switch ($condition)
@@ -2196,7 +2198,21 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				$query = ' (DAYOFYEAR(' . $key . ') >= DAYOFYEAR(NOW()) AND YEAR(' . $key . ') = YEAR(NOW())) ';
 				break;
 			case 'today':
-				$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
+				if (!$storeAsLocal)
+				{
+					/*
+					 * If stroing as UTC, need to account for TZ offset.  As we can't guarrantee MySQL has the
+					 * TZ tables installed, need to do it by steam, with numeric offsets.
+					 */
+					$timeZone = new DateTimeZone($this->config->get('offset'));
+					$zoneDate = new DateTime('now', $timeZone);
+					$tzStr    = $zoneDate->format('P');
+					$query = ' (CONVERT_TZ(' . $key . ', "+0:00", "' . $tzStr . '") >= CURDATE() AND CONVERT_TZ(' . $key . ', "+0:00", "' . $tzStr . '") < CURDATE() + INTERVAL 1 DAY) ';
+				}
+				else
+				{
+					$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
+				}
 				break;
 			case 'yesterday':
 				$query = ' (' . $key . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $key . ' < CURDATE()) ';
