@@ -2182,61 +2182,45 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
-		$params       = $this->getParams();
-		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
 		$this->encryptFieldName($key);
 
 		switch ($condition)
 		{
 			case 'thisyear':
-				$query = ' YEAR(' . $key . ') = YEAR(NOW()) ';
+				$query = ' YEAR(' . $this->addConvert($key) . ') = YEAR(NOW()) ';
 				break;
 			case 'earlierthisyear':
-				$query = ' (DAYOFYEAR(' . $key . ') <= DAYOFYEAR(NOW()) AND YEAR(' . $key . ') = YEAR(NOW())) ';
+				$query = ' (DAYOFYEAR(' . $this->addConvert($key) . ') <= DAYOFYEAR(NOW()) AND YEAR(' . $this->addConvert($key) . ') = YEAR(NOW())) ';
 				break;
 			case 'laterthisyear':
-				$query = ' (DAYOFYEAR(' . $key . ') >= DAYOFYEAR(NOW()) AND YEAR(' . $key . ') = YEAR(NOW())) ';
+				$query = ' (DAYOFYEAR(' . $this->addConvert($key) . ') >= DAYOFYEAR(NOW()) AND YEAR(' . $this->addConvert($key) . ') = YEAR(NOW())) ';
 				break;
 			case 'today':
-				if (!$storeAsLocal)
-				{
-					/*
-					 * If stroing as UTC, need to account for TZ offset.  As we can't guarrantee MySQL has the
-					 * TZ tables installed, need to do it by steam, with numeric offsets.
-					 */
-					$timeZone = new DateTimeZone($this->config->get('offset'));
-					$zoneDate = new DateTime('now', $timeZone);
-					$tzStr    = $zoneDate->format('P');
-					$query = ' (CONVERT_TZ(' . $key . ', "+0:00", "' . $tzStr . '") >= CURDATE() AND CONVERT_TZ(' . $key . ', "+0:00", "' . $tzStr . '") < CURDATE() + INTERVAL 1 DAY) ';
-				}
-				else
-				{
-					$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
-				}
+				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() AND ' . $this->addConvert($this->addConvert($key)) . ' < CURDATE() + INTERVAL 1 DAY) ';
 				break;
 			case 'yesterday':
-				$query = ' (' . $key . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $key . ' < CURDATE()) ';
+				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $this->addConvert($key) . ' < CURDATE()) ';
 				break;
 			case 'tomorrow':
-				$query = ' (' . $key . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $key . ' < CURDATE() + INTERVAL 2 DAY ) ';
+				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $this->addConvert($key) . ' < CURDATE() + INTERVAL 2 DAY ) ';
 				break;
 			case 'thismonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key
+				$query = ' (' . $this->addConvert($key) . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $this->addConvert($key)
 					. ' <= LAST_DAY(NOW()) ) ';
 				break;
 			case 'lastmonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key
+				$query = ' (' . $this->addConvert($key) . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $this->addConvert($key)
 					. ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
 				break;
 			case 'nextmonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
+				$query = ' (' . $this->addConvert($key) . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $this->addConvert($key)
 					. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
 			case 'nextweek1':
-				$query = ' (YEARWEEK(' . $key . ',1) = YEARWEEK(DATE_ADD(NOW(), INTERVAL 1 WEEK), 1))';
+				$query = ' (YEARWEEK(' . $this->addConvert($key) . ',1) = YEARWEEK(DATE_ADD(NOW(), INTERVAL 1 WEEK), 1))';
 				break;
 			case 'birthday':
-				$query = '(MONTH(' . $key . ') = MONTH(CURDATE()) AND  DAY(' . $key . ') = DAY(CURDATE())) ';
+				$query = '(MONTH(' . $this->addConvert($key) . ') = MONTH(CURDATE()) AND  DAY(' . $this->addConvert($key) . ') = DAY(CURDATE())) ';
 				break;
 
 			default:
@@ -2637,6 +2621,28 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		return $this->default;
 	}
+
+	/*
+	 * If date is stored as UTC, wrap the necessary CONVERT_TZ() around the key name to offset it, so 'foo'
+	 * becomes 'CONVERT_TZ(foo, "+0:00", "+5:00")'.  If storing as local, leave key intact.  Used when building things
+	 * like pre-filter queries for "today".
+	 */
+	protected function addConvert($key)
+	{
+		$params       = $this->getParams();
+		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
+
+		if ($params->get('date_store_as_local', '0') !== '1')
+		{
+			$timeZone = new DateTimeZone($this->config->get('offset'));
+			$zoneDate = new DateTime('now', $timeZone);
+			$tzStr    = $zoneDate->format('P');
+			$key = 'CONVERT_TZ(' . $key . ', "+0:00", "' . $tzStr . '")';
+		}
+
+		return $key;
+	}
+
 }
 
 /**
