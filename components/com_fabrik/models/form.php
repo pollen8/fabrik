@@ -1108,10 +1108,12 @@ class FabrikFEModelForm extends FabModelForm
 			 * so we need to unset 'usekey', otherwise we end up with the wrong row.
 			 * I thought we used to take care of this elsewhere?
 			 *
-			 * $$$ 7/25/2017 - don't think this is true any more
+			 * $$$ 7/25/2017 - don't think this is true any more?
+			 *
+			 * $$$ 9/5/2017 = yup, still seems to be necesaasy, definitely when submitting with a juser plugin.  So
+			 * reverted changes made on 7/25, and will keep an eye out for situations where doing this causes problems.
 			 */
 
-			/*
 			$isUserRow = $this->isUserRowId();
 
 			if ($isUserRow)
@@ -1119,7 +1121,6 @@ class FabrikFEModelForm extends FabModelForm
 				$origUseKey = $input->get('usekey', '');
 				$input->set('usekey', '');
 			}
-			*/
 
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
@@ -1127,12 +1128,10 @@ class FabrikFEModelForm extends FabModelForm
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
 
-			/*
 			if ($isUserRow)
 			{
 				$input->set('usekey', $origUseKey);
 			}
-			*/
 		}
 	}
 
