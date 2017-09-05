@@ -50,6 +50,19 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	}
 
 	/**
+	 * States if the element contains data which is recorded in the database
+	 * some elements (e.g. buttons) don't
+	 *
+	 * @param   array $data posted data
+	 *
+	 * @return  bool
+	 */
+	public function recordInDatabase($data = null)
+	{
+		return false;
+	}
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           To pre-populate element with
