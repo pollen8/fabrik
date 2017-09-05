@@ -15,7 +15,7 @@ use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-require_once 'fabrikOAuth.php';
+require_once JPATH_ROOT . '/plugins/fabrik_form/rest/fabrikOAuth.php';
 
 /**
  * Submit or update data to a REST service
