@@ -206,9 +206,10 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 		$model = $this->getModel();
 		$input = $this->app->input;
 		$update = $this->getUpdateCols($params);
+		$preEval  = $params->get('update_pre_eval', '');
 		$postEval = $params->get('update_post_eval', '');
 
-		if (!$update && empty($postEval))
+		if (!$update && empty($postEval) && empty($preEval))
 		{
 			return false;
 		}
@@ -230,6 +231,17 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 
 		// Needed to re-assign as getDate() messes the plugin params order
 		$this->params = $params;
+
+		if (!empty($preEval))
+		{
+			$res = FabrikHelperHTML::isDebug() ? eval($preEval) : @eval($preEval);
+			FabrikWorker::logEval($res, 'Caught exception on eval in updatecol::process() : %s');
+
+			if ($res === false)
+			{
+				return false;
+			}
+		}
 
 		if (!empty($dateCol))
 		{
