@@ -437,7 +437,17 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 					$rowData = ArrayHelper::fromObject($row);
 					$rowData['rowid'] = $rowData['__pk_val'];
+
+					$matches = array();
+
+					// alllow {coords:X} to specify number of decimal points to show
+					if (preg_match('/\{coords:(\d+)\}/', $template, $matches))
+					{
+						$rowData[trim($matches[0],'{}')] = sprintf('%.' . $matches[1] . 'f', $v[0]) . ',' . sprintf('%.' . $matches[1] . 'f', $v[1]);
+					}
+
 					$rowData['coords'] = $v[0] . ',' . $v[1];
+
 					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 					FabrikHelperHTML::runContentPlugins($html, true);
