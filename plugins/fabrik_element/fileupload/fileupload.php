@@ -2643,8 +2643,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_upload()
 	{
-        $input  = $this->app->input;
-        $o      = new stdClass;
+        $input     = $this->app->input;
+        $o         = new stdClass;
+        $formModel = $this->getFormModel();
         $this->setId($input->getInt('element_id'));
         $this->loadMeForAjax();
 
@@ -2657,7 +2658,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
         }
 
         // Check for request forgeries
-        if (!JSession::checkToken('request'))
+        if ($formModel->spoofCheck() && !JSession::checkToken('request'))
         {
             $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
             echo json_encode($o);
