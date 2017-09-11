@@ -1089,6 +1089,8 @@ class FabrikFEModelListfilter extends FabModel
 		if (is_string($value))
 		{
 			$value = trim($value);
+			// $$$ hugh - allow {$my->id} (etc) here, maybe allow other placeholders?
+			$value = FabrikWorker::replaceWithUserData($value);
 		}
 
 		$k2 = FabrikString::safeColNameToArrayKey($key);
