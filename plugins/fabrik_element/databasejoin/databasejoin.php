@@ -1338,7 +1338,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				return '';
 			}
 
-			$targetIds = $targetIds === false ? $default : $targetIds;
+			$targetIds = FArrayHelper::emptyIsh($targetIds, true) ? $default : $targetIds;
 
 			// $$$ hugh - trying to fix issue with read only multiselects submitting wrong values
 			$formModel->tmplData[$id . '_raw'] = $targetIds;
@@ -1718,7 +1718,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$targetIds  = $this->multiOptionTargetIds($data, $repeatCounter);
 		$class      = 'fabrikinput inputbox ' . $params->get('bootstrap_class', '');
 
-		if ($targetIds !== false)
+		if (!FArrayHelper::emptyIsh($targetIds, true))
 		{
 			$default = $targetIds;
 		}
@@ -1772,7 +1772,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// If its a new record we don't want to look up defaults in the look up table as they will not exist
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
-			if ($targetIds !== false)
+			if (!FArrayHelper::emptyIsh($targetIds, true))
 			{
 				$default = $targetIds;
 			}
