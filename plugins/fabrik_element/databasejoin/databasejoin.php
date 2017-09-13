@@ -3909,7 +3909,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$idName .= '.' . $repeatCounter;
 				}
 
-				$default = (array) FArrayHelper::getNestedValue($data, $idName, 'not found');
+				$default = (array) FArrayHelper::getNestedValue($data, $idName, '');
 
 				return $default;
 			}
