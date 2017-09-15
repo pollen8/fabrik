@@ -493,10 +493,9 @@ class FabrikControllerForm extends JControllerLegacy
 
 		if (!$validated)
 		{
-			$this->savepage();
-
 			if ($this->isMambot)
 			{
+				$this->savepage();
 				$this->setRedirect($this->getRedirectURL($model, false));
 			}
 			else
