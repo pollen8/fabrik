@@ -1057,6 +1057,25 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             /**
+             * Get the primary keys for all checked rows
+             *
+             * @since   3.7
+             *
+             * @return  array
+             */
+            getCheckedRowIds: function () {
+                var chxs = this.getForm().getElements('input[name^=ids]').filter(function (i) {
+                    return i.checked;
+                });
+
+                var ids = chxs.map(function (chx) {
+                    return chx.get('value');
+                });
+
+                return ids;
+            },
+
+            /**
              * Get a single row's data
              *
              * @param   string  id  ID
