@@ -45,7 +45,8 @@ if (JString::strpos($cName, '.') != false)
 
 	if ($type == 'visualization')
 	{
-		require_once JPATH_COMPONENT . '/controllers/visualization.php';
+		//require_once JPATH_COMPONENT . '/controllers/visualization.php';
+		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
 	}
 
 	$path = JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/controllers/' . $name . '.php';
