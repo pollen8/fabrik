@@ -1655,7 +1655,7 @@ class Worker
 	 */
 	public static function logError($errString, $msgType)
 	{
-		if (FabrikHelperHTML::isDebug())
+		if (Html::isDebug())
 		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage($errString, $msgType);
