@@ -55,10 +55,10 @@ plugins/*
 !plugins/system/
 plugins/system/*
 !plugins/system/fabrik
-!plugins/search/*
+!plugins/search/
+plugins/search/*
 !plugins/search/fabrik
 plugins/fabrik_list/download/libs
-!plugins/system/fabrik/
 !plugins/fabrik_element/
 !plugins/fabrik_form/
 plugins/fabrik_form/php/scripts/

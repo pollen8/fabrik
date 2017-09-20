@@ -14,6 +14,7 @@ namespace Fabrik\Helpers;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use \stdClass;
 
 /**
  * String helpers

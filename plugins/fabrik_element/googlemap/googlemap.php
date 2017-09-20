@@ -12,9 +12,10 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Googlemap;
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
+
 
 /**
  * Plugin element to render a Google map
@@ -332,7 +333,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					|| $geocode_on_load == 3
 				);
 		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false);
-		$opts->styles = FabGoogleMapHelper::styleJs($params);
+		$opts->styles = Googlemap::styleJs($params);
 
 		if ($opts->geocode == '2')
 		{
