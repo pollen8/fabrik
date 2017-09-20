@@ -16,7 +16,7 @@ use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
+//require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 /**
  * Fabrik Form Model
@@ -5485,7 +5485,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   array   $paths    Optional paths to add as includes
 	 * @param   array   $options  Options
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public function getLayout($name, $paths = array(), $options = array())
 	{

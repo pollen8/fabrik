@@ -37,7 +37,7 @@ class PlgSystemFabrik extends JPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Could be component was uninstalled but not the plugin
-		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/helpers/file.php'))
+		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/fabrik.php'))
 		{
 			return;
 		}
@@ -76,7 +76,7 @@ class PlgSystemFabrik extends JPlugin
 			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
-		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
+		//require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
 		if (!file_exists(JPATH_LIBRARIES . '/fabrik/include.php'))
 		{

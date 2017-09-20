@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\LayoutFile;
 
 jimport('joomla.application.component.model');
 
@@ -525,19 +526,19 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Get the element's JLayout file
-	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
-	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 * Its actually an instance of LayoutFile which inverses the ordering added include paths.
+	 * In LayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
 	 * @param   string $type form/details/list
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public function getLayout($type)
 	{
 		$name     = get_class($this);
 		$name     = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
-		$layout   = new FabrikLayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout   = new LayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 

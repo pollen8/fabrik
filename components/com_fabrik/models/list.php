@@ -12114,7 +12114,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $type  form/details/list
 	 * @param   array   $paths  Optional paths to add as includes
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public function getLayout($name, $paths = array(), $options = array())
 	{

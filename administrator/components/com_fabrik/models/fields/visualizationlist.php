@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
+//require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
 
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');

@@ -12,9 +12,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Required for menus
-require_once JPATH_SITE . '/components/com_fabrik/helpers/html.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
+//require_once JPATH_SITE . '/components/com_fabrik/helpers/html.php';
+//require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
+//require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
