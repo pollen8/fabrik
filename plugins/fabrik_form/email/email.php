@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/pdf.php';
+//require_once COM_FABRIK_FRONTEND . '/helpers/pdf.php';
 
 /**
  * Send email upon form submission
@@ -461,7 +461,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		try
 		{
 			// Require files and set up DOM pdf
-			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
+			//require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 
 			// if DOMPDF isn't installed, this will throw an exception which we should catch

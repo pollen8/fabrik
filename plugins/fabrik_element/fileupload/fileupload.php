@@ -2193,7 +2193,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($element->hidden == '1')
 		{
-			return $this->getHiddenField($name, $data[$name], $id);
+			return $this->getHiddenField($name, $this->getValue($data, $repeatCounter), $id);
 		}
 
 		$str   = array();
@@ -2407,6 +2407,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$str[] = $allRenders;
 			$str   = $this->plupload($str, $repeatCounter, $values);
 		}
+
+		$nameRepeatSuffix = $groupModel->canRepeat() ? '[' . $repeatCounter . ']' : '';
+		$idRepeatSuffix   = $groupModel->canRepeat() ? '_' . $repeatCounter : '';
+
+		$str[] = $this->getHiddenField(
+			$this->getFullName(true, false) . '_orig' . $nameRepeatSuffix,
+			$this->getValue($data, $repeatCounter),
+			$this->getFullName(true, false) . '_orig' . $idRepeatSuffix
+		);
 
 		array_unshift($str, '<div class="fabrikSubElementContainer">');
 		$str[] = '</div>';
@@ -3501,5 +3510,47 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
         return $this->getParams()->get('ajax_upload', '0') === '1';
     }
 
+	/**
+	 * Give elements a chance to reset data after a failed validation.  For instance, file upload element
+	 * needs to reset the values as they aren't submitted with the form
+	 *
+	 * @param  $data  array form data
+	 */
+	public function setValidationFailedData(&$data)
+	{
+		$groupModel = $this->getGroupModel();
+		$origName = $this->getFullName(true, false) . '_orig';
+		$thisName = $this->getFullName(true, false);
+
+		if (array_key_exists($origName, $data))
+		{
+			/*
+			if ($groupModel->canRepeat())
+			{
+				if (!is_array($data[$thisName]))
+				{
+					$data[$thisName] = array();
+				}
+
+				foreach ()
+				$data[$thisName][$repeatCounter] = $data[$origName][$repeatCounter];
+
+				if (!is_array($data[$thisName . '_raw']))
+				{
+					$data[$thisName . '_raw'] = array();
+				}
+
+				$data[$thisName . '_raw'][$repeatCounter] = $data[$origName][$repeatCounter];
+			}
+			else
+			{
+				$data[$name] = $data[$origName];
+				$data[$name . '_raw'] = $data[$origName];
+			}
+			*/
+			$data[$thisName] = $data[$origName];
+			$data[$thisName . '_raw'] = $data[$origName];
+		}
+	}
 
 }

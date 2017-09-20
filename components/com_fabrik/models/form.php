@@ -2016,6 +2016,28 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Give elements a way to re-instate data after a validation failure, for example upload elements,
+	 * where the value won't be in the submitted data, in order to preserve state
+	 **
+	 * @return	void
+	 */
+	public function setValidationFailedData()
+	{
+		$this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->setValidationFailedData($this->formData);
+			}
+		}
+	}
+
+	/**
 	 * Add in any encrypted stuff, in case we fail validation ...
 	 * otherwise it won't be in $data when we rebuild the page.
 	 * Need to do it here, so _raw fields get added in the next chunk 'o' code.
@@ -3128,14 +3150,16 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				if (!$elementModel->canUse()
 					|| $this->app->input->get('task', '') === 'form.process'
-					|| $this->app->input->get('task', '') === 'process')
+					|| $this->app->input->get('task', '') === 'process'
+					|| $this->hasErrors()
+				)
 				{
 					unset($clean_request[$key]);
 				}
 				else
-                {
-                    $qs_request[$key] = $value;
-                }
+				{
+					$qs_request[$key] = $value;
+				}
 			}
 		}
 
@@ -3183,6 +3207,7 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					// $$$ rob - use setFormData rather than $_GET
 					// as it applies correct input filtering to data as defined in article manager parameters
+					$this->setValidationFailedData($this->formData);
 					$data = $this->setFormData();
 					$data = FArrayHelper::toObject($data, 'stdClass', false);
 

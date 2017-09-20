@@ -7952,4 +7952,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function jsJLayouts()
 	{
 	}
+
+	/**
+	 * Give elements a chance to reset data after a failed validation.  For instance, file upload element
+	 * needs to reset the values as they aren't submitted with the form
+	 *
+	 * @param  $data  array form data
+	 */
+	public function setValidationFailedData(&$data)
+	{
+		return;
+	}
 }
