@@ -12,11 +12,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Lizt;
 
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
 
 /**
  * Fabrik Google Map Plug-in Model
@@ -254,7 +254,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				continue;
 			}
 
-			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
+			$mapsElements = Lizt::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(false, false);
 			$table = $listModel->getTable();
 
@@ -385,7 +385,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
             */
 
 			$template_nl2br = FArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
-			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
+			$mapsElements = Lizt::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
 			// Are we using random start location for icons?
