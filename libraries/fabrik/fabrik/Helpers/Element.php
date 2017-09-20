@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\ArrayHelper;
 use Joomla\CMS\Factory;
-use Joomla\String\StringHelper;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Element Helper class

@@ -413,4 +413,75 @@ class ArrayHelper
 		}
 	}
 
+    /**
+     * Utility function to map an object to an array
+     *
+     * @param   object   $p_obj    The source object
+     * @param   boolean  $recurse  True to recurse through multi-level objects
+     * @param   string   $regex    An optional regular expression to match on field names
+     *
+     * @return  array
+     *
+     * @since   1.0
+     */
+    public static function fromObject($p_obj, $recurse = true, $regex = null)
+    {
+        if (is_object($p_obj) || is_array($p_obj))
+        {
+            return self::arrayFromObject($p_obj, $recurse, $regex);
+        }
+
+        return array();
+    }
+
+    /**
+     * Utility function to map an object or array to an array
+     *
+     * @param   mixed    $item     The source object or array
+     * @param   boolean  $recurse  True to recurse through multi-level objects
+     * @param   string   $regex    An optional regular expression to match on field names
+     *
+     * @return  array
+     *
+     * @since   1.0
+     */
+    private static function arrayFromObject($item, $recurse, $regex)
+    {
+        if (is_object($item))
+        {
+            $result = array();
+
+            foreach (get_object_vars($item) as $k => $v)
+            {
+                if (!$regex || preg_match($regex, $k))
+                {
+                    if ($recurse)
+                    {
+                        $result[$k] = self::arrayFromObject($v, $recurse, $regex);
+                    }
+                    else
+                    {
+                        $result[$k] = $v;
+                    }
+                }
+            }
+
+            return $result;
+        }
+
+        if (is_array($item))
+        {
+            $result = array();
+
+            foreach ($item as $k => $v)
+            {
+                $result[$k] = self::arrayFromObject($v, $recurse, $regex);
+            }
+
+            return $result;
+        }
+
+        return $item;
+    }
+
 }
