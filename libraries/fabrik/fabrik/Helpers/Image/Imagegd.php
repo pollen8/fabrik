@@ -6,7 +6,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Image;
+namespace Fabrik\Helpers\Image;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -22,7 +22,7 @@ use \Error;
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-class ImageGD extends Image
+class Imagegd extends Image
 {
 	/**
 	 * Create an image object from a file path

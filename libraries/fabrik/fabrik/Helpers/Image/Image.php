@@ -6,7 +6,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Image;
+namespace Fabrik\Helpers\Image;
 
 use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\StringHelper;

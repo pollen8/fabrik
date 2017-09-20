@@ -62,16 +62,17 @@ class Image
 	 */
 	public static function loadLib($lib)
 	{
-		$class = '\Fabrik\Image\Image' . $lib;
+		$className = '\Fabrik\Helpers\Image\Image' . $lib;
 
-		if (class_exists($class))
-		{
-			return new $class;
-		}
-		else
-		{
+		try {
+            $class = new $className;
+        }
+        catch (RuntimeException $e)
+        {
 			throw new RuntimeException("Fabrik: can't load image class: $class");
 		}
+
+		return $class;
 	}
 
 	/**

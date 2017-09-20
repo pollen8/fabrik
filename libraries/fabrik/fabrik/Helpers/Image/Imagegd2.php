@@ -6,7 +6,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Image;
+namespace Fabrik\Helpers\Image;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -24,7 +24,7 @@ use \Fabrik\Helpers\StringHelper;
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-class ImageGD2 extends ImageGD
+class Imagegd2 extends Imagegd
 {
 	/**
 	 * Resize an image to a specific width/height

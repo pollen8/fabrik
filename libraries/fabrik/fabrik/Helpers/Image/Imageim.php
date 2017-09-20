@@ -6,7 +6,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Image;
+namespace Fabrik\Helpers\Image;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -23,7 +23,7 @@ use \NewMagickWand;
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-class ImageIM extends Image
+class Imageim extends Image
 {
 	/**
 	 * Resize an image to a specific width/height
