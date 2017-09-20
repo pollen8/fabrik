@@ -161,6 +161,23 @@ class Worker
 		);
 	}
 
+    /**
+     * Get audio mime type array, keyed by file extension
+     *
+     * @return array
+     */
+    public static function getImageMimeTypes()
+    {
+        return array(
+            'png'  => 'image/png',
+            'gif'  => 'image/gif',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'bmp'  => 'image/bmp',
+            'webp' => 'image/webp'
+        );
+    }
+
 	/**
 	 * Get document mime type array, keyed by file extension
 	 *
@@ -193,66 +210,76 @@ class Worker
 	 *
 	 * @param   string $file Filename
 	 *
-	 * @deprecated - doesn't seem to be used
-	 *
 	 * @return  bool|string
 	 */
 	public static function getAudioMimeType($file)
 	{
-		$path_parts       = pathinfo($file);
-		$audio_mime_types = self::getAudioMimeTypes();
+		$path_parts = pathinfo($file);
+        $types = self::getAudioMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], $audio_mime_types))
-		{
-			return $audio_mime_types[$path_parts['extension']];
-		}
-
-		return false;
+		return ArrayHelper::getValue(
+		    $types,
+            ArrayHelper::getValue($path_parts, 'extension', ''),
+            false
+        );
 	}
+
+    /**
+     * Get Audio Mime type
+     *
+     * @param   string $file Filename
+     *
+     * @return  bool|string
+     */
+    public static function getImageMimeType($file)
+    {
+        $path_parts       = pathinfo($file);
+        $types = self::getImageMimeTypes();
+
+        return ArrayHelper::getValue(
+            $types,
+            ArrayHelper::getValue($path_parts, 'extension', ''),
+            false
+        );
+    }
 
 	/**
 	 * Get Video Mime type
 	 *
 	 * @param   string $file Filename
-	 *
-	 * @deprecated - doesn't seem to be used
 	 *
 	 * @return  bool|string
 	 */
 	public static function getVideoMimeType($file)
 	{
 		$path_parts       = pathinfo($file);
-		$video_mime_types = self::getVideoMimeTypes();
+        $types = self::getVideoMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], $video_mime_types))
-		{
-			return $video_mime_types[$path_parts['extension']];
-		}
-
-		return false;
+        return ArrayHelper::getValue(
+            $types,
+            ArrayHelper::getValue($path_parts, 'extension', ''),
+            false
+        );
 	}
 
 	/**
-	 * Get Video Mime type
+	 * Get Doc Mime type
 	 *
 	 * @param   string $file Filename
-	 *
-	 * @deprecated - doesn't seem to be used
 	 *
 	 * @return  bool|string
 	 */
 	public static function getDocMimeType($file)
 	{
 		$path_parts     = pathinfo($file);
-		$doc_mime_types = self::getDocMimeTypes();
+        $types = self::getDocMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], $doc_mime_types))
-		{
-			return $doc_mime_types[$path_parts['extension']];
-		}
-
-		return false;
-	}
+        return ArrayHelper::getValue(
+            $types,
+            ArrayHelper::getValue($path_parts, 'extension', ''),
+            false
+        );
+    }
 
 	/**
 	 * Get Podcast Mime type
@@ -263,9 +290,6 @@ class Worker
 	 */
 	public static function getPodcastMimeType($file)
 	{
-		$audio_mime_types = self::getAudioMimeTypes();
-		$video_mime_types = self::getVideoMimeTypes();
-		$doc_mime_types   = self::getVideoMimeTypes();
 		$mime_type        = false;
 
 		if ($mime_type = self::getVideoMimeType($file))
@@ -280,6 +304,10 @@ class Worker
 		{
 			return $mime_type;
 		}
+        elseif ($mime_type = self::getImageMimeType($file))
+        {
+            return $mime_type;
+        }
 
 		return $mime_type;
 	}

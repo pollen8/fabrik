@@ -68,6 +68,12 @@ class PlgSystemFabrik extends JPlugin
 			//JLoader::import($base . '.form', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
+        // The fabrikfeed doc type has been deprecated.  For backward compat, change it use standard J! feed instead
+        if ($app->input->get('format') === 'fabrikfeed')
+        {
+            $app->input->set('format', 'feed');
+        }
+
 		if (version_compare($version->RELEASE, '3.1', '<='))
 		{
 			JLoader::import($base . '.layout.layout', JPATH_SITE . '/administrator', 'administrator.');
@@ -75,8 +81,6 @@ class PlgSystemFabrik extends JPlugin
 			JLoader::import($base . '.layout.file', JPATH_SITE . '/administrator', 'administrator.');
 			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
-
-		//require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
 		if (!file_exists(JPATH_LIBRARIES . '/fabrik/include.php'))
 		{
