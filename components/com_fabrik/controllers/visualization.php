@@ -15,7 +15,6 @@ use Fabrik\Controllers\Controller;
 
 jimport('joomla.application.component.controller');
 
-require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 
 /**
  * Abstract Visualization Controller
