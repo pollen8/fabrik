@@ -32,6 +32,11 @@ libraries/joomla/document/*
 !libraries/joomla/document/partial/*
 !libraries/joomla/document/pdf/
 !libraries/joomla/document/pdf/*
+!libraries/src
+libraries/src/*
+!libraries/src/Document
+libraries/src/Document/*
+!libraries/src/Document/PdfDocument.php
 libraries/dompdf/lib/fonts/log.htm
 logs
 modules/*
