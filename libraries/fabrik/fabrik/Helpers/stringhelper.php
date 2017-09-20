@@ -535,7 +535,7 @@ class StringHelper extends \Joomla\String\StringHelper
 
 		if ($showTip && $origText != $summary)
 		{
-			FabrikHelperHTML::tips();
+			Html::tips();
 
 			if ($title !== '')
 			{
