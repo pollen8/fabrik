@@ -90,7 +90,6 @@ class JFormFieldCollation extends JFormFieldList
 		$db->setQuery('SHOW COLLATION WHERE ' . $db->quoteName('Compiled') . ' = ' . $db->quote('Yes'));
 		$rows = $db->loadObjectList();
 		sort($rows);
-		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$opts = array();
 
 		if ($this->element->attributes()->show_none && (bool) $this->element->attributes()->show_none[0])

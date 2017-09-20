@@ -235,9 +235,10 @@ class FabrikAutoloader
 		}
 
 		$class = str_replace('\\', '/', $class);
-		$file  = explode('/', $class);
-		$file  = strtolower(array_pop($file));
-		$path  = JPATH_SITE . '/libraries/fabrik/fabrik/Helpers/' . $file . '.php';
+		//$file  = explode('/', $class);
+		//$file  = strtolower(array_pop($file));
+		$path = preg_replace('#Fabrik\/Helpers\/#', JPATH_SITE . '/libraries/fabrik/fabrik/Helpers/', $class);
+		$path  = $path . '.php';
 
 		if (file_exists($path))
 		{

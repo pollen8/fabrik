@@ -12,8 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-
-require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
+use Fabrik\Helpers\Image;
 
 define("FU_DOWNLOAD_SCRIPT_NONE", '0');
 define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
@@ -1319,7 +1318,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$saveParams = array();
 			$files      = array_keys($crop);
 			$storage    = $this->getStorage();
-			$oImage     = FabimageHelper::loadLib($params->get('image_library'));
+			$oImage     = Image::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 			$fileCounter = 0;
 
@@ -1953,7 +1952,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (FabrikWorker::isImageExtension($filePath))
 		{
-			$oImage = FabimageHelper::loadLib($params->get('image_library'));
+			$oImage = Image::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 
 			if ($params->get('upload_use_wip', '0') == '1')

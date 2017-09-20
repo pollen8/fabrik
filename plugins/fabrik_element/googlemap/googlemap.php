@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Googlemap;
+use Fabrik\Helpers\Image;
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
@@ -779,7 +780,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		if ((!$tableView && $params->get('fb_gm_staticmap') == '1') || ($tableView && $params->get('fb_gm_staticmap_tableview', '0') === '1'))
 		{
-			$displayData->src = Fabimage::cacheRemote($src, $folder, $file);
+			$displayData->src = Image::cacheRemote($src, $folder, $file);
 
 			// if cacheImage returned false, probably an issue with permissions on the cache folder, so punt to direct URL
 			if ($displayData->src === false)

@@ -13,9 +13,6 @@ namespace Fabrik\Helpers;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Joomla\Utilities\ArrayHelper;
 use \JComponentHelper;
 use \stdClass;
 use \JModelLegacy;
