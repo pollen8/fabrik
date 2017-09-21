@@ -72,13 +72,13 @@ class PlgSystemFabrik extends JPlugin
             {
                 JLoader::import($base . '.FormField', JPATH_SITE . '/administrator', 'administrator.');
             }
-
 		}
 
         // The fabrikfeed doc type has been deprecated.  For backward compat, change it use standard J! feed instead
-        if ($app->input->get('format') === 'fabrikfeed')
-        {
-            $app->input->set('format', 'feed');
+        if (version_compare($version->RELEASE, '3.8', '<')) {
+            if ($app->input->get('format') === 'fabrikfeed') {
+                $app->input->set('format', 'feed');
+            }
         }
 
 		if (version_compare($version->RELEASE, '3.1', '<='))
