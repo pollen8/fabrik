@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+
 if (!defined('COM_FABRIK_FRONTEND'))
 {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
@@ -92,6 +94,9 @@ $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
 $model->setRenderContext($module->id);
 
+// Get list params
+$listParams = $model->getParams();
+
 if ($limit !== 0)
 {
 	$app->setUserState('com_fabrik.list' . $model->getRenderContext() . '.limitlength', $limit);
@@ -105,7 +110,6 @@ if ($useajax !== '')
 
 if ($params->get('ajax_links') !== '')
 {
-	$listParams = $model->getParams();
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
@@ -141,12 +145,38 @@ $conditions = (array) $prefilters['filter-conditions'];
 
 if (!empty($conditions))
 {
-	$listParams->set('filter-join', $prefilters['filter-join']);
-	$listParams->set('filter-fields', $prefilters['filter-fields']);
-	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
-	$listParams->set('filter-value', $prefilters['filter-value']);
-	$listParams->set('filter-access', $prefilters['filter-access']);
-	$listParams->set('filter-eval', $prefilters['filter-eval']);
+    if ($listParams->get('menu_module_prefilters_override', true))
+    {
+        // override the list's filters with module's
+        $listParams->set('filter-join', $prefilters['filter-join']);
+        $listParams->set('filter-fields', $prefilters['filter-fields']);
+        $listParams->set('filter-conditions', $prefilters['filter-conditions']);
+        $listParams->set('filter-value', $prefilters['filter-value']);
+        $listParams->set('filter-access', $prefilters['filter-access']);
+        $listParams->set('filter-eval', $prefilters['filter-eval']);
+        $listParams->set('filter-grouped', ArrayHelper::array_fill(0, count($prefilters['filter-join']), 0));
+    }
+    else
+    {
+        // merge module filters into list's
+        $listFields = (array) $listParams->get('filter-fields');
+        $listConditions = (array) $listParams->get('filter-conditions');
+        $listValue = (array) $listParams->get('filter-value');
+        $listAccess = (array) $listParams->get('filter-access');
+        $listEval = (array) $listParams->get('filter-eval');
+        $listJoins = (array) $listParams->get('filter-join');
+        $listGrouped = (array) $listParams->get('filter-grouped');
+        $listJoins[0] = 'AND';
+
+        $listParams->set('filter-join', array_merge($listJoins, $prefilters['filter-join']));
+        $listParams->set('filter-fields', array_merge($listFields, $prefilters['filter-fields']));
+        $listParams->set('filter-conditions', array_merge($listConditions, $prefilters['filter-conditions']));
+        $listParams->set('filter-value', array_merge($listValue, $prefilters['filter-value']));
+        $listParams->set('filter-access', array_merge($listAccess, $prefilters['filter-access']));
+        $listParams->set('filter-eval', array_merge($listEval, $prefilters['filter-eval']));
+        $listParams->set('filter-grouped', array_merge($listGrouped, FArrayHelper::array_fill(0, count($prefilters['filter-join']), '0')));
+    }
+
 }
 
 $model->randomRecords = $random;

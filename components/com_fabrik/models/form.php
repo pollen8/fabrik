@@ -2669,7 +2669,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (FArrayHelper::getValue($opts, 'loadPrefilters', false))
 		{
 			$listModel = $this->getListModel();
-			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $aFilterType) = $listModel->prefilterSetting();
 
 			foreach ($afilterFields as $name)
 			{
