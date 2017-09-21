@@ -102,6 +102,12 @@ class Com_FabrikInstallerScript
 		return true;
 	}
 
+	protected function getVersion()
+    {
+        $version = new JVersion;
+        return $version->RELEASE;
+    }
+
 	/**
 	 * Move over files into Joomla libraries folder
 	 *
@@ -114,27 +120,44 @@ class Com_FabrikInstallerScript
 	{
 		jimport('joomla.filesystem.file');
 		$componentFrontend = 'components/com_fabrik';
-		$docTypes          = array('fabrikfeed', 'pdf', 'partial');
 
-		foreach ($docTypes as $docType)
-		{
-			$dest = 'libraries/joomla/document/' . $docType;
+		if (compare_version($this->getVersion(), '3.8', '<')) {
+            $docTypes = array('fabrikfeed', 'pdf', 'partial');
 
-			if (!JFolder::exists(JPATH_ROOT . '/' . $dest))
-			{
-				JFolder::create(JPATH_ROOT . '/' . $dest);
-			}
-			// $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
-			// it bypasses FTP layer, and will fail if web server does not have write access to J! folders
-			$moveRes = JFolder::copy($componentFrontend . '/' . $docType, $dest, JPATH_SITE, true, false);
+            foreach ($docTypes as $docType) {
+                $dest = 'libraries/joomla/document/' . $docType;
 
-			if ($moveRes !== true)
-			{
-				echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrikfeed to ' . $dest . '</p>';
+                if (!JFolder::exists(JPATH_ROOT . '/' . $dest)) {
+                    JFolder::create(JPATH_ROOT . '/' . $dest);
+                }
+                // $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
+                // it bypasses FTP layer, and will fail if web server does not have write access to J! folders
+                $moveRes = JFolder::copy($componentFrontend . '/' . $docType, $dest, JPATH_SITE, true, false);
 
-				return false;
-			}
-		}
+                if ($moveRes !== true) {
+                    echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrikfeed to ' . $dest . '</p>';
+
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            $dest = 'libraries/src/Document';
+
+            if (!JFolder::exists(JPATH_ROOT . '/' . $dest)) {
+                JFolder::create(JPATH_ROOT . '/' . $dest);
+            }
+            // $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
+            // it bypasses FTP layer, and will fail if web server does not have write access to J! folders
+            $moveRes = JFolder::copy($componentFrontend . '/Document', $dest, JPATH_SITE, true, false);
+
+            if ($moveRes !== true) {
+                echo "<p style=\"color:red\">failed to copy " . $componentFrontend . '/Document to ' . $dest . '</p>';
+
+                return false;
+            }
+        }
 
 		$dest             = 'libraries/joomla/database/database';
 		$driverInstallLoc = $componentFrontend . '/dbdriver/';

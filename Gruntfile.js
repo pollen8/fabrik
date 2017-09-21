@@ -290,6 +290,7 @@ var refreshFiles = function () {
 	fs.mkdirsSync('./fabrik_build/output/component/site/fabrikfeed');
 	fs.mkdirsSync('./fabrik_build/output/component/site/pdf');
 	fs.mkdirsSync('./fabrik_build/output/component/site/partial');
+    fs.mkdirsSync('./fabrik_build/output/component/site/Document');
 	fs.mkdirsSync('./fabrik_build/output/component/media');
 	fs.mkdirsSync('./fabrik_build/output/library');
 
@@ -297,8 +298,12 @@ var refreshFiles = function () {
 	fs.copySync('libraries/joomla/document/fabrikfeed', './fabrik_build/output/component/site/fabrikfeed');
 	fs.copySync('libraries/joomla/document/pdf', './fabrik_build/output/component/site/pdf');
 	fs.copySync('libraries/joomla/document/partial', './fabrik_build/output/component/site/partial');
+    fs.copySync('libraries/joomla/src/Document/PartialDocument.ph', './fabrik_build/output/component/site/Document/PartialDocument.php');
+    fs.copySync('libraries/joomla/src/Document/PdfDocument.ph', './fabrik_build/output/component/site/Document/PdfDocument.php');
+    fs.copySync('libraries/joomla/src/Document/Renderer/Partial', './fabrik_build/output/component/site/Document/Renderer/Partial');
 
-	// Library folder
+
+    // Library folder
 	fs.copySync('libraries/fabrik', './fabrik_build/output/library');
 
 	fs.copySync('administrator/components/com_fabrik/', './fabrik_build/output/component/admin', {

@@ -14,6 +14,7 @@
 	<files>
 		<folder>vendor</folder>
 		<folder>libs</folder>
+		<folder>fabrik</folder>
 		<file>composer.json</file>
 		<file>include.php</file>
 	</files>

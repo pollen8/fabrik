@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Googlemap;
-use Fabrik\Helpers\Image;
+use Fabrik\Helpers\Image\Image;
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
@@ -769,7 +769,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		}
 
 		// Serve cached file from remote url
-		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$src .= implode('&', $attribs);
 		$folder = 'cache/com_fabrik/staticmaps/';
 		$file = implode('.', $attribs) . '.png';

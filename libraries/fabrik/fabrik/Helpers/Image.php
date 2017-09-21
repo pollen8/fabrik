@@ -69,7 +69,7 @@ class Image
         }
         catch (RuntimeException $e)
         {
-			throw new RuntimeException("Fabrik: can't load image class: $class");
+			throw new RuntimeException("Fabrik: can't load image class: $className");
 		}
 
 		return $class;
