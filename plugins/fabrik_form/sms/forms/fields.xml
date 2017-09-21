@@ -4,7 +4,7 @@
 	        name="params">
 		<fieldset name="plg-form-sms">
 			<field description="PLG_FORM_SMS_GATEWAY_DESC"
-			       directory="components/com_fabrik/helpers/sms_gateways"
+			       directory="libraries/fabrik/fabrik/Helpers/sms_gateways"
 			       hide_default="true"
 			       hide_none="true"
 			       label="PLG_FORM_SMS_GATEWAY_LABEL"
