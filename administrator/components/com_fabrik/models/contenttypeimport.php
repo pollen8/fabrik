@@ -86,6 +86,13 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 */
 	private $elementIds = array();
 
+    /**
+     * Array of missing element types
+     *
+     * @var array
+     */
+    protected $missingElementTypes = array();
+
 	/**
 	 * Constructor.
 	 *
@@ -604,7 +611,14 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			{
 				$elementData                  = FabrikContentTypHelper::domNodeAttributesToArray($element);
 				$elementData['params']        = FabrikContentTypHelper::nodeParams($element);
-				$elementModel                 = clone($pluginManager->loadPlugIn($elementData['plugin'], 'element'));
+				try {
+                    $elementModel = clone($pluginManager->loadPlugIn($elementData['plugin'], 'element'));
+                }
+                catch (RuntimeException $e)
+                {
+                    $this->missingElementTypes[] = $elementModel->element->plugin;
+                    continue;
+                }
 				$elementModel->element        = $elementModel->getDefaultProperties($elementData);
 				$elementModel->element->name  = $elementData['name'];
 				$elementModel->element->label = $elementData['label'];
@@ -860,7 +874,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			'match' => true,
 			'groups' => $groups,
 			'importGroups' => $contentTypeGroups,
-			'alteredGroups' => $alteredGroups
+			'alteredGroups' => $alteredGroups,
+            'missingElementTypes' => $this->missingElementTypes
 		);
 		try
 		{
