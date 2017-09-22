@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Lizt;
+use Fabrik\Helpers\Googlemap;
 
 jimport('joomla.application.component.model');
 
@@ -202,7 +203,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->show_radius          = $params->get('fb_gm_use_radius', '1') == '1' ? true : false;
 		$opts->radius_defaults      = (array) $params->get('fb_gm_radius_default');
 		$opts->radius_fill_colors   = (array) $params->get('fb_gm_radius_fill_color');
-		$opts->styles               = FabGoogleMapHelper::styleJs($params);
+		$opts->styles               = Googlemap::styleJs($params);
 		$config                     = JComponentHelper::getParams('com_fabrik');
 		$apiKey                     = $config->get('google_api_key', '');
 		$opts->key                  = empty($apiKey) ? false : $apiKey;
