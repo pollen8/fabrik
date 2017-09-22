@@ -2691,7 +2691,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!$this->validate())
 		{
-			$o->error = $this->_validationErr;
+			$o->error = $this->validationError;
 			echo json_encode($o);
 
 			return;
