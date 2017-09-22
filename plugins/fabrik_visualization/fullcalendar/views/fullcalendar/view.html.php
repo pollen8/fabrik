@@ -240,7 +240,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 			'deps' => array('fullcalendar', 'jquery')
 		);
 
-		$fcLangFolder = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/lang/';
+		$fcLangFolder = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/locale/';
 		
 		// Figure out what language we are using
 		$lang = strtolower(JFactory::getUser()->getParam('language', JFactory::getLanguage()->getTag()));
@@ -256,7 +256,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 				array('lib/moment/moment', 'fullcalendar')
 			);
 			$shim['viz/fullcalendar/fullcalendar']->deps[] = 'lang';
-			$paths['lang'] = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/lang/' . $lang;
+			$paths['lang'] = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/locale/' . $lang;
 		}
 
 		$model->getCustomJsAction($srcs);
