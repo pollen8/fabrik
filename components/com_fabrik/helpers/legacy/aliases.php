@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 class_alias('Fabrik\Helpers\Worker', 'FabrikWorker');
-class_alias('Fabrik\Helpers\Pdf', 'FabrikHelperPDF');
+class_alias('Fabrik\Helpers\Pdf', 'FabrikPDFHelper');
 class_alias('Fabrik\Helpers\ArrayHelper', 'FArrayHelper');
 class_alias('Fabrik\Helpers\StringHelper', 'FabrikString');
 class_alias('Fabrik\Helpers\Text', 'FText');
