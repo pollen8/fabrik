@@ -9,9 +9,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Pdf;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-//require_once COM_FABRIK_FRONTEND . '/helpers/pdf.php';
 
 /**
  * Send email upon form submission
@@ -169,7 +170,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
-		FabrikPDFHelper::fullPaths($message);
+		Pdf::fullPaths($message);
 
 
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
@@ -465,7 +466,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 
 			// if DOMPDF isn't installed, this will throw an exception which we should catch
-			$domPdf = FabrikPDFHelper::iniDomPdf(true);
+			$domPdf = Pdf::iniDomPdf(true);
 
 			$size = strtoupper($params->get('pdf_size', 'A4'));
 			$orientation = $params->get('pdf_orientation', 'portrait');
