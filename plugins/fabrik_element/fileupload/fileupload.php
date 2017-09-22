@@ -994,11 +994,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function validate($data = array(), $repeatCounter = 0)
 	{
-		$input                = $this->app->input;
-		$params               = $this->getParams();
-		$this->_validationErr = '';
-		$errors               = array();
-		$ok                   = true;
+		$input                 = $this->app->input;
+		$params                = $this->getParams();
+		$this->validationError = '';
+		$errors                = array();
+		$ok                    = true;
 
 		if ($this->isAjax())
         {
