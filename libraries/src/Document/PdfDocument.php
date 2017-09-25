@@ -13,6 +13,11 @@ defined('JPATH_PLATFORM') or die;
 //require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 
 use Fabrik\Helpers\Pdf;
+use Joomla\CMS\Cache\Cache;
+use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
 
 jimport('joomla.utilities.utility');
 
@@ -21,7 +26,7 @@ jimport('joomla.utilities.utility');
  *
  * @since  11.1
  */
-class PdfDocument extends Document
+class PdfDocument extends HtmlDocument
 {
 	/**
 	 * Array of Header `<link>` tags
@@ -206,13 +211,14 @@ class PdfDocument extends Document
 		// Testing using futural font.
 		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
 		$pdf = $this->engine;
-		parent::render();
-		$data = $this->getBuffer();
+
+		$data = parent::render();
 
 		Pdf::fullPaths($data);
 
 		/**
 		 * I think we need this to handle some HTML entities when rendering otherlanguages (like Polish),
+		 * but haven't tested it much
 		 * but haven't tested it much
 		 */
 		$data = mb_convert_encoding($data,'HTML-ENTITIES','UTF-8');
@@ -242,7 +248,7 @@ class PdfDocument extends Document
 	 *
 	 * @return  The output of the renderer
 	 */
-	/*
+
 	public function getBuffer($type = null, $name = null, $attribs = array())
 	{
 		if ($type == 'head' || $type == 'component')
@@ -254,5 +260,4 @@ class PdfDocument extends Document
 			return '';
 		}
 	}
-	*/
 }
