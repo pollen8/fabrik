@@ -1275,6 +1275,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$id      = $this->getHTMLId($repeatCounter);
 		$html    = array();
 
+        $layout                        = $this->getLayout('form-final');
+        $displayData                   = new stdClass;
+
 		if (!$formModel->isEditable() || !$this->isEditable())
 		{
 			// Read only element formatting...
@@ -1363,7 +1366,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			$this->addReadOnlyLinks($defaultLabels, $targetIds);
 
-			$html[] = count($defaultLabels) < 2 ? implode(' ', $defaultLabels) : '<ul><li>' . implode('<li>', $defaultLabels) . '</li></ul>';
+			$displayData->control = count($defaultLabels) < 2 ? implode(' ', $defaultLabels) : '<ul><li>' . implode('<li>', $defaultLabels) . '</li></ul>';
+            $displayData->frontEndSelect = '';
 		}
 		else
 		{
@@ -1391,18 +1395,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						break;
 				}
 
-				$html[] = $this->renderFrontEndSelect($data, $repeatCounter);
+				$displayData->control = implode("\n", $html);
+                $displayData->frontEndSelect = $this->renderFrontEndSelect($data, $repeatCounter);
 			}
 			elseif ($this->canView())
 			{
 				$oData = ArrayHelper::toObject($data);
-				$html[] = $this->renderListData($default, $oData);
+				$displayData->control = $this->renderListData($default, $oData);
+				$displayData->frontEndSelect = '';
 			}
 		}
 
-		$html[] = $this->renderDescription($tmp, $default);
+		$displayData->description = $this->renderDescription($tmp, $default);
 
-		return implode("\n", $html);
+        return $layout->render($displayData);
+		//return implode("\n", $html);
 	}
 
 	/**

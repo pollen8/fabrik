@@ -301,6 +301,7 @@ var refreshFiles = function () {
     fs.copySync('libraries/joomla/src/Document/PartialDocument.ph', './fabrik_build/output/component/site/Document/PartialDocument.php');
     fs.copySync('libraries/joomla/src/Document/PdfDocument.ph', './fabrik_build/output/component/site/Document/PdfDocument.php');
     fs.copySync('libraries/joomla/src/Document/Renderer/Partial', './fabrik_build/output/component/site/Document/Renderer/Partial');
+    fs.copySync('libraries/joomla/src/Document/Renderer/Pdf', './fabrik_build/output/component/site/Document/Renderer/Pdf');
 
 
     // Library folder
