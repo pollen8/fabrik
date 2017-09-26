@@ -30,6 +30,7 @@ use JForm;
 use JHtml;
 use JLanguageHelper;
 use JLanguageMultilang;
+use JLog;
 use JMail;
 use JMailHelper;
 use JModelLegacy;
