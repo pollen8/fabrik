@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
-//require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 /**
  * Fabrik Form Model
