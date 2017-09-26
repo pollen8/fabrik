@@ -545,7 +545,7 @@
 			
            		<field default="0"
                    		class="btn-group"
-                   		description="PLG_ELEMENT_FILEUPLOAD_FORCE_DOWNLOAD_SCRIPT_ON_EDIT"
+                   		description="PLG_ELEMENT_FILEUPLOAD_FORCE_DOWNLOAD_SCRIPT_ON_EDIT_DESC"
                    		label="PLG_ELEMENT_FILEUPLOAD_FORCE_DOWNLOAD_SCRIPT_ON_EDIT_LABEL"
                    		name="fu_force_download_script"
                    		type="radio">
