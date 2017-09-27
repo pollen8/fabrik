@@ -2315,16 +2315,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$v = $v->file;
 				}
 
-               			// use download script to show file rather than direct link to it
-               			if ($params->get('fu_force_download_script') !== '0' )
-               			{
-                    			$render->output = $this->downloadLink($v, $data, $repeatCounter, '');                       
-                		}
-                		else
-                		{
-                    			$render = $this->loadElement($v);
-                   			$render->render($this, $params, $v);                   
-               			}
+                // use download script to show file rather than direct link to it
+                if ($params->get('fu_force_download_script', '0') !== '0' )
+                {
+                        $render->output = $this->downloadLink($v, $data, $repeatCounter, '');
+                }
+                else
+                {
+                    $render = $this->loadElement($v);
+                    $render->render($this, $params, $v);
+                }
 
 				if ($render->output != '')
 				{
