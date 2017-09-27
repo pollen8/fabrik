@@ -67,12 +67,12 @@ class Imagegd2 extends Imagegd
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
-			$img    = imagecreatefromjpeg($origFile);
+			$img    = @imagecreatefromjpeg($origFile);
 			$header = "image/jpeg";
 		}
 		elseif ($ext == 'png')
 		{
-			$img    = imagecreatefrompng($origFile);
+			$img    = @imagecreatefrompng($origFile);
 			$header = "image/png";
 
 			// Only if your version of GD includes GIF support
@@ -81,7 +81,7 @@ class Imagegd2 extends Imagegd
 		{
 			if (function_exists('imagecreatefromgif'))
 			{
-				$img    = imagecreatefromgif($origFile);
+				$img    = @imagecreatefromgif($origFile);
 				$header = "image/gif";
 			}
 			else
