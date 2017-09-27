@@ -1381,122 +1381,257 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         }
                         data.fabrik_ajax = '1';
                         data.format = 'raw';
-                        var myajax = new Request.JSON({
-                            'url'   : this.form.action,
-                            'data'  : data,
-                            'method': this.options.ajaxmethod,
-                            onError : function (text, error) {
-                                fconsole(text + ': ' + error);
-                                this.showMainError(error);
-                                Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-                                this.toggleSubmit(true);
-                            }.bind(this),
 
-                            onFailure : function (xhr) {
-                                fconsole(xhr);
-                                Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
-                                this.toggleSubmit(true);
-                            }.bind(this),
-                            onComplete: function (json, txt) {
-                                this.toggleSubmit(true);
-                                if (typeOf(json) === 'null') {
-                                    // Stop spinner
-                                    Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-                                    fconsole('error in returned json', json, txt);
-                                    return;
+                        // if HTML 5, use FormData so we can do uploads from popups via AJAX
+                        if (window.FormData) {
+                            fd = new FormData(this.form);
+
+                            jQuery.each(data, function(k, v) {
+                                if (fd.has(k)) {
+                                    if (typeOf(fd.get(k)) !== 'object') {
+                                        fd.set(k, v);
+                                    }
                                 }
-                                // Process errors if there are some
-	                            jQuery(this.form.getElements('[data-role=fabrik_tab]')).removeClass('fabrikErrorGroup')
-                                var errfound = false;
-                                if (json.errors !== undefined) {
+                                else {
+                                    fd.set(k, v);
+                                }
+                            });
 
-                                    // For every element of the form update error message
-                                    $H(json.errors).each(function (errors, key) {
-                                        if (this.formElements.has(key) && errors.flatten().length > 0) {
-                                            errfound = true;
-                                            if (this.formElements[key].options.inRepeatGroup) {
-                                                for (e = 0; e < errors.length; e++) {
-                                                    if (errors[e].flatten().length > 0) {
-                                                        var this_key = key.replace(/(_\d+)$/, '_' + e);
-                                                        this._showElementError(errors[e], this_key);
+                            data = fd;
+                            var self = this;
+
+                            jQuery.ajax({
+                                'url': this.form.action,
+                                'data': data,
+                                'method': this.options.ajaxmethod,
+                                'processData': false,
+                                'contentType': false
+                            })
+                                .fail(function (text, error) {
+                                    fconsole(text + ': ' + error);
+                                    self.showMainError(error);
+                                    Fabrik.loader.stop(self.getBlock(), 'Error in returned JSON');
+                                    self.toggleSubmit(true);
+                                })
+                                .done(function (json, txt) {
+                                    json = JSON.parse(json);
+                                    self.toggleSubmit(true);
+                                    if (typeOf(json) === 'null') {
+                                        // Stop spinner
+                                        Fabrik.loader.stop(self.getBlock(), 'Error in returned JSON');
+                                        fconsole('error in returned json', json, txt);
+                                        return;
+                                    }
+                                    // Process errors if there are some
+                                    jQuery(self.form.getElements('[data-role=fabrik_tab]')).removeClass('fabrikErrorGroup')
+                                    var errfound = false;
+                                    if (json.errors !== undefined) {
+
+                                        // For every element of the form update error message
+                                        $H(json.errors).each(function (errors, key) {
+                                            if (self.formElements.has(key) && errors.flatten().length > 0) {
+                                                errfound = true;
+                                                if (self.formElements[key].options.inRepeatGroup) {
+                                                    for (e = 0; e < errors.length; e++) {
+                                                        if (errors[e].flatten().length > 0) {
+                                                            var this_key = key.replace(/(_\d+)$/, '_' + e);
+                                                            self._showElementError(errors[e], this_key);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else {
-                                                this._showElementError(errors, key);
-                                            }
-                                        }
-                                    }.bind(this));
-                                }
-                                // Update global status error
-                                this.updateMainError();
-
-                                if (errfound === false) {
-                                    var clear_form = false;
-                                    if (this.options.rowid === '' && btn.name !== 'apply') {
-                                        // We're submitting a new form - so always clear
-                                        clear_form = true;
-                                    }
-                                    Fabrik.loader.stop(this.getBlock());
-                                    var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
-                                    if (json.baseRedirect !== true) {
-                                        clear_form = json.reset_form;
-                                        if (json.url !== undefined) {
-                                            if (json.redirect_how === 'popup') {
-                                                var width = json.width ? json.width : 400;
-                                                var height = json.height ? json.height : 400;
-                                                var x_offset = json.x_offset ? json.x_offset : 0;
-                                                var y_offset = json.y_offset ? json.y_offset : 0;
-                                                var title = json.title ? json.title : '';
-                                                Fabrik.getWindow({
-                                                    'id'      : 'redirect',
-                                                    'type'    : 'redirect',
-                                                    contentURL: json.url,
-                                                    caller    : this.getBlock(),
-                                                    'height'  : height,
-                                                    'width'   : width,
-                                                    'offset_x': x_offset,
-                                                    'offset_y': y_offset,
-                                                    'title'   : title
-                                                });
-                                            }
-                                            else {
-                                                if (json.redirect_how === 'samepage') {
-                                                    window.open(json.url, '_self');
+                                                else {
+                                                    self._showElementError(errors, key);
                                                 }
-                                                else if (json.redirect_how === 'newpage') {
-                                                    window.open(json.url, '_blank');
+                                            }
+                                        });
+                                    }
+                                    // Update global status error
+                                    self.updateMainError();
+
+                                    if (errfound === false) {
+                                        var clear_form = false;
+                                        if (self.options.rowid === '' && btn.name !== 'apply') {
+                                            // We're submitting a new form - so always clear
+                                            clear_form = true;
+                                        }
+                                        Fabrik.loader.stop(self.getBlock());
+                                        var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
+                                        if (json.baseRedirect !== true) {
+                                            clear_form = json.reset_form;
+                                            if (json.url !== undefined) {
+                                                if (json.redirect_how === 'popup') {
+                                                    var width = json.width ? json.width : 400;
+                                                    var height = json.height ? json.height : 400;
+                                                    var x_offset = json.x_offset ? json.x_offset : 0;
+                                                    var y_offset = json.y_offset ? json.y_offset : 0;
+                                                    var title = json.title ? json.title : '';
+                                                    Fabrik.getWindow({
+                                                        'id'      : 'redirect',
+                                                        'type'    : 'redirect',
+                                                        contentURL: json.url,
+                                                        caller    : self.getBlock(),
+                                                        'height'  : height,
+                                                        'width'   : width,
+                                                        'offset_x': x_offset,
+                                                        'offset_y': y_offset,
+                                                        'title'   : title
+                                                    });
+                                                }
+                                                else {
+                                                    if (json.redirect_how === 'samepage') {
+                                                        window.open(json.url, '_self');
+                                                    }
+                                                    else if (json.redirect_how === 'newpage') {
+                                                        window.open(json.url, '_blank');
+                                                    }
+                                                }
+                                            } else {
+                                                if (!json.suppressMsg) {
+                                                    alert(savedMsg);
                                                 }
                                             }
                                         } else {
+                                            clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
                                             if (!json.suppressMsg) {
                                                 alert(savedMsg);
                                             }
                                         }
+                                        // Query the list to get the updated data
+                                        Fabrik.fireEvent('fabrik.form.submitted', [self, json]);
+                                        if (btn.name !== 'apply') {
+                                            if (clear_form) {
+                                                self.clearForm();
+                                            }
+                                            // If the form was loaded in a Fabrik.Window close the window.
+                                            if (Fabrik.Windows[self.options.fabrik_window_id]) {
+                                                Fabrik.Windows[self.options.fabrik_window_id].close();
+                                            }
+                                        }
                                     } else {
-                                        clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-                                        if (!json.suppressMsg) {
-                                            alert(savedMsg);
-                                        }
+                                        Fabrik.fireEvent('fabrik.form.submit.failed', [self, json]);
+                                        // Stop spinner
+                                        Fabrik.loader.stop(self.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
                                     }
-                                    // Query the list to get the updated data
-                                    Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
-                                    if (btn.name !== 'apply') {
-                                        if (clear_form) {
-                                            this.clearForm();
-                                        }
-                                        // If the form was loaded in a Fabrik.Window close the window.
-                                        if (Fabrik.Windows[this.options.fabrik_window_id]) {
-                                            Fabrik.Windows[this.options.fabrik_window_id].close();
-                                        }
+                                });
+                        }
+                        else {
+                            var myajax = new Request.JSON({
+                                'url': this.form.action,
+                                'data': data,
+                                'method': this.options.ajaxmethod,
+                                onError: function (text, error) {
+                                    fconsole(text + ': ' + error);
+                                    this.showMainError(error);
+                                    Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+                                    this.toggleSubmit(true);
+                                }.bind(this),
+
+                                onFailure: function (xhr) {
+                                    fconsole(xhr);
+                                    Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
+                                    this.toggleSubmit(true);
+                                }.bind(this),
+                                onComplete: function (json, txt) {
+                                    this.toggleSubmit(true);
+                                    if (typeOf(json) === 'null') {
+                                        // Stop spinner
+                                        Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+                                        fconsole('error in returned json', json, txt);
+                                        return;
                                     }
-                                } else {
-                                    Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
-                                    // Stop spinner
-                                    Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
-                                }
-                            }.bind(this)
-                        }).send();
+                                    // Process errors if there are some
+                                    jQuery(this.form.getElements('[data-role=fabrik_tab]')).removeClass('fabrikErrorGroup')
+                                    var errfound = false;
+                                    if (json.errors !== undefined) {
+
+                                        // For every element of the form update error message
+                                        $H(json.errors).each(function (errors, key) {
+                                            if (this.formElements.has(key) && errors.flatten().length > 0) {
+                                                errfound = true;
+                                                if (this.formElements[key].options.inRepeatGroup) {
+                                                    for (e = 0; e < errors.length; e++) {
+                                                        if (errors[e].flatten().length > 0) {
+                                                            var this_key = key.replace(/(_\d+)$/, '_' + e);
+                                                            this._showElementError(errors[e], this_key);
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    this._showElementError(errors, key);
+                                                }
+                                            }
+                                        }.bind(this));
+                                    }
+                                    // Update global status error
+                                    this.updateMainError();
+
+                                    if (errfound === false) {
+                                        var clear_form = false;
+                                        if (this.options.rowid === '' && btn.name !== 'apply') {
+                                            // We're submitting a new form - so always clear
+                                            clear_form = true;
+                                        }
+                                        Fabrik.loader.stop(this.getBlock());
+                                        var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
+                                        if (json.baseRedirect !== true) {
+                                            clear_form = json.reset_form;
+                                            if (json.url !== undefined) {
+                                                if (json.redirect_how === 'popup') {
+                                                    var width = json.width ? json.width : 400;
+                                                    var height = json.height ? json.height : 400;
+                                                    var x_offset = json.x_offset ? json.x_offset : 0;
+                                                    var y_offset = json.y_offset ? json.y_offset : 0;
+                                                    var title = json.title ? json.title : '';
+                                                    Fabrik.getWindow({
+                                                        'id': 'redirect',
+                                                        'type': 'redirect',
+                                                        contentURL: json.url,
+                                                        caller: this.getBlock(),
+                                                        'height': height,
+                                                        'width': width,
+                                                        'offset_x': x_offset,
+                                                        'offset_y': y_offset,
+                                                        'title': title
+                                                    });
+                                                }
+                                                else {
+                                                    if (json.redirect_how === 'samepage') {
+                                                        window.open(json.url, '_self');
+                                                    }
+                                                    else if (json.redirect_how === 'newpage') {
+                                                        window.open(json.url, '_blank');
+                                                    }
+                                                }
+                                            } else {
+                                                if (!json.suppressMsg) {
+                                                    alert(savedMsg);
+                                                }
+                                            }
+                                        } else {
+                                            clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
+                                            if (!json.suppressMsg) {
+                                                alert(savedMsg);
+                                            }
+                                        }
+                                        // Query the list to get the updated data
+                                        Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
+                                        if (btn.name !== 'apply') {
+                                            if (clear_form) {
+                                                this.clearForm();
+                                            }
+                                            // If the form was loaded in a Fabrik.Window close the window.
+                                            if (Fabrik.Windows[this.options.fabrik_window_id]) {
+                                                Fabrik.Windows[this.options.fabrik_window_id].close();
+                                            }
+                                        }
+                                    } else {
+                                        Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
+                                        // Stop spinner
+                                        Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
+                                    }
+                                }.bind(this)
+                            }).send();
+                        }
                     }
                 }
                 Fabrik.fireEvent('fabrik.form.submit.end', [this]);

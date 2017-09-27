@@ -13,9 +13,7 @@ namespace Fabrik\Helpers;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Joomla\CMS\Factory;
-use Fabrik\Helpers\StringHelper;
+use JFactory;
 
 /**
  * Element Helper class
@@ -89,8 +87,8 @@ class Element
 		$pluginManager = Worker::getPluginManager();
 		$model = $pluginManager->getElementPlugin($elementId);
 		$listModel = $model->getListModel();
-		$listId = $listModel->getId();
-		$key = 'com_fabrik.list' . $listId . '_com_fabrik_' . $listId . '.filter';
+        $identifier = $listModel->getRenderContext();
+        $key = 'com_fabrik.list' . $identifier . '.filter';
 		$filters = ArrayHelper::fromObject($app->getUserState($key));
 		$elementIds = (array) ArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
