@@ -75,7 +75,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 
         // The fabrikfeed doc type has been deprecated.  For backward compat, change it use standard J! feed instead
-        if (version_compare($version->RELEASE, '3.8', '<')) {
+        if (version_compare($version->RELEASE, '3.8', '>=')) {
             if ($app->input->get('format') === 'fabrikfeed') {
                 $app->input->set('format', 'feed');
             }
