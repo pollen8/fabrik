@@ -109,7 +109,7 @@
 					</fields>
 				</field>
 
-				<field name="prefilters" class="modal-prefilter" icon="filter" description="MOD_FABRIK_LIST_PREFILTERS_DESC" label="MOD_FABRIK_LIST_PREFILTERS_LABEL" type="fabrikmodalrepeat">
+				<field name="prefilters" class="modal-prefilter" icon="filter" description="MOD_FABRIK_LIST_PREFILTERS_DESC" label="MOD_FABRIK_LIST_PREFILTERS_LABEL" type="fabrikmodalrepeat" filter="raw">
 
 					<fields name="params">
 						<fieldset modal="true" name="prefilters_modal" repeat="true">
