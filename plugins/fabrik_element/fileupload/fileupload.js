@@ -240,6 +240,24 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
             }
         },
 
+        decreaseName: function (delIndex) {
+            var f = this.getOrigField();
+            if (typeOf(f) !== 'null') {
+                f.name = this._decreaseName(f.name, delIndex);
+                f.id = this._decreaseId(f.id, delIndex);
+            }
+            return this.parent(delIndex);
+        },
+
+        getOrigField: function () {
+            var p = this.element.getParent('.fabrikElement');
+            var f = p.getElement('input[name^=' + this.origId + '_orig]');
+            if (typeOf(f) === 'null') {
+                f = p.getElement('input[id^=' + this.origId + '_orig]');
+            }
+            return f;
+        },
+
         /**
          * Create a hidden input which will tell fabrik, upon form submission, to delete the file
          *
