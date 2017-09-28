@@ -275,6 +275,20 @@ class PlgSystemFabrik extends JPlugin
 		$this->setBigSelects();
 	}
 
+    /**
+     * If a command line like finder_indexer.php is run, it won't call onAfterInitialise, and will then run content
+     * plugins, and ours will bang out because "Fabrik system plugin has not been run".  So onStartIndex, initialize
+     * our plugin.
+     *
+     * @since   3.8
+     *
+     * @return  void
+     */
+	public function onStartIndex()
+    {
+        $this->onAfterInitialise();
+    }
+
 	/**
 	 * From Global configuration setting, set big select for main J database
 	 *

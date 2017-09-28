@@ -1,5 +1,6 @@
 .buildpath
 .project
+.idea
 .settings/
 .tx/
 *.txt
