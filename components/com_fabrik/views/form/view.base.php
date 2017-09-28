@@ -926,6 +926,13 @@ class FabrikViewFormBase extends FabrikView
 		$fields[]  = '<input type="hidden" name="package" value="' . $this->app->getUserState('com_fabrik.package', 'fabrik') . '" />';
 		$fields[]  = '<input type="hidden" name="packageId" value="' . $model->packageId . '" />';
 
+		/*
+		if ($input->get('fabrikdebug', '') === '2')
+        {
+            $fields[]  = '<input type="hidden" name="fabrikdebug" value="2" />';
+        }
+		*/
+
 		// Allow things like join element with frontend Add to squash redirects
 		if ($input->getInt('noredirect', 0) !== 0)
 		{
