@@ -76,6 +76,10 @@ class Pdf
 		{
 			$doc = new \DOMDocument();
 			$doc->strictErrorChecking = FALSE;
+
+			// prepend encoding, otherwise UTF-8 will get munged into special chars
+            $data = '<?xml version="1.0" encoding="UTF-8"?>' . $data;
+
 			$doc->loadHTML($data);
 			$ok = simplexml_import_dom($doc);
 
