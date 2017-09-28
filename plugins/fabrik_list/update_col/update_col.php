@@ -490,6 +490,13 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 		else
 		{
 			$to = $params->get('update_email_to', '');
+
+
+            if ($params->get('update_email_to_eval', '0') === '1')
+            {
+                $to = @eval($to);
+                FabrikWorker::logEval($to, 'Caught exception on eval in updatecol::emailTo() : %s');
+            }
 		}
 
 		return $to;
