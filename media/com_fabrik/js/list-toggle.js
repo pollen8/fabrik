@@ -56,16 +56,16 @@ define(['jquery'], function (jQuery) {
             state = state === 'open' ? 'close' : 'open';
 
             if (state === 'open') {
-                document.getElements('.fabrik___heading .' + col).show();
-                document.getElements('.fabrikFilterContainer .' + col).show();
-                document.getElements('.fabrik_row  .' + col).show();
-                document.getElements('.fabrik_calculations  .' + col).show();
+                jQuery('.fabrik___heading .' + col).show();
+                jQuery('.fabrikFilterContainer .' + col).show();
+                jQuery('.fabrik_row  .' + col).show();
+                jQuery('.fabrik_calculations  .' + col).show();
                 muted = '';
             } else {
-                document.getElements('.fabrik___heading .' + col).hide();
-                document.getElements('.fabrikFilterContainer .' + col).hide();
-                document.getElements('.fabrik_row  .' + col).hide();
-                document.getElements('.fabrik_calculations  .' + col).hide();
+                jQuery('.fabrik___heading .' + col).hide();
+                jQuery('.fabrikFilterContainer .' + col).hide();
+                jQuery('.fabrik_row  .' + col).hide();
+                jQuery('.fabrik_calculations  .' + col).hide();
                 muted = ' muted';
             }
 
