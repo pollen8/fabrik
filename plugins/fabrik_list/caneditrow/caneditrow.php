@@ -49,6 +49,8 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	public function onCanEdit($row)
 	{
 		$params = $this->getParams();
+        $model = $this->getModel();
+        $formModel = $model->getFormModel();
 
 		// If $row is null, we were called from the list's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
@@ -65,6 +67,14 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 				return true;
 			}
 		}
+
+		if ($params->get('caneditrow_on_failed_validation', '1') === '0')
+        {
+            if ($formModel->failedValidation())
+            {
+                return true;
+            }
+        }
 
 		if (is_array($row[0]))
 		{
