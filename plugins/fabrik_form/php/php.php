@@ -66,7 +66,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 			if ($this->html === false)
 			{
-				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
+				return false;
 			}
 		}
 
@@ -193,7 +193,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		{
 			if ($this->_runPHP() === false)
 			{
-				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
+				return false;
 			}
 		}
 
@@ -215,7 +215,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		{
 			if ($this->_runPHP(null, $groups) === false)
 			{
-				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
+				return false;
 			}
 		}
 
@@ -237,7 +237,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		{
 			if ($this->_runPHP(null, $groups) === false)
 			{
-				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
+				return false;
 			}
 		}
 
