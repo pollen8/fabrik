@@ -2519,7 +2519,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$id2                           = $this->getFilterHtmlId(1);
 		$opts                          = new stdClass;
 		$opts->calendarSetup           = $this->_CalendarJSOpts($id);
-		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
+		$opts->calendarSetup->ifFormat = $params->get('date_table_format', 'Y-m-d');
 		$opts->calendarSetup->ifFormat = FabDate::dateFormatToStrftimeFormat($opts->calendarSetup->ifFormat);
 		$opts->type    = $type;
 		$opts->ids     = $type == 'field' ? array($id) : array($id, $id2);
