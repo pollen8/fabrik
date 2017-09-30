@@ -25,162 +25,95 @@ jimport('joomla.application.component.model');
 class FabrikFEModelGroup extends FabModel
 {
 	/**
-	 * Parameters
-	 *
-	 * @var Registry
-	 */
-	protected $params = null;
-
-	/**
-	 * Id of group to load
-	 *
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * Group table
-	 *
-	 * @var JTable
-	 */
-	protected $group = null;
-
-	/**
-	 * Form model
-	 *
-	 * @var FabrikFEModelForm
-	 */
-	protected $form = null;
-
-	/**
-	 * List model
-	 *
-	 * @var FabrikFEModelList
-	 */
-	protected $table = null;
-
-	/**
-	 * Join model
-	 *
-	 * @var FabrikFEModelJoin
-	 */
-	protected $joinModel = null;
-
-	/**
-	 * Save this so we can set endRow on previous element if it was hidden and this element isn't.
-	 * @var null
-	 */
-	private $setColumnCssLastElement = null;
-
-	/**
 	 * Element plugins
 	 *
 	 * @var array
 	 */
 	public $elements = null;
-
 	/**
 	 * Published element plugins
 	 *
 	 * @var array
 	 */
 	public $publishedElements = null;
-
-	/**
-	 * Published element plugins shown in the list
-	 *
-	 * @var array
-	 */
-	protected $publishedListElements = null;
-
 	/**
 	 * How many times the group's data is repeated
 	 *
 	 * @var int
 	 */
 	public $repeatTotal = null;
-
+	/**
+	 * Parameters
+	 *
+	 * @var Registry
+	 */
+	protected $params = null;
+	/**
+	 * Id of group to load
+	 *
+	 * @var int
+	 */
+	protected $id = null;
+	/**
+	 * Group table
+	 *
+	 * @var JTable
+	 */
+	protected $group = null;
+	/**
+	 * Form model
+	 *
+	 * @var FabrikFEModelForm
+	 */
+	protected $form = null;
+	/**
+	 * List model
+	 *
+	 * @var FabrikFEModelList
+	 */
+	protected $table = null;
+	/**
+	 * Join model
+	 *
+	 * @var FabrikFEModelJoin
+	 */
+	protected $joinModel = null;
+	/**
+	 * Published element plugins shown in the list
+	 *
+	 * @var array
+	 */
+	protected $publishedListElements = null;
 	/**
 	 * Form ids that the group is in (maximum of one value)
 	 *
 	 * @var array
 	 */
 	protected $formsIamIn = null;
-
 	/**
 	 * Can the group be viewed (set to false if no elements are visible in the group
 	 *
 	 * @var bool
 	 */
 	protected $canView = null;
-
 	/**
 	 * Can the group be edited (if false, will override element ACL's and make all elements read only)
 	 *
 	 * @var bool
 	 */
 	protected $canEdit = null;
+	protected $groupProperties = null;
 
 	/*
 	 * cache for properties object
 	 *
 	 * @var object
 	 */
-	protected $groupProperties = null;
-
 	/**
-	 * Method to set the group id
-	 *
-	 * @param   int  $id  group ID number
-	 *
-	 * @return  void
+	 * Save this so we can set endRow on previous element if it was hidden and this element isn't.
+	 * @var null
 	 */
-	public function setId($id)
-	{
-		// Set new group ID
-		$this->id = $id;
-	}
-
-	/**
-	 * Get group id
-	 *
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->get('id');
-	}
-
-	/**
-	 * Get group table
-	 *
-	 * @return  FabrikTableGroup
-	 */
-	public function &getGroup()
-	{
-		if (is_null($this->group))
-		{
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-			$this->group = FabTable::getInstance('Group', 'FabrikTable');
-			$this->group->load($this->getId());
-		}
-
-		return $this->group;
-	}
-
-	/**
-	 * Set the group row
-	 *
-	 * @param   FabrikTableGroup  $group  Fabrik table
-	 *
-	 * @since   3.0.5
-	 *
-	 * @return  void
-	 */
-	public function setGroup($group)
-	{
-		$this->group = $group;
-	}
+	private $setColumnCssLastElement = null;
 
 	/**
 	 * Can the user edit the group
@@ -225,6 +158,115 @@ class FabrikFEModelGroup extends FabModel
 		$this->canEdit = $pluginCanEdit;
 
 		return $this->canEdit;
+	}
+
+	/**
+	 * Get group params
+	 *
+	 * @return  object	params
+	 */
+	public function &getParams()
+	{
+		if (!$this->params)
+		{
+			$this->params = new Registry($this->getGroup()->params);
+		}
+
+		return $this->params;
+	}
+
+	/**
+	 * Get group table
+	 *
+	 * @return  FabrikTableGroup
+	 */
+	public function &getGroup()
+	{
+		if (is_null($this->group))
+		{
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
+			$this->group = FabTable::getInstance('Group', 'FabrikTable');
+			$this->group->load($this->getId());
+		}
+
+		return $this->group;
+	}
+
+	/**
+	 * Set the group row
+	 *
+	 * @param   FabrikTableGroup  $group  Fabrik table
+	 *
+	 * @since   3.0.5
+	 *
+	 * @return  void
+	 */
+	public function setGroup($group)
+	{
+		$this->group = $group;
+	}
+
+	/**
+	 * Get group id
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->get('id');
+	}
+
+	/**
+	 * Method to set the group id
+	 *
+	 * @param   int  $id  group ID number
+	 *
+	 * @return  void
+	 */
+	public function setId($id)
+	{
+		// Set new group ID
+		$this->id = $id;
+	}
+
+	/**
+	 * Get the groups form model
+	 *
+	 * @return FabrikFEModelForm form model
+	 */
+	public function getFormModel()
+	{
+		if (!isset($this->form))
+		{
+			$formIds = $this->getFormsIamIn();
+			$formId = empty($formIds) ? 0 : $formIds[0];
+			$this->form = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+			$this->form->setId($formId);
+			$this->form->getForm();
+			$this->form->getlistModel();
+		}
+
+		return $this->form;
+	}
+
+	/**
+	 * Get an array of forms that the group is in
+	 * NOTE: now a group can only belong to one form
+	 *
+	 * @return  array  form ids
+	 */
+	public function getFormsIamIn()
+	{
+		if (!isset($this->formsIamIn))
+		{
+			$db = FabrikWorker::getDbo(true);
+			$query = $db->getQuery(true);
+			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
+			$db->setQuery($query);
+			$this->formsIamIn = $db->loadColumn();
+		}
+
+		return $this->formsIamIn;
 	}
 
 	/**
@@ -310,37 +352,45 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * Set the context in which the element occurs
+	 * Get an array of published elements
 	 *
-	 * @param   object  $formModel  Form model
-	 * @param   object  $listModel  List model
+	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
 	 *
-	 * @return void
+	 * @return  PlgFabrik_Element[]	published element objects
 	 */
-	public function setContext($formModel, $listModel)
+	public function getPublishedElements()
 	{
-		$this->form = $formModel;
-		$this->table = $listModel;
-	}
-
-	/**
-	 * Get an array of forms that the group is in
-	 * NOTE: now a group can only belong to one form
-	 *
-	 * @return  array  form ids
-	 */
-	public function getFormsIamIn()
-	{
-		if (!isset($this->formsIamIn))
+		if (!isset($this->publishedElements))
 		{
-			$db = FabrikWorker::getDbo(true);
-			$query = $db->getQuery(true);
-			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
-			$db->setQuery($query);
-			$this->formsIamIn = $db->loadColumn();
+			$this->publishedElements = array();
 		}
 
-		return $this->formsIamIn;
+		$ids = (array) $this->app->input->get('elementid', array(), 'array');
+		$sig = implode('.', $ids);
+		if ($sig === '')
+		{
+			$sig = 'default';
+		}
+		if (!array_key_exists($sig, $this->publishedElements))
+		{
+			$this->publishedElements[$sig] = array();
+			$elements = (array) $this->getMyElements();
+
+			foreach ($elements as $elementModel)
+			{
+				$element = $elementModel->getELement();
+
+				if ($element->published == 1)
+				{
+					if (empty($ids) || in_array($element->id, $ids))
+					{
+						$this->publishedElements[$sig][] = $elementModel;
+					}
+				}
+			}
+		}
+
+		return $this->publishedElements[$sig];
 	}
 
 	/**
@@ -370,8 +420,8 @@ class FabrikFEModelGroup extends FabModel
 				 * $$$ rob Using @ for now as in inline edit in podion you get multiple notices when
 				* saving the status element
 				*/
-				/* Bauer note: this error prevents adding new elements 
-				 * in a new list (where Id is not yet known) in php 7 
+				/* Bauer note: this error prevents adding new elements
+				 * in a new list (where Id is not yet known) in php 7
 				 */
 				// $this->elements = @$allGroups[$this->getId()]->elements;
 				$thisId = $this->getId();
@@ -382,6 +432,20 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $this->elements;
+	}
+
+	/**
+	 * Set the context in which the element occurs
+	 *
+	 * @param   object  $formModel  Form model
+	 * @param   object  $listModel  List model
+	 *
+	 * @return void
+	 */
+	public function setContext($formModel, $listModel)
+	{
+		$this->form = $formModel;
+		$this->table = $listModel;
 	}
 
 	/**
@@ -555,78 +619,6 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * Get the groups form model
-	 *
-	 * @return FabrikFEModelForm form model
-	 */
-	public function getFormModel()
-	{
-		if (!isset($this->form))
-		{
-			$formIds = $this->getFormsIamIn();
-			$formId = empty($formIds) ? 0 : $formIds[0];
-			$this->form = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-			$this->form->setId($formId);
-			$this->form->getForm();
-			$this->form->getlistModel();
-		}
-
-		return $this->form;
-	}
-
-	/**
-	 * Get the groups list model
-	 *
-	 * @return  FabrikFEModelList	list model
-	 */
-	public function getlistModel()
-	{
-		return $this->getFormModel()->getlistModel();
-	}
-
-	/**
-	 * Get an array of published elements
-	 *
-	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
-	 *
-	 * @return  PlgFabrik_Element[]	published element objects
-	 */
-	public function getPublishedElements()
-	{
-		if (!isset($this->publishedElements))
-		{
-			$this->publishedElements = array();
-		}
-
-		$ids = (array) $this->app->input->get('elementid', array(), 'array');
-		$sig = implode('.', $ids);
-		if ($sig === '')
-		{
-			$sig = 'default';
-		}
-		if (!array_key_exists($sig, $this->publishedElements))
-		{
-			$this->publishedElements[$sig] = array();
-			$elements = (array) $this->getMyElements();
-
-			foreach ($elements as $elementModel)
-			{
-				$element = $elementModel->getELement();
-
-				if ($element->published == 1)
-				{
-					if (empty($ids) || in_array($element->id, $ids))
-					{
-						$this->publishedElements[$sig][] = $elementModel;
-					}
-				}
-			}
-		}
-
-		return $this->publishedElements[$sig];
-	}
-
-	/**
 	 * Get a list of all elements which are set to show in list or
 	 * are set to include in list query
 	 *
@@ -773,6 +765,47 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
+	 * Get the group's associated join model
+	 *
+	 * @return  FabrikFEModelJoin  join model
+	 */
+	public function getJoinModel()
+	{
+		$group = $this->getGroup();
+
+		if (is_null($this->joinModel))
+		{
+			$this->joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
+			$this->joinModel->setId($group->join_id);
+			$js = $this->getListModel()->getJoins();
+
+			// $$$ rob set join models data from preloaded table joins - reduced load time
+			for ($x = 0; $x < count($js); $x++)
+			{
+				if ($js[$x]->id == $group->join_id && $js[$x]->element_id == 0)
+				{
+					$this->joinModel->setData($js[$x]);
+					break;
+				}
+			}
+
+			$this->joinModel->getJoin();
+		}
+
+		return $this->joinModel;
+	}
+
+	/**
+	 * Get the groups list model
+	 *
+	 * @return  FabrikFEModelList	list model
+	 */
+	public function getlistModel()
+	{
+		return $this->getFormModel()->getlistModel();
+	}
+
+	/**
 	 * Get published elements to show in list
 	 *
 	 * @return  PlgFabrik_Element[]
@@ -829,10 +862,148 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @return  bool
 	 */
-	public function canRepeat()
+	public function canCopyElementValues()
 	{
-		return $this->getParams()->get('repeat_group_button');
+		$params = $this->getParams();
+
+		return $params->get('repeat_copy_element_values', '0') === '1';
 	}
+
+	/**
+	 * Get the group's join_id
+	 *
+	 * @return  mixed   join_id, or false if not a join
+	 */
+	public function getJoinId()
+	{
+		if (!$this->isJoin())
+		{
+			return false;
+		}
+
+		return $this->getGroup()->join_id;
+	}
+
+	/**
+	 * Is the group a join?
+	 *
+	 * @return  bool
+	 */
+	public function isJoin()
+	{
+		return $this->getGroup()->is_join;
+	}
+
+	/**
+	 * Make a group object to be used in the form view. Object contains
+	 * group display properties
+	 *
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  object	group display properties
+	 */
+    public function getGroupProperties(&$formModel)
+    {
+	    if (!isset($this->groupProperties))
+	    {
+		    $w          = new FabrikWorker;
+		    $input      = $this->app->input;
+		    $group      = new stdClass;
+		    $groupTable = $this->getGroup();
+		    $params     = $this->getParams();
+		    $view       = $input->get('view');
+
+		    if (!isset($this->editable))
+		    {
+			    $this->editable = $formModel->isEditable();
+		    }
+
+		    if ($this->editable)
+		    {
+			    // If all of the groups elements are not editable then set the group to uneditable
+			    $elements = $this->getPublishedElements();
+			    $editable = false;
+
+			    foreach ($elements as $element)
+			    {
+				    if ($element->canUse())
+				    {
+					    $editable = true;
+				    }
+			    }
+
+			    if (!$editable)
+			    {
+				    $this->editable = false;
+			    }
+		    }
+
+		    $group->editable  = $this->editable;
+		    $group->canRepeat = $params->get('repeat_group_button', '0');
+		    $showGroup        = $params->def('repeat_group_show_first', '1');
+		    $pages            = $formModel->getPages();
+		    $startPage        = isset($formModel->sessionModel->last_page) ? $formModel->sessionModel->last_page : 0;
+		    /**
+		     * $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been
+		     * changed to remove (or change) paging, but user still has session state set.  So it was throwing
+		     * a PHP 'undefined index' notice.
+		     */
+
+		    if (array_key_exists($startPage, $pages) && is_array($pages[$startPage])
+			    && !in_array($groupTable->id, $pages[$startPage]) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
+		    {
+			    $groupTable->css .= ";display:none;";
+		    }
+
+		    $group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
+		    $group->id  = $groupTable->id;
+
+		    $label = $input->getString('group' . $group->id . '_label', $groupTable->label);
+
+		    if (JString::stristr($label, "{Add/Edit}"))
+		    {
+			    $replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
+			    $label   = str_replace("{Add/Edit}", $replace, $label);
+		    }
+
+		    $groupTable->label       = $label;
+		    $group->title            = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
+		    $group->title            = FText::_($group->title);
+		    $group->name             = $groupTable->name;
+		    $group->displaystate     = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
+		    $group->maxRepeat        = (int) $params->get('repeat_max');
+		    $group->minRepeat        = $params->get('repeat_min', '') === '' ? 1 : (int) $params->get('repeat_min', '');
+		    $group->numRepeatElement = $params->get('repeat_num_element', '');
+		    $group->showMaxRepeats   = $params->get('show_repeat_max', '0') == '1';
+		    $group->minMaxErrMsg     = $params->get('repeat_error_message', '');
+		    $group->minMaxErrMsg     = FText::_($group->minMaxErrMsg);
+		    $group->canAddRepeat     = $this->canAddRepeat();
+		    $group->canDeleteRepeat  = $this->canDeleteRepeat();
+		    $intro                   = FabrikString::translate($params->get('intro'));
+		    $group->intro            = $formModel->parseIntroOutroPlaceHolders($intro, $group->editable, $formModel->isNewRecord());
+		    $outro                   = FText::_($params->get('outro'));
+		    $group->outro            = $formModel->parseIntroOutroPlaceHolders($outro, $group->editable, $formModel->isNewRecord());
+		    $group->columns          = $params->get('group_columns', 1);
+		    $group->splitPage        = $this->isSplitPage();
+		    $group->showLegend       = $this->showLegend($group);
+		    $group->labels           = $params->get('labels_above', -1);
+		    $group->dlabels          = $params->get('labels_above_details', -1);
+		    $group->class            = array();
+
+		    if ($this->canRepeat())
+		    {
+			    $group->tmpl = $params->get('repeat_template', 'repeatgroup');
+		    }
+		    else
+		    {
+			    $group->tmpl = 'group';
+		    }
+
+		    $this->groupProperties = $group;
+	    }
+
+	    return $this->groupProperties;
+    }
 
 	/**
 	 * Can the user add a repeat group
@@ -853,6 +1024,16 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $ok;
+	}
+
+	/**
+	 * Is the group a repeat group
+	 *
+	 * @return  bool
+	 */
+	public function canRepeat()
+	{
+		return $this->getParams()->get('repeat_group_button');
 	}
 
 	/**
@@ -882,89 +1063,6 @@ class FabrikFEModelGroup extends FabModel
 		return $ok;
 	}
 
-	/**
-	 * Is the group a repeat group
-	 *
-	 * @return  bool
-	 */
-	public function canCopyElementValues()
-	{
-		$params = $this->getParams();
-
-		return $params->get('repeat_copy_element_values', '0') === '1';
-	}
-
-	/**
-	 * Is the group a join?
-	 *
-	 * @return  bool
-	 */
-	public function isJoin()
-	{
-		return $this->getGroup()->is_join;
-	}
-
-	/**
-	 * Get the group's join_id
-	 *
-	 * @return  mixed   join_id, or false if not a join
-	 */
-	public function getJoinId()
-	{
-		if (!$this->isJoin())
-		{
-			return false;
-		}
-
-		return $this->getGroup()->join_id;
-	}
-
-	/**
-	 * Get the group's associated join model
-	 *
-	 * @return  FabrikFEModelJoin  join model
-	 */
-	public function getJoinModel()
-	{
-		$group = $this->getGroup();
-
-		if (is_null($this->joinModel))
-		{
-			$this->joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
-			$this->joinModel->setId($group->join_id);
-			$js = $this->getListModel()->getJoins();
-
-			// $$$ rob set join models data from preloaded table joins - reduced load time
-			for ($x = 0; $x < count($js); $x++)
-			{
-				if ($js[$x]->id == $group->join_id && $js[$x]->element_id == 0)
-				{
-					$this->joinModel->setData($js[$x]);
-					break;
-				}
-			}
-
-			$this->joinModel->getJoin();
-		}
-
-		return $this->joinModel;
-	}
-
-	/**
-	 * Get group params
-	 *
-	 * @return  object	params
-	 */
-	public function &getParams()
-	{
-		if (!$this->params)
-		{
-			$this->params = new Registry($this->getGroup()->params);
-		}
-
-		return $this->params;
-	}
-
 	public function isSplitPage()
     {
         $params = $this->getParams();
@@ -989,107 +1087,31 @@ class FabrikFEModelGroup extends FabModel
 
         return $splitPage;
     }
-
-	/**
-	 * Make a group object to be used in the form view. Object contains
-	 * group display properties
-	 *
-	 * @param   object  &$formModel  form model
-	 *
-	 * @return  object	group display properties
-	 */
-	public function getGroupProperties(&$formModel)
-	{
-	    if (!isset($this->groupProperties)) {
-            $w = new FabrikWorker;
-            $input = $this->app->input;
-            $group = new stdClass;
-            $groupTable = $this->getGroup();
-            $params = $this->getParams();
-            $view = $input->get('view');
-
-            if (!isset($this->editable)) {
-                $this->editable = $formModel->isEditable();
-            }
-
-            if ($this->editable) {
-                // If all of the groups elements are not editable then set the group to uneditable
-                $elements = $this->getPublishedElements();
-                $editable = false;
-
-                foreach ($elements as $element) {
-                    if ($element->canUse()) {
-                        $editable = true;
-                    }
-                }
-
-                if (!$editable) {
-                    $this->editable = false;
-                }
-            }
-
-            $group->editable = $this->editable;
-            $group->canRepeat = $params->get('repeat_group_button', '0');
-            $showGroup = $params->def('repeat_group_show_first', '1');
-            $pages = $formModel->getPages();
-            $startPage = isset($formModel->sessionModel->last_page) ? $formModel->sessionModel->last_page : 0;
-            /**
-             * $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been
-             * changed to remove (or change) paging, but user still has session state set.  So it was throwing
-             * a PHP 'undefined index' notice.
-             */
-
-            if (array_key_exists($startPage, $pages) && is_array($pages[$startPage])
-                && !in_array($groupTable->id, $pages[$startPage]) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3)) {
-                $groupTable->css .= ";display:none;";
-            }
-
-            $group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
-            $group->id = $groupTable->id;
-
-            $label = $input->getString('group' . $group->id . '_label', $groupTable->label);
-
-            if (JString::stristr($label, "{Add/Edit}")) {
-                $replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
-                $label = str_replace("{Add/Edit}", $replace, $label);
-            }
-
-            $groupTable->label = $label;
-            $group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
-            $group->title = FText::_($group->title);
-            $group->name = $groupTable->name;
-            $group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
-            $group->maxRepeat = (int)$params->get('repeat_max');
-            $group->minRepeat = $params->get('repeat_min', '') === '' ? 1 : (int)$params->get('repeat_min', '');
-            $group->numRepeatElement = $params->get('repeat_num_element', '');
-            $group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
-            $group->minMaxErrMsg = $params->get('repeat_error_message', '');
-            $group->minMaxErrMsg = FText::_($group->minMaxErrMsg);
-            $group->canAddRepeat = $this->canAddRepeat();
-            $group->canDeleteRepeat = $this->canDeleteRepeat();
-            $intro = FabrikString::translate($params->get('intro'));
-            $group->intro = $formModel->parseIntroOutroPlaceHolders($intro, $group->editable, $formModel->isNewRecord());
-            $outro = FText::_($params->get('outro'));
-            $group->outro = $formModel->parseIntroOutroPlaceHolders($outro, $group->editable, $formModel->isNewRecord());
-            $group->columns = $params->get('group_columns', 1);
-            $group->splitPage = $this->isSplitPage();
-
-            $group->showLegend = $this->showLegend($group);
-            $group->labels = $params->get('labels_above', -1);
-            $group->dlabels = $params->get('labels_above_details', -1);
-
-            if ($this->canRepeat()) {
-                $group->tmpl = $params->get('repeat_template', 'repeatgroup');
-            } else {
-                $group->tmpl = 'group';
-            }
-
-            $this->groupProperties = $group;
-        }
-
-		return $this->groupProperties;
-	}
 	
+	/**
+	 * Should the group legend be shown
+	 *
+	 * @param   object  $group  Group properties
+	 *
+	 * @return boolean
+	 */
+	private function showLegend($group)
+	{
+		$allHidden = true;
+
+		foreach ((array) $this->elements as $elementModel)
+		{
+			$allHidden &= $elementModel->isHidden();
+		}
+
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Get the label positions, if set to global then return form's label positions
 	 *
@@ -1169,120 +1191,6 @@ class FabrikFEModelGroup extends FabModel
 		unset($this->publishedElements);
 		unset($this->publishedListElements);
 		unset($this->elements);
-	}
-
-	/**
-	 * Get the records master Insert Id - need better description...
-	 *
-	 * @return  string
-	 */
-	protected function masterInsertId()
-	{
-		$formModel = $this->getFormModel();
-		$joinModel = $this->getJoinModel();
-		$formData =& $formModel->formDataWithTableName;
-		$joinToPk = $joinModel->getJoinedToTablePk();
-
-		return $formData[$joinToPk];
-	}
-
-	/**
-	 * Part of process()
-	 * Set foreign key's value to the main records insert id
-	 *
-	 * @return  void
-	 */
-	protected function setForeignKey()
-	{
-		$formModel = $this->getFormModel();
-		$formData =& $formModel->formDataWithTableName;
-		$joinModel = $this->getJoinModel();
-		$masterInsertId = $this->masterInsertId();
-		$fk_name = $joinModel->getForeignKey();
-		$fks = array($fk_name, $fk_name . '_raw');
-
-		foreach ($fks as $fk)
-		{
-			if ($this->canRepeat() && array_key_exists($fk, $formData))
-			{
-				if (array_key_exists($fk, $formData))
-				{
-					if (is_array($formData[$fk]))
-					{
-						foreach ($formData[$fk] as $k => $v)
-						{
-							$formData[$fk][$k] = $masterInsertId;
-						}
-					}
-					else
-					{
-						$formData[$fk] = $masterInsertId;
-					}
-				}
-			}
-			else
-			{
-				$formData[$fk] = $masterInsertId;
-			}
-		}
-
-		/**
-		 *
-		 * $$$ hugh - added the clearDefaults method and need to call it here, otherwise if any pre-processing
-		 * has already called the element model's getValue(), the change we just made to formdata won't get picked up
-		 * during the row store processing, as getValue() will return the cached default.
-		 */
-		$elementModel = $formModel->getElement($fk_name);
-
-		if ($elementModel)
-		{
-			$elementModel->clearDefaults();
-		}
-	}
-
-	/**
-	 *
-	 *
-	 */
-	public function fkOnParent()
-	{
-		/*
-		 * $$$ hugh - if $pkField is same-same as FK, then this is a one-to-one join in which the FK is
-		* on the "parent", so it's ...
-		*
-		* parent.child_id (FK) => child.id (PK)
-		*
-		* ... rather than ...
-		*
-		* parent.id (PK) <= child.parent_id (FK)
-		*
-		* ... which means it needs different handling, like we don't set the FK value in the child, rather
-		* we have to go back and update the FK value in the parent after writing the child row.
-		*/
-
-		// @TODO - handle joins which don't involve the parent!
-
-		$joinModel = $this->getJoinModel();
-		$pkField = $joinModel->getForeignID();
-		$fk = $joinModel->getForeignKey();
-
-		return $pkField === $fk;
-	}
-
-	/**
-	 * Get the number of times the group was repeated when the user fills
-	 * in the form
-	 *
-	 * @todo whats the difference between this and @link(repeatCount)
-	 *
-	 * @return  int
-	 */
-	protected function repeatTotals()
-	{
-		$input = $this->app->input;
-		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
-
-		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
@@ -1442,6 +1350,120 @@ class FabrikFEModelGroup extends FabModel
 				$listModel->updateRow($parentId, $fkField, $insertId);
 			}
 		}
+	}
+
+	/**
+	 * Get the number of times the group was repeated when the user fills
+	 * in the form
+	 *
+	 * @todo whats the difference between this and @link(repeatCount)
+	 *
+	 * @return  int
+	 */
+	protected function repeatTotals()
+	{
+		$input = $this->app->input;
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
+
+		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+	}
+
+	/**
+	 *
+	 *
+	 */
+	public function fkOnParent()
+	{
+		/*
+		 * $$$ hugh - if $pkField is same-same as FK, then this is a one-to-one join in which the FK is
+		* on the "parent", so it's ...
+		*
+		* parent.child_id (FK) => child.id (PK)
+		*
+		* ... rather than ...
+		*
+		* parent.id (PK) <= child.parent_id (FK)
+		*
+		* ... which means it needs different handling, like we don't set the FK value in the child, rather
+		* we have to go back and update the FK value in the parent after writing the child row.
+		*/
+
+		// @TODO - handle joins which don't involve the parent!
+
+		$joinModel = $this->getJoinModel();
+		$pkField = $joinModel->getForeignID();
+		$fk = $joinModel->getForeignKey();
+
+		return $pkField === $fk;
+	}
+
+	/**
+	 * Part of process()
+	 * Set foreign key's value to the main records insert id
+	 *
+	 * @return  void
+	 */
+	protected function setForeignKey()
+	{
+		$formModel = $this->getFormModel();
+		$formData =& $formModel->formDataWithTableName;
+		$joinModel = $this->getJoinModel();
+		$masterInsertId = $this->masterInsertId();
+		$fk_name = $joinModel->getForeignKey();
+		$fks = array($fk_name, $fk_name . '_raw');
+
+		foreach ($fks as $fk)
+		{
+			if ($this->canRepeat() && array_key_exists($fk, $formData))
+			{
+				if (array_key_exists($fk, $formData))
+				{
+					if (is_array($formData[$fk]))
+					{
+						foreach ($formData[$fk] as $k => $v)
+						{
+							$formData[$fk][$k] = $masterInsertId;
+						}
+					}
+					else
+					{
+						$formData[$fk] = $masterInsertId;
+					}
+				}
+			}
+			else
+			{
+				$formData[$fk] = $masterInsertId;
+			}
+		}
+
+		/**
+		 *
+		 * $$$ hugh - added the clearDefaults method and need to call it here, otherwise if any pre-processing
+		 * has already called the element model's getValue(), the change we just made to formdata won't get picked up
+		 * during the row store processing, as getValue() will return the cached default.
+		 */
+		$elementModel = $formModel->getElement($fk_name);
+
+		if ($elementModel)
+		{
+			$elementModel->clearDefaults();
+		}
+	}
+
+	/**
+	 * Get the records master Insert Id - need better description...
+	 *
+	 * @return  string
+	 */
+	protected function masterInsertId()
+	{
+		$formModel = $this->getFormModel();
+		$joinModel = $this->getJoinModel();
+		$formData =& $formModel->formDataWithTableName;
+		$joinToPk = $joinModel->getJoinedToTablePk();
+
+		return $formData[$joinToPk];
 	}
 
 	/**
@@ -1609,29 +1631,5 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $repeatGroup;
-	}
-
-	/**
-	 * Should the group legend be shown
-	 *
-	 * @param   object  $group  Group properties
-	 *
-	 * @return boolean
-	 */
-	private function showLegend($group)
-	{
-		$allHidden = true;
-
-		foreach ((array) $this->elements as $elementModel)
-		{
-			$allHidden &= $elementModel->isHidden();
-		}
-
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '')
-		{
-			return true;
-		}
-
-		return false;
 	}
 }
