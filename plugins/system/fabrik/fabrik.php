@@ -64,13 +64,23 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
+			$loaded = true;
+
 		    if (version_compare($version->RELEASE, '3.8', '<'))
             {
-                JLoader::import($base . '.field', JPATH_SITE . '/administrator', 'administrator.');
+                $loaded = JLoader::import($base . '.field', JPATH_SITE . '/administrator', 'administrator.');
             }
 			else
             {
-                JLoader::import($base . '.FormField', JPATH_SITE . '/administrator', 'administrator.');
+                $loaded = JLoader::import($base . '.FormField', JPATH_SITE . '/administrator', 'administrator.');
+            }
+
+            if (!$loaded)
+            {
+	            if ($app->isAdmin() && $app->input->get('option') === 'com_fabrik')
+	            {
+		            $app->enqueueMessage('Fabrik cannot find files required for this version of Joomla.  <b>DO NOT</b> use the Fabrik backend admin until this is resolved.  Please visit <a href="http://fabrikar.com/forums">our web site</a> and check for announcements about this version', 'error');
+	            }
             }
 		}
 
