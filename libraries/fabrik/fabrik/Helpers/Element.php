@@ -88,7 +88,7 @@ class Element
 		$pluginManager = Worker::getPluginManager();
 		$model = $pluginManager->getElementPlugin($elementId);
 		$listModel = $model->getListModel();
-        $identifier = empty($identifer) ? $listModel->getRenderContext() : $identifer;
+        $identifier = empty($identifier) ? $listModel->getRenderContext() : $identifier;
         $key = 'com_fabrik.list' . $identifier . '.filter';
 		$filters = ArrayHelper::fromObject($app->getUserState($key));
 		$elementIds = (array) ArrayHelper::getValue($filters, 'elementid', array());
