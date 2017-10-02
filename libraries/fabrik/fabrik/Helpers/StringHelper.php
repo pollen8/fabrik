@@ -1076,7 +1076,7 @@ class StringHelper extends \Joomla\String\StringHelper
 		// https://stackoverflow.com/questions/4603780/preg-replace-only-outside-tags-were-not-talking-full-html-parsing-jus
 		$parts = preg_split('/(<(?:[^"\'>]|"[^"<]*"|\'[^\'<]*\')*>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 		for ($i=0, $n=count($parts); $i<$n; $i+=2) {
-			$parts[$i] = preg_replace("/[\r\n?|\n]/", "<br />", $parts[$i]);
+			$parts[$i] = nl2br($parts[$i]);
 		}
 		return implode('', $parts);
 	}
