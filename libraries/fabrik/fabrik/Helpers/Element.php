@@ -74,20 +74,21 @@ class Element
 	/**
 	 * Short cut for getting the element's filter value, or false if no value
 	 *
-	 * @param   int  $elementId  Element id
+	 * @param   int     $elementId  Element id
+	 * @param   string  $identifier  Option listref (like 12_com_content_12) if you need to override default X_com_fabrik_X
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  mixed
 	 */
 
-	public static function filterValue($elementId)
+	public static function filterValue($elementId, $identifier = '')
 	{
 		$app = \JFactory::getApplication();
 		$pluginManager = Worker::getPluginManager();
 		$model = $pluginManager->getElementPlugin($elementId);
 		$listModel = $model->getListModel();
-        $identifier = $listModel->getRenderContext();
+        $identifier = empty($identifer) ? $listModel->getRenderContext() : $identifer;
         $key = 'com_fabrik.list' . $identifier . '.filter';
 		$filters = ArrayHelper::fromObject($app->getUserState($key));
 		$elementIds = (array) ArrayHelper::getValue($filters, 'elementid', array());
