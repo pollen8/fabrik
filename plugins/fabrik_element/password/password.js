@@ -40,11 +40,19 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             Fabrik.addEvent('fabrik.form.doelementfx', function(form, method, id, groupfx) {
                 if (form === this.form && id === this.strElement)
                 {
-                    if (method === 'disable') {
-                        jQuery(this.getConfirmationField()).prop('disabled', true);
-                    }
-                    else if (method === 'enable') {
-                        jQuery(this.getConfirmationField()).prop('disabled', false);
+                    switch (method) {
+                        case 'disable':
+                            jQuery(this.getConfirmationField()).prop('disabled', true);
+                            break;
+                        case 'enable':
+                            jQuery(this.getConfirmationField()).prop('disabled', false);
+                            break;
+                        case 'readonly':
+                            jQuery(this.getConfirmationField()).prop('readonly', true);
+                            break;
+                        case 'notreadonly':
+                            jQuery(this.getConfirmationField()).prop('readonly', false);
+                            break;
                     }
                 }
             }.bind(this));
