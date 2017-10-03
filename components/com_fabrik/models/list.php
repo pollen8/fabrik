@@ -4168,7 +4168,18 @@ class FabrikFEModelList extends JModelForm
 		if (!empty($pluginCanEdit))
 		{
 			// If one plugin returns false then return false.
-			return in_array(false, $pluginCanEdit) ? false : true;
+			//return in_array(false, $pluginCanEdit) ? false : true;
+			// Testing "didn't express a preference" by allowing plugin to return null (well, neither true nor false
+			// in which case we'll drop through and let the normal ACL mechanisms have their say
+			if (in_array(true, $pluginCanEdit, true))
+			{
+				return true;
+			}
+
+			if (in_array(false, $pluginCanEdit, true))
+			{
+				return false;
+			}
 		}
 
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');

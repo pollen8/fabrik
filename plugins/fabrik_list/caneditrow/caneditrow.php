@@ -27,6 +27,9 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 {
 	protected $acl = array();
+
+	protected $result = null;
+
 	/**
 	 * Can the plug-in select list rows
 	 *
@@ -94,6 +97,15 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			return true;
 		}
 
+		/**
+		 * If we've got the results for this PK, return them.  Set result, so customProcessResult() gets it right
+		 */
+		if (array_key_exists($data->__pk_val, $this->acl))
+		{
+			$this->result = $this->acl[$data->__pk_val];
+			return $this->acl[$data->__pk_val];
+		}
+
 		$field = str_replace('.', '___', $params->get('caneditrow_field'));
 
 		// If they provided some PHP to eval, we ignore the other settings and just run their code
@@ -116,6 +128,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			$caneditrow_eval = @eval($caneditrow_eval);
 			FabrikWorker::logEval($caneditrow_eval, 'Caught exception on eval in can edit row : %s');
 			$this->acl[$data['__pk_val']] = $caneditrow_eval;
+			$this->result = $caneditrow_eval;
 
 			return $caneditrow_eval;
 		}
@@ -190,5 +203,26 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	public function loadJavascriptClassName_result()
 	{
 		return 'FbListCaneditrow';
+	}
+
+	/**
+	 * Custom process plugin result
+	 *
+	 * @param   string $method Method
+	 *
+	 * @return boolean
+	 */
+	public function customProcessResult($method)
+	{
+		/*
+		 * If we didn't return false from onCanEdit(), the plugin manager will get the final result from this method,
+		 * so we need to return whatever onCanEdit() set the result to.
+		 */
+		if ($method === 'onCanEdit')
+		{
+			return $this->result;
+		}
+
+		return true;
 	}
 }
