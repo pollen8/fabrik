@@ -1063,7 +1063,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             d.set('task', 'form.ajax_validate');
             d.set('fabrik_ajax', '1');
             d.set('format', 'raw');
-
+            if (this.options.lang !== false) {
+                d.set('lang', this.options.lang);
+            }
             d = this._prepareRepeatsForAjax(d);
 
             // $$$ hugh - nasty hack, because validate() in form model will always use _0 for
@@ -1073,9 +1075,6 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 origid = el.origId + '_0';
             }
             el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
-            if (this.options.lang !== false) {
-                d.set('lang', this.options.lang);
-            }
 
             var myAjax = new Request({
                 url       : '',
