@@ -105,7 +105,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	{
 		$params = $this->getParams();
 
-		return $this->doEvaluate($params->get('list_phpevents_onloaddata'));
+		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $args);
 	}
 
 	/**
