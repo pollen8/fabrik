@@ -59,6 +59,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		// and we don't have an opinion on per-table edit permissions, so just return true.
 		if (is_null($row) || is_null($row[0]))
 		{
+			$this->result = true;
 			return true;
 		}
 
@@ -67,6 +68,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		{
 			if ($params->get('caneditrow_on_submit', '1') === '0')
 			{
+				$this->result = true;
 				return true;
 			}
 		}
@@ -75,6 +77,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
         {
             if ($formModel->failedValidation())
             {
+            	$this->result = true;
                 return true;
             }
         }
@@ -94,6 +97,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		 */
 		if (!isset($data->__pk_val) || empty($data->__pk_val))
 		{
+			$this->result = true;
 			return true;
 		}
 
@@ -115,6 +119,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		if (trim($field) == '' && trim($caneditrow_eval) == '')
 		{
 			$this->acl[$data->__pk_val] = true;
+			$this->result = true;
 
 			return true;
 		}
