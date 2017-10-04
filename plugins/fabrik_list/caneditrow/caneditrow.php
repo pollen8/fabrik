@@ -160,6 +160,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			}
 
 			$this->acl[$data->__pk_val] = $return;
+			$this->result = $return;
 
 			return $return;
 		}
