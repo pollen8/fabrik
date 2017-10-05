@@ -43,8 +43,8 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	{
 		$input  = $this->input;
 		$config = JComponentHelper::getParams('com_fabrik');
-		$model  = $this->getModel('calendar');
-		$id     = $input->getInt('id', $config->get('visualizationid', $config->getInt('visualizationid', 0)));
+		$model  = $this->getModel('fullcalendar');
+		$id     = $input->getInt('visualizationid', $config->get('visualizationid', 0));
 		$model->setId($id);
 		echo $model->getEvents();
 	}
