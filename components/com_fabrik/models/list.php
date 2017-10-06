@@ -12129,6 +12129,8 @@ class FabrikFEModelList extends JModelForm
 	public function getLayout($name, $paths = array(), $options = array())
 	{
 		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts';
+		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts/list_' . $this->getId();
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->getId();
 		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
 
 		return $layout;
