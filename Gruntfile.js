@@ -302,7 +302,7 @@ var refreshFiles = function () {
     fs.copySync('libraries/src/Document/PdfDocument.php', './fabrik_build/output/component/site/Document/PdfDocument.php');
     fs.copySync('libraries/src/Document/Renderer/Partial', './fabrik_build/output/component/site/Document/Renderer/Partial');
     fs.copySync('libraries/src/Document/Renderer/Pdf', './fabrik_build/output/component/site/Document/Renderer/Pdf');
-
+    fs.copySync('libraries/fabrik/fabrik/Helpers', './fabrik_build/output/component/site/fabrik/fabrik/Helpers');
 
     // Library folder
 	fs.copySync('libraries/fabrik', './fabrik_build/output/library');

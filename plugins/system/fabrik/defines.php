@@ -54,7 +54,20 @@ JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik
 // JLoader::import('components.com_fabrik.classes.field', JPATH_SITE . '/administrator', 'administrator.');
 // JLoader::import('components.com_fabrik.classes.form', JPATH_SITE . '/administrator', 'administrator.');
 
-require_once COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php';
+// Avoid errors during update, if plugin has been updated but component hasn't, use old helpers
+if (JFile::exists(COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php'))
+{
+	require_once COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php';
+}
+else
+{
+	$helpers = JFolder::files(COM_FABRIK_FRONTEND . '/helpers/', '.php');
+	foreach ($helpers as $helper)
+	{
+		require_once(COM_FABRIK_FRONTEND . '/helpers/' . $helper);
+	}
+}
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 require_once COM_FABRIK_FRONTEND . '/models/fabrik.php';
 require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
