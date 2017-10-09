@@ -33,6 +33,8 @@ libraries/joomla/document/*
 !libraries/joomla/document/partial/*
 !libraries/joomla/document/pdf/
 !libraries/joomla/document/pdf/*
+!libraries/joomla/document/fabrikfeed/
+!libraries/joomla/document/fabrikfeed/*
 !libraries/src
 libraries/src/*
 !libraries/src/Document
