@@ -503,7 +503,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			{
 				if (!strstr($url, COM_FABRIK_LIVESITE))
 				{
-					$url = COM_FABRIK_LIVESITE . $url;
+					$url = COM_FABRIK_LIVESITE_ROOT . $url;
 				}
 
 				$url = htmlspecialchars_decode($url);
