@@ -308,8 +308,11 @@ class PlgSystemFabrik extends JPlugin
 	 */
 	protected function setBigSelects()
 	{
-		$db = JFactory::getDbo();
-		FabrikWorker::bigSelects($db);
+		if (class_exists('FabrikWorker'))
+		{
+			$db = JFactory::getDbo();
+			FabrikWorker::bigSelects($db);
+		}
 	}
 
 	/**
