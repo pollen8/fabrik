@@ -121,7 +121,7 @@ class Com_FabrikInstallerScript
 		jimport('joomla.filesystem.file');
 		$componentFrontend = 'components/com_fabrik';
 
-		if (compare_version($this->getVersion(), '3.8', '<')) {
+		if (version_compare($this->getVersion(), '3.8', '<')) {
             $docTypes = array('fabrikfeed', 'pdf', 'partial');
 
             foreach ($docTypes as $docType) {
