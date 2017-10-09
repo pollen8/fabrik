@@ -57,7 +57,10 @@ JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik
 // Avoid errors during update, if plugin has been updated but component hasn't, use old helpers
 if (JFile::exists(COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php'))
 {
-	require_once COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php';
+	if (!($app->input->get('option', '') === 'com_installer' && $app->input->get('task', '') === 'update.update'))
+	{
+		require_once COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php';
+	}
 }
 else
 {

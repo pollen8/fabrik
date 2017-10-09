@@ -25,6 +25,7 @@ class FabrikAutoloader
 	public function __construct()
 	{
 		spl_autoload_register(array($this, 'controller'));
+		spl_autoload_register(array($this, 'helper'));
 
 		// @TODO - at some point allow auto-loading of these as per Fabble
 		/*
@@ -222,6 +223,26 @@ class FabrikAutoloader
 			{
 				include_once $helper;
 			}
+		}
+	}
+
+	/**
+	 * Load helper file
+	 **/
+	private function helper($class)
+	{
+		if (!strstr($class, 'Fabrik\Helper'))
+		{
+			return;
+		}
+
+		$class = str_replace('\\', '/', $class);
+		$path = preg_replace('#Fabrik\/Helpers\/#', JPATH_SITE . '/libraries/fabrik/fabrik/Helpers/', $class);
+		$path  = $path . '.php';
+
+		if (file_exists($path))
+		{
+			require_once $path;
 		}
 	}
 }
