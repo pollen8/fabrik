@@ -62,10 +62,12 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		$eval      = $params->get('cronemail-eval');
 		$condition = $params->get('cronemail_condition', '');
 		$nodups    = $params->get('cronemail_no_dups', '0') === '1';
+		$testMode  = $this->isTestMode();
 		$sentIds   = array();
 		$failedIds   = array();
 		$sentTos = array();
 		$this->log = '';
+		$x = 0;
 
 		foreach ($data as $group)
 		{
@@ -73,6 +75,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			{
 				foreach ($group as $row)
 				{
+					$x++;
 					$row = ArrayHelper::fromObject($row);
 
 					if (!empty($condition))
@@ -81,6 +84,11 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 
 						if (eval($this_condition) === false)
 						{
+							if ($testMode)
+							{
+								$this->app->enqueueMessage($x . ': Condition returned false');
+							}
+
 							continue;
 						}
 					}
@@ -93,6 +101,11 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 						{
 							if (in_array($thisTo, $sentTos))
 							{
+								if ($testMode)
+								{
+									$this->app->enqueueMessage($x . ': Found dupe, skipping: ' . $thisTo);
+								}
+
 								continue;
 							}
 							else
@@ -111,38 +124,52 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 							}
 
 							$thisSubject = $w->parseMessageForPlaceHolder($subject, $row);
-							$res         = FabrikWorker::sendMail(
-								$MailFrom,
-								$FromName,
-								$thisTo,
-								$thisSubject,
-								$thisMsg,
-								true,
-								null,
-								null,
-								null,
-								$replyTo,
-								$replyToName
-							);
 
-							if (!$res)
+							if ($testMode)
 							{
-								//$this->log .= "\n failed sending to $thisTo";
-								FabrikWorker::log('plg.cron.email.information', 'Failed sending to: ' . $thisTo);
-								$failedIds[] = $row['__pk_val'];
+								$this->app->enqueueMessage($x . ': Would send to: ' . $thisTo);
 							}
 							else
 							{
-								//$this->log .= "\n sent to $thisTo";
-								FabrikWorker::log('plg.cron.email.information', 'Sent to: ' . $thisTo);
-								$sentIds[] = $row['__pk_val'];
+								$res = FabrikWorker::sendMail(
+									$MailFrom,
+									$FromName,
+									$thisTo,
+									$thisSubject,
+									$thisMsg,
+									true,
+									null,
+									null,
+									null,
+									$replyTo,
+									$replyToName
+								);
+
+								if (!$res)
+								{
+									//$this->log .= "\n failed sending to $thisTo";
+									FabrikWorker::log('plg.cron.email.information', 'Failed sending to: ' . $thisTo);
+									$failedIds[] = $row['__pk_val'];
+								}
+								else
+								{
+									//$this->log .= "\n sent to $thisTo";
+									FabrikWorker::log('plg.cron.email.information', 'Sent to: ' . $thisTo);
+									$sentIds[] = $row['__pk_val'];
+								}
 							}
 						}
 						else
 						{
-							//$this->log .= "\n $thisTo is not an email address";
-							FabrikWorker::log('plg.cron.email.information', 'Not an email address: ' . $thisTo);
-							$failedIds[] = $row['__pk_val'];
+							if ($testMode)
+							{
+
+							}
+							else
+							{
+								FabrikWorker::log('plg.cron.email.information', 'Not an email address: ' . $thisTo);
+								$failedIds[] = $row['__pk_val'];
+							}
 						}
 					}
 				}
@@ -189,5 +216,10 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		}
 
 		return count($sentIds);
+	}
+
+	private function isTestMode()
+	{
+		return $this->app->isClient('administrator') && $this->getParams()->get('cronemail_test_mode', '0') === '1';
 	}
 }

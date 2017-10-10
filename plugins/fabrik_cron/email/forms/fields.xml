@@ -73,6 +73,16 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="cronemail_test_mode"
+				   type="radio"
+				   default="0"
+				   class="btn-group"
+				   description="PLG_CRON_EMAIL_TEST_MODE_DESC"
+				   label="PLG_CRON_EMAIL_TEST_MODE_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset label="PLG_CTON_EMAIL_UPDATE" name="plg-cron-email-update">
