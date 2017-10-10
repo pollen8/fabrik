@@ -127,6 +127,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 
 							if ($testMode)
 							{
+								$this->app->enqueueMessage($x . ': Would send subject: ' . $thisSubject);
 								$this->app->enqueueMessage($x . ': Would send to: ' . $thisTo);
 							}
 							else
@@ -176,45 +177,57 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			}
 		}
 
-		if (!$testMode)
+		$sentIds = array_unique($sentIds);
+		$field   = $params->get('cronemail-updatefield');
+
+		if (!empty($sentIds) && trim($field) != '')
 		{
-			$sentIds = array_unique($sentIds);
-			$field   = $params->get('cronemail-updatefield');
+			// Do any update found
+			/** @var FabrikFEModelList $listModel */
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+			$listModel->setId($params->get('table'));
+			$table = $listModel->getTable();
+			$field = $params->get('cronemail-updatefield');
+			$value = $params->get('cronemail-updatefield-value');
 
-			if (!empty($sentIds) && trim($field) != '')
+			if ($params->get('cronemail-updatefield-eval', '0') == '1')
 			{
-				// Do any update found
-				/** @var FabrikFEModelList $listModel */
-				$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-				$listModel->setId($params->get('table'));
-				$table = $listModel->getTable();
-				$field = $params->get('cronemail-updatefield');
-				$value = $params->get('cronemail-updatefield-value');
+				$value = @eval($value);
+			}
 
-				if ($params->get('cronemail-updatefield-eval', '0') == '1')
-				{
-					$value = @eval($value);
-				}
+			$field    = str_replace('___', '.', $field);
+			$fabrikDb = $listModel->getDb();
+			$query    = $fabrikDb->getQuery(true);
+			$query
+				->update($table->db_table_name)
+				->set($field . ' = ' . $fabrikDb->quote($value))
+				->where($table->db_primary_key . ' IN (' . implode(',', $sentIds) . ')');
 
-				$field    = str_replace('___', '.', $field);
-				$fabrikDb = $listModel->getDb();
-				$query    = $fabrikDb->getQuery(true);
-				$query
-					->update($table->db_table_name)
-					->set($field . ' = ' . $fabrikDb->quote($value))
-					->where($table->db_primary_key . ' IN (' . implode(',', $sentIds) . ')');
-				$this->log .= "\n update query: $query";
+			if (!$testMode)
+			{
+				$this->log .= "\n update query: " . (string)$query;
 				$fabrikDb->setQuery($query);
 				$fabrikDb->execute();
 			}
+			else
+			{
+				$this->app->enqueueMessage('Would run update query: ' . (string)$query);
+			}
+		}
 
-			//$this->log .= "\n mails sent: " . count($sentIds) . " records";
+		//$this->log .= "\n mails sent: " . count($sentIds) . " records";
 
-			$field = $params->get('cronemail-update-code');
+		$field = $params->get('cronemail-update-code');
 
-			if (trim($field) != '')
+		if (trim($field) != '')
+		{
+			if (!$testMode)
 			{
 				@eval($field);
+			}
+			else
+			{
+				$this->app->enqueueMessage('Skipping update code');
 			}
 		}
 
