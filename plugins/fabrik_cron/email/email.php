@@ -176,43 +176,46 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			}
 		}
 
-		$sentIds = array_unique($sentIds);
-		$field = $params->get('cronemail-updatefield');
-
-		if (!empty($sentIds) && trim($field) != '')
+		if (!$testMode)
 		{
-			// Do any update found
-			/** @var FabrikFEModelList $listModel */
-			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-			$listModel->setId($params->get('table'));
-			$table = $listModel->getTable();
-			$field = $params->get('cronemail-updatefield');
-			$value = $params->get('cronemail-updatefield-value');
+			$sentIds = array_unique($sentIds);
+			$field   = $params->get('cronemail-updatefield');
 
-			if ($params->get('cronemail-updatefield-eval', '0') == '1')
+			if (!empty($sentIds) && trim($field) != '')
 			{
-				$value = @eval($value);
+				// Do any update found
+				/** @var FabrikFEModelList $listModel */
+				$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+				$listModel->setId($params->get('table'));
+				$table = $listModel->getTable();
+				$field = $params->get('cronemail-updatefield');
+				$value = $params->get('cronemail-updatefield-value');
+
+				if ($params->get('cronemail-updatefield-eval', '0') == '1')
+				{
+					$value = @eval($value);
+				}
+
+				$field    = str_replace('___', '.', $field);
+				$fabrikDb = $listModel->getDb();
+				$query    = $fabrikDb->getQuery(true);
+				$query
+					->update($table->db_table_name)
+					->set($field . ' = ' . $fabrikDb->quote($value))
+					->where($table->db_primary_key . ' IN (' . implode(',', $sentIds) . ')');
+				$this->log .= "\n update query: $query";
+				$fabrikDb->setQuery($query);
+				$fabrikDb->execute();
 			}
 
-			$field    = str_replace('___', '.', $field);
-			$fabrikDb = $listModel->getDb();
-			$query    = $fabrikDb->getQuery(true);
-			$query
-				->update($table->db_table_name)
-				->set($field . ' = ' . $fabrikDb->quote($value))
-				->where($table->db_primary_key . ' IN (' . implode(',', $sentIds) . ')');
-			$this->log .= "\n update query: $query";
-			$fabrikDb->setQuery($query);
-			$fabrikDb->execute();
-		}
+			//$this->log .= "\n mails sent: " . count($sentIds) . " records";
 
-		//$this->log .= "\n mails sent: " . count($sentIds) . " records";
+			$field = $params->get('cronemail-update-code');
 
-		$field = $params->get('cronemail-update-code');
-
-		if (trim($field) != '')
-		{
-			@eval($field);
+			if (trim($field) != '')
+			{
+				@eval($field);
+			}
 		}
 
 		return count($sentIds);
