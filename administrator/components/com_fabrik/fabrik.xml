@@ -51,7 +51,7 @@
 		<folder>partial</folder>
 		<folder>query</folder>
 		<folder>fabrik</folder>
-		<folder>Documents</folder>
+		<folder>Document</folder>
 		<file>controller.php</file>
 		<file>fabrik.php</file>
 		<file>router.php</file>
