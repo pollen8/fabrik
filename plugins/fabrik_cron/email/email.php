@@ -163,7 +163,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 						{
 							if ($testMode)
 							{
-
+								$this->app->enqueueMessage('Not an email address: ' . $thisTo);
 							}
 							else
 							{
