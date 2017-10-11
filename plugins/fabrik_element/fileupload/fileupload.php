@@ -1462,12 +1462,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		/*
+		 * remove this if Safari and Edge ever get their FormData act together
+		 */
 		if ($input->getInt('fabrik_ajax') == 1)
 		{
 			// Inline edit for example no $_FILE data sent
 			return false;
 		}
-		*/
+
 
 		/* If we've turned on crop but not set ajax upload then the cropping wont work so we shouldn't return
 		 * otherwise no standard image processed

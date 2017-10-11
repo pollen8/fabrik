@@ -1382,7 +1382,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         data.format = 'raw';
 
                         // if HTML 5, use FormData so we can do uploads from popups via AJAX
-                        if (window.FormData) {
+                        // poop, doesn't work in Edge or Safari, punt till they implement FormData correctly
+                        if (false && window.FormData) {
                             fd = new FormData(this.form);
 
                             jQuery.each(data, function(k, v) {
