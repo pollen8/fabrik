@@ -247,6 +247,12 @@ class FabrikAutoloader
 	}
 }
 
-// PSR-4 Auto-loader.
-$loader     = require JPATH_LIBRARIES . '/fabrik/vendor/autoload.php';
+/*
+ * If the Fabrik library package has been installed, or we have full github code, we can use Composer autoload
+ */
+if (file_exists(JPATH_LIBRARIES . '/fabrik/vendor/autoload.php'))
+{
+	$loader = require JPATH_LIBRARIES . '/fabrik/vendor/autoload.php';
+}
+
 $autoLoader = new FabrikAutoloader();
