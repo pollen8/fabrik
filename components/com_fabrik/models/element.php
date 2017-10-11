@@ -1690,6 +1690,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->j3         = FabrikWorker::j3();
 		$displayData->hidden     = $this->isHidden();
 		$displayData->label      = FText::_($element->label);
+		$displayData->altLabel   = $this->getListHeading();
 		$displayData->hasLabel   = $this->get('hasLabel');
 		$displayData->view       = $this->app->input->get('view', 'form');
 		$displayData->tip        = $this->tipHtml($model->data);
@@ -1751,12 +1752,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected function labelPaths()
 	{
+		// base built-in layouts
 		$basePath       = COM_FABRIK_BASE . 'components/com_fabrik/layouts/element';
 		$pluginPath     = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $this->getPluginName() . '/layouts';
+		// Custom per template layouts
+		$view = $this->getFormModel()->isEditable() ? 'form' : 'details';
+		$tmplPath = COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/';
+		$tmplElPath = COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getFormModel()->getTmpl() . '/layouts/element/' . $this->getFullName(true, false);
+		// Custom per theme layouts
 		$perThemePath   = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik/element';
 		$perElementPath = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik/element/' . $this->getFullName(true, false);
 
-		return array($basePath, $pluginPath, $perThemePath, $perElementPath);
+		return array($basePath, $pluginPath, $tmplPath, $tmplElPath, $perThemePath, $perElementPath);
 	}
 
 	/**
