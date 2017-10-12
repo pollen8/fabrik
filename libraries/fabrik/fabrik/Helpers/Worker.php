@@ -2684,13 +2684,13 @@ class Worker
 			require_once COM_FABRIK_LIBRARY . '/libs/getid3/getid3/getid3.php';
 			require_once COM_FABRIK_LIBRARY . '/libs/getid3/getid3/getid3.lib.php';
 
-			getid3_lib::IncludeDependency(COM_FABRIK_LIBRARY . '/libs/getid3/getid3/extension.cache.mysqli.php', __FILE__, true);
+			\getid3_lib::IncludeDependency(COM_FABRIK_LIBRARY . '/libs/getid3/getid3/extension.cache.mysqli.php', __FILE__, true);
 			$config   = JFactory::getConfig();
 			$host     = $config->get('host');
 			$database = $config->get('db');
 			$username = $config->get('user');
 			$password = $config->get('password');
-			$getID3   = new getID3_cached_mysqli($host, $database, $username, $password);
+			$getID3   = new \getID3_cached_mysqli($host, $database, $username, $password);
 		}
 
 		return $getID3;
