@@ -2626,9 +2626,9 @@ class Worker
 	 *
 	 * @return  array  Remaining messages.
 	 */
-	public static function killMessage(JApplicationCMS $app, $type)
+	public static function killMessage(\JApplicationSite $app, $type)
 	{
-		$appReflection = new ReflectionClass(get_class($app));
+		$appReflection = new \ReflectionClass(get_class($app));
 		$_messageQueue = $appReflection->getProperty('_messageQueue');
 		$_messageQueue->setAccessible(true);
 		$messages = $_messageQueue->getValue($app);
