@@ -543,11 +543,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             var date;
 
             if (typeOf(val) === 'string') {
-                // $$$ hugh - if val is empty string, like from a clearForm(), the Date.parse() is
-                // going to return null, swhich will then blow up in a few lines.
-                date = Date.parse(val);
-
-                if (date === null) {
+                if (val === '') {
                     // Yes, but we still need to clear the fields! (e.g. from reset())
                     this._getSubElements().each(function (subEl) {
                         subEl.value = '';
@@ -568,6 +564,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     }
 
                     return;
+                }
+                else {
+                    /*
+                     * need to use parseDate() with a format string instead of just parse(), otherwise if advanced
+                     * formats is enabled, parse() will overridden and use the "culture" specific parsing, and if
+                     * language is en-GB, that will switch day and month round.
+                     */
+                    date = Date.parseDate(val, '%Y-%m-%d');
                 }
             } else {
                 date = val;
