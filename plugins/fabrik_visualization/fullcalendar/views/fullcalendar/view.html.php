@@ -236,7 +236,13 @@ class FabrikViewFullcalendar extends JViewLegacy
 			'deps' => array('lib/moment/moment')
 		);
 
-		$shim['viz/fullcalendar/fullcalendar'] = (object) array(
+		$vizShim = 'viz/fullcalendar/fullcalendar';
+		if (!FabrikHelperHTML::isDebug())
+		{
+			$vizShim .= '-min';
+		}
+
+		$shim[$vizShim] = (object) array(
 			'deps' => array('fullcalendar', 'jquery')
 		);
 
@@ -255,7 +261,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 			$shim['lang'] = (object) array('deps' =>
 				array('lib/moment/moment', 'fullcalendar')
 			);
-			$shim['viz/fullcalendar/fullcalendar']->deps[] = 'lang';
+			$shim[$vizShim]->deps[] = 'lang';
 			$paths['lang'] = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/locale/' . $lang;
 		}
 
