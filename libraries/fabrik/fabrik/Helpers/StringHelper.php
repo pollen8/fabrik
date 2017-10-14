@@ -519,6 +519,17 @@ class StringHelper extends \Joomla\String\StringHelper
 		{
 			$summary = self::truncateHtml($text, $wordCount);
 		}
+		else if (ArrayHelper::getValue($opts, 'chars', false))
+		{
+			if (!empty($wordCount))
+			{
+				$summary = mb_strimwidth($text, 0, $wordCount, "...");
+			}
+			else
+			{
+				$summary = $text;
+			}
+		}
 		else
 		{
 			$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
