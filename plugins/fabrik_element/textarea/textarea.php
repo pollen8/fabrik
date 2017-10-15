@@ -480,11 +480,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 			// Testing not using name as duplication of group does not trigger clone()
 			$id = $this->getHTMLId($repeatCounter);
-
-			if ($this->inDetailedView)
-			{
-				$id .= '_ro';
-			}
 		}
 		else
 		{
