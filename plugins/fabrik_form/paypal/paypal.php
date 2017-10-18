@@ -188,10 +188,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				->from($subTable->getTable()->db_table_name)
 				->where($idEl . ' = ' . $subDb->quote($itemRaw));
 			$subDb->setQuery($query);
-			$sub = $subDb->loadObject();
-
 			// Log the query
 			$this->doLog('fabrik.paypal.onAfterProcess.debug', "Subscription query: " . (string) $query);
+			$sub = $subDb->loadObject();
 
 			if (is_object($sub))
 			{
@@ -319,7 +318,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				{
 					$query->select($shippingSelect)->from($shipping_table)
 						->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->q($shippingUserId));
-
+					// Log the query
+					$this->doLog('fabrik.paypal.onAfterProcess.debug', "Shipping query: " . (string) $query);
 					$db->setQuery($query);
 					$userShippingData = $db->loadObject();
 
