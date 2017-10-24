@@ -443,10 +443,10 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 				}
 
 				$startElement = $formModel->getElement($data['startdate']);
-				$startField   = $startElement->getFullName(false);
+				$startField   = $startElement->getFullName(false, false);
 				$enddate      = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
 				$endElement   = trim($data['enddate']) !== '' ? $formModel->getElement($data['enddate']) : $startElement;
-				$endField     = $endElement->getFullName(false);
+				$endField     = $endElement->getFullName(false, false);
 
 				$startLocal = $store_as_local = (bool) $startElement->getParams()->get('date_store_as_local', false);
 				$endLocal   = $store_as_local = (bool) $endElement->getParams()->get('date_store_as_local', false);
@@ -486,8 +486,8 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 				$this_where = FabrikString::ltrimiword($this_where, 'WHERE');
 				$query      = $this_where === '' ? $listModel->buildQueryWhere(true, $query) : $query->where($this_where);
 
-				$query->where($endField . ' >= ' . $db->quote($calStart));
-				$query->where($startField . ' <= ' . $db->quote($calEnd));
+				$query->where(FabrikString::safeColName($endField) . ' >= ' . $db->quote($calStart));
+				$query->where(FabrikString::safeColName($startField) . ' <= ' . $db->quote($calEnd));
 
 				$db->setQuery($query);
 				$sql      = (string) $query;
