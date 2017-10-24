@@ -92,58 +92,19 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		for ($i = 0; $i < count($data); $i++)
 		{
 			$input->set('rowid', $rowId);
-			$myThumb = $this->getMyThumb($listId, $formId, $rowId);
-			$imageFileUp = 'thumb_up_out.gif';
-			$imageFileDown = 'thumb_down_out.gif';
-
-			if ($myThumb == 'up')
-			{
-				$imageFileUp = 'thumb_up_in.gif';
-				$imageFileDown = 'thumb_down_out.gif';
-			}
-			elseif ($myThumb == 'down')
-			{
-				$imageFileUp = 'thumb_up_out.gif';
-				$imageFileDown = 'thumb_down_in.gif';
-			}
-
-			$count = $this->_renderListData($data[$i], $thisRow);
-			$count = FabrikWorker::JSONtoData($count, true);
-			$countUp = $count[0];
-			$countDown = $count[1];
-			$str = array();
-
-			$upActiveClass = $myThumb === 'up' ? ' btn-success' : '';
-			$downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';
-			$commentData = 'data-fabrik-thumb-rowid="' . $rowId . '"';
-
-			if ($j3)
-			{
-				// @todo - JLayout this.
-				$str[] = '<div class="btn-group">';
-				$str[] = '<button ' . $commentData . ' data-fabrik-thumb-formid="' . $formId
-				 . '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
-				$str[] = '<span class="icon-thumbs-up"></span> <span class="thumb-count">' . $countUp . '</span></button>';
-
-				if ($params->get('show_down', 1))
-				{
-					$str[] = '<button ' . $commentData . ' data-fabrik-thumb-formid="' . $formId
-					. '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
-					$str[] = '<span class="icon-thumbs-down"></span> <span class="thumb-count">' . $countDown . '</span></button>';
-				}
-
-				$str[] = '</div>';
-			}
-			else
-			{
-				$str[] = '<span style="color:#32d723;" id="count_thumbup' . $rowId . '">' . $countUp . '</span>';
-				$str[] = '<img src="' . $imagePath . $imageFileUp . '" style="padding:0px 5px 0 1px;" alt="UP" class="thumbup" id="thumbup' . $rowId . '"/>';
-				$str[] = '<span style="color:#f82516;" id="count_thumbdown' . $rowId . '">' . $countDown . '</span>';
-				$attributes = '" style="padding:0px 5px 0 1px;" alt="DOWN" class="thumbdown"';
-				$str[] = '<img src="' . $imagePath . $imageFileDown . $attributes . ' id="thumbdown' . $rowId . '"/>';
-			}
-
-			$data[$i] = implode("\n", $str);
+			$myThumb                     = $this->getMyThumb($listId, $formId, $rowId);
+			$count                       = $this->_renderListData($data[$i], $thisRow);
+			$count                       = FabrikWorker::JSONtoData($count, true);
+			$layout                      = $this->getLayout('list');
+			$layoutData                  = new stdClass;
+			$layoutData->commentdata     = 'data-fabrik-thumb-rowid="' . $rowId . '"';
+			$layoutData->formId          = $formId;
+			$layoutData->upActiveClass   = $myThumb === 'up' ? ' btn-success' : '';;
+			$layoutData->downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';;
+			$layoutData->countUp         = $count[0];
+			$layoutData->countDown       = $count[1];
+			$layoutData->showDown        = $params->get('show_down', 1);
+			$data[$i]                    = $layout->render($layoutData);
 		}
 
 		$data = json_encode($data);
