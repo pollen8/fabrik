@@ -493,9 +493,19 @@
 
 		<field name="autocomplete_min_trigger_chars"
 			size="3"
-			default="1"
+			default="3"
 			description="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_DESC"
 			label="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_LABEL" />
+
+		<field name="autocomplete_autoload_single"
+			   size="3"
+			   default="0"
+			   description="COM_FABRIK_AUTOCOMPLETE_AUTOLOAD_SINGLE_DESC"
+			   label="COM_FABRIK_AUTOCOMPLETE_AUTOLOAD_SINGLE_LABEL"
+			   type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
 
 		<field name="autocomplete_max_rows"
 			   size="3"

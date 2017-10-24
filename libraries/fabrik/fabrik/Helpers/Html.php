@@ -2017,14 +2017,20 @@ EOD;
 		if (!array_key_exists('minTriggerChars', $opts))
 		{
 			$usersConfig           = JComponentHelper::getParams('com_fabrik');
-			$json->minTriggerChars = (int) $usersConfig->get('autocomplete_min_trigger_chars', '1');
+			$json->minTriggerChars = (int) $usersConfig->get('autocomplete_min_trigger_chars', '3');
 		}
 
         if (!array_key_exists('max', $opts))
         {
             $usersConfig = JComponentHelper::getParams('com_fabrik');
-            $json->max   = (int) $usersConfig->get('autocomplete_max_rows', '1');
+            $json->max   = (int) $usersConfig->get('autocomplete_max_rows', '10');
         }
+
+		if (!array_key_exists('autoLoadSingleResult', $opts))
+		{
+			$usersConfig           = JComponentHelper::getParams('com_fabrik');
+			$json->autoLoadSingleResult = (int) $usersConfig->get('autocomplete_autoload_single', '0');
+		}
 
 		$app       = JFactory::getApplication();
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
