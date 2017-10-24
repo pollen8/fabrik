@@ -172,6 +172,12 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->default_view   = $params->get('fullcalendar_default_view', 'month');
 		$options->add_type       = $params->get('add_type', 'both');
 		$options->time_format    = $params->get('time_format', 'H(:mm)');
+
+		if ($options->time_format === '()')
+		{
+			$options->time_format = ' ';
+		}
+
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
 		$options->minDuration    = $params->get('minimum_duration', "00:30:00");
 		$options->open           = $params->get('open-hour', "00:00:00");
@@ -180,7 +186,6 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->showweekends   = (bool) $params->get('show-weekends', true);
 		$options->greyscaledweekend = (bool) $params->get('greyscaled-weekend', false);
 		$options->readonly       = (bool) $params->get('calendar-read-only', false);
-		$options->timeFormat     = $params->get('time_format', '%X');
 		$options->readonlyMonth  = (bool) $params->get('readonly_monthview', false);
 		$options->j3             = FabrikWorker::j3();
 		$options->calOptions     = $params->get('calOptions', '{}');
