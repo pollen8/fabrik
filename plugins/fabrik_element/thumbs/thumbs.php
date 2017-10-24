@@ -104,6 +104,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			$layoutData->countUp         = $count[0];
 			$layoutData->countDown       = $count[1];
 			$layoutData->showDown        = $params->get('show_down', 1);
+			$layoutData->tmpl            = $this->tmpl;
 			$data[$i]                    = $layout->render($layoutData);
 		}
 
@@ -252,22 +253,23 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$count = FabrikWorker::JSONtoData($count, true);
 
 
-		$layout = $this->getLayout('form');
-		$layoutData = new stdClass;
-		$layoutData->j3 = $j3;
-		$layoutData->name = $name;
-		$layoutData->id = $id;
-		$layoutData->commentdata = 'data-fabrik-thumb-rowid="' . $rowId . '"';
-		$layoutData->formId = $formId;
+		$layout                    = $this->getLayout('form');
+		$layoutData                = new stdClass;
+		$layoutData->j3            = $j3;
+		$layoutData->name          = $name;
+		$layoutData->id            = $id;
+		$layoutData->commentdata   = 'data-fabrik-thumb-rowid="' . $rowId . '"';
+		$layoutData->formId        = $formId;
 		$layoutData->upActiveClass = $myThumb === 'up' ? ' btn-success' : '';;
 		$layoutData->downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';;
-		$layoutData->countUp = $count[0];
-		$layoutData->countDown = $count[1];
-		$layoutData->countDiff = $layoutData->countUp - $layoutData->countDown;
-		$layoutData->showDown = $params->get('show_down', 1);
-		$layoutData->imagepath = $imagePath;
-		$layoutData->imagefileup = $imageFileUp;
+		$layoutData->countUp       = $count[0];
+		$layoutData->countDown     = $count[1];
+		$layoutData->countDiff     = $layoutData->countUp - $layoutData->countDown;
+		$layoutData->showDown      = $params->get('show_down', 1);
+		$layoutData->imagepath     = $imagePath;
+		$layoutData->imagefileup   = $imageFileUp;
 		$layoutData->imagefiledown = $imageFileDown;
+		$layoutData->tmpl          = $this->tmpl;
 
 		return $layout->render($layoutData);
 	}
