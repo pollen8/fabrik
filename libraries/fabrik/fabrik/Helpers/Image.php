@@ -68,7 +68,7 @@ class Image
 			throw new RuntimeException("Fabrik: No image image processing library is available, make sure GD is installed in PHP and check your upload element settings!");
 		}
 
-		$className = '\Fabrik\Helpers\Image\Image' . $lib;
+		$className = '\Fabrik\Helpers\Image\Image' . strtolower($lib);
 
 		try {
             $class = new $className;
