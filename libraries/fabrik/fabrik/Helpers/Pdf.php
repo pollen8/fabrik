@@ -93,7 +93,7 @@ class Pdf
 				{
 					if (!strstr($img['src'], $schemeString))
 					{
-						$base = strstr($img['src'], $subdir) ? $base_root : $base_root . $subdir;
+						$base = empty($subdir) || strstr($img['src'], $subdir) ? $base_root : $base_root . $subdir;
 						$img['src'] = $base . ltrim($img['src'],'/');
 					}
 				}
