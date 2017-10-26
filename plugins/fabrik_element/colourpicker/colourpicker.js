@@ -73,7 +73,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 			}
 			this.swatch = new ColourPickerSwatch(this.options.element, this.options, this);
 			this.widget.getElement('#' + this.options.element + '-swatch').empty().adopt(this.swatch);
-			this.widget.hide();
+			jQuery(this.widget).hide();
 
 			if (this.options.showPicker) {
 				this.grad = new ColourPickerGradient(this.options.element, this.options, this);
@@ -85,7 +85,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 			if (close) {
 				close.addEvent('click', function (e) {
 					e.stop();
-					this.widget.hide();
+					jQuery(this.widget).hide();
 				}.bind(this));
 			}
 		},
