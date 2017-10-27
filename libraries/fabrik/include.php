@@ -25,6 +25,7 @@ class FabrikAutoloader
 	{
 		spl_autoload_register(array($this, 'controller'));
 		spl_autoload_register(array($this, 'helper'));
+		spl_autoload_register(array($this, 'view'));
 
 		// @TODO - at some point allow auto-loading of these as per Fabble
 		/*
@@ -130,12 +131,13 @@ class FabrikAutoloader
 	 */
 	private function view($class)
 	{
+		/*
 		if (!strstr(strtolower($class), 'view'))
 		{
 			return;
 		}
 
-		$scope = Factory::getApplication()->scope;
+		$scope = \JFactory::getApplication()->scope;
 
 		// Load component specific files
 		if ($this->appName($class) === $scope)
@@ -153,11 +155,25 @@ class FabrikAutoloader
 				return;
 			}
 		}
+		*/
+
+		if ($class !== 'FabrikView')
+		{
+			return;
+		}
+
+		$path = JPATH_SITE . '/components/com_fabrik/views/FabrikView.php';
+
+		if (file_exists($path))
+		{
+			require_once $path;
+		}
+
 	}
 
 	private function appName($class)
 	{
-		$scope = Factory::getApplication()->scope;
+		$scope = \JFactory::getApplication()->scope;
 
 		return 'com_' . strtolower(substr($class, 0, strlen($scope) - 4));
 	}

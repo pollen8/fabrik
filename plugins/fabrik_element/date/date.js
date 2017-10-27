@@ -571,7 +571,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                      * formats is enabled, parse() will overridden and use the "culture" specific parsing, and if
                      * language is en-GB, that will switch day and month round.
                      */
-                    date = Date.parseDate(val, '%Y-%m-%d');
+                    date = Date.parseDate(val, '%Y-%m-%d %H:%M');
                 }
             } else {
                 date = val;

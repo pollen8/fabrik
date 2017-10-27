@@ -77,7 +77,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 require_once COM_FABRIK_FRONTEND . '/models/element.php';
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 require_once COM_FABRIK_FRONTEND . '/models/elementlist.php';
-require_once COM_FABRIK_FRONTEND . '/views/FabrikView.php';
+//require_once COM_FABRIK_FRONTEND . '/views/FabrikView.php';
 
 if ($app->isAdmin())
 {
