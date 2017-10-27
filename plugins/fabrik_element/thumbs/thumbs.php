@@ -506,8 +506,8 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		{
 			$db
 				->setQuery(
-					"UPDATE " . $this->getlistModel()->getTable()->db_table_name . "
-	                    SET " . $this->getElement()->name . " = ((SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listId
+					"UPDATE " . $db->quoteName($this->getlistModel()->getTable()->db_table_name) . "
+	                    SET " . $db->quoteName($this->getElement()->name) . " = ((SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listId
 						. " AND formid = " . (int) $formId . " AND row_id = " . $db->q($rowId) . " AND element_id = " . (int) $elementId
 						. " AND thumb = 'up') - (SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listId . " AND formid = "
 						. (int) $formId . " AND row_id = " . $db->q($rowId) . " AND element_id = " . (int) $elementId
