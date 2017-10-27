@@ -47,8 +47,8 @@ class FabrikViewList extends FabrikViewListBase
 		$table = $model->getTable();
 		$params = $model->getParams();
 		$rowId = $input->getString('rowid', '', 'string');
-		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
+		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$nav = $model->getPagination();
 		$form = $model->getFormModel();
