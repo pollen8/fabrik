@@ -95,6 +95,11 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			return false;
 		}
 
+		if (!$this->shouldValidateHidden($data, $repeatCounter))
+		{
+			return false;
+		}
+
 		$params = $this->getParams();
 		$condition = trim($params->get($this->pluginName . '-validation_condition'));
 
@@ -229,6 +234,30 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		return false;
+	}
+
+	/*
+	* Should the validation be run - based on whether the element was hidden by an FX
+	*
+	* @return boolean
+	*/
+	protected function shouldValidateHidden($data, $repeatCounter)
+	{
+		$params = $this->getParams();
+		$validateHidden = $params->get('validate_hidden', '1') === '1';
+
+		// if validate hidden is set, just return true, we don't care about the state
+		if ($validateHidden)
+		{
+			return true;
+		}
+
+		$name = $this->elementModel->getHTMLId($repeatCounter);
+		$hiddenElements = ArrayHelper::getValue($this->formModel->formData, 'hiddenElements', '[]');
+		$hiddenElements = json_decode($hiddenElements);
+
+		return !in_array($name, $hiddenElements);
+
 	}
 
 	/**

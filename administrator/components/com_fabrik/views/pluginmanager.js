@@ -112,11 +112,12 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
         },
 
         addTop: function (plugin) {
-            var published, show_icon, validate_in, validation_on, must_validate;
+            var published, show_icon, validate_in, validation_on, must_validate, validate_hidden;
             if (typeOf(plugin) === 'string') {
                 published = 1;
                 show_icon = false;
                 must_validate = false;
+                validate_hidden = true;
                 plugin = plugin ? plugin : '';
                 validate_in = '';
                 validation_on = '';
@@ -125,6 +126,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 published = plugin ? plugin.published : 1;
                 show_icon = plugin ? plugin.show_icon : 1;
                 must_validate = plugin ? plugin.must_validate : 0;
+                validate_hidden = plugin ? plugin.validate_hidden : 1;
                 validate_in = plugin ? plugin.validate_in : 'both';
                 validation_on = plugin ? plugin.validation_on : 'both';
                 plugin = plugin ? plugin.plugin : '';
@@ -160,6 +162,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 'plugin_published': published,
                 'show_icon'       : show_icon,
                 'must_validate'   : must_validate,
+                'validate_hidden' : validate_hidden,
                 'validate_in'     : validate_in,
                 'validation_on'   : validation_on,
                 'c'               : this.topTotal,
