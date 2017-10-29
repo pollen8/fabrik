@@ -115,8 +115,6 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 		else
 		{
-			$msg = $this->data['thanks_message'];
-
 			// Redirect not working in admin.
 			if (!$this->app->isAdmin())
 			{
@@ -132,7 +130,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			}
 		}
 
-		$smsg[$this->renderOrder] = $this->data['thanks_message'];
+		$smsg[$this->renderOrder] = FText::_($this->data['thanks_message']);
 
 		// Don't display system message if thanks is empty
 		if (FArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
