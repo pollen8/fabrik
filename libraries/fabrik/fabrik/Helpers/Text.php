@@ -44,25 +44,10 @@ class Text extends \JText
 	public static function _($string, $jsSafe = false, $interpretBackSlashes = true, $script = false)
 	{
 		/**
-		 * In JText::_(), it does the following tests to see if everything following a comma is all upp
-		 * case, and if it is, it does Funky Stuff to it.  We ned to avoid that behavior.  So us this
-		 * logic, and if it's true, return the string untouched.  We could just check for a comma and not
-		 * process anything with commas (unlikely to be a translatable phrase), but unless this test adds
-		 * too much overhead, might as well do the whole J! test sequence.
+		 * This function is now kind of redundant, as it uses to guard against some behavior of JText_() which no
+		 * longer happens (as of 3.7).  But we'll keep it around as a wrapper in case we ever need to Do Fabrikm Stuff
+		 * to translatable strings.
 		 */
-		if (!(strpos($string, ',') === false))
-		{
-			$test = substr($string, strpos($string, ','));
-			if (strtoupper($test) === $test)
-			{
-				/**
-				 * This is where JText::_() would do Funky Stuff, chopping off everything after
-				 * the first comma.  So we'll just return the input string untouched.
-				 */
-				return $string;
-			}
-		}
-		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
 }
