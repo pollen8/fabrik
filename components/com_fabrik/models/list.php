@@ -4474,6 +4474,23 @@ class FabrikFEModelList extends JModelForm
 			$query->order('id');
 			$db->setQuery($query);
 			$this->joins = $db->loadObjectList();
+
+			// make sure list joins comes first, don't ask
+			usort($this->joins, function($a, $b) {
+				if ((int)$a->list_id === 0)
+				{
+					return 1;
+				}
+
+				if ((int)$b->list_id === 0)
+				{
+					return -1;
+				}
+
+
+				return ((int)$a->list_id < (int)$b->list_id) ? -1 : 1;
+			});
+
 			$this->_makeJoinAliases($this->joins);
 
 			foreach ($this->joins as &$join)
