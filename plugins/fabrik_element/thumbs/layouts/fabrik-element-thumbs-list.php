@@ -4,7 +4,7 @@ defined('JPATH_BASE') or die;
 
 $d = $displayData;
 ?>
-<div class="btn-group">';
+<div class="btn-group">
     <button <?php echo $d->commentdata;?> data-fabrik-thumb-formid="<?php echo $d->formId;?>"
         data-fabrik-thumb="up" class="btn btn-small thumb-up<?php echo $d->upActiveClass;?>">
         <?php echo FabrikHelperHTML::image('thumbs-up', 'list', $d->tmpl); ?>
