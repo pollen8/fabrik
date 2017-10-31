@@ -364,7 +364,15 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 				}
 				else
 				{
-					$postData[$key] = $values[$i];
+					// specific request from a user to concatenate values if key specified more than once
+					if (array_key_exists($key, $postData))
+					{
+						$postData[$key] .= $values[$i];
+					}
+					else
+					{
+						$postData[$key] = $values[$i];
+					}
 				}
 
 				$i++;
