@@ -1696,7 +1696,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$placeholder      = ' placeholder="' . htmlspecialchars($params->get('placeholder', ''), ENT_COMPAT) . '"';
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[]           = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
-			. '-auto-complete" value="' . FArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '/>';
+			. '-auto-complete" value="' . htmlspecialchars(FArrayHelper::getValue($label, 0)) . '"' . $class . $placeholder . '/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
 		$html[] = '<input type="hidden" tabindex="-1" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
