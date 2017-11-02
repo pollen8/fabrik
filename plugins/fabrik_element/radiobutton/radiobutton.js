@@ -190,6 +190,17 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
 
         getChangeEvent: function () {
             return this.options.changeEvent;
+        },
+
+        /**
+         * Get the dom selector that events should be attached to, need to include label for button groups
+         * @returns {string}
+         */
+        eventDelegate: function () {
+            var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
+            str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
+
+            return str;
         }
 
     });

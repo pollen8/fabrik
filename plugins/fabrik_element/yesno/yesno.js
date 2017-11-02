@@ -14,17 +14,6 @@ define(['jquery', 'element/radiobutton/radiobutton'], function (jQuery, FbRadio)
         },
 
         /**
-         * Get the dom selector that events should be attached to. Attach to labels as well
-         * @returns {string}
-         */
-        eventDelegate: function () {
-            var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
-            str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
-
-            return str;
-        },
-
-        /**
          * Convert event actions on a per element basis.
          * @param {string} action
          * @returns {string}
