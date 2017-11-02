@@ -614,13 +614,24 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->elid       = $this->getElement()->id;
 		$opts->userid     = (int) $this->user->get('id');
 		$opts->formid     = $formId;
-		$opts->canRate    = (bool) $this->canRate();
+
+		if ($opts->editable && $params->get('rating-rate-in-form', '1') === '0')
+		{
+			$opts->canRate = false;
+		}
+		else
+		{
+			$opts->canRate = (bool) $this->canRate();
+		}
+
 		$opts->mode       = $params->get('rating-mode');
 		$opts->doAjax     = $params->get('rating-mode') != 'creator-rating';
 		$opts->view       = $input->get('view');
 		$opts->rating     = $value;
 		$opts->listid     = $listId;
 		$opts->defaultVal = '0';
+		$opts->starIcon   = FabrikHelperHTML::icon("icon-star",  '', '', true);
+		$opts->starIconEmpty = FabrikHelperHTML::icon("icon-star-empty", '', '', true);
 
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
 
