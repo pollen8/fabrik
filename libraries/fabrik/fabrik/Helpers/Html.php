@@ -3072,14 +3072,20 @@ EOD;
 	 * @param   string $icon       Icon class name
 	 * @param   string $label      Label
 	 * @param   string $properties Additional html properties
+     * @param   bool   $nameOnly   Return just the icon name
 	 *
 	 * @return string
 	 */
-	public static function icon($icon, $label = '', $properties = '')
+	public static function icon($icon, $label = '', $properties = '', $nameOnly = false)
 	{
-		$icon = Html::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
+		$icon = Html::getLayout('fabrik-icon')
+            ->render((object) array(
+                    'icon' => $icon,
+                    'properties' => $properties,
+                    'nameOnly' => $nameOnly
+            ));
 
-		if ($label != '')
+		if ($label != '' && !$nameOnly)
 		{
 			$icon .= ' ' . $label;
 		}
