@@ -66,7 +66,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 							ii.src = this.options.outsrc;
 						}
 					}.bind(this));
-					this.ratingMessage.innerHTML = this.field.value;
+					this.ratingMessage.innerHTML = '&nbsp;';
 				}.bind(this));
 			}.bind(this));
 
@@ -95,6 +95,9 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 					if (!Fabrik.bootstrapped) {
 						e.target.src = this.options.clearinsrc;
 					}
+                    this.stars.each(function (ii) {
+						ii.removeClass(this.options.starIcon).addClass(this.options.starIconEmpty);
+                    }.bind(this));
 					this.ratingMessage.set('html', Joomla.JText._('PLG_ELEMENT_RATING_NO_RATING'));
 				}.bind(this));
 
@@ -102,7 +105,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 					if (!Fabrik.bootstrapped && this.rating !== -1) {
 						e.target.src = this.options.clearoutsrc;
 					}
-					this.ratingMessage.innerHTML = this.field.value;
+					this.ratingMessage.innerHTML = '&nbsp;';
 				}.bind(this));
 
 				clearButton.addEvent('click', function (e) {
@@ -152,9 +155,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 				'data'    : data,
 				onComplete: function (r) {
 					this.spinner.dispose();
-                    r = r.toInt();
-                    this.rating = r;
-                    this.setStars();
+                    this.update(r);
 				}.bind(this)
 			}).send();
 		},
@@ -195,7 +196,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 		update: function (val) {
 			this.rating = val.toInt().round();
 			this.field.value = this.rating;
-			var s = this.element.getElement('.ratingScore');
+			var s = this.element.getParent('.fabrikElementContainer').getElement('.ratingScore');
 			if (typeOf(s) !== 'null') {
 				s.set('text', val);
 			}
