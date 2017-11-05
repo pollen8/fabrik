@@ -1286,7 +1286,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 gdata.each(function (groupData, groupKey) {
                     tbody = self.options.isGrouped ? self.list.getElements('.fabrik_groupdata')[gcounter] : self.tbody;
                     tbody = jQuery(tbody);
-                    tbody.empty();
+                    //tbody.empty();
+                    tbody.children().not('.groupDataMsg').remove();
 
                     // Set the group by heading
                     if (self.options.isGrouped) {
@@ -1327,7 +1328,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             _updateEmptyDataMsg: function (empty) {
                 var list = jQuery(this.list);
                 var fabrikDataContainer = list.parent('.fabrikDataContainer');
-                var emptyDataMessage = list.parent('.fabrikForm').find('.emptyDataMessage');
+                var emptyDataMessage = list.closest('.fabrikForm').find('.emptyDataMessage');
                 if (empty) {
                     /*
                      * if (typeOf(fabrikDataContainer) !== 'null') {

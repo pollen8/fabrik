@@ -74,8 +74,8 @@ endforeach;
 		if ($this->isGrouped && empty($this->rows)) :
 			?>
 			<tbody style="<?php echo $this->emptyStyle?>">
-				<tr>
-					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
+				<tr class="groupDataMsg">
+					<td class="emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>
@@ -96,8 +96,8 @@ endforeach;
 			</tbody>
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
-				<tr style="<?php echo $this->emptyStyle?>">
-					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
+				<tr class="groupDataMsg" style="<?php echo $this->emptyStyle?>">
+					<td class="emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>

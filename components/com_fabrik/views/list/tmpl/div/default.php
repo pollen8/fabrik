@@ -74,7 +74,7 @@ if ($this->showFilters) {
 	endif;
 	?>
 	<div class="fabrik_groupdata">
-		<div class="groupdataMsg">
+		<div class="groupDataMsg">
 			<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 				<?php echo $this->emptyDataMessage; ?>
 			</div>
