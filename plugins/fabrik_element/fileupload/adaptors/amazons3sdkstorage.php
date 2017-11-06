@@ -461,7 +461,12 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function delete($filepath)
 	{
 		$filepath = $this->urlToPath($filepath);
-		$this->s3->deleteObject($this->getBucketName(), $filepath);
+		$this->s3->deleteObject(
+			[
+				'Bucket' => $this->getBucketName(),
+				'Key' => $this->urlToKey($filepath)
+			]
+		);
 	}
 
 	/**
