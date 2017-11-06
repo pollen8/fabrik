@@ -154,6 +154,7 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
         },
 
         update: function (val) {
+            this.setValue(val);
             if (!this.options.editable) {
                 if (val === '') {
                     this.element.innerHTML = '';
@@ -162,19 +163,21 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
                 this.element.innerHTML = $H(this.options.data).get(val);
                 return;
             } else {
-                var els = this._getSubElements();
-                if (typeOf(val) === 'array') {
-                    els.each(function (el) {
-                        if (val.contains(el.value)) {
-                            this.setButtonGroupCSS(el);
-                        }
-                    }.bind(this));
-                } else {
-                    els.each(function (el) {
-                        if (el.value === val) {
-                            this.setButtonGroupCSS(el);
-                        }
-                    }.bind(this));
+                if (this.options.btnGroup) {
+                    var els = this._getSubElements();
+                    if (typeOf(val) === 'array') {
+                        els.each(function (el) {
+                            if (val.contains(el.value)) {
+                                this.setButtonGroupCSS(el);
+                            }
+                        }.bind(this));
+                    } else {
+                        els.each(function (el) {
+                            if (el.value === val) {
+                                this.setButtonGroupCSS(el);
+                            }
+                        }.bind(this));
+                    }
                 }
             }
         },

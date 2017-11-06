@@ -87,6 +87,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
 		$opts->changeEvent = $this->getChangeEvent();
+		$opts->btnGroup = $this->buttonGroup();
 		JText::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
 
 		return array('FbRadio', $id, $opts);
