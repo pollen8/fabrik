@@ -28,7 +28,7 @@ if ($this->hasActions) : ?>
 			</div>
 		<?php endif; ?>
 		<?php if ($form->customButtons): ?>
-			<div class="fabrikCustomButtons <?php echo FabrikHelperHTML::getGridSpan(2); ?>"">
+			<div class="fabrikCustomButtons <?php echo FabrikHelperHTML::getGridSpan(2); ?>">
 				<div class="btn-group">
 					<?php echo $form->customButtons; ?>
 				</div>
