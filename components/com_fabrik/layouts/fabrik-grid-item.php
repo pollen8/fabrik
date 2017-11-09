@@ -8,7 +8,9 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 
 $thisName = $d->type === 'checkbox' ? FabrikString::rtrimword($d->name, '[]') . '[' . $d->i . ']' : $d->name;
-$thisId = FabrikString::rtrimword($d->name, '[]') . '_input_' . $d->i;
+$thisId = str_replace(array('[', ']'), array('_', '_'), $thisName);
+$thisId = rtrim($thisId, '_');
+$thisId .=  '_input_' . $d->i;
 
 $label    = '<span>' . $d->label . '</span>';
 
