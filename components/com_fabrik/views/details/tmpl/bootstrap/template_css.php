@@ -1,3 +1,4 @@
+<?php
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
@@ -10,15 +11,16 @@ if ($rowid !== '')
 }
 
 echo <<<EOT
-# missing from some bootstrap templates (like JoomlArt)
+/* missing from some bootstrap templates (like JoomlArt) */
+
 .row-fluid:before,
 .row-fluid:after {
-	display: table;
-	content: "";
-	line-height: 0;
+	display: table !important;
+	content: "" !important;
+	line-height: 0 !important;
 }
 
 .row-fluid:after {
-	clear: both;
+	clear: both !important;
 }
 EOT;

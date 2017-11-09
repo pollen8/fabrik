@@ -17,7 +17,8 @@ echo "
 clear: left;
 }
 
-# missing from some bootstrap templates (like JoomlArt)
+/* missing from some bootstrap templates (like JoomlArt) */
+
 .row-fluid:before,
 .row-fluid:after {
 	display: table;
