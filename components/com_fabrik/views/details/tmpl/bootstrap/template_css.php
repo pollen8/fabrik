@@ -15,12 +15,12 @@ echo <<<EOT
 
 .row-fluid:before,
 .row-fluid:after {
-	display: table !important;
-	content: "" !important;
-	line-height: 0 !important;
+	display: table;
+	content: "";
+	line-height: 0;
 }
 
 .row-fluid:after {
-	clear: both !important;
+	clear: both;
 }
 EOT;
