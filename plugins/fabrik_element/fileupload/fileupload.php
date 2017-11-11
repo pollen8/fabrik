@@ -3157,6 +3157,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rowId       = $input->get('rowid', '', 'string');
 		$repeatCount = $input->getInt('repeatcount', 0);
 		$ajaxIndex   = $input->getStr('ajaxIndex', '');
+		$linkOnly    = $input->getStr('linkOnly', '0') === '1';
 		$listModel   = $this->getListModel();
 		$row         = $listModel->getRow($rowId, false, true);
 
@@ -3218,6 +3219,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$filePath    = $storage->getFullPath($filePath);
+
+		/*
+		 * Special case, usually for S3, which allows custom JS to call this function with AJAX, specify &linkOnly=1,
+		 * and get back the presigned URL to a file in a Private bucket.
+		 */
+		if ($linkOnly)
+		{
+			echo $storage->preRenderPath($filePath);
+			exit;
+		}
+
 		$fileContent = $storage->read($filePath);
 
 		if ($fileContent !== false)
