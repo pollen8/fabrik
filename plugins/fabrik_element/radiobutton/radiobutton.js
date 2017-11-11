@@ -154,6 +154,10 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
         },
 
         update: function (val) {
+            if (typeOf(val) === 'array')
+            {
+                val = val.shift();
+            }
             this.setValue(val);
             if (!this.options.editable) {
                 if (val === '') {
@@ -165,19 +169,11 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
             } else {
                 if (this.options.btnGroup) {
                     var els = this._getSubElements();
-                    if (typeOf(val) === 'array') {
-                        els.each(function (el) {
-                            if (val.contains(el.value)) {
-                                this.setButtonGroupCSS(el);
-                            }
-                        }.bind(this));
-                    } else {
-                        els.each(function (el) {
-                            if (el.value === val) {
-                                this.setButtonGroupCSS(el);
-                            }
-                        }.bind(this));
-                    }
+                    els.each(function (el) {
+                        if (el.value === val) {
+                            this.setButtonGroupCSS(el);
+                        }
+                    }.bind(this));
                 }
             }
         },
