@@ -443,6 +443,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         // http://fabrik.unfuddle.com/projects/17220/tickets/by_number/703?cycle=true
                         document.id(id).getElements('.fabrikinput').setStyle('opacity', '1');
                         this.showGroupTab(id);
+                        // if it was hidden by group's "Show Group" setting ("Yes, but hidden"), need to show()
+                        fxElement.show();
                     }
                     break;
                 case 'hide':
@@ -459,6 +461,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     }
 	                if (groupfx) {
 		                this.showGroupTab(id);
+                        fxElement.show();
 	                }
                     break;
                 case 'fadeout':
