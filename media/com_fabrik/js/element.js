@@ -577,23 +577,26 @@ define(['jquery'], function (jQuery) {
          * @param {number} left
          */
         moveTip: function (top, left) {
-            var t = this.tips(), tip, origPos;
+            var t = this.tips(), tip, origPos, popover;
             if (t.length > 0) {
                 t = jQuery(t[0]);
-                tip = t.data('popover').$tip;
-                if (tip) {
-                    origPos = tip.data('origPos');
-                    if (origPos === undefined) {
-                        origPos = {
-                            'top' : parseInt(t.data('popover').$tip.css('top'), 10) + top,
-                            'left': parseInt(t.data('popover').$tip.css('left'), 10) + left
-                        };
-                        tip.data('origPos', origPos);
+                popover = t.data('popover');
+                if (popover) {
+                    tip = popover.$tip;
+                    if (tip) {
+                        origPos = tip.data('origPos');
+                        if (origPos === undefined) {
+                            origPos = {
+                                'top': parseInt(t.data('popover').$tip.css('top'), 10) + top,
+                                'left': parseInt(t.data('popover').$tip.css('left'), 10) + left
+                            };
+                            tip.data('origPos', origPos);
+                        }
+                        tip.css({
+                            'top': origPos.top - top,
+                            'left': origPos.left - left
+                        });
                     }
-                    tip.css({
-                        'top': origPos.top - top,
-                        'left': origPos.left - left
-                    });
                 }
             }
         },
