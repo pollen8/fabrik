@@ -3565,6 +3565,11 @@ class FabrikFEModelList extends JModelForm
 		$valueKeys = array_keys(FArrayHelper::getValue($filters, 'key', array()));
 		$nullElementConditions = array('IS NULL', 'IS NOT NULL');
 
+		// get the last key, so we can find out in the foreach if we're on the last key (for "grouped to previous")
+		end($valueKeys);
+		$lastVkey = key($valueKeys);
+		reset($valueKeys);
+
 		foreach ($valueKeys as $vkey => $i)
 		{
 			// $$$rob - prefilter with element that is not published so ignore
@@ -3585,13 +3590,8 @@ class FabrikFEModelList extends JModelForm
 				continue;
 			}
 
-			$n = current($valueKeys);
-
-			if ($n === false)
-			{
-				// End of array
-				$n = -1;
-			}
+			// get next key, or -1 if we're on the last key
+			$n = $vkey === $lastVkey ? -1 : $valueKeys[$vkey + 1];
 
 			$gStart = '';
 			$gEnd = '';
@@ -6359,7 +6359,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  bool
 	 */
-	protected function gotOptionalFilters()
+	public function gotOptionalFilters()
 	{
 		$filters = $this->getFilterArray();
 		$types = FArrayHelper::getValue($filters, 'search_type', array());
