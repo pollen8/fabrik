@@ -38,13 +38,21 @@ class Imageim extends Image
 	 */
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
-		$ext = $this->getImgType($origFile);
+		// Check if the file exists
+		if (!$this->storage->exists($origFile))
+		{
+			throw new RuntimeException("no file found for $origFile");
+		}
+
+		$fromFile = $this->storage->preRenderPath($origFile);
+
+		$ext = $this->getImgType($fromFile);
 
 		if (!$ext)
 		{
 			// False so not an image type so cant resize
 			// $$$ hugh - testing making thumbs for PDF's, so need a little tweak here
-			$origInfo = pathinfo($origFile);
+			$origInfo = pathinfo($fromFile);
 
 			if (StringHelper::strtolower($origInfo['extension']) != 'pdf')
 			{
@@ -62,14 +70,14 @@ class Imageim extends Image
 			 * it'll just fail if no GS.
 			 */
 
-			$origInfo = pathinfo($origFile);
+			$origInfo = pathinfo($fromFile);
 
 			if (StringHelper::strtolower($origInfo['extension']) == 'pdf')
 			{
 				$pdfThumbType = 'png';
 
 				// OK, it's a PDF, so first we need to add the page number we want to the source filename
-				$pdfFile = $origFile . '[0]';
+				$pdfFile = $fromFile . '[0]';
 
 				if (is_callable('exec'))
 				{
@@ -94,7 +102,7 @@ class Imageim extends Image
 				$im = new \Imagick;
 
 				/* Read the image file */
-				$im->readImage($origFile);
+				$im->readImage($fromFile);
 
 				/* Thumbnail the image ( width 100, preserve dimensions ) */
 				$im->thumbnailImage($maxWidth, $maxHeight, true);
@@ -112,7 +120,7 @@ class Imageim extends Image
 		{
 			$resource = NewMagickWand();
 
-			if (!MagickReadImage($resource, $origFile))
+			if (!MagickReadImage($resource, $fromFile))
 			{
 				echo "ERROR!";
 				print_r(MagickGetException($resource));
