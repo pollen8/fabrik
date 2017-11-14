@@ -38,6 +38,12 @@ JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $formId = (int) $params->get('formid');
+
+if (empty($formId))
+{
+	throw new \InvalidArgumentException('No form selected in Fabrik form module!');
+}
+
 $rowid = (string) $params->get('row_id', '');
 
 $layout = $params->get('template', 'default');
