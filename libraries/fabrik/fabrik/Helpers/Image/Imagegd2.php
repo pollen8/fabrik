@@ -47,9 +47,11 @@ class Imagegd2 extends Imagegd
 			throw new RuntimeException("no file found for $origFile");
 		}
 
+		$fromFile = $this->storage->preRenderPath($origFile);
+
 		// Load image
 		$img = null;
-		$ext = $this->getImgType($origFile);
+		$ext = $this->getImgType($fromFile);
 
 		if (!$ext)
 		{
@@ -67,12 +69,12 @@ class Imagegd2 extends Imagegd
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
-			$img    = @imagecreatefromjpeg($origFile);
+			$img    = @imagecreatefromjpeg($fromFile);
 			$header = "image/jpeg";
 		}
 		elseif ($ext == 'png')
 		{
-			$img    = @imagecreatefrompng($origFile);
+			$img    = @imagecreatefrompng($fromFile);
 			$header = "image/png";
 
 			// Only if your version of GD includes GIF support
@@ -81,7 +83,7 @@ class Imagegd2 extends Imagegd
 		{
 			if (function_exists('imagecreatefromgif'))
 			{
-				$img    = @imagecreatefromgif($origFile);
+				$img    = @imagecreatefromgif($fromFile);
 				$header = "image/gif";
 			}
 			else
