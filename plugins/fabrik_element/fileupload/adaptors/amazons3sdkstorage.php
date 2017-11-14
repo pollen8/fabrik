@@ -508,11 +508,24 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 
-		$ulDir = COM_FABRIK_BASE . $params->get('ul_directory');
+		$ulDir = $params->get('ul_directory');
+
+		if ($this->appendServerPath())
+		{
+			$ulDir = COM_FABRIK_BASE . $ulDir;
+		}
+
 		$ulDir = $this->clean($ulDir);
 		$ulDir = $w->parseMessageForPlaceHolder($ulDir);
 
-		$thumbdir = $this->clean(COM_FABRIK_BASE . $params->get('thumb_dir'));
+		$thumbdir = $params->get('thumb_dir');
+
+		if ($this->appendServerPath())
+		{
+			$thumbdir = COM_FABRIK_BASE . $thumbdir;
+		}
+
+		$thumbdir = $this->clean($thumbdir);
 		$thumbdir = $w->parseMessageForPlaceHolder($thumbdir);
 
 		$file = $w->parseMessageForPlaceHolder($file);
