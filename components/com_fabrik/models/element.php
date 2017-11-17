@@ -1853,7 +1853,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$rollOver = (string)$txt;
+			// defensive coding for corner case of calcs with JSON data
+			$rollOver = is_scalar($txt) ? (string)$txt : '';
 		}
 
 		return $rollOver;
