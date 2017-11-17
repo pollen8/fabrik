@@ -2283,6 +2283,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function onCopyRow($val)
 	{
+		if ($this->defaultOnCopy())
+		{
+			$val = $this->getFrontDefaultValue();
+		}
+
 		if (!FabrikWorker::isDate($val))
 		{
 			return $val;
@@ -2304,6 +2309,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		return $val;
+	}
+
+	/**
+	 * Called when save as copy form button clicked
+	 *
+	 * @param   mixed $val value to copy into new record
+	 *
+	 * @return  mixed  value to copy into new record
+	 */
+	public function onSaveAsCopy($val)
+	{
+		return $this->onCopyRow($val);
 	}
 
 	/**

@@ -1347,6 +1347,17 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Should the element ignore a form or list row copy, and use the default regardless
+	 *
+	 * @return bool
+	 */
+	public function defaultOnCopy()
+	{
+		$params = $this->getParams();
+		return $params->get('default_on_copy', '0') === '1';
+	}
+
+	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
 	 * @param   array $data Form data
@@ -6701,7 +6712,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function onCopyRow($val)
 	{
-		return $val;
+		return $this->defaultOnCopy() ? $this->default : $val;
 	}
 
 	/**
@@ -6713,7 +6724,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function onSaveAsCopy($val)
 	{
-		return $val;
+		return $this->defaultOnCopy() ? $this->default : $val;
 	}
 
 	/**
