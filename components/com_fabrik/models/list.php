@@ -7572,12 +7572,12 @@ class FabrikFEModelList extends JModelForm
 								$val = $elementModel->storeDatabaseFormat($data[$postKey], $data);
 								$elementModel->updateRowId($rowId);
 
-								if (array_key_exists('fabrik_copy_from_table', $data))
+								if (array_key_exists('fabrik_copy_from_table', $formModel->formData))
 								{
 									$val = $elementModel->onCopyRow($val);
 								}
 
-								if (array_key_exists('Copy', $data))
+								if (array_key_exists('Copy', $formModel->formData))
 								{
 									$val = $elementModel->onSaveAsCopy($val);
 								}
