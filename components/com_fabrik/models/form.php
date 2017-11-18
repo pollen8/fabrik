@@ -4897,18 +4897,18 @@ class FabrikFEModelForm extends FabModelForm
 			$group->startHidden = $startHidden;
 			$group->repeatIntro = $groupParams->get('repeat_intro', '');
 
-			$group->class[] = 'fabrikGroup';
+			$group->classArray[] = 'fabrikGroup';
 
 			if ((int) $groupParams->get('group_columns', 1) == 1)
 			{
 				if (($this->isEditable() && $groupModel->labelPosition('form') !== 1)
 					|| (!$this->isEditable() && $groupModel->labelPosition('details') !== 1))
 				{
-					$group->class[] = 'form-horizontal';
+					$group->classArray[] = 'form-horizontal';
 				}
 			}
 
-			$group->class = implode(' ', $group->class);
+			$group->class = implode(' ', $group->classArray);
 			$group->newGroup = $newGroup;
 
 			// Only create the group if there are some element inside it
