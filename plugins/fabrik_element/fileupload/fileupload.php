@@ -3062,6 +3062,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			// For ajax repeats
 			$value     = (array) $value;
+
+			if (array_key_exists('cropdata', $value))
+			{
+				$value = array($value);
+			}
+
 			$formModel = $this->getFormModel();
 
 			if (!isset($formModel->data))
@@ -3069,7 +3075,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$formModel->data = $data;
 			}
 
-			if (empty($value))
+			if (FArrayHelper::emptyIsh($value))
 			{
 				return '';
 			}
@@ -3079,7 +3085,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				// From ajax upload
 				if (is_array($v))
 				{
-					$v = array_keys($v);
+					if (array_key_exists('cropdata', $v))
+					{
+						$v 	= array_keys($v['id']);
+					}
+					else
+					{
+						$v = array_keys($v);
+					}
+
 					$v = ArrayHelper::getValue($v, 0);
 				}
 
@@ -3102,8 +3116,32 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$value     = (array) $value;
 
+			if (array_key_exists('cropdata', $value))
+			{
+				$value = array($value);
+			}
+
+			if (FArrayHelper::emptyIsh($value))
+			{
+				return '';
+			}
+
+
 			foreach ($value as $v) {
-				$output[] = $storage->preRenderPath($value);
+				if (is_array($v))
+				{
+					if (array_key_exists('cropdata', $v))
+					{
+						$v 	= array_keys($v['id']);
+					}
+					else
+					{
+						$v = array_keys($v);
+					}
+
+					$v = ArrayHelper::getValue($v, 0);
+				}
+				$output[] = $storage->preRenderPath($v);
 			}
 		}
 
@@ -3208,6 +3246,25 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filePath = FabrikWorker::JSONtoData($filePath, false);
 		$filePath = is_object($filePath) ? FArrayHelper::fromObject($filePath) : (array) $filePath;
 
+		/*
+		 * Special case, usually for S3, which allows custom JS to call this function with AJAX, specify &linkOnly=1,
+		 * and get back the presigned URL to a file in a Private bucket.
+		 */
+		if ($linkOnly)
+		{
+			$links = array();
+
+			foreach ($filePath as $path)
+			{
+				$links[] = $storage->preRenderPath($path);
+			}
+
+			echo json_encode($links);
+
+			exit;
+		}
+
+
 		$filePath = FArrayHelper::getValue($filePath, $repeatCount);
 
 		if ($ajaxIndex !== '')
@@ -3219,16 +3276,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$filePath    = $storage->getFullPath($filePath);
-
-		/*
-		 * Special case, usually for S3, which allows custom JS to call this function with AJAX, specify &linkOnly=1,
-		 * and get back the presigned URL to a file in a Private bucket.
-		 */
-		if ($linkOnly)
-		{
-			echo $storage->preRenderPath($filePath);
-			exit;
-		}
 
 		$fileContent = $storage->read($filePath);
 
