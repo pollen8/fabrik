@@ -119,10 +119,20 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$meta = array();
 		$formModel = $this->getFormModel();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
-		$map = array('og:title' => 'fblike_title', 'og:type' => 'fblike_type', 'og:image' => 'fblike_image',
-			'og:description' => 'fblike_description', 'og:street-address' => 'fblike_street_address', 'og:locality' => 'fblike_locality',
-			'og:region' => 'fblike_region', 'og:postal-code' => 'fblike_postal_code', 'og:country-name' => 'fblike_country',
-			'og:email' => 'fblike_email', 'og:phone_number' => 'fblike_phone_number', 'og:fax_number' => 'fblike_fax_number');
+		$map = array(
+			'og:title' => 'fblike_title',
+			'og:type' => 'fblike_type',
+			'og:image' => 'fblike_image',
+			'og:description' => 'fblike_description',
+			'og:street-address' => 'fblike_street_address',
+			'og:locality' => 'fblike_locality',
+			'og:region' => 'fblike_region',
+			'og:postal-code' => 'fblike_postal_code',
+			'og:country-name' => 'fblike_country',
+			'og:email' => 'fblike_email',
+			'og:phone_number' => 'fblike_phone_number',
+			'og:fax_number' => 'fblike_fax_number'
+		);
 
 		foreach ($map as $k => $v)
 		{
@@ -195,11 +205,10 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 			{
 				// $$$ rob doesn't work with sef urls as $url already contains site folder.
 				// $url = COM_FABRIK_LIVESITE.$url;
+				$base = JURI::base();
 				$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 				$url = $ex . $input->server->getString('SERVER_NAME') . $url;
 			}
-
-			$href = "href=\"$url\"";
 		}
 		else
 		{
@@ -207,7 +216,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		}
 
 		$data = new stdClass;
-		$data->href = $href;
+		$data->url = $url;
 		$data->layout = $params->get('fblike_layout', 'standard');
 		$data->showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
 		$data->width = $params->get('fblike_width', 300);

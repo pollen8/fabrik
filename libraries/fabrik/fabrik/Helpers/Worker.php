@@ -428,7 +428,7 @@ class Worker
 		preg_match("/[+|-][0-9]* (week\b|year\b|day\b|month\b)/i", $date, $matches2);
 
 		// E.g. next Wednesday
-		preg_match("/[next|last]* (\monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
+		preg_match("/[next|last]* (monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
 		$matches = array_merge($matches, $matches2, $matches3);
 
 		if (!empty($matches))
@@ -466,7 +466,7 @@ class Worker
 		preg_match("/[+|-][0-9]* (week\b|year\b|day\b|month\b)/i", $date, $matches2);
 
 		// E.g. next Wednesday
-		preg_match("/[next|last]* (\monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
+		preg_match("/[next|last]* (monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
 		$matches = array_merge($matches, $matches2, $matches3);
 
 		if (!empty($matches))
@@ -1753,6 +1753,7 @@ class Worker
 		if (!self::$database)
 		{
 			self::$database = array();
+			self::$database = array();
 		}
 
 		if (!array_key_exists($sig, self::$database))
@@ -1993,6 +1994,27 @@ class Worker
 		}
 
 		return true;
+	}
+
+
+	public static function addMonthsInterval($months, DateTime $date)
+	{
+		$next = new DateTime($date->format('d-m-Y H:i:s'));
+		$next->modify('last day of +' . $months . ' month');
+
+		if ($date->format('d') > $next->format('d'))
+		{
+			return $date->diff($next);
+		}
+		else
+		{
+			return new DateInterval('P' . $months . 'M');
+		}
+	}
+
+	public static function addMonths($months, DateTime $date)
+	{
+		return $date->add(self::addMonthsInterval($months, $date));
 	}
 
 	/**

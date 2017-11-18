@@ -86,7 +86,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	 * @return bool currently ignored
 	 */
 
-	public function onPreLoadData()
+	public function onPreLoadData(&$args)
 	{
 		$params = $this->getParams();
 

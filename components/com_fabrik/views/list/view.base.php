@@ -596,6 +596,7 @@ class FabrikViewListBase extends FabrikView
 
 		$this->hasButtons     = $model->getHasButtons();
 		$this->grouptemplates = $model->groupTemplates;
+		$this->gotOptionalFilters = $model->gotOptionalFilters();
 		$this->params         = $params;
 		$this->loadTemplateBottom();
 		$this->getManagementJS($this->rows);

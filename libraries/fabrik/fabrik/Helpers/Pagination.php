@@ -171,7 +171,7 @@ class Pagination extends \JPagination
 	 *
 	 * @return   string  HTML link
 	 */
-	protected function _item_active(JPaginationObject $item)
+	protected function _item_active(\Joomla\CMS\Pagination\PaginationObject $item)
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;
@@ -189,7 +189,7 @@ class Pagination extends \JPagination
 	 *
 	 * @since   1.5
 	 */
-	protected function _item_inactive(JPaginationObject $item)
+	protected function _item_inactive(\Joomla\CMS\Pagination\PaginationObject $item)
 	{
 		$displayData       = new stdClass;
 		$displayData->item = $item;

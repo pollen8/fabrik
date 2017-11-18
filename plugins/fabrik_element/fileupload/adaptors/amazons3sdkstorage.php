@@ -107,10 +107,21 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 
 		if (!array_key_exists($filepath, $exists))
 		{
-			$exists[$filepath] = $this->s3->doesObjectExist(
-				$this->getBucketName(),
-				$this->urlToKey($filepath)
-			);
+			try
+			{
+				$exists[$filepath] = $this->s3->doesObjectExist(
+					$this->getBucketName(),
+					$this->urlToKey($filepath)
+				);
+			}
+			catch (Exception $e)
+			{
+				if (FabrikHelperHTML::isDebug())
+				{
+					JFactory::getApplication()->enqueueMessage('S3 exists: ' . $e->getMessage());
+				}
+				return false;
+			}
 		}
 
 		return $exists[$filepath];
@@ -213,7 +224,7 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 			{
 				if (FabrikHelperHTML::isDebug())
 				{
-					JFactory::getApplication()->enqueueMessage($e->getMessage());
+					JFactory::getApplication()->enqueueMessage('S3 upload createBucket: ' . $e->getMessage());
 				}
 				return false;
 			}
@@ -241,6 +252,10 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 		catch (Exception $e)
 		{
+			if (FabrikHelperHTML::isDebug())
+			{
+				JFactory::getApplication()->enqueueMessage('S3 upload putObject: ' . $e->getMessage());
+			}
 			return false;
 		}
 
@@ -307,6 +322,10 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 		catch (Exception $e)
 		{
+			if (FabrikHelperHTML::isDebug())
+			{
+				JFactory::getApplication()->enqueueMessage('S3 write: ' . $e->getMessage());
+			}
 			return false;
 		}
 	}
@@ -330,6 +349,10 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 		catch (Exception $e)
 		{
+			if (FabrikHelperHTML::isDebug())
+			{
+				JFactory::getApplication()->enqueueMessage('S3 upload read: ' . $e->getMessage());
+			}
 			return false;
 		}
 
@@ -461,12 +484,23 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function delete($filepath)
 	{
 		$filepath = $this->urlToPath($filepath);
-		$this->s3->deleteObject(
-			[
-				'Bucket' => $this->getBucketName(),
-				'Key' => $this->urlToKey($filepath)
-			]
-		);
+		try
+		{
+			$this->s3->deleteObject(
+				[
+					'Bucket' => $this->getBucketName(),
+					'Key'    => $this->urlToKey($filepath)
+				]
+			);
+		}
+		catch (Exception $e)
+		{
+			if (FabrikHelperHTML::isDebug())
+			{
+				JFactory::getApplication()->enqueueMessage('S3 delete: ' . $e->getMessage());
+			}
+			return false;
+		}
 	}
 
 	/**
@@ -508,21 +542,21 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 
-		$ulDir = $params->get('ul_directory');
+		$ulDir = '/' . ltrim($params->get('ul_directory'), '/\\');
 
 		if ($this->appendServerPath())
 		{
-			$ulDir = COM_FABRIK_BASE . $ulDir;
+			$ulDir = rtrim(COM_FABRIK_BASE. '/\\') . $ulDir;
 		}
 
 		$ulDir = $this->clean($ulDir);
 		$ulDir = $w->parseMessageForPlaceHolder($ulDir);
 
-		$thumbdir = $params->get('thumb_dir');
+		$thumbdir = '/' . ltrim($params->get('thumb_dir'), '/\\');
 
 		if ($this->appendServerPath())
 		{
-			$thumbdir = COM_FABRIK_BASE . $thumbdir;
+			$thumbdir = rtrim(COM_FABRIK_BASE, '/\\') . $thumbdir;
 		}
 
 		$thumbdir = $this->clean($thumbdir);
@@ -618,6 +652,10 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 		catch (Exception $e)
 		{
+			if (FabrikHelperHTML::isDebug())
+			{
+				JFactory::getApplication()->enqueueMessage('S3 getFileInfo: ' . $e->getMessage());
+			}
 			return false;
 		}
 
@@ -667,12 +705,23 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		{
 			if (!array_key_exists($filepath, $presigned))
 			{
-				$cmd      = $this->s3->getCommand('GetObject', [
-					'Bucket' => $this->getBucketName(),
-					'Key'    => $this->urlToKey($filepath)
-				]);
-				$request  = $this->s3->createPresignedRequest($cmd, '+' . $lifetime . ' seconds');
-				$presigned[$filepath] = (string) $request->getUri();
+				try
+				{
+					$cmd                  = $this->s3->getCommand('GetObject', [
+						'Bucket' => $this->getBucketName(),
+						'Key'    => $this->urlToKey($filepath)
+					]);
+					$request              = $this->s3->createPresignedRequest($cmd, '+' . $lifetime . ' seconds');
+					$presigned[$filepath] = (string) $request->getUri();
+				}
+				catch (Exception $e)
+				{
+					if (FabrikHelperHTML::isDebug())
+					{
+						JFactory::getApplication()->enqueueMessage('S3 preRenderPath: ' . $e->getMessage());
+					}
+					return false;
+				}
 			}
 			$filepath = $presigned[$filepath];
 		}

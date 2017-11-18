@@ -11,8 +11,10 @@
 			<field description="PLG_ELEMENT_FBLIKE_URL_DESC" label="PLG_ELEMENT_FBLIKE_URL_LABEL" name="fblike_url" type="text"/>
 
 			<field default="standard" description="PLG_ELEMENT_FBLIKE_LAYOUT_DESC" label="PLG_ELEMENT_FBLIKE_LAYOUT_LABEL" name="fblike_layout" type="list">
-					<option value="standard">standard</option>
-					<option value="button_count">button_count</option>
+				<option value="standard">standard</option>
+				<option value="button_count">button_count</option>
+				<option value="box_count">box_count</option>
+				<option value="button">button</option>
 			</field>
 
 			<field default="0"

@@ -271,6 +271,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->defaultVal = $this->getDefaultValue();
 		$opts->changeEvent = $this->getChangeEvent();
 
 		return array('FbYesno', $id, $opts);

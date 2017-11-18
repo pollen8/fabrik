@@ -14,6 +14,7 @@
 		<filename plugin="fblike">fblike.php</filename>
 		<filename>index.html</filename>
 		<filename>fblike.js</filename>
+		<filename>fblike-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>layouts</folder>

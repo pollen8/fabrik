@@ -70,6 +70,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 	                    url += '&endDate=' + end.format();
                         new Request({
                             url        : url,
+                            data       : this.options.urlfilters,
                             evalScripts: true,
                             onSuccess  : function (e, json) {
                                 if (typeOf(json) !== 'null') {
