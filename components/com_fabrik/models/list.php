@@ -6801,7 +6801,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			if ($params->get('checkboxLocation', 'end') !== 'end')
 			{
-				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass, $this->canSelectRows());
+				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass, !$this->canSelectRows());
 			}
 
 			if ($params->get('checkboxLocation', 'end') !== 'end')
