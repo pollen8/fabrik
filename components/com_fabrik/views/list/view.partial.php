@@ -107,6 +107,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->toggleFilters = $this->toggleFilters;
 		$displayData->filterCols = $this->filterCols;
 		$displayData->showClearFilters = $this->showClearFilters;
+		$displayData->gotOptionalFilters = $this->gotOptionalFilters;
 		$displayData->filters = $this->filters;
 		$displayData->filter_action = $this->filter_action;
 		$layoutFile =  $this->filterMode === 5 ? 'fabrik-filters-modal' : 'fabrik-filters';

@@ -46,9 +46,11 @@ if ($this->canGroupBy) :?>
 	</li>
 
 <?php endif;
-if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))  || $this->bootShowFilters == false)) :?>
+if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))  || $this->bootShowFilters == false)):
+	$clearFiltersClass = $this->gotOptionalFilters ? "clearFilters hasFilters" : "clearFilters";
+?>
 	<li>
-		<a class="clearFilters" href="#">
+		<a class="<?php echo $clearFiltersClass; ?>" href="#">
 			<?php echo FabrikHelperHTML::icon('icon-refresh'); ?>
 			<?php echo FText::_('COM_FABRIK_CLEAR')?>
 		</a>
