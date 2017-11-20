@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+        <fieldset name="plg-form-joompush">
+            <field name="joompush_notification_icon"
+                   type="media"
+                   repeat="true"
+                   label="PLG_FABRIK_FORM_JOOMPUSH_NOTIFICATION_ICON_LABEL"
+                   description="PLG_FABRIK_FORM_JOOMPUSH_NOTIFICATION_DESC"
+                   hide_none="1"
+                   default="media/com_joompush/images/joompush.png"
+            />
+
+            <field name="joompush_title"
+                   type="text"
+                   repeat="true"
+                   label="PLG_FABRIK_FORM_JOOMPUSH_TITLE_LABEL"
+                   description="PLG_FABRIK_FORM_JOOMPUSH_TITLE_DESC"
+            />
+
+            <field name="joompush_message"
+			       type="textarea"
+                   repeat="true"
+			       label="PLG_FABRIK_FORM_JOOMPUSH_MESSAGE_LABEL"
+                   description="PLG_FABRIK_FORM_JOOMPUSH_MESSAGE_DESC"
+            />
+
+            <field name="joompush_group"
+                   type="sql"
+                   default="1"
+                   repeat="true"
+                   label="PLG_FABRIK_FORM_JOOMPUSH_GROUP_LABEL"
+                   description="PLG_FABRIK_FORM_JOOMPUSH_GROUP_DESC"
+                   query="SELECT id AS value, title AS joompush_group FROM #__joompush_subscriber_groups"
+            />
+
+			<field name="joompush_conditon"
+				   type="fabrikeditor"
+				   mode="php"
+				   description="PLG_FABRIK_FORM_JOOMPUSH_CONDITION_DESC"
+				   label="PLG_FABRIK_FORM_JOOMPUSH_CONDITION_LABEL"
+				   repeat="true" />
+		</fieldset>
+	</fields>
+</form>
