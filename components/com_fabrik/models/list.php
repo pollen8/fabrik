@@ -1645,10 +1645,12 @@ class FabrikFEModelList extends JModelForm
 					// which aren't in $faceted->linkedlist, so added this sanity check.
 					if (isset($faceted->linkedlist->$f))
 					{
+						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
+						$facetTable = $this->facetedTable($join->list_id);
 						$linkedTable = $faceted->linkedlist->$f;
 						$popupLink = $faceted->linkedlist_linktype->$f;
 
-						if ($linkedTable != '0')
+						if ($linkedTable != '0' && $facetTable->canView())
 						{
 							$recordKey = $join->element_id . '___' . $linkedTable;
 							$key = $recordKey . "_list_heading";
@@ -6965,10 +6967,11 @@ class FabrikFEModelList extends JModelForm
 
 				if (is_object($join) && isset($faceted->linkedlist->$key))
 				{
+					$facetTable = $this->facetedTable($join->list_id);
 					$linkedTable = $faceted->linkedlist->$key;
 					$heading = $faceted->linkedlistheader->$key;
 
-					if ($linkedTable != '0')
+					if ($linkedTable != '0' && $facetTable->canView())
 					{
 						$prefix = $join->element_id . '___' . $linkedTable . '_list_heading';
 						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_LIST') : FText::_($heading);
