@@ -51,42 +51,74 @@ class PlgFabrik_FormJoompush extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$params = $this->getParams();
+		$this->data = $this->getProcessData();
 		$data = $formModel->formData;
-		$result = false;
 
 		if (!$this->shouldProcess('joompush_conditon', $data, $params))
 		{
 			return true;
 		}
 
-		$message = $this->getMessage();
+		$clientId          = $formModel->getId();
+		$userId            = $this->getFieldValue('joompush_user', $formModel->formDataWithTableName);
+		$userId            = is_array($userId) ? $userId[0] : $userId;
+		$gid               = $params->get('joompush_group', '');
+		$pushMsg           = new stdClass;
+		$pushMsg->template = $this->getTemplate();
+		$jPush             = new JoompushHelpersJpush;
+		$jPushSite         = new JoompushHelpersJoompushsite;
+		$subscribersData   = new stdClass();
 
-		if (!empty($message))
+		if (!empty($gid))
 		{
-			$rowid = $this->app->input->get('rowid', '', 'string');
-			$title      = $this->getTitle();
-			$url = JRoute::_('index.php?option=com_' . $this->package . 'view=details&formid=' . $formModel->get('id') . 'rowid=' . $rowid);
-			$track_code = md5(uniqid(rand(), true));
-
-			$pushMsg                    = new stdClass;
-			$pushMsg->template->icon    = $params->get('joompush_notification_icon');
-			$pushMsg->template->url     = $url;
-			$pushMsg->code              = $track_code;
-			$pushMsg->template->title   = $title;
-			$pushMsg->template->message = $message;
-			$pushMsg->gid               = $params->get('joompush_group', $this->getAdminGroupId());
-
-			$JoompushHelpersJpush = new JoompushHelpersJpush;
-			$result               = $JoompushHelpersJpush::jtopicPush($pushMsg);
+			$pushMsg->gid               = $gid;
+			$pushMsg->code              = $this->getTrackCode();
+			$result = $jPush::jtopicPush($pushMsg);
 
 			if ($result)
 			{
-				$JoompushHelpersJoompush = new JoompushHelpersJoompushsite;
-				$JoompushHelpersJoompush->saveNotification('', $pushMsg->gid, 'group', $pushMsg->template, 1, 'com_fabrik.form', $rowid, $track_code);
+				$jPushSite->saveNotification(
+					$subscribersData,
+					$pushMsg->gid,
+					'group',
+					$pushMsg->template,
+					1,
+					'com_fabrik.form',
+					$clientId,
+					$pushMsg->code
+				);
 			}
 		}
 
-		return $result;
+		if (!empty($userId))
+		{
+			$subscriberKeys = $this->getSubscriberKeys($userId);
+			$subscribersData->key = $subscriberKeys;
+
+			foreach ($subscriberKeys as $key)
+			{
+				$pushMsg->key = array($key);
+				$pushMsg->code = $key;
+
+				$result = $jPush::jpush($pushMsg);
+
+				if ($result)
+				{
+					$jPushSite->saveNotification(
+						$subscribersData,
+						0,
+						'user',
+						$pushMsg->template,
+						1,
+						'com_fabrik.form',
+						$clientId,
+						$pushMsg->code
+					);
+				}
+			}
+		}
+
+		return true;
 	}
 
 
@@ -98,11 +130,9 @@ class PlgFabrik_FormJoompush extends PlgFabrik_Form
 	protected function getMessage()
 	{
 		$params = $this->getParams();
-		$msg    = $params->get('joompush_message', '');
-		$formModel = $this->getModel();
-		$data = $formModel->formData;
+		$msg    = JText::_($params->get('joompush_message', ''));
 		$w = new FabrikWorker;
-		return $w->parseMessageForPlaceHolder($msg, $data);
+		return $w->parseMessageForPlaceHolder($msg, $this->data);
 	}
 
 
@@ -114,19 +144,17 @@ class PlgFabrik_FormJoompush extends PlgFabrik_Form
 	protected function getTitle()
 	{
 		$params = $this->getParams();
-		$msg    = $params->get('joompush_title', '');
-		$formModel = $this->getModel();
-		$data = $formModel->formData;
+		$msg    = JText::_($params->get('joompush_title', ''));
 		$w = new FabrikWorker;
-		return $w->parseMessageForPlaceHolder($msg, $data);
+		return $w->parseMessageForPlaceHolder($msg, $this->data);
 	}
 
 	/**
 	 * Get Admin user group.
 	 *
-	 * @return  void
+	 * @return  string
 	 *
-	 * @since   1.0
+	 * @since   3.8
 	 */
 	protected function getAdminGroupId()
 	{
@@ -138,5 +166,89 @@ class PlgFabrik_FormJoompush extends PlgFabrik_Form
 			->where($db->quoteName('is_default') . ' = 2');
 		$db->setQuery($query);
 		return $db->loadResult();
+	}
+
+	/**
+	 * Get a random string to use a tracking code
+	 *
+	 * @return string
+	 *
+	 * @since 3.8
+	 */
+	protected function getTrackCode()
+	{
+		return md5(uniqid(rand(), true));
+	}
+
+	/**
+	 * Get an array of subscriber keys from JoomPush
+	 *
+	 * @param  integer  $userId
+	 *
+	 * @return  array
+	 */
+	protected function getSubscriberKeys($userId)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName('key'))
+			->from($db->quoteName('#__joompush_subscribers'))
+			->where('user_id = ' . (int)$userId);
+		$db->setQuery($query);
+		return $db->loadColumn();
+	}
+
+	protected function getJPTemplate($templateId)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query
+			->select(
+				$db->quoteName(
+					array(
+						'title',
+						'message',
+						'icon',
+						'url'
+					)
+				)
+			)
+			->from($db->quoteName('#__joompush_notification_templates'))
+			->where('id = ' . (int)$templateId);
+		$db->setQuery($query);
+		return $db->loadObject();
+	}
+
+	/**
+	 * Get a template, either from our params, or a JoomPush
+	 */
+	protected function getTemplate()
+	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
+		$useJPTemplate = $params->get('joompush_use_jp_template', '0') === '1';
+
+		if ($useJPTemplate)
+		{
+			$template = $this->getJPTemplate($params->get('joompush_template', ''));
+		}
+		else
+		{
+			$url = $params->get('joompush_url', '');
+
+			if (empty($url))
+			{
+				$rowid = $this->app->input->get('rowid', '', 'string');
+				$url   = 'index.php?option=com_' . $this->package . '&view=details&formid=' . $formModel->get('id') . '&rowid=' . $rowid;
+			}
+
+			$template          = new stdClass;
+			$template->icon    = $params->get('joompush_notification_icon');
+			$template->url     = JRoute::_($url);
+			$template->title   = $this->getTitle();
+			$template->message = $this->getMessage();
+		}
+
+		return $template;
 	}
 }
