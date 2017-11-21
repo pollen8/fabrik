@@ -956,7 +956,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                         // rob previously we we doing appendInfo() but that didnt get the concat
                         // labels for the database join
                         if (this.options.displayType === 'auto-complete') {
-                            if (this.activePopup) {
+                            if (this.activePopUp) {
                                 // Need to get v if auto-complete and updating from posted popup form
                                 // as we only want to get ONE
                                 // option back inside update();
