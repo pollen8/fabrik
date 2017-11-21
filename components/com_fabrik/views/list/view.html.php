@@ -102,12 +102,20 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData = new stdClass;
 		$displayData->filterMode = $this->filterMode;
 		$displayData->toggleFilters = $this->toggleFilters;
-		$displayData->filterCols = $this->filterCols;
+		$displayData->filterCols = (int)$this->filterCols;
 		$displayData->showClearFilters = $this->showClearFilters;
 		$displayData->gotOptionalFilters = $this->gotOptionalFilters;
 		$displayData->filters = $this->filters;
 		$displayData->filter_action = $this->filter_action;
-		$layoutFile =  $this->filterMode === 5 ? 'fabrik-filters-modal' : 'fabrik-filters';
+		if ($this->filterMode === 5)
+		{
+			$layoutFile = $this->filterMode === 5;
+		}
+		else
+		{
+
+			$layoutFile = $this->filterCols > 1 ? 'fabrik-filters-bootstrap' : 'fabrik-filters';
+		}
 		$layout = $this->getModel()->getLayout('list.' . $layoutFile);
 
 		return $layout->render($displayData);

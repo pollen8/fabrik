@@ -520,6 +520,11 @@ table .fabrik___heading span.heading{
 	white-space: nowrap;
 }
 
+div.fabrik___heading{
+	white-space: nowrap;
+	font-weight: bold;
+}
+
 table.fabrikList td,
 table.fabrikList th{
 	padding: 5px;

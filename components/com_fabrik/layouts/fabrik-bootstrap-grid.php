@@ -14,6 +14,7 @@ $span = floor(12 / $d->columns);
 $i    = 0;
 $id   = is_null($d->spanId) ? '' : ' id="' . $d->spanId . '"';
 $grid = array();
+$continerClass = isset($d->containerClass) ? $d->containerClass : '';
 
 foreach ($d->items as $i => $s)
 {
