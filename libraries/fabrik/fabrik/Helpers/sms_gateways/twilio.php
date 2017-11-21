@@ -12,6 +12,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\ArrayHelper;
+use Twilio\Rest\Client;
+use Twilio\Exceptions\TwilioException;
+use Exception;
 
 /**
  * Twilio SMS gateway class
@@ -34,8 +37,7 @@ class Twilio extends JObject
 
 	public function process($message = '', $opts)
 	{
-		jimport('vendor.twilio.sdk.Services.Twilio');
-		$username = ArrayHelper::getValue($opts, 'sms-username');
+		$sid = ArrayHelper::getValue($opts, 'sms-username');
 		$token = ArrayHelper::getValue($opts, 'sms-password');
 		$smsto = ArrayHelper::getValue($opts, 'sms-to');
 
@@ -43,22 +45,22 @@ class Twilio extends JObject
 		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
 		$smstos = explode(",", $smsto);
 
-		$client = new Services_Twilio($username, $token);
+		$client = new Twilio\Rest\Client($sid, $token);
 
 		foreach ($smstos as $smsto)
 		{
 			try {
-				$call = $client->account->messages->create(
+				$client->messages->create(
+					$smsto,
 					array(
-						'From' => $smsfrom,
-						'To' => $smsto,
-						'Body' => $message
+						'from' => $smsfrom,
+						'body' => $message
 					)
 				);
 			}
-			catch (Services_Twilio_RestException $e)
+			catch (TwilioException $e)
 			{
-				//echo $e->getMessage();
+				JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 
 				return false;
 			}

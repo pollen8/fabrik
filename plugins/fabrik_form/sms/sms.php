@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\StringHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -81,7 +83,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 			$input = new JFilterInput;
 			$gateway = $input->clean($gateway, 'CMD');
             require_once JPATH_ROOT . '/libraries/fabrik/fabrik/Helpers/sms_gateways/' . StringHelper::strtolower($gateway);
-			$gateway = JFile::stripExt($gateway);
+			$gateway = ucfirst(JFile::stripExt($gateway));
 			$this->gateway = new $gateway;
 			$this->gateway->params = $params;
 		}
