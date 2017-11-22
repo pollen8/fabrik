@@ -104,7 +104,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			$layoutData->countUp         = $count[0];
 			$layoutData->countDown       = $count[1];
 			$layoutData->showDown        = $params->get('show_down', 1);
-			$layoutData->tmpl            = $this->tmpl;
+			$layoutData->tmpl            = @$this->tmpl;
 			$data[$i]                    = $layout->render($layoutData);
 		}
 
