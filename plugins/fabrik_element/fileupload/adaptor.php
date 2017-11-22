@@ -224,6 +224,15 @@ abstract class FabrikStorageAdaptor
 	public abstract function getFullPath($filepath);
 
 	/**
+	 * Check for snooping
+	 *
+	 * @param   string   $filepath   The file path
+	 *
+	 * @return  boolean
+	 */
+	public abstract function checkPath($folder);
+
+	/**
 	 * Allows storage model to modify pathname just before it is rendered.  For instance,
 	 * if using Amazon S3 with 'Authenticated URL' option.
 	 *

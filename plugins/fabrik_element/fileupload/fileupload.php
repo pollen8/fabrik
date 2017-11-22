@@ -1037,6 +1037,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
             $fileSize = $file['size'];
         }
 
+        if (empty($fileName))
+        {
+        	return true;
+        }
+
 		if (!$this->_fileUploadFileTypeOK($fileName))
 		{
 			// zap the temp file, just to be safe (might be a malicious PHP file)
@@ -1059,7 +1064,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filePath = $this->_getFilePath($repeatCounter);
 		jimport('joomla.filesystem.file');
 
-		if (JFile::exists($filePath))
+		if ($this->getStorage()->exists($filePath))
 		{
 			if ($params->get('ul_file_increment', 0) == 0)
 			{
@@ -2099,7 +2104,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
 			 * submission plugin, or by a 'replace' validation.
 			 */
-			if (!FabrikString::usesElementPlaceholders($params->get('ul_directory')))
+			$rename = $params->get('fu_rename_file_code', '');
+			if (empty($rename) && !FabrikString::usesElementPlaceholders($params->get('ul_directory')))
 			{
 				return $this->_filePaths[$repeatCounter];
 			}
@@ -2109,14 +2115,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$aData     = $filter->clean($_POST, 'array');
 		$elName    = $this->getFullName(true, false);
 		$elNameRaw = $elName . '_raw';
-
-		/**
-		 * $$$ hugh - if we use the @ way of doing this, and one of the array keys doesn't exist,
-		 * PHP still sets an error, even though it doesn't toss it.  So if we then have some eval'd
-		 * code, like a PHP validation, and do the logError() thing, that will pick up and report this error,
-		 * and fail the validation.  Which is VERY hard to track.  So we'll have to do it long hand.
-		 */
-		// $myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'] : @$_FILES['file']['name'];
 		$myFileName = '';
 
 		if (array_key_exists($elName, $_FILES) && is_array($_FILES[$elName]))
@@ -2147,6 +2145,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
 		$myFileName = $storage->cleanName($myFileName, $repeatCounter);
+		$myFileName = $this->renameFile($myFileName, $repeatCounter);
 
 		$folder = $params->get('ul_directory');
 		$folder = $folder . '/' . $myFileDir;
@@ -2163,11 +2162,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$folder    = $w->parseMessageForRepeats($folder, $formModel->formData, $this, $repeatCounter);
 		$folder    = $w->parseMessageForPlaceHolder($folder);
 
-		if ($storage->appendServerPath())
-		{
-			JPath::check($folder);
-		}
-
+		// checkPath will throw an exception if folder is naughty
+		$storage->checkPath($folder);
 		$storage->makeRecursiveFolders($folder);
 		$p                                = $folder . '/' . $myFileName;
 		$this->_filePaths[$repeatCounter] = JPath::clean($p);
@@ -3606,6 +3602,29 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
                 $data[$thisName . '_raw'] = $data[$origName];
             }
         }
+	}
+
+	/*
+	 * Called during upload, runs optional eval'ed code to rename the file
+	 *
+	 * @param  string  $filename  the filename
+	 * @param  int     $repeatCounter  repeat counter
+	 *
+	 * @return  string   $filename   the (optionally) modified filename
+	 */
+	private function renameFile($filename, $repeatCounter)
+	{
+		$params = $this->getParams();
+		$php = $params->get('fu_rename_file_code', '');
+
+		if (!empty($php))
+		{
+			$formModel = $this->getFormModel();
+			$filename = FabrikHelperHTML::isDebug() ? eval($php) : @eval($php);
+			FabrikWorker::logEval($filename, 'Eval exception : ' . $this->getElement()->name . '::renameFile() : ' . $filename . ' : %s');
+		}
+
+		return $filename;
 	}
 
 }

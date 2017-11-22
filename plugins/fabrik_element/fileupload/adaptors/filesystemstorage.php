@@ -471,4 +471,20 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		return $filepath;
 	}
+
+	/**
+	 * Check for snooping
+	 *
+	 * @param   string   $folder   The file path
+	 *
+	 * @return  void
+	 */
+	public function checkPath($folder)
+	{
+		if ($this->appendServerPath())
+		{
+			JPath::check($folder);
+		}
+	}
+
 }
