@@ -857,8 +857,22 @@ class Worker
 	 */
 	public function replaceRequest(&$msg)
 	{
-		$f       = JFilterInput::getInstance();
-		$request = $f->clean($_REQUEST, 'array');
+		static $request;
+
+		if (!is_array($request))
+		{
+			$request = array();
+			$f       = JFilterInput::getInstance();
+
+			foreach ($_REQUEST as $k => $v)
+			{
+				if (is_string($v))
+				{
+					$request[$k] = $f->clean($v, 'CMD');
+				}
+			}
+		}
+
 
 		foreach ($request as $key => $val)
 		{
