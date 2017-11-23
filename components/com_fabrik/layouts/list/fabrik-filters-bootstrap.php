@@ -12,10 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+
 $d             = $displayData;
 $underHeadings = $d->filterMode === 3 || $d->filterMode === 4;
 $clearFiltersClass = $d->gotOptionalFilters ? "clearFilters hasFilters" : "clearFilters";
-
 $style = $d->toggleFilters ? 'style="display:none"' : '';
 
 ?>
@@ -58,7 +59,10 @@ EOT;
                     endif;
                 endif;
             endforeach;
-            $chunkedFilters = array_chunk($chunkedFilters, $d->filterCols);
+
+            // last arg controls whether rows and cols are flipped
+            $chunkedFilters = ArrayHelper::chunk($chunkedFilters, $d->filterCols, true);
+
             foreach ($chunkedFilters as $chunk) :
                 ?>
                 <div class="row-fluid">
