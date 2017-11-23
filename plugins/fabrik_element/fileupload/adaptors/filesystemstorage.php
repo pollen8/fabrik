@@ -487,4 +487,15 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		}
 	}
 
+	/**
+	 * Return the directory separator - can't use DIRECTORY_SEPARATOR by default, as s3 uses /
+	 *
+	 * @return string
+	 *
+	 * @since 3.8
+	 */
+	public function getDS()
+	{
+		return DIRECTORY_SEPARATOR;
+	}
 }

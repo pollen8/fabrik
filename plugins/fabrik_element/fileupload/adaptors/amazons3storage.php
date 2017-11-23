@@ -597,4 +597,16 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		return;
 	}
+
+	/**
+	 * Return the directory separator - can't use DIRECTORY_SEPARATOR by default, as s3 uses /
+	 *
+	 * @return string
+	 *
+	 * @since 3.8
+	 */
+	public function getDS()
+	{
+		return '/';
+	}
 }

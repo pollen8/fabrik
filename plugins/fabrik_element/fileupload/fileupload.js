@@ -563,10 +563,10 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
         imageCells: function (file, title, a) {
             var del = this.deleteImgButton(), filename, status, progress, icon;
             if (Fabrik.bootstrapped) {
-                icon = jQuery(document.createElement('td')).addClass('span1 plupload_resize').append(a);
+                icon = jQuery(document.createElement('td')).addClass(this.options.spanNames[1] + ' plupload_resize').append(a);
                 progress = Fabrik.jLayouts['fabrik-progress-bar'];
-                status = jQuery(document.createElement('td')).addClass('span5 plupload_file_status').html(progress);
-                filename = jQuery(document.createElement('td')).addClass('span6 plupload_file_name').append(title);
+                status = jQuery(document.createElement('td')).addClass(this.options.spanNames[5] + ' plupload_file_status').html(progress);
+                filename = jQuery(document.createElement('td')).addClass(this.options.spanNames[6] + ' plupload_file_name').append(title);
 
                 return [filename, icon, status, del];
             } else {
@@ -633,12 +633,11 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
 
                 var icon = Fabrik.jLayouts['fabrik-icon-delete'],
                     self = this;
-                return jQuery(document.createElement('td')).addClass('span1 plupload_file_action').append(
+                return jQuery(document.createElement('td')).addClass(this.options.spanNames[1] + ' plupload_file_action').append(
                     jQuery(document.createElement('a'))
                         .html(icon)
                         .attr({
-                            'href' : '#',
-                            'class': 'icon-delete'
+                            'href' : '#'
                         })
                         .on('click', function (e) {
                             e.stopPropagation();

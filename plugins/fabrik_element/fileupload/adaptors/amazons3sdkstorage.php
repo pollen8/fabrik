@@ -449,10 +449,11 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 		else
 		{
-			$path = JPath::clean($path);
+			$path = empty($path) ? '' : JPath::clean($path);
 		}
 
 		$path = str_replace("\\", '/', $path);
+		$path = ltrim($path, '/');
 
 		return $path;
 	}
@@ -540,6 +541,13 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function _getThumb($file)
 	{
 		$params = $this->getParams();
+		$origFile = $file;
+
+		if ($params->get('make_thumbnail', '0') === '0')
+		{
+			return '';
+		}
+
 		$w = new FabrikWorker;
 
 		$ulDir = '/' . ltrim($params->get('ul_directory'), '/\\');
@@ -573,6 +581,12 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$fclean = JFile::stripExt($f);
 		$file = $dir . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext;
 
+		if ($origFile === $file)
+		{
+			// if they set same folder and no prefex, it can wind up being same file, which blows up
+			return '';
+		}
+
 		return $file;
 	}
 
@@ -587,6 +601,13 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function _getCropped($file)
 	{
 		$params = $this->getParams();
+		$origFile = $file;
+
+		if ($params->get('fileupload_crop', '0') === '0')
+		{
+			return '';
+		}
+
 		$w = new FabrikWorker;
 
 		$ulDir = COM_FABRIK_BASE . $params->get('ul_directory');
@@ -602,6 +623,11 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$f = basename($file);
 		$dir = dirname($file);
 		$file = $dir . '/' . $f;
+
+		if ($origFile === $file)
+		{
+			return '';
+		}
 
 		return $file;
 	}
@@ -739,5 +765,17 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function checkPath($folder)
 	{
 		return;
+	}
+
+	/**
+	 * Return the directory separator - can't use DIRECTORY_SEPARATOR by default, as s3 uses /
+	 *
+	 * @return string
+	 *
+	 * @since 3.8
+	 */
+	public function getDS()
+	{
+		return '/';
 	}
 }

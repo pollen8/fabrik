@@ -233,6 +233,15 @@ abstract class FabrikStorageAdaptor
 	public abstract function checkPath($folder);
 
 	/**
+	 * Return the directory separator - can't use DIRECTORY_SEPARATOR by default, as s3 uses /
+	 *
+	 * @return string
+	 *
+	 * @since 3.8
+	 */
+	public abstract function getDS();
+
+	/**
 	 * Allows storage model to modify pathname just before it is rendered.  For instance,
 	 * if using Amazon S3 with 'Authenticated URL' option.
 	 *

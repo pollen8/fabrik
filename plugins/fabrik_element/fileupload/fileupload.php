@@ -346,7 +346,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						{
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_' . $iCounter;
-							$o->name = array_pop(explode(DIRECTORY_SEPARATOR, $tKey));
+							$o->name = array_pop(explode($this->getStorage()->getDS(), $tKey));
 							$o->path = $tKey;
 
 							if ($fileInfo = $this->getStorage()->getFileInfo($o->path))
@@ -371,7 +371,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						if ($singleCrop)
 						{
 							// Single crop image (not sure about the 0 settings in here)
-							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]);
+							$parts   = explode($this->getStorage()->getDS(), $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
@@ -395,7 +395,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 						else
 						{
-							$parts   = explode(DIRECTORY_SEPARATOR, $value[$x]);
+							$parts   = explode($this->getStorage()->getDS(), $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_' . $rawValues[$x];
 							$o->name = array_pop($parts);
@@ -466,6 +466,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->page_url         = COM_FABRIK_LIVESITE;
 		$opts->ajaxToken        = JSession::getFormToken();
         $opts->isAdmin          = (bool) $this->app->isAdmin();
+        $opts->iconDelete       = FabrikHelperHTML::icon("icon-delete",  '', '', true);
+        $opts->spanNames        = array();
+
+        for($i = 1; $i <= 12; $i++)
+        {
+        	$opts->spanNames[$i] = FabrikHelperHTML::getGridSpan($i);
+        }
 
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
@@ -1750,27 +1757,33 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$storage->delete($file);
 		}
 
-		if ($storage->exists($thumb))
+		if (!empty($thumb))
 		{
-			$storage->delete($thumb);
-		}
-		else
-		{
-			if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/')))
+			if ($storage->exists($thumb))
 			{
-				$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/'));
+				$storage->delete($thumb);
+			}
+			else
+			{
+				if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/')))
+				{
+					$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/'));
+				}
 			}
 		}
 
-		if ($storage->exists($cropped))
+		if (!empty($cropped))
 		{
-			$storage->delete($cropped);
-		}
-		else
-		{
-			if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/')))
+			if ($storage->exists($cropped))
 			{
-				$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/'));
+				$storage->delete($cropped);
+			}
+			else
+			{
+				if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/')))
+				{
+					$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/'));
+				}
 			}
 		}
 	}
@@ -2271,7 +2284,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					|| (
 						$v != ''
 						&& (
-							$storage->exists(COM_FABRIK_BASE . $v)
+							$storage->exists($v, true)
 							|| JString::substr($v, 0, 4) == 'http')
 					)
 				)
@@ -2611,7 +2624,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		FabrikHelperHTML::jLayoutJs('fabrik-progress-bar', 'fabrik-progress-bar', (object) array('context' => '', 'animated' => true));
 		FabrikHelperHTML::jLayoutJs('fabrik-progress-bar-success', 'fabrik-progress-bar', (object) array('context' => 'success', 'value' => 100));
-		FabrikHelperHTML::jLayoutJs('fabrik-icon-delete', 'fabrik-icon', (object) array('icon' => 'delete'));
+		FabrikHelperHTML::jLayoutJs('fabrik-icon-delete', 'fabrik-icon', (object) array('icon' => 'icon-delete'));
 
 		$this->pluploadModal($repeatCounter);
 
@@ -3090,6 +3103,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						$v = array_keys($v);
 					}
 
+					if (empty($v))
+					{
+						return '';
+					}
+
 					$v = ArrayHelper::getValue($v, 0);
 				}
 
@@ -3439,7 +3457,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$storage  = $this->getStorage();
 		$filename = $storage->cleanName($filename, $repeatCounter);
-		$filename = JPath::clean($filePath . '/' . $filename);
+		$filename = $storage->clean($filePath . '/' . $filename);
 		$this->deleteFile($filename);
 		$db    = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);
@@ -3626,5 +3644,4 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return $filename;
 	}
-
 }
