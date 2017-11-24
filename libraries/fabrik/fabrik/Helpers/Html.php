@@ -3112,11 +3112,30 @@ EOT;
 	 *
 	 * @return  void
 	 */
-	public static function getGridSpan($spanSize)
+	public static function getGridSpan($size, $viewport = 'medium')
 	{
-		$layout                = self::getLayout('fabrik-grid-span');
-		$displayData           = new stdClass;
-		$displayData->spanSize = $spanSize;
-		return $layout->render($displayData);
+	    static $spans;
+
+	    if (!is_array($spans))
+        {
+            $spans = array();
+        }
+
+        if (!array_key_exists($viewport, $spans))
+        {
+            $spans[$viewport] = array();
+        }
+
+        if (!array_key_exists($size, $spans[$viewport]))
+        {
+
+	        $layout                = self::getLayout('fabrik-grid-span');
+	        $displayData           = new stdClass;
+	        $displayData->spanSize = $size;
+	        $displayData->viewport = $viewport;
+            $spans[$viewport][$size] = $layout->render($displayData);
+        }
+
+        return $spans[$viewport][$size];
 	}
 }
