@@ -193,7 +193,8 @@ class PlgFabrik_FormJoompush extends PlgFabrik_Form
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName('key'))
 			->from($db->quoteName('#__joompush_subscribers'))
-			->where('user_id = ' . (int)$userId);
+			->where('user_id = ' . (int)$userId)
+			->where('state = 1');
 		$db->setQuery($query);
 		return $db->loadColumn();
 	}
