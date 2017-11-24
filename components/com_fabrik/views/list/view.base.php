@@ -567,6 +567,8 @@ class FabrikViewListBase extends FabrikView
                 $pdfLink .= '&group_by=' . $this->app->input->get('group_by', '');
             }
 
+            // Add the listref so we get the right filters if doing PDF from a module or content plugin
+            $pdfLink .= '&setListRefFromRequest=1&listref=' . $model->getRenderContext();
 			$this->pdfLink = JRoute::_($pdfLink);
 		}
 
