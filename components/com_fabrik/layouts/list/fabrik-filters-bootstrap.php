@@ -60,7 +60,7 @@ EOT;
                 endif;
             endforeach;
 
-            // last arg controls whether rows and cols are flipped
+            // last arg controls whether rows and cols are flipped (pivot)
             $chunkedFilters = ArrayHelper::chunk($chunkedFilters, $d->filterCols, true);
 
             foreach ($chunkedFilters as $chunk) :
