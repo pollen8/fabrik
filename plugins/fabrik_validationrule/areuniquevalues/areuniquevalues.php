@@ -50,9 +50,10 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		}
 
 		$params     = $this->getParams();
-		$otherField = $params->get('areuniquevalues-otherfield', '');
 		$listModel  = $elementModel->getlistModel();
 		$table      = $listModel->getTable();
+
+		$otherField = $params->get('areuniquevalues-otherfield', '');
 
 		if ((int) $otherField !== 0)
 		{
@@ -64,6 +65,20 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		{
 			// Old fabrik 2.x params stored element name as a string
 			$otherFullName = $table->db_table_name . '___' . $otherField;
+		}
+
+		$otherField2 = $params->get('areuniquevalues-otherfield2', '');
+
+		if ((int) $otherField2 !== 0)
+		{
+			$otherElementModel2 = $this->getOtherElement('2');
+			$otherFullName2     = $otherElementModel2->getFullName(true, false);
+			$otherField2        = $otherElementModel2->getFullName(false, false);
+		}
+		else
+		{
+			// Old fabrik 2.x params stored element name as a string
+			$otherFullName2 = $table->db_table_name . '___' . $otherField;
 		}
 
 		$db          = $listModel->getDb();
@@ -85,6 +100,20 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 			}
 
 			$query->where($db->qn($otherField) . ' = ' . $db->quote($v));
+		}
+
+		if (!empty($otherField2))
+		{
+			// $$$ the array thing needs fixing, for now just grab 0
+			$formData = $elementModel->getForm()->formData;
+			$v        = FArrayHelper::getValue($formData, $otherFullName2 . '_raw', FArrayHelper::getValue($formData, $otherFullName2, ''));
+
+			if (is_array($v))
+			{
+				$v = FArrayHelper::getValue($v, 0, '');
+			}
+
+			$query->where($db->qn($otherField2) . ' = ' . $db->quote($v));
 		}
 
 		/* $$$ hugh - need to check to see if we're editing a record, otherwise
@@ -109,10 +138,10 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 *
 	 * @return    object element model
 	 */
-	private function getOtherElement()
+	private function getOtherElement($suffix = '')
 	{
 		$params     = $this->getParams();
-		$otherField = $params->get('areuniquevalues-otherfield');
+		$otherField = $params->get('areuniquevalues-otherfield' . $suffix);
 
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherField);
 	}
@@ -124,14 +153,29 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 */
 	protected function getLabel()
 	{
-		$otherElementModel = $this->getOtherElement();
 		$params            = $this->getParams();
 		$otherField        = $params->get('areuniquevalues-otherfield');
+		$otherField2        = $params->get('areuniquevalues-otherfield2');
 		$tipText           = $params->get('tip_text', '');
 
-		if (empty($tipText) && (int) $otherField !== 0)
+		if (empty($tipText) && ((int) $otherField !== 0 || (int) $otherField2 !== 0))
 		{
-			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
+			$labels = array();
+
+			if ((int)$otherField !== 0)
+			{
+				$otherElementModel = $this->getOtherElement();
+				$labels[] = $otherElementModel->getElement()->label;
+			}
+
+			if ((int)$otherField2 !== 0)
+			{
+				$otherElementModel = $this->getOtherElement('2');
+				$labels[] = $otherElementModel->getElement()->label;
+			}
+
+			$labels = implode(' ' . strtolower(JText::_('COM_FABRIK_AND')) . ' ', $labels);
+			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $labels);
 		}
 		else
 		{

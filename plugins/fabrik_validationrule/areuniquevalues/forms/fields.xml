@@ -16,10 +16,18 @@
 				label="PLG_VALIDATIONRULE_AREUNIQUEVALUES_OTHER_FIELD_LABEL"
 				repeat="true" />
 
+
+			<field name="areuniquevalues-otherfield2"
+				   type="listfields"
+				   description="PLG_VALIDATIONRULE_AREUNIQUEVALUES_OTHER_FIELD_DESC"
+				   label="PLG_VALIDATIONRULE_AREUNIQUEVALUES_OTHER_FIELD_LABEL"
+				   repeat="true" />
+
 			<field name="tip_text"
 			       type="textarea"
 			       repeat="true"
-			       cols="30" rows="3"
+			       cols="30"
+				   rows="3"
 			       description="COM_FABRIK_VALIDATION_TIP_TEXT_DESC"
 			       label="COM_FABRIK_VALIDATION_TIP_TEXT_LABEL"/>
 
