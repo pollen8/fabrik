@@ -3115,6 +3115,7 @@ EOT;
 	public static function getGridSpan($size, $viewport = 'medium')
 	{
 	    static $spans;
+	    $size = (int)$size;
 
 	    if (!is_array($spans))
         {
