@@ -543,7 +543,8 @@ class FabrikFEModelGroup extends FabModel
 		$element->column .= '" ';
 		$spans           = $this->columnSpans();
 		$spanKey         = $rowIx % $colCount;
-		$element->span   = $element->hidden ? '' : FArrayHelper::getValue($spans, $spanKey, FabrikHelperHTML::getGridSpan(floor(12 / $colCount)));
+		$default = floor(12 / $colCount);
+		$element->span   = $element->hidden ? '' : FArrayHelper::getValue($spans, $spanKey, FabrikHelperHTML::getGridSpan((int)floor(12 / $colCount)));
 
 		if (!$element->hidden)
 		{
@@ -597,7 +598,7 @@ class FabrikFEModelGroup extends FabModel
 				if (strstr($w, '%'))
 				{
 					$w = (int) str_replace('%', '', $w);
-					$w = floor(($w / 100) * 12);
+					$w = (int) floor(($w / 100) * 12);
 				}
 
 				$w = ' ' . FabrikHelperHTML::getGridSpan($w);
