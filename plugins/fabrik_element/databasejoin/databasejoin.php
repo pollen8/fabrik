@@ -1466,8 +1466,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($params->get('join_desc_column', '') !== '')
 		{
-			$layout                        = $this->getLayout('form-description');
 			$displayData                   = new stdClass;
+			$descDivLayout = 'fabrik-element-' . $this->getPluginName() . '-form-description-div';
+			FabrikHelperHTML::jLayoutJs($descDivLayout, $descDivLayout, $displayData, array($this->layoutBasePath()));
+			$layout                        = $this->getLayout('form-description');
 			$displayData->opts             = $options;
 			$displayData->default          = FArrayHelper::getValue($default, 0);
 			$displayData->editable         = $this->isEditable();

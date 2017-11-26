@@ -402,6 +402,23 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                         self.element.fireEvent('blur', new Event.Mock(self.element, 'blur'));
                     }
 
+                    if (self.options.showDesc)
+                    {
+                        var c = self.getContainer().getElement('.dbjoin-description');
+                        jQuery(c).empty();
+                        var descDiv = jQuery(Fabrik.jLayouts['fabrik-element-' + self.getPlugin() + '-form-description-div'])[0];
+                        json.each(function (o) {
+                            var $desc = jQuery(descDiv).clone();
+                            $desc.removeClass('description-0');
+                            $desc.addClass('description-' + o.value);
+                            if (self.options.value === o.value) {
+                                $desc.css('display','');
+                            }
+                            $desc.html(o.description);
+                            jQuery(c).append($desc);
+                        });
+                    }
+
                     self.activePopUp = false;
                     Fabrik.fireEvent('fabrik.dbjoin.update', [self, json]);
                 }
