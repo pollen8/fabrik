@@ -2745,7 +2745,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$tableAlias = $to;
 		}
 
-		$query->select($joinTable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($joinTable)
+		$query->select($joinTable . '.parent_id, ' . $v . ' AS `value`, ' . $label . ' AS `text`')->from($joinTable)
 			->join('LEFT', $to . ' ON ' . $key . ' = ' . $joinTable . '.' . $shortName);
 
 		$this->buildQueryWhere(array(), true, $tableAlias, array('mode' => 'filter'), $query);

@@ -407,10 +407,11 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
                         var c = self.getContainer().getElement('.dbjoin-description');
                         jQuery(c).empty();
                         var descDiv = jQuery(Fabrik.jLayouts['fabrik-element-' + self.getPlugin() + '-form-description-div'])[0];
+                        var i = 0;
                         json.each(function (o) {
                             var $desc = jQuery(descDiv).clone();
                             $desc.removeClass('description-0');
-                            $desc.addClass('description-' + o.value);
+                            $desc.addClass('description-' + i++);
                             if (self.options.value === o.value) {
                                 $desc.css('display','');
                             }
