@@ -457,6 +457,10 @@ class FabrikViewFormBase extends FabrikView
 				$this->printURL  = FabrikHelperHTML::printURL($model);
 			}
 		}
+		else
+		{
+			$this->showPrint = false;
+		}
 
 		// 0 = no, 1 = both, 2 = form only, 3 = details only
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
