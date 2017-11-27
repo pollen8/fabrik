@@ -14,7 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\ArrayHelper;
 use Twilio\Rest\Client;
 use Twilio\Exceptions\TwilioException;
-use Exception;
 
 /**
  * Twilio SMS gateway class
