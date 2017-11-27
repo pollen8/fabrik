@@ -7766,11 +7766,11 @@ class PlgFabrik_Element extends FabrikPlugin
 			foreach ($idsToKeep as $parentId => $ids)
 			{
 				$query->clear();
-				$query->delete($join->table_join)->where('parent_id = ' . $parentId);
+				$query->delete($join->table_join)->where($db->quoteName('parent_id') . ' = ' . $parentId);
 
 				if (!empty($ids))
 				{
-					$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
+					$query->where($db->quoteName('id') . ' NOT IN ( ' . implode($ids, ',') . ')');
 				}
 
 				$db->setQuery($query);
