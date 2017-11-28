@@ -700,7 +700,7 @@ class FabrikViewListBase extends FabrikView
 
 		if ($params->get('process-jplugins'))
 		{
-			$cloak = $params->get('cloak_emails', '0') === '1';
+			$cloak = $params->get('cloak_emails', '0') === '1' && $this->app->input->get('format') !== 'pdf';
 			FabrikHelperHTML::runContentPlugins($text, $cloak);
 		}
 
