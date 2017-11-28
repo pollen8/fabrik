@@ -2837,8 +2837,10 @@ EOT;
 		if (Worker::isEmail($href))
 		{
 			jimport('joomla.mail.helper');
-
+			/* @@@trob: don't cloak here; if needed it's done in view.base.php
 			return JHTML::_('email.cloak', $href);
+			*/
+			return $href;
 		}
 
 		if ($normalize)
