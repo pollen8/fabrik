@@ -4,6 +4,7 @@ defined('JPATH_BASE') or die;
 $d      = $displayData;
 $height = empty($d->height) ? '' : ' height="' . $d->height . 'px" ';
 $img    = '<img class="fabrikLightBoxImage" ' . $height . 'src="' . $d->file . '" alt="' . $d->title . '" />';
+$nolinkImg    = '<img class="fabrikLightBoxImage" ' . $height . 'src="' . $d->file . '" alt="' . $d->title . '" title="' . $d->title . '" />';
 
 if ($d->showImage == 0 && !$d->inListView) :
 	?>
@@ -30,7 +31,7 @@ else :
 			</a>
 		<?php
 		else :
-			echo $img;
+			echo $nolinkImg;
 		endif;
 
 		if ($d->isJoin) : ?>
