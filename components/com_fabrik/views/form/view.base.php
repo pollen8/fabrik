@@ -799,6 +799,7 @@ class FabrikViewFormBase extends FabrikView
 		$minRepeat      = array();
 		$showMaxRepeats = array();
 		$minMaxErrMsg   = array();
+		$numRepeatEls   = array();
 
 		foreach ($this->groups as $g)
 		{
