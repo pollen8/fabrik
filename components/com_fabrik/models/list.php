@@ -4160,26 +4160,24 @@ class FabrikFEModelList extends JModelForm
 		 */
 
 		/**
-		* Find out what any plugins have to say
-		*/
-
+		 * Allow the plugin to take precedence.  If no plugins, or all plugin(s) return null (or any
+		 * value other than true or false) then we drop through to normal useDo/ACL checks.  If any plugin returns
+		 * false, access is denied.  If no plugin returns false, and any return true, access is allowed.
+		 */
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
 
 		// At least one plugin run, so plugin results take precedence over anything else.
 		if (!empty($pluginCanEdit))
 		{
-			// If one plugin returns false then return false.
-			//return in_array(false, $pluginCanEdit) ? false : true;
-			// Testing "didn't express a preference" by allowing plugin to return null (well, neither true nor false
-			// in which case we'll drop through and let the normal ACL mechanisms have their say
-			if (in_array(true, $pluginCanEdit, true))
-			{
-				return true;
-			}
-
+			// test false first, so if any plugin returns false, access is denied
 			if (in_array(false, $pluginCanEdit, true))
 			{
 				return false;
+			}
+
+			if (in_array(true, $pluginCanEdit, true))
+			{
+				return true;
 			}
 		}
 
@@ -4253,8 +4251,38 @@ class FabrikFEModelList extends JModelForm
 		 * Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
 		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
 		 * deny access.
+		 *
+		 * CHANGED on 12/1/2017, to allow the plugin to take precedence.  Only if plugin(s) return null (or any
+		 * valuse other than true or false) then we drop through to normal useDo/ACL checks.  If any plugin returns
+		 * false, access is denied.  If no plugin returns false, and any return true, access is allowed.
 		 */
 		$pluginCanDelete = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
+
+		// At least one plugin run, so plugin results take precedence over anything else.
+		if (!empty($pluginCanDelete))
+		{
+			// check 'false' first, so if any plugin denies, result is false
+			if (in_array(false, $pluginCanDelete, true))
+			{
+				return false;
+			}
+
+			if (in_array(true, $pluginCanDelete, true))
+			{
+				return true;
+			}
+
+		}
+
+		$canUserDo = $this->canUserDo($row, 'allow_delete2');
+
+		if ($canUserDo !== -1)
+		{
+			// $canUserDo expressed a boolean preference, so use that
+			return $canUserDo;
+		}
+
+		/*
 		$pluginCanDelete = !in_array(false, $pluginCanDelete);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 
@@ -4263,6 +4291,7 @@ class FabrikFEModelList extends JModelForm
 			// If userDo allows delete, let plugin override
 			return $canUserDo ? $pluginCanDelete : $canUserDo;
 		}
+		*/
 
 		if (!array_key_exists('delete', $this->access))
 		{
