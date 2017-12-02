@@ -330,7 +330,7 @@ class FabrikSubscriptionsIPN
 	 * @return  JUser
 	 */
 
-	protected function recalibrateUser($userId)
+	public function recalibrateUser($userId)
 	{
 		$user = JFactory::getUser($userId);
 		$db = JFactory::getDbo();
