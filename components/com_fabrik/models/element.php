@@ -6974,7 +6974,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// if we're copying a row, format won't be applied
 		$formModel = $this->getFormModel();
 
-		if (array_key_exists('fabrik_copy_from_table', $formModel->formData))
+		if (isset($formModel->formData) && array_key_exists('fabrik_copy_from_table', $formModel->formData))
 		{
 			return $val;
 		}
