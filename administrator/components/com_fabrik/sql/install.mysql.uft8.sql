@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_connections` (
 	`database` VARCHAR(255) NOT NULL,
 	`description` VARCHAR(255) NOT NULL,
 	`published` INT(1) NOT NULL default '0',
-	`checked_out` INT(4) NOT NULL,
+	`checked_out` INT(4) NOT NULL default '0',
 	`checked_out_time` DATETIME,
 	`default` INT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
