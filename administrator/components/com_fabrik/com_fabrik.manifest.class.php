@@ -59,6 +59,8 @@ class Com_FabrikInstallerScript
 		$row->password    = $app->get('password');
 		$row->database    = $app->get('db');
 		$row->description = 'site database';
+		$row->params      = '';
+		$row->checked_out = 0;
 		$row->published   = 1;
 		$row->default     = 1;
 		$res              = $db->insertObject('#__fabrik_connections', $row, 'id');
