@@ -15,6 +15,7 @@ require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 use Aws\Exception\AwsException;
 use Aws\S3\Exception\S3Exception;
+use GuzzleHttp\Psr7;
 
 
 /**
@@ -207,6 +208,7 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	public function upload($tmpFile, $filepath)
 	{
 		$filepath = str_replace("\\", '/', $filepath);
+		$mimeType = GuzzleHttp\Psr7\mimetype_from_filename($filepath);
 
 		if (!$this->bucketExists())
 		{
@@ -240,7 +242,8 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 				'SourceFile' => $tmpFile,
 				'Bucket' => $this->getBucketName(),
 				'Key' => $this->urlToKey($filepath),
-				'ACL' => $this->getAcl()
+				'ACL' => $this->getAcl(),
+				'ContentType' => $mimeType
 			];
 
 			if ($this->isEncrypted())
@@ -724,6 +727,11 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 
 	public function preRenderPath($filepath)
 	{
+		if (empty($filepath))
+		{
+			return '';
+		}
+
 		$params = $this->getParams();
 		static $presigned = array();
 
@@ -735,7 +743,8 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 				{
 					$cmd                  = $this->s3->getCommand('GetObject', [
 						'Bucket' => $this->getBucketName(),
-						'Key'    => $this->urlToKey($filepath)
+						'Key'    => $this->urlToKey($filepath),
+						'ResponseCacheControl' => "no-cache"
 					]);
 					$request              = $this->s3->createPresignedRequest($cmd, '+' . $lifetime . ' seconds');
 					$presigned[$filepath] = (string) $request->getUri();

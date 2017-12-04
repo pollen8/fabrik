@@ -960,6 +960,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
 
                 // New image
                 var img = Asset.image(uri, {
+                    crossOrigin: 'anonymous',
                     onLoad: function () {
 
                         var params = this.storeImageDimensions(filepath, jQuery(img), tmpParams);

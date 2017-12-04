@@ -360,6 +360,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 							$o->type           = strstr($fileInfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url            = $this->getStorage()->pathToURL($tKey);
+							$o->url            = $this->getStorage()->preRenderPath($o->url);
 							$o->recordid       = $rawValues[$x];
 							$o->params         = json_decode($value[$x]['crop'][$tKey]);
 							$oFiles->$iCounter = $o;
@@ -388,6 +389,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 							$o->type           = strstr($fileInfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url            = $this->getStorage()->pathToURL($value[$x]);
+							$o->url            = $this->getStorage()->preRenderPath($o->url);
 							$o->recordid       = 0;
 							$o->params         = json_decode($imgParams[$x]);
 							$oFiles->$iCounter = $o;
@@ -412,6 +414,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 							$o->type           = strstr($fileInfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url            = $this->getStorage()->pathToURL($value[$x]);
+							$o->url            = $this->getStorage()->preRenderPath($o->url);
 							$o->recordid       = $rawValues[$x];
 							$o->params         = json_decode(FArrayHelper::getValue($imgParams, $x, '{}'));
 							$oFiles->$iCounter = $o;
