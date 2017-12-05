@@ -4181,6 +4181,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
+		// plugins didn't express a preference, so check user next
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
 
 		if ($canUserDo !== -1)
@@ -4189,12 +4190,13 @@ class FabrikFEModelList extends JModelForm
 			return $canUserDo;
 		}
 
+		// no user preference, so use normal ACL
 		if (!array_key_exists('edit', $this->access))
 		{
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
-		// Plugins didn't override, canuserDo() didn't express a preference, so return standard ACL
+
 		return $this->access->edit;
 	}
 
@@ -4274,6 +4276,7 @@ class FabrikFEModelList extends JModelForm
 
 		}
 
+		// No plugins returned true or false, so carry on to user check
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 
 		if ($canUserDo !== -1)
@@ -4282,24 +4285,14 @@ class FabrikFEModelList extends JModelForm
 			return $canUserDo;
 		}
 
-		/*
-		$pluginCanDelete = !in_array(false, $pluginCanDelete);
-		$canUserDo = $this->canUserDo($row, 'allow_delete2');
-
-		if ($canUserDo !== -1)
-		{
-			// If userDo allows delete, let plugin override
-			return $canUserDo ? $pluginCanDelete : $canUserDo;
-		}
-		*/
-
+		// no preference from user check, so use main ACL
 		if (!array_key_exists('delete', $this->access))
 		{
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
-		// If group access allows delete, then let plugin override
-		return $this->access->delete ? $pluginCanDelete : $this->access->delete;
+
+		return $this->access->delete;
 	}
 
 	/**
