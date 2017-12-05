@@ -2766,7 +2766,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			$uri         = $this->getStorage()->pathToURL($filePath);
 			$o->filepath = $filePath;
-			$o->uri      = $uri;
+			$o->uri      = $this->getStorage()->preRenderPath($uri);
 		}
 		else
 		{
