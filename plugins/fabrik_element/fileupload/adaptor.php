@@ -128,10 +128,10 @@ abstract class FabrikStorageAdaptor
 	 * Delete a file
 	 *
 	 * @param   string  $filepath  File to delete
-	 *
+	 * @param   bool    $prependRoot  also test with root prepended
 	 * @return  void
 	 */
-	public abstract function delete($filepath);
+	public abstract function delete($filepath, $prependRoot = true);
 
 	/**
 	 * Moves an uploaded file to a destination folder

@@ -392,11 +392,12 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * Delete a file
 	 *
 	 * @param   string  $filepath  File to delete
+	 * @param   bool    $prependRoot  also test with root prepended
 	 *
 	 * @return  void
 	 */
 
-	public function delete($filepath)
+	public function delete($filepath, $prependRoot = true)
 	{
 		$filepath = $this->urlToPath($filepath);
 		$this->s3->deleteObject($this->getBucketName(), $filepath);

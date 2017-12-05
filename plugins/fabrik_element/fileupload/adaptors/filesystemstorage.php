@@ -197,13 +197,28 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * Delete a file
 	 *
 	 * @param   string  $filepath  file to delete
+	 * @param   bool    $prependRoot  also test with root prepended
 	 *
 	 * @return  void
 	 */
 
-	public function delete($filepath)
+	public function delete($filepath, $prependRoot = true)
 	{
-		JFile::delete($filepath);
+		if (JFile::exists($filepath))
+		{
+			return JFile::delete($filepath);
+		}
+		else
+		{
+			if ($prependRoot)
+			{
+				$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
+
+				return JFile::delete($filepath);
+			}
+
+			return false;
+		}
 	}
 
 	/**
