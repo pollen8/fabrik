@@ -4697,7 +4697,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$db     = FabrikWorker::getDbo();
 			$secret = $this->config->get('secret');
-			$key    = 'AES_DECRYPT(' . $key . ', ' . $db->q($secret) . ')';
+			$matches = array();
+			if (preg_match('/LOWER\((.*)\)/', $key, $matches))
+			{
+				$key = 'LOWER(CONVERT(AES_DECRYPT(' . $matches[1] . ', ' . 	$db->q($secret) . ') USING utf8))';
+			}
+			else
+			{
+				$key = 'AES_DECRYPT(' . $key . ', ' . $db->q($secret) . ')';
+			}
 		}
 	}
 
