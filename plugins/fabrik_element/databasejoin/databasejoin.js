@@ -105,6 +105,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
             var id = this.element.id + '-popupwin';
             this.windowopts = {
                 'id'             : id,
+                'data'           : this.form.getFormElementData(),
                 'title'          : Joomla.JText._('PLG_ELEMENT_DBJOIN_ADD'),
                 'contentType'    : 'xhr',
                 'loadMethod'     : 'xhr',

@@ -52,6 +52,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
         options: {
             id               : 'FabrikWindow',
+            data             : {},
             title            : '&nbsp;',
             container        : false,
             loadMethod       : 'html',
@@ -433,7 +434,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     Fabrik.loader.start(self.contentEl);
                     new jQuery.ajax({
                         'url'   : this.options.contentURL,
-                        'data'  : {'fabrik_window_id': this.options.id},
+                        'data'  : jQuery.extend(this.options.data, {'fabrik_window_id': this.options.id}),
                         'method': 'post',
                     }).success(function (r) {
                         Fabrik.loader.stop(self.contentEl);
