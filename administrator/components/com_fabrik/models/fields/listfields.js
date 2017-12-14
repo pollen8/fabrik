@@ -142,6 +142,11 @@ var ListFieldsElement = new Class({
 		if (document.id(this.el.id + '_loader')) {
 			document.id(this.el.id + '_loader').show();
 		}
+		var conn = document.id(this.options.conn);
+		if (!conn) {
+			clearInterval(this.periodical);
+			return;
+		}
 		var cid = document.id(this.options.conn).get('value');
 		var tid = document.id(this.options.table).get('value');
 		if (!tid) {
