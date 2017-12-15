@@ -103,7 +103,7 @@ class Pdf
 
 				foreach ($as as &$a)
 				{
-					if (!strstr($a['href'], $schemeString))
+					if (!strstr($a['href'], $schemeString) && !strstr($a['href'], 'mailto:'))
 					{
                         $base = empty($subdir) || strstr($a['href'], $subdir) ? $base_root : $base_root . $subdir;
 						$a['href'] = $base . ltrim($a['href'],'/');
