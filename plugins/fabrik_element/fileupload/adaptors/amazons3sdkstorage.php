@@ -574,6 +574,9 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$thumbdir = $this->clean($thumbdir);
 		$thumbdir = $w->parseMessageForPlaceHolder($thumbdir);
 
+		$ulDir = rtrim($ulDir, '/\\') . '/';
+		$thumbdir = rtrim($thumbdir, '/\\') . '/';
+
 		$file = $w->parseMessageForPlaceHolder($file);
 		$file = str_replace($ulDir, $thumbdir, $file);
 
