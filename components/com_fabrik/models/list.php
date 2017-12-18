@@ -8388,12 +8388,12 @@ class FabrikFEModelList extends JModelForm
 				// probably a view which hasn't been added as a list, try Final Desperate Hail Mary, see if 'id' exists
 				if (array_key_exists('id', $origColNamesByName))
 				{
-					$this->app->enqueueMessage(FText::_('COM_FABRIK_JOIN_NO_PK_USED_ID'));
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_LIST_JOIN_NO_PK_USED_ID'));
 					$shortColName = 'id';
 				}
 				else
 				{
-					$this->app->enqueueMessage(FText::_('COM_FABRIK_JOIN_NO_PK'));
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_LIST_JOIN_NO_PK'));
 				}
 			}
 
