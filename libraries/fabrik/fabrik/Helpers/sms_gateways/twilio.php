@@ -42,7 +42,7 @@ class Twilio extends JObject
 
 		// From a valid Twilio number
 		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
-		$smstos = explode(",", $smsto);
+		$smstos = empty($smsto) ? array() : explode(",", $smsto);
 
 		$client = new Twilio\Rest\Client($sid, $token);
 
@@ -50,7 +50,7 @@ class Twilio extends JObject
 		{
 			try {
 				$client->messages->create(
-					$smsto,
+					trim($smsto),
 					array(
 						'from' => $smsfrom,
 						'body' => $message

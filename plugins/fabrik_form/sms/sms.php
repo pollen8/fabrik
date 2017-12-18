@@ -59,10 +59,35 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		$password = $params->get('sms-password');
 		$from = $params->get('sms-from');
 		$to = $params->get('sms-to');
+		$toEval = $params->get('sms-to-eval');
+
+		if (!empty($toEval))
+		{
+			$toEval = $w->parseMessageForPlaceholder($toEval, $data, false);
+			$toEval = @eval($toEval);
+			FabrikWorker::logEval($toEval, 'Caught exception on eval in email emailto : %s');
+
+			if (!is_array($toEval))
+			{
+				$toEval = empty($toEval) ? array() : explode(',', $toEval);
+			}
+
+			$to     = empty($to) ? array() : explode(',', $to);
+			$to     = array_merge($to, $toEval);
+			$to     = implode(',', $to);
+		}
+
+		if (empty($to))
+		{
+			return true;
+		}
+
 		$opts['sms-username'] = $w->parseMessageForPlaceHolder($userName, $data);
 		$opts['sms-password'] = $w->parseMessageForPlaceHolder($password, $data);
 		$opts['sms-from'] = $w->parseMessageForPlaceHolder($from, $data);
 		$opts['sms-to'] = $w->parseMessageForPlaceHolder($to, $data);
+
+
 		$message = $this->getMessage();
 		$gateway = $this->getInstance();
 
