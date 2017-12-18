@@ -19,7 +19,7 @@
 	</fields>
 
 	<fields name="params">
-		<fieldset name="plg-sequence-extra" label="COM_FABRIK_ADVANCED">
+		<fieldset name="plg-sequence-extra" label="PLG_ELEMENT_SEQUENCE_SETTINGS">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_SEQUENCE_HELP_SERVER" />
