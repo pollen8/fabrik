@@ -284,7 +284,7 @@ class PlgFabrik_ElementSequence extends PlgFabrik_Element
 		if ($params->get('sequence_method', 'load') === 'pk')
 		{
 			$formModel = $this->getFormModel();
-			$rowid = ArrayHelper::getValue($formModel->formData, '__pk_val', '');
+			$rowid = ArrayHelper::getValue($formModel->formData, 'rowid', '');
 			if (!empty($rowid))
 			{
 				$this->getListModel()->storeCell(
