@@ -103,6 +103,15 @@ class PlgFabrik_ElementSequence extends PlgFabrik_Element
 			$this->setStoreDatabaseFormat($formData, $repeatCounter);
 			$data[$element->name] = $data[$element->name . '_raw'] = $this->getSequence($formData);
 		}
+		else if ($method !== 'pk')
+		{
+			$name  = $this->getFullName(true, false);
+			$formModel = $this->getFormModel();
+			$data[$element->name] = FArrayHelper::getValue(
+				$formModel->formDataWithTableName, $name . '_raw',
+				FArrayHelper::getValue($data, $name, '')
+			);
+		}
 
 		return true;
 	}
@@ -285,6 +294,22 @@ class PlgFabrik_ElementSequence extends PlgFabrik_Element
 				);
 			}
 		}
+	}
+
+
+	/**
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  Repeat group counter
+	 *
+	 * @return  array
+	 */
+	public function elementJavascript($repeatCounter)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
+
+		return array('FbSequence', $id, $opts);
 	}
 
 	/**

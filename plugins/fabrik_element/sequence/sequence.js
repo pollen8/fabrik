@@ -6,13 +6,13 @@
  */
 
 define(['jquery', 'fab/element'], function (jQuery, FbElement) {
-    window.FbIp = new Class({
+    window.FbSequence = new Class({
         Extends   : FbElement,
         initialize: function (element, options) {
-            this.setPlugin('FbIp');
+            this.setPlugin('FbSequence');
             this.parent(element, options);
         }
     });
 
-    return window.FbIp;
+    return window.FbSequence;
 });
