@@ -2830,17 +2830,12 @@ EOT;
 	{
 		if (empty($href) || StringHelper::strtolower($href) == 'http://' || StringHelper::strtolower($href) == 'https://')
 		{
-			// Don't return empty links
 			return '';
 		}
 
 		if (Worker::isEmail($href))
 		{
-			jimport('joomla.mail.helper');
-			/* @@@trob: don't cloak here; if needed it's done in view.base.php
-			return JHTML::_('email.cloak', $href);
-			*/
-			return $href;
+			return '<a href="mailto:' . $href . '">' . $lbl . '</a>';
 		}
 
 		if ($normalize)
