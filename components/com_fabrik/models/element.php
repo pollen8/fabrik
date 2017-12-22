@@ -1036,7 +1036,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				if ($lookUp)
 				{
-					$fullName           = $lookUp->getFullName(false, true);
+					$fullName           = $lookUp->getFullName(true, true);
 					$value              = $formModel->getElementData($fullName, true);
 					$this->access->$key = ($this->user->get('id') == $value) ? true : false;
 				}
