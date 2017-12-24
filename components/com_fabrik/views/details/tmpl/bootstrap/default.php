@@ -30,11 +30,11 @@ if ($this->params->get('show-title', 1)) :?>
 endif;
 
 echo $form->intro;
-if ($this->isMambot) {
+if ($this->isMambot) :
 	echo '<div class="fabrikForm fabrikDetails fabrikIsMambot" id="' . $form->formid . '">';
-} else {
+else :
 	echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-}
+endif;
 echo $this->plugintop;
 echo $this->loadTemplate('buttons');
 echo $this->loadTemplate('relateddata');
