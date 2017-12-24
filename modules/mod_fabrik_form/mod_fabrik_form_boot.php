@@ -24,7 +24,14 @@ $app = JFactory::getApplication();
 $input = $app->input;
 
 FabrikHelperHTML::framework();
-require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
+$readonly = $params->get('readonly', '0');
+if ($readonly == 1) {
+	require_once COM_FABRIK_FRONTEND . '/controllers/details.php';
+	$controller = new FabrikControllerDetails;
+} else {
+	require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
+	$controller = new FabrikControllerForm;
+}
 
 // $$$rob looks like including the view does something to the layout variable
 $origLayout = $input->get('layout');
@@ -62,7 +69,6 @@ $moduleAjax = $params->get('formmodule_useajax', true);
 $origView = $input->get('view');
 
 $input->set('view', 'form');
-$controller = new FabrikControllerForm;
 
 /* $$$rob for table views in category blog layouts when no layout specified in {} the blog layout
  * was being used to render the table - which was not found which gave a 500 error
