@@ -131,7 +131,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->getData();
 
 		// If we can't edit the record redirect to details view
-		if ($model->checkAccessFromListSettings() <= 1)
+		if (!$this->isMambot && $model->checkAccessFromListSettings() <= 1)
 		{
 			$app = JFactory::getApplication();
 			$input = $app->input;
