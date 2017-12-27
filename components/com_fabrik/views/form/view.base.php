@@ -1074,16 +1074,19 @@ class FabrikViewFormBase extends FabrikView
 		$multiPageSession = $model->sessionModel && $model->sessionModel->last_page > 0;
 		$form->clearMultipageSessionButton = $multiPageSession ? $btnLayout->render($layoutData) : '';
 
-		$layoutData = (object) array(
-			'type' => 'button',
-			'class' => 'button',
-			'name' => 'Goback',
-			'label' => $goBackLabel,
-			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction(),
-			'formModel' => $model
-		);
+		if (!$this->isMambot)
+		{
+			$layoutData = (object) array(
+				'type' => 'button',
+				'class' => 'button',
+				'name' => 'Goback',
+				'label' => $goBackLabel,
+				'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction(),
+				'formModel' => $model
+			);
 
-		$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
+			$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
+		}
 
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
