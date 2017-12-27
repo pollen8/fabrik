@@ -23,4 +23,10 @@ echo <<<EOT
 .row-fluid:after {
 	clear: both;
 }
+
+/* Override BS2 form horizontal labels for details view when fabrik form module */
+.fabrikDetails.fabrikIsMambot .form-horizontal .control-label {
+	width: auto;
+	text-align: left;
+}
 EOT;

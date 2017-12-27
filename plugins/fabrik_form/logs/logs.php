@@ -205,7 +205,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($loading)
 			{
-				$result_compare = FText::_('COMPARE_DATA_LOADING') . $sep_2compare;
+				$result_compare = FText::_('PLG_FORM_LOG_COMPARE_DATA_LOADING') . $sep_2compare;
 			}
 			else
 			{
@@ -246,9 +246,9 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 								{
 									if ($newData[$c]->$fullName != $origData[$c]->$fullName)
 									{
-										$result_compare .= FText::_('COMPARE_DATA_CHANGE_ON') . ' ' . $element->label . ' ' . $sep_compare
-											. FText::_('COMPARE_DATA_FROM') . ' ' . $origData[0]->$fullName . ' ' . $sep_compare
-											. FText::_('COMPARE_DATA_TO') . ' ' . $newData[$c]->$fullName . ' ' . $sep_2compare;
+										$result_compare .= FText::_('PLG_FORM_LOG_COMPARE_DATA_CHANGE_ON') . ' ' . $element->label . ' ' . $sep_compare
+											. FText::_('PLG_FORM_LOG_COMPARE_DATA_FROM') . ' ' . $origData[0]->$fullName . ' ' . $sep_compare
+											. FText::_('PLG_FORM_LOG_COMPARE_DATA_TO') . ' ' . $newData[$c]->$fullName . ' ' . $sep_2compare;
 									}
 								}
 							}
@@ -256,7 +256,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 						if (empty($result_compare))
 						{
-							$result_compare = FText::_('COMPARE_DATA_NO_DIFFERENCES');
+							$result_compare = FText::_('PLG_FORM_LOG_COMPARE_DATA_NO_DIFFERENCES');
 						}
 					}
 					else
@@ -344,7 +344,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_createdb .= ', ' . $db->qn(FText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
+				$clabels_createdb .= ', ' . $db->qn(FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
 			}
 
 			// @todo - what if we use different db driver which doesn't name quote with `??
@@ -593,7 +593,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 						if ($params->get('compare_data') == 1)
 						{
-							$csvMsg[] = "\"" . FText::_('COMPARE_DATA_LABEL_CSV') . "\"";
+							$csvMsg[] = "\"" . FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_CSV') . "\"";
 						}
 					}
 					// Inserting data in CSV with actual line break as row separator
