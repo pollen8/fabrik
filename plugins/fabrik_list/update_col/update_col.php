@@ -284,8 +284,14 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 
 		if (!empty($postEval))
 		{
-			$err = @eval($postEval);
-			FabrikWorker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
+			@trigger_error('');
+			$msg = @eval($postEval);
+			FabrikWorker::logEval($msg, 'Caught exception on eval in updatecol::process() : %s');
+
+			if (!empty($msg))
+			{
+				$this->msg .= "\n" . $msg;
+			}
 		}
 
 		// Clean the cache.
