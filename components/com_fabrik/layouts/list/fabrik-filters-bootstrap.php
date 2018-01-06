@@ -35,7 +35,6 @@ $style = $d->toggleFilters ? 'style="display:none"' : '';
             </div>
         </div>
         <div class="row-fluid">
-            <div class="span12">
         <?php
             $chunkedFilters = array();
             $span = floor(12 / $d->filterCols);
@@ -81,7 +80,6 @@ EOT;
                 <?php
             endforeach;
         ?>
-            </div>
         </div>
             <?php
     endif;
