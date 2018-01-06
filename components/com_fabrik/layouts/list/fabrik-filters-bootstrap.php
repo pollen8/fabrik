@@ -63,9 +63,6 @@ EOT;
             $chunkedFilters = ArrayHelper::chunk($chunkedFilters, $d->filterCols, true);
 
             foreach ($chunkedFilters as $chunk) :
-                ?>
-                <div class="row-fluid">
-                    <?php
                 foreach ($chunk as $filter) :
                     ?>
                     <div class="span<?php echo $span; ?>">
@@ -75,9 +72,6 @@ EOT;
                     </div>
                     <?php
                 endforeach;
-                ?>
-                </div>
-                <?php
             endforeach;
         ?>
         </div>
