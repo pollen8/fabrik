@@ -133,7 +133,7 @@ define(['jquery'], function (jQuery) {
             } else {
                 var groupedId = 'jform_params_filter-grouped_' + this.counter;
                 var groupedName = 'jform[params][filter-grouped][' + this.counter + ']';
-                var tdGrouped = new Element('td', { 'class' : 'btn-group radio', 'id' : groupedId });
+                var divGrouped = new Element('div', { 'class' : 'btn-group radio', 'id' : groupedId });
                 var opts = {
                     'id'   : groupedId + '_0',
                     'type' : 'radio',
@@ -141,12 +141,12 @@ define(['jquery'], function (jQuery) {
                     'value': '0',
                 };
                 opts.checked = (grouped !== '1') ? 'checked' : '';
-                tdGrouped.appendChild(new Element('input', opts));
+                divGrouped.appendChild(new Element('input', opts));
                 opts = {
                     'for'   : groupedId + '_0',
                     'class' : 'btn' + ((grouped !== '1') ? ' active btn-danger' : ''),
                 }
-                tdGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JNO')));
+                divGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JNO')));
 
                 // Need to redeclare opts for ie8 otherwise it renders a field!
                 opts = {
@@ -156,12 +156,12 @@ define(['jquery'], function (jQuery) {
                     'value'   : '1',
                 };
                 opts.checked = (grouped === '1') ? 'checked' : '';
-                tdGrouped.appendChild(new Element('input', opts));
+                divGrouped.appendChild(new Element('input', opts));
                 opts = {
                     'for'   : groupedId + '_1',
                     'class' : 'btn' + ((grouped === '1') ? ' active btn-success' : ''),
                 }
-                tdGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JYES')));
+                divGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JYES')));
             }
 
             var td = new Element('td');
@@ -179,7 +179,8 @@ define(['jquery'], function (jQuery) {
             var textArea = new Element('textarea', {
                 'name': 'jform[params][filter-value][]',
                 'cols': 17,
-                'rows': 4
+                'rows': 2,
+                'style': 'width:150px;'
             }).set('text', selValue);
             td3.appendChild(textArea);
             td3.appendChild(new Element('br'));
@@ -209,7 +210,7 @@ define(['jquery'], function (jQuery) {
             tr.appendChild(td3);
             tr.appendChild(tdType);
             tr.appendChild(td4);
-            tr.appendChild(tdGrouped);
+            tr.appendChild(new Element('td').adopt(divGrouped));
             tr.appendChild(td5);
 
             this.el.appendChild(tr);
