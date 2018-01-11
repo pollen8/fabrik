@@ -2198,7 +2198,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				$query = ' (DAYOFYEAR(' . $this->addConvert($key) . ') >= DAYOFYEAR(NOW()) AND YEAR(' . $this->addConvert($key) . ') = YEAR(NOW())) ';
 				break;
 			case 'today':
-				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() AND ' . $this->addConvert($this->addConvert($key)) . ' < CURDATE() + INTERVAL 1 DAY) ';
+				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() AND ' . $this->addConvert($key) . ' < CURDATE() + INTERVAL 1 DAY) ';
 				break;
 			case 'yesterday':
 				$query = ' (' . $this->addConvert($key) . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $this->addConvert($key) . ' < CURDATE()) ';
