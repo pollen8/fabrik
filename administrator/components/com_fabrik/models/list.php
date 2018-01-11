@@ -315,7 +315,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				break;
 		}
 
-		$dd = str_replace("\n", "", JHTML::_('select.genericlist', $aConditions, $name, 'class="inputbox input-large"  size="1" ', 'value', 'text', ''));
+		$dd = str_replace("\n", "", JHTML::_('select.genericlist', $aConditions, $name, 'class="inputbox input-medium"  size="1" ', 'value', 'text', ''));
 
 		if ($addSlashes)
 		{
