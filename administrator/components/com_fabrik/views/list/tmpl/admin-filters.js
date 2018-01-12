@@ -133,7 +133,7 @@ define(['jquery'], function (jQuery) {
             } else {
                 var groupedId = 'jform_params_filter-grouped_' + this.counter;
                 var groupedName = 'jform[params][filter-grouped][' + this.counter + ']';
-                var divGrouped = new Element('div', { 'class' : 'btn-group radio', 'id' : groupedId });
+                var divGrouped = new Element('fieldset', { 'class' : 'btn-group radio', 'id' : groupedId });
                 var opts = {
                     'id'   : groupedId + '_0',
                     'type' : 'radio',
