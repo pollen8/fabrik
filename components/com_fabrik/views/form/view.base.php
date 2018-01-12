@@ -1087,6 +1087,10 @@ class FabrikViewFormBase extends FabrikView
 
 			$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
 		}
+		else
+		{
+			$form->gobackButton = '';
+		}
 
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
