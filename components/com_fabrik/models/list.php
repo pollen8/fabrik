@@ -7132,7 +7132,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
-			$res = $pluginManager->data;
+			$res = array_filter($pluginManager->data);
 
 			if (FabrikWorker::j3())
 			{

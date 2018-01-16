@@ -697,7 +697,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$newTable = FabrikString::clean($newTable);
 
 			// can't have table names ending in _
-            $newTable = rtrim($newTable, '_');
+			$newTable = rtrim($newTable, '_');
 
 			// Check the entered database table doesn't already exist
 			if ($newTable != '' && $this->databaseTableExists($newTable))
