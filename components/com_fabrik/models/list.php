@@ -2593,7 +2593,6 @@ class FabrikFEModelList extends JModelForm
 			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
 			 * Stop as soon as we have a set of ids totaling the sum of records contained in $idRows
 			*/
-			/*
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = ArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
@@ -2615,13 +2614,13 @@ class FabrikFEModelList extends JModelForm
 					$lookupC--;
 				}
 			}
-			*/
 
-
+			/*
 			foreach ($lookUpNames as $c => $lookUpName)
 			{
 				$ids[$lookUpName] = ArrayHelper::getColumn($idRows, '__pk_val' . $c);
 			}
+			*/
 		}
 
 		// Now lets actually construct the query that will get the required records:
@@ -2642,12 +2641,13 @@ class FabrikFEModelList extends JModelForm
 			*/
 			if (!empty($ids))
 			{
-				/*
+
 				if ($lookUpNames[$lookupC] !== $table->db_primary_key)
 				{
 					$query->where($lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')');
 				}
-				*/
+
+				/*
 				foreach ($ids as $lookUpName => $pks)
 				{
 					if ($lookUpName !== $table->db_primary_key)
@@ -2658,6 +2658,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 				}
+				*/
 
 				if (!empty($mainKeys))
 				{
@@ -7617,12 +7618,12 @@ class FabrikFEModelList extends JModelForm
 								$val = $elementModel->storeDatabaseFormat($data[$postKey], $data);
 								$elementModel->updateRowId($rowId);
 
-								if (array_key_exists('fabrik_copy_from_table', $formModel->formData))
+								if (isset($formModel->formData) && array_key_exists('fabrik_copy_from_table', $formModel->formData))
 								{
 									$val = $elementModel->onCopyRow($val);
 								}
 
-								if (array_key_exists('Copy', $formModel->formData))
+								if (isset($formModel->formData) && array_key_exists('Copy', $formModel->formData))
 								{
 									$val = $elementModel->onSaveAsCopy($val);
 								}
