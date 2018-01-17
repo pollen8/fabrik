@@ -4,10 +4,9 @@
 	<fieldset name="main_filter">
 
 		<field name="filter_action"
-		       type="list"
-		       label="COM_FABRIK_FILTER_ACTION_LABEL"
-		       description="COM_FABRIK_FILTER_ACTION_DESC"
-		>
+			   type="list"
+			   label="COM_FABRIK_FILTER_ACTION_LABEL"
+			   description="COM_FABRIK_FILTER_ACTION_DESC">
 			<option value="onchange">COM_FABRIK_ON_CHANGE</option>
 			<option value="submitform">COM_FABRIK_SUBMIT_FORM</option>
 		</field>
@@ -17,7 +16,7 @@
 	<fieldset name="access">
 
 		<field name="access"
-		       type="accesslevel"
+			   type="accesslevel"
 		       default="1"
 		       label="COM_FABRIK_FIELD_VIEW_LIST_LABEL"
 		       description="COM_FABRIK_FIELD_VIEW_LIST_DESC"
@@ -29,14 +28,13 @@
 	          name="main">
 
 		<field name="id"
-		       type="text"
-		       default="0"
-		       readonly="true"
-		       class="readonly input-mini"
-		       size="3"
-		       label="JGLOBAL_FIELD_ID_LABEL"
-		       description="JGLOBAL_FIELD_ID_DESC"
-		/>
+			   type="text"
+			   default="0"
+			   readonly="true"
+			   class="readonly input-mini"
+			   size="3"
+			   label="JGLOBAL_FIELD_ID_LABEL"
+			   description="JGLOBAL_FIELD_ID_DESC"/>
 
 		<field name="label"
 		       type="text"
