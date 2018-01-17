@@ -152,8 +152,10 @@ Element.implement({
  * some common js include to put them in!
  */
 
+/*
 function fconsole(thing) {
 	if (typeof(window.console) !== "undefined") {
 		console.log(thing);
 	}
 }
+*/
