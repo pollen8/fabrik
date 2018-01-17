@@ -288,7 +288,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                     this.updateBootStrap();
                     FabrikAdmin.reTip();
                     // trigger event to init any 'showon' handling for fields in J! cms JS
-                    jQuery(document).trigger('subform-row-add', container);
+                    //Joomla.setUpShowon(container);
                 }.bind(this),
                 onFailure  : function (xhr) {
                     fconsole('Fabrik pluginmanager addPlugin ajax failed:', xhr);
