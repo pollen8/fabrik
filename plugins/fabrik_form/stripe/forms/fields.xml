@@ -390,6 +390,84 @@
 
 
 		</fieldset>
+
+		<fieldset name="plg-form-stripe-coupons"
+				  label="PLG_FORM_STRIPE_COUPONS">
+
+			<field description="PLG_FORM_STRIPE_COUPONS_CONNECTION_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_CONNECTION_LABEL"
+				   name="stripe_coupons_connection"
+				   repeat="true"
+				   type="connections"/>
+
+			<field description="PLG_FORM_STRIPE_COUPONS_TABLE_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_TABLE_LABEL"
+				   name="stripe_coupons_table"
+				   observe="params_stripe_coupons_connection"
+				   repeat="true"
+				   type="fabriktables"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_COUPON_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_COUPON_FIELD_LABEL"
+				   name="stripe_coupons_coupon_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_DISCOUNT_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_DISCOUNT_FIELD_LABEL"
+				   name="stripe_coupons_discount_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_LABEL"
+				   name="stripe_coupons_limit_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_USE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_USE_FIELD_LABEL"
+				   name="stripe_coupons_use_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_LABEL"
+				   name="stripe_coupons_published_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field description="PLG_FORM_STRIPE_COUPONS_COUPON_ELEMENT_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_COUPON_ELEMENT_LABEL"
+				   name="stripe_coupon_element"
+				   onlytablefields="0"
+				   repeat="true"
+				   type="listfields"
+				   valueformat="tableelement"/>
+
+			<field default="0"
+				   class="btn-group"
+				   description="PLG_FORM_STRIPE_COUPONS_CC_ON_FREE_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_CC_ON_FREE_LABEL"
+				   name="stripe_coupons_cc_on_free"
+				   repeat="true"
+				   type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+		</fieldset>
+
 		<fieldset name="plg-form-stripe-other"
 		          label="PLG_FORM_STRIPE_TEST_MODE">
 

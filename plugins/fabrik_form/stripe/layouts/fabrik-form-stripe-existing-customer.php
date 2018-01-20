@@ -21,9 +21,10 @@ if (class_exists('NumberFormatter'))
 	$d->amount = $formatter->formatCurrency($d->amount, $d->currencyCode);
 }
 
-$d->bottomText = str_ireplace('{stripe_amount}', $d->amount, $d->bottomText);
 $d->bottomText = str_ireplace('{stripe_last4}', '<span class="fabrikStripeLast4">' . $d->card->last4 . '</span>', $d->bottomText);
-$d->bottomText = str_ireplace('{stripe_item}', $d->item, $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_amount}', '<span class="fabrikStripePrice">' . $d->amount . '</span>', $d->bottomText);
+$d->bottomText = str_ireplace('{stripe_item}', '<span class="fabrikStripeItem">' . $d->item . '</span>', $d->bottomText);
+
 
 if ($d->testMode) :
 	?>
@@ -36,6 +37,9 @@ endif;
 ?>
 <div class="fabrikStripeBottomText">
 	<?php echo $d->bottomText; ?>
+</div>
+
+<div class="fabrikStripeCouponText">
 </div>
 
 <?php
