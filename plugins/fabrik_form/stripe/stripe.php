@@ -153,10 +153,19 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			{
 				switch ($coupon->discount_type)
 				{
+					case 'amount':
+						$amount = $coupon->discount_amount;
+						break;
+					case 'amount_off':
+						$amount = $amount - $coupon->discount_amount;
+						break;
 					case 'percent':
+						$amount = ($amount * $coupon->discount_amount) / 100;
+						break;
+					case 'percent_off':
 					default:
-						$discount       = ($amount * $coupon->discount_amount) / 100;
-						$amount = $amount - $discount;
+						$discount = ($amount * $coupon->discount_amount) / 100;
+						$amount   = $amount - $discount;
 				}
 			}
 		}
@@ -1044,28 +1053,30 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 	private function getCoupon($value, $increment = false)
 	{
-		$params = $this->getParams();
+		$params      = $this->getParams();
 		$couponTable = $this->getcouponsTableName();
 
-		$ret = new \StdClass;
-		$ret->ok = '0';
-		$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_ERROR');
+		$ret                  = new \StdClass;
+		$ret->ok              = '0';
+		$ret->msg             = JText::_('PLG_FORM_STRIPE_COUPON_ERROR');
 		$ret->discount_amount = '';
-		$ret->discount_type = '';
+		$ret->discount_type   = '2';
 
 		if (!empty($couponTable))
 		{
-			$couponField = FabrikString::shortColName($params->get('stripe_coupons_coupon_field'));
-			$discountField = FabrikString::shortColName($params->get('stripe_coupons_discount_field'));
+			$couponField    = FabrikString::shortColName($params->get('stripe_coupons_coupon_field'));
+			$discountField  = FabrikString::shortColName($params->get('stripe_coupons_discount_field'));
+			$typeField      = FabrikString::shortColName($params->get('stripe_coupons_type_field'));
 			$publishedField = FabrikString::shortColName($params->get('stripe_coupons_published_field'));
-			$limitField = FabrikString::shortColName($params->get('stripe_coupons_limit_field'));
-			$useField = FabrikString::shortColName($params->get('stripe_coupons_use_field'));
+			$limitField     = FabrikString::shortColName($params->get('stripe_coupons_limit_field'));
+			$useField       = FabrikString::shortColName($params->get('stripe_coupons_use_field'));
 
-			$useLimit = !empty($limitField) && !empty($useField);
-			$useUse   = !empty($useField);
+			$useLimit   = !empty($limitField) && !empty($useField);
+			$useUse     = !empty($useField);
 			$usePublish = !empty($publishedField);
+			$useType    = !empty($typeField);
 
-			$db = JFactory::getDbo();
+			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName($couponField) . ' AS `coupon_code`');
 			$query->select($db->quoteName($discountField) . ' AS `discount`');
@@ -1078,6 +1089,11 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			if ($useUse)
 			{
 				$query->select($db->quoteName($useField) . ' AS `used`');
+			}
+
+			if ($useType)
+			{
+				$query->select($db->quoteName($typeField) . ' AS `type`');
 			}
 
 			$query->from($db->quoteName($couponTable));
@@ -1097,31 +1113,56 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			catch (Exception $e)
 			{
 				$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_ERROR');
-				$ret->ok = '0';
+				$ret->ok  = '0';
+
 				return $ret;
 			}
 
 			if (empty($coupon))
 			{
 				$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_NOSUCH');
-				$ret->ok = '0';
+				$ret->ok  = '0';
+
 				return $ret;
 			}
 
 			if ($useLimit)
 			{
-				if ((int)$coupon->used >= (int)$coupon->limit)
+				if ((int) $coupon->limit !== 0 && (int) $coupon->used >= (int) $coupon->limit)
 				{
 					$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_LIMIT_REACHED');
-					$ret->ok = '0';
+					$ret->ok  = '0';
+
 					return $ret;
 				}
 			}
 
-			$ret->ok = '1';
-			$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_OK');
+			$ret->ok              = '1';
+			$ret->msg             = JText::_('PLG_FORM_STRIPE_COUPON_OK');
 			$ret->discount_amount = $coupon->discount;
-			$ret->discount_type = 'percent';
+
+			if ($useType)
+			{
+				switch ($coupon->type)
+				{
+					case '1':
+					case 'percent':
+						$ret->discount_type = 'percent';
+						break;
+					case '2':
+					case 'percent_off':
+						$ret->discount_type = 'percent_off';
+						break;
+					case '3':
+					case 'amount_off':
+						$ret->discount_type = 'amount_off';
+						break;
+					case '4':
+					case 'amount':
+						$ret->discount_type = 'amount';
+						break;
+				}
+			}
 
 			if ($useUse && $increment)
 			{
@@ -1152,41 +1193,50 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	 */
 	public function onAjax_getCoupon()
 	{
-		$input   = $this->app->input;
-		$value   = $input->get('v', '', 'string');
-		$amount  = $input->get('amount', '', 'string');
-		$formId  = $input->get('formid', '', 'string');
+		$input       = $this->app->input;
+		$value       = $input->get('v', '', 'string');
+		$amount      = $input->get('amount', '', 'string');
+		$formId      = $input->get('formid', '', 'string');
 		$renderOrder = $input->get('renderOrder', '', 'string');
-		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$formModel   = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formId);
-		$params  = $formModel->getParams();
-		$params = $this->setParams($params, $renderOrder);
-		$coupon = $this->getCoupon($value);
+		$params         = $formModel->getParams();
+		$params         = $this->setParams($params, $renderOrder);
+		$coupon         = $this->getCoupon($value);
+		$costMultiplier = $params->get('stripe_currency_multiplier', '100');
 
 		if ($coupon->ok === '1')
 		{
 			switch ($coupon->discount_type)
 			{
+				case 'amount':
+					$coupon->stripe_amount = $coupon->discount_amount * $costMultiplier;
+					break;
+				case 'amount_off':
+					$coupon->stripe_amount = $amount - ($coupon->discount_amount * $costMultiplier);
+					break;
 				case 'percent':
+					$coupon->stripe_amount = ($amount * $coupon->discount_amount) / 100;
+					break;
+				case 'percent_off':
 				default:
-					$discount       = ($amount * $coupon->discount_amount) / 100;
+					$discount              = ($amount * $coupon->discount_amount) / 100;
 					$coupon->stripe_amount = $amount - $discount;
 			}
-
 		}
 		else
 		{
 			$coupon->stripe_amount = $amount;
 		}
 
-		$costMultiplier = $params->get('stripe_currency_multiplier', '100');
-		$amountUnMultiplied         = $coupon->stripe_amount / $costMultiplier;
+
+		$amountUnMultiplied = $coupon->stripe_amount / $costMultiplier;
 
 		if (class_exists('NumberFormatter'))
 		{
-			$currencyCode = $params->get('stripe_currency_code', 'USD');
-			$currencyCode = strtolower($currencyCode);
-			$formatter = new NumberFormatter(JFactory::getLanguage()->getTag(), NumberFormatter::CURRENCY);
+			$currencyCode           = $params->get('stripe_currency_code', 'USD');
+			$currencyCode           = strtolower($currencyCode);
+			$formatter              = new NumberFormatter(JFactory::getLanguage()->getTag(), NumberFormatter::CURRENCY);
 			$coupon->display_amount = $formatter->formatCurrency($amountUnMultiplied, $currencyCode);
 		}
 		else

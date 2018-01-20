@@ -424,6 +424,14 @@
 				   type="element"/>
 
 			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_TYPE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_TYPE_FIELD_LABEL"
+				   name="stripe_coupons_type_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
 				   description="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_DESC"
 				   label="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_LABEL"
 				   name="stripe_coupons_limit_field"
