@@ -448,6 +448,22 @@
 				   type="element"/>
 
 			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_START_DATE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_START_DATE_FIELD_LABEL"
+				   name="stripe_coupons_start_date_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_END_DATE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_END_DATE_FIELD_LABEL"
+				   name="stripe_coupons_end_date_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
 				   description="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_DESC"
 				   label="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_LABEL"
 				   name="stripe_coupons_published_field"

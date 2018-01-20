@@ -1070,11 +1070,16 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$publishedField = FabrikString::shortColName($params->get('stripe_coupons_published_field'));
 			$limitField     = FabrikString::shortColName($params->get('stripe_coupons_limit_field'));
 			$useField       = FabrikString::shortColName($params->get('stripe_coupons_use_field'));
+			$startDateField = FabrikString::shortColName($params->get('stripe_coupons_start_date_field'));
+			$endDateField   = FabrikString::shortColName($params->get('stripe_coupons_end_date_field'));
 
 			$useLimit   = !empty($limitField) && !empty($useField);
 			$useUse     = !empty($useField);
 			$usePublish = !empty($publishedField);
 			$useType    = !empty($typeField);
+			$useStartDate = !empty($startDateField);
+			$useEndDate = !empty($endDateField);
+			$useDateRange = $useStartDate && $useEndDate;
 
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
@@ -1102,6 +1107,19 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			if ($usePublish)
 			{
 				$query->where('COALESCE(' . $db->quoteName($publishedField) . ', 0) != 0');
+			}
+
+			if ($useDateRange)
+			{
+				$query->where('NOW() BETWEEN ' . $db->nameQuote($startDateField) . ' AND ' . $db->quote($endDateField));
+			}
+			else if ($useStartDate)
+			{
+				$query->where('NOW() >= ' . $db->quoteName($startDateField));
+			}
+			else if ($useEndDate)
+			{
+				$query->where('NOW() <= ' . $db->quoteName($endDateField));
 			}
 
 			$db->setQuery($query);
