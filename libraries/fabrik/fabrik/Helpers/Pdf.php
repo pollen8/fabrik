@@ -125,7 +125,7 @@ class Pdf
 				{
 					$base = empty($subdir) || strstr($href, $subdir) ? $base_root : $base_root . $subdir;
 					$href = $base . ltrim($href,'/');
-					$a->setAttribute('href', $href);
+					$link->setAttribute('href', $href);
 				}
 			}
 
