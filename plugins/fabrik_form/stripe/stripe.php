@@ -1062,7 +1062,11 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$ret->discount_amount = '';
 		$ret->discount_type   = '2';
 
-		if (!empty($couponTable))
+		if (empty($value))
+		{
+			$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_NO_COUPON_TEXT');
+		}
+		else if (!empty($couponTable))
 		{
 			$couponField    = FabrikString::shortColName($params->get('stripe_coupons_coupon_field'));
 			$discountField  = FabrikString::shortColName($params->get('stripe_coupons_discount_field'));

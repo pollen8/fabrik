@@ -35,12 +35,14 @@ if ($d->testMode) :
 endif;
 
 ?>
-<div class="fabrikStripeBottomText">
-	<?php echo $d->bottomText; ?>
-</div>
 
 <div class="fabrikStripeCouponText">
+	<?php echo FText::_('PLG_FORM_STRIPE_COUPON_NO_COUPON_TEXT'); ?>
 </div>
+
+<div class="fabrikStripeBottomText">
+	<?php echo $d->bottomText; ?>
+</div
 
 <?php
 if ($d->useUpdateButton) :
