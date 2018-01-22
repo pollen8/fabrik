@@ -236,7 +236,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$float     = (int) $params->get('rating_float', 0);
 		$this->avg = number_format($r, $float);
 
-		return array(round($r), $t);
+		return array($this->avg, $t);
 	}
 
 	/**
