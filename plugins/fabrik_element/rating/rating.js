@@ -194,7 +194,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 		},
 
 		update: function (val) {
-			this.rating = val.toInt().round();
+			this.rating = Math.round(parseFloat(val));;
 			this.field.value = this.rating;
 			var s = this.element.getParent('.fabrikElementContainer').getElement('.ratingScore');
 			if (typeOf(s) !== 'null') {

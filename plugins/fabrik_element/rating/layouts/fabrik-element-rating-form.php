@@ -9,6 +9,7 @@ $d = $displayData;
 	<?php
 	$imgOpts = array('icon-class' => 'small', 'style' => $d->css, 'data-rating' => -1);
 	$clearImg = FabrikHelperHTML::image('remove.png', 'list', $d->tmpl, $imgOpts);
+	$roundedAvg = round($d->avg);
 
 	if ($d->ratingNoneFirst && $d->canRate)
 	{
@@ -17,13 +18,13 @@ $d = $displayData;
 
 	$imgOpts = array('icon-class' => 'starRating', 'style' => $d->css);
 
-	for ($s = 0; $s < $d->avg; $s++)
+	for ($s = 0; $s < $roundedAvg; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
 		echo FabrikHelperHTML::image("star", 'list', $d->tmpl, $imgOpts);
 	}
 
-	for ($s = $d->avg; $s < 5; $s++)
+	for ($s = $roundedAvg; $s < 5; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
 		echo FabrikHelperHTML::image("star-empty", 'list', $d->tmpl, $imgOpts);

@@ -97,13 +97,13 @@ define(['jquery'], function (jQuery) {
 				url       : '',
 				'data'    : data,
 				onComplete: function (r) {
-					// leave r as-is, it might be fractional, use for score html, but toInt() for this.rating
-					this.rating = r.toInt();
+					// leave r as-is, it might be fractional, use for score html, but round it for this.rating
+					this.rating = Math.round(parseFloat(r));
                     Fabrik.loader.stop(ratingDiv);
                     star.getParent('.fabrikRating').getElement('.ratingScore').set('html', r);
                     var stars = star.getParent('.fabrikRating').getElements('.starRating');
                     stars.each(function (ii) {
-                        if (r >= this._getRating(ii)) {
+                        if (this.rating >= this._getRating(ii)) {
                             ii.removeClass(this.options.starIconEmpty).addClass(this.options.starIcon);
                         } else {
                             ii.addClass(this.options.starIconEmpty).removeClass(this.options.starIcon);

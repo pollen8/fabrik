@@ -102,45 +102,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		for ($i = 0; $i < count($data); $i++)
 		{
-			/*
-			$avg   = $this->_renderListData($data[$i], $thisRow);
-			$atpl  = '';
-			$a2    = '';
-			$str   = array();
-			$str[] = '<div style="width:101px;position:relative;">';
-
-			for ($s = 0; $s < $avg; $s++)
-			{
-				$r                             = $s + 1;
-				$a                             = str_replace('{r}', $r, $atpl);
-				$imgOpts                       = array('icon-class' => 'starRating rate_' . $r);
-				$imgOpts['data-fabrik-rating'] = $r;
-				$img                           = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
-				$str[]                         = $a . $img . $a2;
-			}
-
-			for ($s = $avg; $s < 5; $s++)
-			{
-				$r                             = $s + 1;
-				$a                             = str_replace('{r}', $r, $atpl);
-				$imgOpts                       = array('icon-class' => 'starRating rate_' . $r);
-				$imgOpts['data-fabrik-rating'] = $r;
-				$img                           = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, $imgOpts);
-
-				$str[] = $a . $img . $a2;
-			}
-
-			if ($params->get('rating-mode') != 'creator-rating')
-			{
-				$str[] = '<div class="ratingMessage">' . $avg . '</div>';
-			}
-
-			$str[]    = '</div>';
-			$data[$i] = implode("\n", $str);
-			*/
 			$layout                      = $this->getLayout('list');
 			$layoutData                  = new stdClass;
-			//$layoutData->clearImg        = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
 			$layoutData->avg             = $this->_renderListData($data[$i], $thisRow);;
 			$layoutData->canRate         = $canRate;
 			$layoutData->ratingNoneFirst = $params->get('rating-nonefirst');
