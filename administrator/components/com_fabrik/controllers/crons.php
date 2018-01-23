@@ -112,7 +112,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			$table = FabTable::getInstance('cron', 'FabrikTable');
 			$table->load($row->id);
 			$plugin->setRow($table);
-			$plugin->getParams();
+			$pluginParams = $plugin->getParams();
 			$thisListModel = clone ($listModel);
 			$thisAdminListModel = clone ($adminListModel);
 			$tid = (int) $rowParams->table;
@@ -155,9 +155,11 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);
 			}
 
-			$table->lastrun = JFactory::getDate()->toSql();
-			$table->store();
-
+			if ($pluginParams->get('cron_reschedule_manual', '0') === '1')
+			{
+				$table->lastrun = JFactory::getDate()->toSql();
+				$table->store();
+			}
 		}
 
 		$this->setRedirect('index.php?option=com_fabrik&view=crons', $c . ' records updated');
