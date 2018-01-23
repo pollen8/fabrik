@@ -97,10 +97,10 @@ define(['jquery'], function (jQuery) {
 				url       : '',
 				'data'    : data,
 				onComplete: function (r) {
-					r = r.toInt();
-					this.rating = r;
+					// leave r as-is, it might be fractional, use for score html, but toInt() for this.rating
+					this.rating = r.toInt();
                     Fabrik.loader.stop(ratingDiv);
-                    star.getParent('.fabrikRating').getElement('.ratingScore').set('html', this.rating);
+                    star.getParent('.fabrikRating').getElement('.ratingScore').set('html', r);
                     var stars = star.getParent('.fabrikRating').getElements('.starRating');
                     stars.each(function (ii) {
                         if (r >= this._getRating(ii)) {

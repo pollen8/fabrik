@@ -31,7 +31,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 *
 	 * @var string
 	 */
-	protected $fieldDesc = 'TINYINT(%s)';
+	protected $fieldDesc = 'DECIMAL(3,2)';
 
 	/**
 	 * Db table field size
@@ -452,24 +452,24 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$rating    = $input->getInt('rating');
 
 		$this->doRating($listId, $formId, $rowId, $rating);
+		$this->getRatingAverage('', $listId, $formId, $rowId);
 
-		/*
-		if ($params->get('rating-mode') == 'creator-rating')
+		/**
+		 * Store in main table (so lists can sort on it, etc).  But ... only if it's not a join.
+		 * @TODO - figure out how to do this for joined groups
+		 */
+		if (!$this->getGroupModel()->isJoin())
 		{
-			// @todo FIX for joins as well
-
-			// Store in elements table as well
 			$db = $listModel->getDb();
 			$element = $this->getElement();
 			$query = $db->getQuery(true);
-			$query->update($list->db_table_name)
-			->set($element->name . '=' . $rating)->where($list->db_primary_key . ' = ' . $db->q($rowId));
+			$query->update($db->quoteName($list->db_table_name))
+				->set($db->quoteName($element->name) . '=' . $db->quote($this->avg))
+				->where($list->db_primary_key . ' = ' . $db->quote($rowId));
 			$db->setQuery($query);
 			$db->execute();
 		}
-		*/
 
-		$this->getRatingAverage('', $listId, $formId, $rowId);
 		echo $this->avg;
 	}
 
