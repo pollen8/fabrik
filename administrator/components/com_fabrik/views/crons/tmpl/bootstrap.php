@@ -117,7 +117,7 @@ $tasks = array('publish', 'unpublish', 'publish');
 						<?php echo $item->frequency .' '. $item->unit; ?>
 					</td>
 					<td>
-						<?php echo $item->lastrun; ?>
+						<?php echo JHtml::_('date', $item->lastrun, 'Y-m-d H:i:s'); ?>
 					</td>
 					<td class="center">
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'crons.', $canChange);?>
