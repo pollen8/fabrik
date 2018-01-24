@@ -47,6 +47,11 @@ class Pdf
 
 		$options = new Options();
 		$options->set('isRemoteEnabled', true);
+		/**
+		 * need to enable HTML5 parser to work around a bug in DOMPDF:
+		 * https://github.com/dompdf/dompdf/issues/1494#issuecomment-332116978
+		 */
+		$options->setIsHtml5ParserEnabled(true);
 		$options->set('fontCache', $config->get('tmp_path'));
 		$options->set('tempDir', $config->get('tmp_path'));
 
