@@ -1269,4 +1269,55 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		echo json_encode($coupon);
 	}
 
+	public function onWebhook()
+	{
+		$formId      = $this->app->input->get('formid', '', 'string');
+		$renderOrder = $this->app->input->get('renderOrder', '', 'string');
+		$formModel   = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$formModel->setId($formId);
+		$params      = $formModel->getParams();
+		$params      = $this->setParams($params, $renderOrder);
+		$testMode    = $params->get('stripe_test_mode', $this->app->input->get('stripe_testmode', false));
+
+		if ($testMode)
+		{
+			$secretKey = trim($params->get('stripe_test_secret_key', ''));
+			$webhookSecret = trim($params->get('stripe_test_webhook_secret', ''));
+		}
+		else
+		{
+			$secretKey = trim($params->get('stripe_secret_key', ''));
+			$webhookSecret = trim($params->get('stripe_webhook_secret', ''));
+		}
+
+		\Stripe\Stripe::setApiKey($secretKey);
+
+		$input = @file_get_contents("php://input");
+		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+		try
+		{
+			$event = \Stripe\Webhook::constructEvent($input, $signature, $webhookSecret);
+		}
+		catch (\UnexpectedValueException $e)
+		{
+			http_response_code(400);
+			jexit();
+		}
+		catch (\Stripe\SignatureVerification $e)
+		{
+			http_response_code(400);
+			jexit();
+		}
+
+		switch ($event->type)
+		{
+			default:
+				http_response_code(200);
+				break;
+		}
+
+		jexit();
+	}
+
 }

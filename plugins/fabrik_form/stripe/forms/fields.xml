@@ -203,6 +203,18 @@
 		<fieldset name="plg-form-stripe-customers"
 		          label="PLG_FORM_STRIPE_CUSTOMERS">
 
+			<field name="stripe_webhook_link"
+				   type="stripewebhook"
+				   label="PLG_FORM_STRIPE_WEBHOOK_LINK_LABEL"
+				   description="PLG_FORM_STRIPE_WEBHOOK_LINK_DESC"
+				   repeat="true"/>
+
+			<field name="stripe_webhook_secret"
+				   type="text"
+				   label="PLG_FORM_STRIPE_WEBHOOK_SECRET_LABEL"
+				   description="PLG_FORM_STRIPE_WEBHOOK_SECRET_DESC"
+				   repeat="true"/>
+
 			<field description="PLG_FORM_STRIPE_CUSTOMERS_CONNECTION_DESC"
 			       label="PLG_FORM_STRIPE_CUSTOMERS_CONNECTION_LABEL"
 			       name="stripe_customers_connection"
@@ -492,6 +504,40 @@
 
 		</fieldset>
 
+		<fieldset name="plg-form-stripe-plans"
+				  label="PLG_FORM_STRIPE_PLANS">
+
+			<field description="PLG_FORM_STRIPE_PLANS_CONNECTION_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_CONNECTION_LABEL"
+				   name="stripe_plans_connection"
+				   repeat="true"
+				   type="connections"/>
+
+			<field description="PLG_FORM_STRIPE_PLANS_TABLE_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_TABLE_LABEL"
+				   name="stripe_plans_table"
+				   observe="params_stripe_plans_connection"
+				   repeat="true"
+				   type="fabriktables"/>
+
+			<field connection="params_stripe_plans_connection"
+				   description="PLG_FORM_STRIPE_PLANS_PLAN_ID_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_PLAN_ID_LABEL"
+				   name="stripe_plans_plan_id_field"
+				   repeat="true"
+				   table="params_stripe_plans_table"
+				   type="element"/>
+
+			<field description="PLG_FORM_STRIPE_PLANS_PLAN_ELEMENT_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_PLAN_ELEMENT_LABEL"
+				   name="stripe_plan_element"
+				   onlytablefields="0"
+				   repeat="true"
+				   type="listfields"
+				   valueformat="tableelement"/>
+
+		</fieldset>
+
 		<fieldset name="plg-form-stripe-other"
 		          label="PLG_FORM_STRIPE_TEST_MODE">
 
@@ -517,6 +563,13 @@
 			       description="PLG_FORM_STRIPE_TEST_PUBLISHABLE_KEY_DESC"
 			       label="PLG_FORM_STRIPE_TEST_PUBLISHABLE_KEY_LABEL"
 			       repeat="true"/>
+
+
+			<field name="stripe_test_webhook_secret"
+				   type="text"
+				   label="PLG_FORM_STRIPE_TEST_WEBHOOK_SECRET_LABEL"
+				   description="PLG_FORM_STRIPE_TEST_WEBHOOK_SECRET_DESC"
+				   repeat="true"/>
 
 			<field name="stripe_receive_debug_emails"
 			       type="radio"
