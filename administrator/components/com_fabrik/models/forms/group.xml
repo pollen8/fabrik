@@ -8,8 +8,8 @@
 			       type="text"
 			       class="readonly input-mini"
 			       default="0"
-			       description="JGLOBAL_FIELD_ID_DESC"
-			       label="JGLOBAL_FIELD_ID_LABEL"
+			       label="COM_FABRIK_ID_LABEL"
+			       description="COM_FABRIK_FIELD_GROUP_ID_DESC"
 			       readonly="true"/>
 
 			<field name="name"

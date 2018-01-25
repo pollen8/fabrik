@@ -6,10 +6,10 @@
 		<field name="id"
 		       type="text"
 		       default="0"
-		       readonly="false"
+		       readonly="true"
 		       class="readonly input-mini"
-		       label="JGLOBAL_FIELD_ID_LABEL"
-		       description="JGLOBAL_FIELD_ID_DESC"/>
+		       label="COM_FABRIK_ID_LABEL"
+		       description="COM_FABRIK_FIELD_FORM_ID_DESC"/>
 
 		<field name="label"
 		       type="text"

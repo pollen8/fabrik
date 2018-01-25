@@ -28,13 +28,14 @@
 	          name="main">
 
 		<field name="id"
-			   type="text"
-			   default="0"
-			   readonly="true"
-			   class="readonly input-mini"
-			   size="3"
-			   label="JGLOBAL_FIELD_ID_LABEL"
-			   description="JGLOBAL_FIELD_ID_DESC"/>
+		       type="text"
+		       default="0"
+		       readonly="true"
+		       class="readonly input-mini"
+		       size="3"
+		       label="COM_FABRIK_ID_LABEL"
+		       description="COM_FABRIK_FIELD_LIST_ID_DESC"
+		/>
 
 		<field name="label"
 		       type="text"
