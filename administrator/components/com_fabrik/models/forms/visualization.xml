@@ -10,6 +10,7 @@
 		       class="readonly"
 		       default="0"
 		       label="COM_FABRIK_ID_LABEL"
+		       description="COM_FABRIK_FIELD_VIZUALIZATION_ID_DESC"
 		       readonly="true"
 		       size="10"/>
 
