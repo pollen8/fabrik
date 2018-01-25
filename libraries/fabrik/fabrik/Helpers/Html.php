@@ -1843,9 +1843,9 @@ EOD;
 	 */
 	public static function debug($content, $title = 'output:')
 	{
-		$config = JComponentHelper::getParams('com_fabrik');
-		$app    = JFactory::getApplication();
-		$input  = $app->input;
+		$config  = JComponentHelper::getParams('com_fabrik');
+		$app     = JFactory::getApplication();
+		$input   = $app->input;
 
 		if ($config->get('use_fabrikdebug') == 0)
 		{
@@ -1862,15 +1862,21 @@ EOD;
 			return;
 		}
 
+		$jconfig = JFactory::getConfig();
+		$secret = $jconfig->get('secret');
+
 		echo '<div class="fabrikDebugOutputTitle">' . $title . '</div>';
 		echo '<div class="fabrikDebugOutput fabrikDebugHidden">';
 
 		if (is_object($content) || is_array($content))
 		{
-			echo '<pre>' . htmlspecialchars(print_r($content, true)) . '</pre>';
+		    $content = print_r($content, true);
+			$content = str_replace($secret, 'xxxxxxxxx', $content);
+			echo '<pre>' . htmlspecialchars($content) . '</pre>';
 		}
 		else
 		{
+		    $content = str_replace($secret, 'xxxxxxxxx', $content);
 			// Remove any <pre> tags provided by e.g. JQuery::dump
 			$content = preg_replace('/(^\s*<pre( .*)?>)|(<\/pre>\s*$)/i', '', $content);
 			echo '<pre>' . htmlspecialchars($content) . '</pre>';
