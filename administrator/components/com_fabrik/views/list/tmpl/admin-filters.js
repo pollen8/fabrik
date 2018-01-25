@@ -43,7 +43,6 @@ define(['jquery'], function (jQuery) {
                 t = e.target.getParent('tr');
                 tbl = e.target.getParent('table');
             } else {
-                //t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
                 t = e.target.getParent('tr');
                 tbl = e.target.getParent('table');
             }
@@ -77,7 +76,7 @@ define(['jquery'], function (jQuery) {
                     opts.push(new Element('option', {'value': pair.value}).set('text', pair.label));
                 }
             });
-            return new Element('select', {'class': c + ' input-medium', 'name': name}).adopt(opts);
+            return new Element('select', {'class': c , 'name': name}).adopt(opts);
         },
 
         addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
@@ -97,29 +96,6 @@ define(['jquery'], function (jQuery) {
             grouped = grouped ? grouped : '';
             var conditionsDd = this.options.filterCondDd;
             var tr = new Element('tr');
-            if (this.counter > 0) {
-                var opts = {
-                    'type' : 'radio',
-                    'name' : 'jform[params][filter-grouped][' + this.counter + ']',
-                    'value': '1'
-                };
-                opts.checked = (grouped === '1') ? 'checked' : '';
-                groupedYes = new Element('label').set('text', Joomla.JText._('JYES')).adopt(
-                    new Element('input', opts)
-                );
-                // Need to redeclare opts for ie8 otherwise it renders a field!
-                opts = {
-                    'type' : 'radio',
-                    'name' : 'jform[params][filter-grouped][' + this.counter + ']',
-                    'value': '0'
-                };
-                opts.checked = (grouped !== '1') ? 'checked' : '';
-
-                groupedNo = new Element('label').set('text', Joomla.JText._('JNO')).adopt(
-                    new Element('input', opts)
-                );
-
-            }
             if (this.counter === 0) {
                 joinDd = new Element('span').set('text', 'WHERE').adopt(
                     new Element('input', {
@@ -139,16 +115,14 @@ define(['jquery'], function (jQuery) {
                 }
                 joinDd = new Element('select', {
                     'id'   : 'paramsfilter-join',
-                    'class': 'inputbox  input-medium',
+                    'class': 'inputbox input-small',
                     'name' : 'jform[params][filter-join][]'
                 }).adopt(
                     [and, or]);
             }
 
-            var tdGrouped = new Element('td');
-            var td = new Element('td');
-
             if (this.counter <= 0) {
+                var tdGrouped = new Element('td');
                 tdGrouped.appendChild(new Element('input', {
                     'type' : 'hidden',
                     'name' : 'jform[params][filter-grouped][' + this.counter + ']',
@@ -157,9 +131,40 @@ define(['jquery'], function (jQuery) {
                 tdGrouped.appendChild(new Element('span').set('text', 'n/a'));
 
             } else {
-                tdGrouped.appendChild(groupedNo);
-                tdGrouped.appendChild(groupedYes);
+                var groupedId = 'jform_params_filter-grouped_' + this.counter;
+                var groupedName = 'jform[params][filter-grouped][' + this.counter + ']';
+                var divGrouped = new Element('fieldset', { 'class' : 'btn-group radio', 'id' : groupedId });
+                var opts = {
+                    'id'   : groupedId + '_0',
+                    'type' : 'radio',
+                    'name' : groupedName,
+                    'value': '0',
+                };
+                opts.checked = (grouped !== '1') ? 'checked' : '';
+                divGrouped.appendChild(new Element('input', opts));
+                opts = {
+                    'for'   : groupedId + '_0',
+                    'class' : 'btn' + ((grouped !== '1') ? ' active btn-danger' : ''),
+                }
+                divGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JNO')));
+
+                // Need to redeclare opts for ie8 otherwise it renders a field!
+                opts = {
+                    'id'      : groupedId + '_1',
+                    'type'    : 'radio',
+                    'name'    : groupedName,
+                    'value'   : '1',
+                };
+                opts.checked = (grouped === '1') ? 'checked' : '';
+                divGrouped.appendChild(new Element('input', opts));
+                opts = {
+                    'for'   : groupedId + '_1',
+                    'class' : 'btn' + ((grouped === '1') ? ' active btn-success' : ''),
+                }
+                divGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JYES')));
             }
+
+            var td = new Element('td');
             td.appendChild(joinDd);
 
             var td1 = new Element('td');
@@ -174,7 +179,8 @@ define(['jquery'], function (jQuery) {
             var textArea = new Element('textarea', {
                 'name': 'jform[params][filter-value][]',
                 'cols': 17,
-                'rows': 4
+                'rows': 2,
+                'style': 'width:150px;'
             }).set('text', selValue);
             td3.appendChild(textArea);
             td3.appendChild(new Element('br'));
@@ -187,14 +193,14 @@ define(['jquery'], function (jQuery) {
             ];
 
             var tdType = new Element('td')
-                .adopt(this._makeSel('inputbox elementtype', 'jform[params][filter-eval][]', evalopts, evaluate, false));
+                .adopt(this._makeSel('inputbox elementtype input-small', 'jform[params][filter-eval][]', evalopts, evaluate, false));
 
             var checked = (selJoin !== '' || selFilter !== '' || selCondition !== '' || selValue !== '') ? true : false;
             var delId = this.el.id + "-del-" + this.counter;
 
             var deleteText = this.options.j3 ? '' : Joomla.JText._('COM_FABRIK_DELETE');
             var bClass = this.options.j3 ? 'btn btn-danger' : 'removeButton';
-            var a = '<button id="' + delId + '" class="' + bClass + '"><i class="icon-minus"></i> ' +
+            var a = '<button id="' + delId + '" class="' + bClass + '"><i class="icon-minus" style="margin:0"></i> ' +
                 deleteText + '</button>';
             td5.set('html', a);
             tr.appendChild(td);
@@ -204,7 +210,7 @@ define(['jquery'], function (jQuery) {
             tr.appendChild(td3);
             tr.appendChild(tdType);
             tr.appendChild(td4);
-            tr.appendChild(tdGrouped);
+            tr.appendChild(new Element('td').adopt(divGrouped));
             tr.appendChild(td5);
 
             this.el.appendChild(tr);
