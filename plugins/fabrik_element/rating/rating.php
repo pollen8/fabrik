@@ -31,7 +31,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 *
 	 * @var string
 	 */
-	protected $fieldDesc = 'TINYINT(%s)';
+	protected $fieldDesc = 'DECIMAL(3,2)';
 
 	/**
 	 * Db table field size
@@ -102,45 +102,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		for ($i = 0; $i < count($data); $i++)
 		{
-			/*
-			$avg   = $this->_renderListData($data[$i], $thisRow);
-			$atpl  = '';
-			$a2    = '';
-			$str   = array();
-			$str[] = '<div style="width:101px;position:relative;">';
-
-			for ($s = 0; $s < $avg; $s++)
-			{
-				$r                             = $s + 1;
-				$a                             = str_replace('{r}', $r, $atpl);
-				$imgOpts                       = array('icon-class' => 'starRating rate_' . $r);
-				$imgOpts['data-fabrik-rating'] = $r;
-				$img                           = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
-				$str[]                         = $a . $img . $a2;
-			}
-
-			for ($s = $avg; $s < 5; $s++)
-			{
-				$r                             = $s + 1;
-				$a                             = str_replace('{r}', $r, $atpl);
-				$imgOpts                       = array('icon-class' => 'starRating rate_' . $r);
-				$imgOpts['data-fabrik-rating'] = $r;
-				$img                           = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, $imgOpts);
-
-				$str[] = $a . $img . $a2;
-			}
-
-			if ($params->get('rating-mode') != 'creator-rating')
-			{
-				$str[] = '<div class="ratingMessage">' . $avg . '</div>';
-			}
-
-			$str[]    = '</div>';
-			$data[$i] = implode("\n", $str);
-			*/
 			$layout                      = $this->getLayout('list');
 			$layoutData                  = new stdClass;
-			//$layoutData->clearImg        = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
 			$layoutData->avg             = $this->_renderListData($data[$i], $thisRow);;
 			$layoutData->canRate         = $canRate;
 			$layoutData->ratingNoneFirst = $params->get('rating-nonefirst');
@@ -236,7 +199,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$float     = (int) $params->get('rating_float', 0);
 		$this->avg = number_format($r, $float);
 
-		return array(round($r), $t);
+		return array($this->avg, $t);
 	}
 
 	/**
@@ -452,24 +415,24 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$rating    = $input->getInt('rating');
 
 		$this->doRating($listId, $formId, $rowId, $rating);
+		$this->getRatingAverage('', $listId, $formId, $rowId);
 
-		/*
-		if ($params->get('rating-mode') == 'creator-rating')
+		/**
+		 * Store in main table (so lists can sort on it, etc).  But ... only if it's not a join.
+		 * @TODO - figure out how to do this for joined groups
+		 */
+		if (!$this->getGroupModel()->isJoin())
 		{
-			// @todo FIX for joins as well
-
-			// Store in elements table as well
 			$db = $listModel->getDb();
 			$element = $this->getElement();
 			$query = $db->getQuery(true);
-			$query->update($list->db_table_name)
-			->set($element->name . '=' . $rating)->where($list->db_primary_key . ' = ' . $db->q($rowId));
+			$query->update($db->quoteName($list->db_table_name))
+				->set($db->quoteName($element->name) . '=' . $db->quote($this->avg))
+				->where($list->db_primary_key . ' = ' . $db->quote($rowId));
 			$db->setQuery($query);
 			$db->execute();
 		}
-		*/
 
-		$this->getRatingAverage('', $listId, $formId, $rowId);
 		echo $this->avg;
 	}
 

@@ -233,6 +233,7 @@ class PlgContentFabrik extends JPlugin
 					break;
 				case 'limit':
 					$limit = $m[1];
+					break;
 				case 'usekey':
 					$useKey = $m[1];
 					break;

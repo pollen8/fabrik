@@ -203,6 +203,18 @@
 		<fieldset name="plg-form-stripe-customers"
 		          label="PLG_FORM_STRIPE_CUSTOMERS">
 
+			<field name="stripe_webhook_link"
+				   type="stripewebhook"
+				   label="PLG_FORM_STRIPE_WEBHOOK_LINK_LABEL"
+				   description="PLG_FORM_STRIPE_WEBHOOK_LINK_DESC"
+				   repeat="true"/>
+
+			<field name="stripe_webhook_secret"
+				   type="text"
+				   label="PLG_FORM_STRIPE_WEBHOOK_SECRET_LABEL"
+				   description="PLG_FORM_STRIPE_WEBHOOK_SECRET_DESC"
+				   repeat="true"/>
+
 			<field description="PLG_FORM_STRIPE_CUSTOMERS_CONNECTION_DESC"
 			       label="PLG_FORM_STRIPE_CUSTOMERS_CONNECTION_LABEL"
 			       name="stripe_customers_connection"
@@ -390,6 +402,142 @@
 
 
 		</fieldset>
+
+		<fieldset name="plg-form-stripe-coupons"
+				  label="PLG_FORM_STRIPE_COUPONS">
+
+			<field description="PLG_FORM_STRIPE_COUPONS_CONNECTION_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_CONNECTION_LABEL"
+				   name="stripe_coupons_connection"
+				   repeat="true"
+				   type="connections"/>
+
+			<field description="PLG_FORM_STRIPE_COUPONS_TABLE_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_TABLE_LABEL"
+				   name="stripe_coupons_table"
+				   observe="params_stripe_coupons_connection"
+				   repeat="true"
+				   type="fabriktables"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_COUPON_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_COUPON_FIELD_LABEL"
+				   name="stripe_coupons_coupon_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_DISCOUNT_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_DISCOUNT_FIELD_LABEL"
+				   name="stripe_coupons_discount_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_TYPE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_TYPE_FIELD_LABEL"
+				   name="stripe_coupons_type_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_LIMIT_FIELD_LABEL"
+				   name="stripe_coupons_limit_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_USE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_USE_FIELD_LABEL"
+				   name="stripe_coupons_use_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_START_DATE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_START_DATE_FIELD_LABEL"
+				   name="stripe_coupons_start_date_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_END_DATE_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_END_DATE_FIELD_LABEL"
+				   name="stripe_coupons_end_date_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field connection="params_stripe_coupons_connection"
+				   description="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_PUBLISHED_FIELD_LABEL"
+				   name="stripe_coupons_published_field"
+				   repeat="true"
+				   table="params_stripe_coupons_table"
+				   type="element"/>
+
+			<field description="PLG_FORM_STRIPE_COUPONS_COUPON_ELEMENT_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_COUPON_ELEMENT_LABEL"
+				   name="stripe_coupon_element"
+				   onlytablefields="0"
+				   repeat="true"
+				   type="listfields"
+				   valueformat="tableelement"/>
+
+			<field default="0"
+				   class="btn-group"
+				   description="PLG_FORM_STRIPE_COUPONS_CC_ON_FREE_DESC"
+				   label="PLG_FORM_STRIPE_COUPONS_CC_ON_FREE_LABEL"
+				   name="stripe_coupons_cc_on_free"
+				   repeat="true"
+				   type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+		</fieldset>
+
+		<fieldset name="plg-form-stripe-plans"
+				  label="PLG_FORM_STRIPE_PLANS">
+
+			<field description="PLG_FORM_STRIPE_PLANS_CONNECTION_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_CONNECTION_LABEL"
+				   name="stripe_plans_connection"
+				   repeat="true"
+				   type="connections"/>
+
+			<field description="PLG_FORM_STRIPE_PLANS_TABLE_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_TABLE_LABEL"
+				   name="stripe_plans_table"
+				   observe="params_stripe_plans_connection"
+				   repeat="true"
+				   type="fabriktables"/>
+
+			<field connection="params_stripe_plans_connection"
+				   description="PLG_FORM_STRIPE_PLANS_PLAN_ID_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_PLAN_ID_LABEL"
+				   name="stripe_plans_plan_id_field"
+				   repeat="true"
+				   table="params_stripe_plans_table"
+				   type="element"/>
+
+			<field description="PLG_FORM_STRIPE_PLANS_PLAN_ELEMENT_DESC"
+				   label="PLG_FORM_STRIPE_PLANS_PLAN_ELEMENT_LABEL"
+				   name="stripe_plan_element"
+				   onlytablefields="0"
+				   repeat="true"
+				   type="listfields"
+				   valueformat="tableelement"/>
+
+		</fieldset>
+
 		<fieldset name="plg-form-stripe-other"
 		          label="PLG_FORM_STRIPE_TEST_MODE">
 
@@ -415,6 +563,13 @@
 			       description="PLG_FORM_STRIPE_TEST_PUBLISHABLE_KEY_DESC"
 			       label="PLG_FORM_STRIPE_TEST_PUBLISHABLE_KEY_LABEL"
 			       repeat="true"/>
+
+
+			<field name="stripe_test_webhook_secret"
+				   type="text"
+				   label="PLG_FORM_STRIPE_TEST_WEBHOOK_SECRET_LABEL"
+				   description="PLG_FORM_STRIPE_TEST_WEBHOOK_SECRET_DESC"
+				   repeat="true"/>
 
 			<field name="stripe_receive_debug_emails"
 			       type="radio"

@@ -47,6 +47,11 @@ class Pdf
 
 		$options = new Options();
 		$options->set('isRemoteEnabled', true);
+		/**
+		 * need to enable HTML5 parser to work around a bug in DOMPDF:
+		 * https://github.com/dompdf/dompdf/issues/1494#issuecomment-332116978
+		 */
+		$options->setIsHtml5ParserEnabled(true);
 		$options->set('fontCache', $config->get('tmp_path'));
 		$options->set('tempDir', $config->get('tmp_path'));
 
@@ -80,7 +85,58 @@ class Pdf
 			// prepend encoding, otherwise UTF-8 will get munged into special chars
             $data = '<?xml version="1.0" encoding="UTF-8"?>' . $data;
 
+            // load the document
 			$doc->loadHTML($data);
+
+			// img tags
+			$imgs = $doc->getElementsByTagName('img');
+
+			foreach ($imgs as $img)
+			{
+				$src = $img->getAttribute('src');
+
+				if (!strstr($src, $schemeString))
+				{
+					$base = empty($subdir) || strstr($src, $subdir) ? $base_root : $base_root . $subdir;
+					$src = $base . ltrim($src,'/');
+					$img->setAttribute('src', $src);
+				}
+			}
+
+			// a tags
+			$as = $doc->getElementsByTagName('a');
+
+			foreach ($as as $a)
+			{
+				$href = $a->getAttribute('href');
+
+				if (!strstr($href, $schemeString) && !strstr($href, 'mailto:'))
+				{
+					$base = empty($subdir) || strstr($href, $subdir) ? $base_root : $base_root . $subdir;
+					$href = $base . ltrim($href,'/');
+					$a->setAttribute('href', $href);
+				}
+			}
+
+			// link tags
+			$links = $doc->getElementsByTagName('link');
+
+			foreach ($links as $link)
+			{
+				$rel  = $link->getAttribute('rel');
+				$href = $link->getAttribute('href');
+
+				if ($rel == 'stylesheet' && !strstr($href, $schemeString))
+				{
+					$base = empty($subdir) || strstr($href, $subdir) ? $base_root : $base_root . $subdir;
+					$href = $base . ltrim($href,'/');
+					$link->setAttribute('href', $href);
+				}
+			}
+
+			$data = $doc->saveHTML();
+
+			/*
 			$ok = simplexml_import_dom($doc);
 
 			//$ok = new \SimpleXMLElement($data);
@@ -124,6 +180,7 @@ class Pdf
 
 				$data = $ok->asXML();
 			}
+			*/
 		}
 		catch (Exception $err)
 		{

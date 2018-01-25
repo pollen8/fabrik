@@ -47,6 +47,11 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	 */
 	private $customerTableName = null;
 
+	/*
+	 * Coupon table name
+	 */
+	private $couponsTableName = null;
+
 	/**
 	 * Attempt to run the Stripe payment, return false (abort save) if it fails
 	 *
@@ -133,6 +138,35 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			if (is_array($amount))
 			{
 				$amount = array_shift($amount);
+			}
+		}
+
+		$couponKey = FabrikString::safeColNameToArrayKey($params->get('stripe_coupon_element'));
+		$couponCode    = FArrayHelper::getValue($this->data, $couponKey);
+		$couponCode    = FArrayHelper::getValue($this->data, $couponKey . '_raw', $couponCode);
+
+		if (!empty($couponCode))
+		{
+			$coupon = $this->getCoupon($couponCode, true);
+
+			if ($coupon->ok === '1')
+			{
+				switch ($coupon->discount_type)
+				{
+					case 'amount':
+						$amount = $coupon->discount_amount;
+						break;
+					case 'amount_off':
+						$amount = $amount - $coupon->discount_amount;
+						break;
+					case 'percent':
+						$amount = ($amount * $coupon->discount_amount) / 100;
+						break;
+					case 'percent_off':
+					default:
+						$discount = ($amount * $coupon->discount_amount) / 100;
+						$amount   = $amount - $discount;
+				}
 			}
 		}
 
@@ -230,33 +264,39 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					}
 				}
 
-				$this->charge = \Stripe\Charge::create(array(
-					"amount"      => $amountMultiplied,
-					"currency"    => $currencyCode,
-					"customer"    => $customerId,
-					"description" => $item,
-					"metadata"    => array(
-						"listid" => (string) $listModel->getId(),
-						"formid" => (string) $formModel->getId(),
-						"rowid"  => (string) $this->data['rowid'],
-						"userid" => (string) $userId
-					)
-				));
+				if ($amount > 0)
+				{
+					$this->charge = \Stripe\Charge::create(array(
+						"amount"      => $amountMultiplied,
+						"currency"    => $currencyCode,
+						"customer"    => $customerId,
+						"description" => $item,
+						"metadata"    => array(
+							"listid" => (string) $listModel->getId(),
+							"formid" => (string) $formModel->getId(),
+							"rowid"  => (string) $this->data['rowid'],
+							"userid" => (string) $userId
+						)
+					));
+				}
 			}
 			else
 			{
-				$this->charge = \Stripe\Charge::create(array(
-					"amount"      => $amountMultiplied,
-					"currency"    => $currencyCode,
-					"source"      => $tokenId,
-					"description" => $item,
-					"metadata"    => array(
-						"listid" => (string) $listModel->getId(),
-						"formid" => (string) $formModel->getId(),
-						"rowid"  => (string) $this->data['rowid'],
-						"userid" => (string) $userId
-					)
-				));
+				if ($amount > 0)
+				{
+					$this->charge = \Stripe\Charge::create(array(
+						"amount"      => $amountMultiplied,
+						"currency"    => $currencyCode,
+						"source"      => $tokenId,
+						"description" => $item,
+						"metadata"    => array(
+							"listid" => (string) $listModel->getId(),
+							"formid" => (string) $formModel->getId(),
+							"rowid"  => (string) $this->data['rowid'],
+							"userid" => (string) $userId
+						)
+					));
+				}
 			}
 		}
 		catch (\Stripe\Error\Card $e)
@@ -337,18 +377,28 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return false;
 		}
 
-		$chargeIdField = $this->getFieldName('stripe_charge_id_element', '');
-
-		if (!empty($chargeIdField))
+		if (isset($this->charge))
 		{
-			$formModel->updateFormData($chargeIdField, $this->charge->id, true, true);
+			$chargeIdField = $this->getFieldName('stripe_charge_id_element', '');
+
+			if (!empty($chargeIdField))
+			{
+				$formModel->updateFormData($chargeIdField, $this->charge->id, true, true);
+			}
+
+			$chargeEmailField = $this->getFieldName('stripe_charge_email_element', '');
+
+			if (!empty($chargeEmailField))
+			{
+				$formModel->updateFormData($chargeEmailField, $tokenEmail, true, true);
+			}
 		}
 
-		$chargeEmailField = $this->getFieldName('stripe_charge_email_element', '');
+		$stripeCostField = $this->getFieldName('stripe_cost_element', '');
 
-		if (!empty($chargeEmailField))
+		if (!empty($stripeCostField))
 		{
-			$formModel->updateFormData($chargeEmailField, $tokenEmail, true, true);
+			$formModel->updateFormData($stripeCostField, $amount, true, true);
 		}
 
 		$this->updateCustomerCustom($userId);
@@ -441,11 +491,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 
-		if (!$this->shouldProcess('stripe_conditon', null, $params))
-		{
-			return true;
-		}
-
 		$opts = new stdClass();
 
 		$opts->formid = $formModel->getId();
@@ -475,6 +520,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->panelLabel = FText::_($params->get('stripe_panel_label', 'PLG_FORM_STRIPE_PAY'));
 		$opts->allowRememberMe = false;
 		$opts->zipCode = $params->get('stripe_zipcode_check', '1') === '1';
+
+		$opts->couponElement = str_replace('.', '___', $params->get('stripe_coupon_element'));
+		$opts->ccOnFree = $params->get('stripe_coupons_cc_on_free', '0') === '1';
+		$opts->renderOrder = $this->renderOrder;
 
 		$currencyCode       = $params->get('stripe_currencycode', 'USD');
 		$currencyCode       = $w->parseMessageForPlaceHolder($currencyCode, $this->data);
@@ -536,6 +585,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$amountMultiplied         = $amount * $costMultiplier;
 
 		$opts->amount = $amountMultiplied;
+		$opts->origAmount = $amountMultiplied;
 
 		$item = $params->get('stripe_item');
 		$item = $w->parseMessageForPlaceHolder($item, $this->data);
@@ -959,4 +1009,315 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		return true;
 	}
+
+	/**
+	 * Get the Customer table name
+	 *
+	 * @return  string  db table name
+	 */
+	protected function getcouponsTableName()
+	{
+		if (isset($this->couponsTableName))
+		{
+			return $this->couponsTableName;
+		}
+
+		$params = $this->getParams();
+		$couponsTable = (int) $params->get('stripe_coupons_table', '');
+
+		if (empty($couponsTable))
+		{
+			$this->couponsTableName = false;
+
+			return false;
+		}
+
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('stripe_coupons_table'));
+		$db->setQuery($query);
+		$db_table_name = $db->loadResult();
+
+		if (!isset($db_table_name))
+		{
+			echo (string)$query;
+			$this->couponsTableName = false;
+
+			return false;
+		}
+
+		$this->couponsTableName = $db_table_name;
+
+		return $this->couponsTableName;
+	}
+
+	private function getCoupon($value, $increment = false)
+	{
+		$params      = $this->getParams();
+		$couponTable = $this->getcouponsTableName();
+
+		$ret                  = new \StdClass;
+		$ret->ok              = '0';
+		$ret->msg             = JText::_('PLG_FORM_STRIPE_COUPON_ERROR');
+		$ret->discount_amount = '';
+		$ret->discount_type   = '2';
+
+		if (empty($value))
+		{
+			$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_NO_COUPON_TEXT');
+		}
+		else if (!empty($couponTable))
+		{
+			$couponField    = FabrikString::shortColName($params->get('stripe_coupons_coupon_field'));
+			$discountField  = FabrikString::shortColName($params->get('stripe_coupons_discount_field'));
+			$typeField      = FabrikString::shortColName($params->get('stripe_coupons_type_field'));
+			$publishedField = FabrikString::shortColName($params->get('stripe_coupons_published_field'));
+			$limitField     = FabrikString::shortColName($params->get('stripe_coupons_limit_field'));
+			$useField       = FabrikString::shortColName($params->get('stripe_coupons_use_field'));
+			$startDateField = FabrikString::shortColName($params->get('stripe_coupons_start_date_field'));
+			$endDateField   = FabrikString::shortColName($params->get('stripe_coupons_end_date_field'));
+
+			$useLimit   = !empty($limitField) && !empty($useField);
+			$useUse     = !empty($useField);
+			$usePublish = !empty($publishedField);
+			$useType    = !empty($typeField);
+			$useStartDate = !empty($startDateField);
+			$useEndDate = !empty($endDateField);
+			$useDateRange = $useStartDate && $useEndDate;
+
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName($couponField) . ' AS `coupon_code`');
+			$query->select($db->quoteName($discountField) . ' AS `discount`');
+
+			if ($useLimit)
+			{
+				$query->select($db->quoteName($limitField) . ' AS `limit`');
+			}
+
+			if ($useUse)
+			{
+				$query->select($db->quoteName($useField) . ' AS `used`');
+			}
+
+			if ($useType)
+			{
+				$query->select($db->quoteName($typeField) . ' AS `type`');
+			}
+
+			$query->from($db->quoteName($couponTable));
+			$query->where($db->quoteName($couponField) . ' = ' . $db->quote($value));
+
+			if ($usePublish)
+			{
+				$query->where('COALESCE(' . $db->quoteName($publishedField) . ', 0) != 0');
+			}
+
+			if ($useDateRange)
+			{
+				$query->where('NOW() BETWEEN ' . $db->nameQuote($startDateField) . ' AND ' . $db->quote($endDateField));
+			}
+			else if ($useStartDate)
+			{
+				$query->where('NOW() >= ' . $db->quoteName($startDateField));
+			}
+			else if ($useEndDate)
+			{
+				$query->where('NOW() <= ' . $db->quoteName($endDateField));
+			}
+
+			$db->setQuery($query);
+
+			try
+			{
+				$coupon = $db->loadObject();
+			}
+			catch (Exception $e)
+			{
+				$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_ERROR');
+				$ret->ok  = '0';
+
+				return $ret;
+			}
+
+			if (empty($coupon))
+			{
+				$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_NOSUCH');
+				$ret->ok  = '0';
+
+				return $ret;
+			}
+
+			if ($useLimit)
+			{
+				if ((int) $coupon->limit !== 0 && (int) $coupon->used >= (int) $coupon->limit)
+				{
+					$ret->msg = JText::_('PLG_FORM_STRIPE_COUPON_LIMIT_REACHED');
+					$ret->ok  = '0';
+
+					return $ret;
+				}
+			}
+
+			$ret->ok              = '1';
+			$ret->msg             = JText::_('PLG_FORM_STRIPE_COUPON_OK');
+			$ret->discount_amount = $coupon->discount;
+
+			if ($useType)
+			{
+				switch ($coupon->type)
+				{
+					case '1':
+					case 'percent':
+						$ret->discount_type = 'percent';
+						break;
+					case '2':
+					case 'percent_off':
+						$ret->discount_type = 'percent_off';
+						break;
+					case '3':
+					case 'amount_off':
+						$ret->discount_type = 'amount_off';
+						break;
+					case '4':
+					case 'amount':
+						$ret->discount_type = 'amount';
+						break;
+				}
+			}
+
+			if ($useUse && $increment)
+			{
+				$query->clear()
+					->update($db->quoteName($couponTable))
+					->set($db->quoteName($useField) . ' = ' . $db->quoteName($useField) . ' + 1')
+					->where($db->quoteName($couponField) . ' = ' . $db->quote($value));
+				$db->setQuery($query);
+
+				try
+				{
+					$db->execute();
+				}
+				catch (Exception $e)
+				{
+					// meh
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Gets the options for the drop down - used in package when forms update
+	 *
+	 * @return  void
+	 */
+	public function onAjax_getCoupon()
+	{
+		$input       = $this->app->input;
+		$value       = $input->get('v', '', 'string');
+		$amount      = $input->get('amount', '', 'string');
+		$formId      = $input->get('formid', '', 'string');
+		$renderOrder = $input->get('renderOrder', '', 'string');
+		$formModel   = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$formModel->setId($formId);
+		$params         = $formModel->getParams();
+		$params         = $this->setParams($params, $renderOrder);
+		$coupon         = $this->getCoupon($value);
+		$costMultiplier = $params->get('stripe_currency_multiplier', '100');
+
+		if ($coupon->ok === '1')
+		{
+			switch ($coupon->discount_type)
+			{
+				case 'amount':
+					$coupon->stripe_amount = $coupon->discount_amount * $costMultiplier;
+					break;
+				case 'amount_off':
+					$coupon->stripe_amount = $amount - ($coupon->discount_amount * $costMultiplier);
+					break;
+				case 'percent':
+					$coupon->stripe_amount = ($amount * $coupon->discount_amount) / 100;
+					break;
+				case 'percent_off':
+				default:
+					$discount              = ($amount * $coupon->discount_amount) / 100;
+					$coupon->stripe_amount = $amount - $discount;
+			}
+		}
+		else
+		{
+			$coupon->stripe_amount = $amount;
+		}
+
+
+		$amountUnMultiplied = $coupon->stripe_amount / $costMultiplier;
+
+		if (class_exists('NumberFormatter'))
+		{
+			$currencyCode           = $params->get('stripe_currency_code', 'USD');
+			$currencyCode           = strtolower($currencyCode);
+			$formatter              = new NumberFormatter(JFactory::getLanguage()->getTag(), NumberFormatter::CURRENCY);
+			$coupon->display_amount = $formatter->formatCurrency($amountUnMultiplied, $currencyCode);
+		}
+		else
+		{
+			$coupon->display_amount = number_format($amountUnMultiplied, 2);
+		}
+
+		echo json_encode($coupon);
+	}
+
+	public function onWebhook()
+	{
+		$formId      = $this->app->input->get('formid', '', 'string');
+		$renderOrder = $this->app->input->get('renderOrder', '', 'string');
+		$formModel   = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$formModel->setId($formId);
+		$params      = $formModel->getParams();
+		$params      = $this->setParams($params, $renderOrder);
+		$testMode    = $params->get('stripe_test_mode', $this->app->input->get('stripe_testmode', false));
+
+		if ($testMode)
+		{
+			$secretKey = trim($params->get('stripe_test_secret_key', ''));
+			$webhookSecret = trim($params->get('stripe_test_webhook_secret', ''));
+		}
+		else
+		{
+			$secretKey = trim($params->get('stripe_secret_key', ''));
+			$webhookSecret = trim($params->get('stripe_webhook_secret', ''));
+		}
+
+		\Stripe\Stripe::setApiKey($secretKey);
+
+		$input = @file_get_contents("php://input");
+		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+		try
+		{
+			$event = \Stripe\Webhook::constructEvent($input, $signature, $webhookSecret);
+		}
+		catch (\UnexpectedValueException $e)
+		{
+			http_response_code(400);
+			jexit();
+		}
+		catch (\Stripe\SignatureVerification $e)
+		{
+			http_response_code(400);
+			jexit();
+		}
+
+		switch ($event->type)
+		{
+			default:
+				http_response_code(200);
+				break;
+		}
+
+		jexit();
+	}
+
 }

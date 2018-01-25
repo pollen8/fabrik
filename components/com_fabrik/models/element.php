@@ -7443,7 +7443,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if ($c !== false)
 					{
+						// added noRowClass and rowClass for use in div templates that need to split those out
+						$data[$groupKey][$i]->noRowClass = $data[$groupKey][$i]->class;
 						$data[$groupKey][$i]->class .= ' ' . FabrikString::getRowClass($c, $this->element->name);
+						$data[$groupKey][$i]->rowClass = FabrikString::getRowClass($c, $this->element->name);
 					}
 				}
 			}
@@ -7802,7 +7805,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-	public function internalValidataionText()
+	public function internalValidationText()
 	{
 		return '';
 	}

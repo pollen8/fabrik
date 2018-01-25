@@ -974,7 +974,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			return;
 		}
 
-		if ($params->get('juser_auto_login', false))
+		if ($params->get('juser_auto_login', true))
 		{
 			$this->autoLogin();
 		}
@@ -1014,6 +1014,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		if ($this->app->login($credentials, $options) === true)
 		{
+			$this->app->setUserState('rememberLogin', true);
 			$this->session->set($context . 'created', true);
 			$user = JFactory::getUser();
 

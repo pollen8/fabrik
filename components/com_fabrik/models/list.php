@@ -2614,6 +2614,13 @@ class FabrikFEModelList extends JModelForm
 					$lookupC--;
 				}
 			}
+
+			/*
+			foreach ($lookUpNames as $c => $lookUpName)
+			{
+				$ids[$lookUpName] = ArrayHelper::getColumn($idRows, '__pk_val' . $c);
+			}
+			*/
 		}
 
 		// Now lets actually construct the query that will get the required records:
@@ -2634,10 +2641,24 @@ class FabrikFEModelList extends JModelForm
 			*/
 			if (!empty($ids))
 			{
+
 				if ($lookUpNames[$lookupC] !== $table->db_primary_key)
 				{
 					$query->where($lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')');
 				}
+
+				/*
+				foreach ($ids as $lookUpName => $pks)
+				{
+					if ($lookUpName !== $table->db_primary_key)
+					{
+						if (!empty($pks))
+						{
+							$query->where($lookUpName . ' IN (' . implode(array_unique($pks), ',') . ')');
+						}
+					}
+				}
+				*/
 
 				if (!empty($mainKeys))
 				{
@@ -7111,7 +7132,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
-			$res = $pluginManager->data;
+			$res = array_filter($pluginManager->data);
 
 			if (FabrikWorker::j3())
 			{
@@ -7597,12 +7618,12 @@ class FabrikFEModelList extends JModelForm
 								$val = $elementModel->storeDatabaseFormat($data[$postKey], $data);
 								$elementModel->updateRowId($rowId);
 
-								if (array_key_exists('fabrik_copy_from_table', $formModel->formData))
+								if (isset($formModel->formData) && array_key_exists('fabrik_copy_from_table', $formModel->formData))
 								{
 									$val = $elementModel->onCopyRow($val);
 								}
 
-								if (array_key_exists('Copy', $formModel->formData))
+								if (isset($formModel->formData) && array_key_exists('Copy', $formModel->formData))
 								{
 									$val = $elementModel->onSaveAsCopy($val);
 								}
@@ -9526,7 +9547,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		@set_time_limit(300);
 		$table = $this->getTable();
-		$memoryLimit = ini_get('memory_limit');
+		$memoryLimit = FabrikWorker::getMemoryLimit();
 		$db = $this->getDb();
 		/*
 		 * don't load in all the table data as on large tables this gives a memory error

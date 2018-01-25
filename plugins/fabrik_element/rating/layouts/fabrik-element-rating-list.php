@@ -7,14 +7,15 @@ $d = $displayData;
 <div class="fabrikRating" style="width:101px;position:relative;">
 	<?php
 	$imgOpts = array('icon-class' => 'starRating', 'style' => $d->css);
+    $roundedAvg = round($d->avg);
 
-	for ($s = 0; $s < $d->avg; $s++)
+	for ($s = 0; $s < $roundedAvg; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
 		echo FabrikHelperHTML::image("star", 'list', $d->tmpl, $imgOpts);
 	}
 
-	for ($s = $d->avg; $s < 5; $s++)
+	for ($s = $roundedAvg; $s < 5; $s++)
 	{
 		$imgOpts['data-rating'] = $s + 1;
 		echo FabrikHelperHTML::image("star-empty", 'list', $d->tmpl, $imgOpts);
