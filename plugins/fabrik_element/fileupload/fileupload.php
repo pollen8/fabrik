@@ -11,9 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Image;
 use Fabrik\Helpers\Uploader;
+use Joomla\Utilities\ArrayHelper;
 
 define("FU_DOWNLOAD_SCRIPT_NONE", '0');
 define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
@@ -3273,6 +3273,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			foreach ($filePath as $path)
 			{
+				if (is_object($path))
+				{
+					$path = $path->file;
+				}
+
 				$links[] = $storage->preRenderPath($path);
 			}
 
