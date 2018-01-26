@@ -2541,7 +2541,7 @@ class Worker
 	 */
 	public static function canPdf($puke = true)
 	{
-		$file = COM_FABRIK_LIBRARY . '/vendor/dompdf/dompdf/autoload.inc.php';
+		$file = COM_FABRIK_LIBRARY . '/vendor/dompdf/dompdf/composer.json';
 
 		if (!JFile::exists($file))
 		{
