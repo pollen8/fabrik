@@ -36,6 +36,7 @@
 			       type="radio"
 			       class="btn-group"
 			       default="0"
+				   repeat="true"
 			       label="PLG_FABRIK_LIST_LINK_ISFABRIK_LABEL"
 			       description="PLG_FABRIK_LIST_LINK_ISFABRIK_DESC">
 				<option value="0">JNO</option>
