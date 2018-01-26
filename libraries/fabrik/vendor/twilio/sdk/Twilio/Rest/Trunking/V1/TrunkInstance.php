@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -21,15 +22,15 @@ use Twilio\Version;
  * @property string disasterRecoveryMethod
  * @property string disasterRecoveryUrl
  * @property string friendlyName
- * @property string secure
- * @property string recording
+ * @property boolean secure
+ * @property array recording
  * @property string authType
  * @property string authTypeSet
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
  * @property string sid
  * @property string url
- * @property string links
+ * @property array links
  */
 class TrunkInstance extends InstanceResource {
     protected $_originationUrls = null;
@@ -47,28 +48,26 @@ class TrunkInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'domainName' => $payload['domain_name'],
-            'disasterRecoveryMethod' => $payload['disaster_recovery_method'],
-            'disasterRecoveryUrl' => $payload['disaster_recovery_url'],
-            'friendlyName' => $payload['friendly_name'],
-            'secure' => $payload['secure'],
-            'recording' => $payload['recording'],
-            'authType' => $payload['auth_type'],
-            'authTypeSet' => $payload['auth_type_set'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'sid' => $payload['sid'],
-            'url' => $payload['url'],
-            'links' => $payload['links'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'domainName' => Values::array_get($payload, 'domain_name'),
+            'disasterRecoveryMethod' => Values::array_get($payload, 'disaster_recovery_method'),
+            'disasterRecoveryUrl' => Values::array_get($payload, 'disaster_recovery_url'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'secure' => Values::array_get($payload, 'secure'),
+            'recording' => Values::array_get($payload, 'recording'),
+            'authType' => Values::array_get($payload, 'auth_type'),
+            'authTypeSet' => Values::array_get($payload, 'auth_type_set'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'sid' => Values::array_get($payload, 'sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
         );
-        
-        $this->solution = array(
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -79,12 +78,9 @@ class TrunkInstance extends InstanceResource {
      */
     protected function proxy() {
         if (!$this->context) {
-            $this->context = new TrunkContext(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->context = new TrunkContext($this->version, $this->solution['sid']);
         }
-        
+
         return $this->context;
     }
 
@@ -113,9 +109,7 @@ class TrunkInstance extends InstanceResource {
      * @return TrunkInstance Updated TrunkInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -165,12 +159,12 @@ class TrunkInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

@@ -29,7 +29,7 @@ class MessagingList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array();
     }
@@ -39,11 +39,9 @@ class MessagingList extends ListResource {
      */
     protected function getCountries() {
         if (!$this->_countries) {
-            $this->_countries = new CountryList(
-                $this->version
-            );
+            $this->_countries = new CountryList($this->version);
         }
-        
+
         return $this->_countries;
     }
 
@@ -59,7 +57,7 @@ class MessagingList extends ListResource {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -76,7 +74,7 @@ class MessagingList extends ListResource {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

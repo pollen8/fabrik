@@ -11,6 +11,7 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -24,12 +25,10 @@ class EventList extends ListResource {
      */
     public function __construct(Version $version, $workspaceSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-        );
-        
+        $this->solution = array('workspaceSid' => $workspaceSid, );
+
         $this->uri = '/Workspaces/' . rawurlencode($workspaceSid) . '/Events';
     }
 
@@ -54,9 +53,9 @@ class EventList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -76,7 +75,7 @@ class EventList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return EventInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -93,11 +92,11 @@ class EventList extends ListResource {
     public function page($options = array(), $pageSize = Values::NONE, $pageToken = Values::NONE, $pageNumber = Values::NONE) {
         $options = new Values($options);
         $params = Values::of(array(
-            'EndDate' => $options['endDate'],
+            'EndDate' => Serialize::iso8601DateTime($options['endDate']),
             'EventType' => $options['eventType'],
             'Minutes' => $options['minutes'],
             'ReservationSid' => $options['reservationSid'],
-            'StartDate' => $options['startDate'],
+            'StartDate' => Serialize::iso8601DateTime($options['startDate']),
             'TaskQueueSid' => $options['taskQueueSid'],
             'TaskSid' => $options['taskSid'],
             'WorkerSid' => $options['workerSid'],
@@ -106,13 +105,29 @@ class EventList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new EventPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of EventInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of EventInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new EventPage($this->version, $response, $this->solution);
     }
 
@@ -123,11 +138,7 @@ class EventList extends ListResource {
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\EventContext 
      */
     public function getContext($sid) {
-        return new EventContext(
-            $this->version,
-            $this->solution['workspaceSid'],
-            $sid
-        );
+        return new EventContext($this->version, $this->solution['workspaceSid'], $sid);
     }
 
     /**

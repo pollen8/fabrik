@@ -25,13 +25,10 @@ class OutgoingCallerIdContext extends InstanceContext {
      */
     public function __construct(Version $version, $accountSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/OutgoingCallerIds/' . rawurlencode($sid) . '.json';
     }
 
@@ -42,13 +39,13 @@ class OutgoingCallerIdContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new OutgoingCallerIdInstance(
             $this->version,
             $payload,
@@ -65,18 +62,16 @@ class OutgoingCallerIdContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
-        $data = Values::of(array(
-            'FriendlyName' => $options['friendlyName'],
-        ));
-        
+
+        $data = Values::of(array('FriendlyName' => $options['friendlyName'], ));
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new OutgoingCallerIdInstance(
             $this->version,
             $payload,

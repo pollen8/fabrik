@@ -14,17 +14,13 @@ use Twilio\Page;
 class WorkersStatisticsPage extends Page {
     public function __construct($version, $response, $solution) {
         parent::__construct($version, $response);
-        
+
         // Path Solution
         $this->solution = $solution;
     }
 
     public function buildInstance(array $payload) {
-        return new WorkersStatisticsInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid']
-        );
+        return new WorkersStatisticsInstance($this->version, $payload, $this->solution['workspaceSid']);
     }
 
     /**

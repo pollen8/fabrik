@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -25,11 +26,15 @@ use Twilio\Version;
  * @property string fallbackAssignmentCallbackUrl
  * @property string friendlyName
  * @property string sid
- * @property string taskReservationTimeout
+ * @property integer taskReservationTimeout
  * @property string workspaceSid
+ * @property string url
+ * @property array links
  */
 class WorkflowInstance extends InstanceResource {
     protected $_statistics = null;
+    protected $_realTimeStatistics = null;
+    protected $_cumulativeStatistics = null;
 
     /**
      * Initialize the WorkflowInstance
@@ -42,26 +47,25 @@ class WorkflowInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $workspaceSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'assignmentCallbackUrl' => $payload['assignment_callback_url'],
-            'configuration' => $payload['configuration'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'documentContentType' => $payload['document_content_type'],
-            'fallbackAssignmentCallbackUrl' => $payload['fallback_assignment_callback_url'],
-            'friendlyName' => $payload['friendly_name'],
-            'sid' => $payload['sid'],
-            'taskReservationTimeout' => $payload['task_reservation_timeout'],
-            'workspaceSid' => $payload['workspace_sid'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'assignmentCallbackUrl' => Values::array_get($payload, 'assignment_callback_url'),
+            'configuration' => Values::array_get($payload, 'configuration'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'documentContentType' => Values::array_get($payload, 'document_content_type'),
+            'fallbackAssignmentCallbackUrl' => Values::array_get($payload, 'fallback_assignment_callback_url'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'taskReservationTimeout' => Values::array_get($payload, 'task_reservation_timeout'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
         );
-        
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('workspaceSid' => $workspaceSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -80,7 +84,7 @@ class WorkflowInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -100,9 +104,7 @@ class WorkflowInstance extends InstanceResource {
      * @return WorkflowInstance Updated WorkflowInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -124,6 +126,24 @@ class WorkflowInstance extends InstanceResource {
     }
 
     /**
+     * Access the realTimeStatistics
+     * 
+     * @return \Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsList 
+     */
+    protected function getRealTimeStatistics() {
+        return $this->proxy()->realTimeStatistics;
+    }
+
+    /**
+     * Access the cumulativeStatistics
+     * 
+     * @return \Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowCumulativeStatisticsList 
+     */
+    protected function getCumulativeStatistics() {
+        return $this->proxy()->cumulativeStatistics;
+    }
+
+    /**
      * Magic getter to access properties
      * 
      * @param string $name Property to access
@@ -134,12 +154,12 @@ class WorkflowInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

@@ -18,13 +18,13 @@ use Twilio\Tests\Request;
 class WorkspaceStatisticsTest extends HolodeckTestCase {
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->statistics()->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Statistics'
@@ -37,16 +37,17 @@ class WorkspaceStatisticsTest extends HolodeckTestCase {
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Statistics",
                 "cumulative": {
                     "avg_task_acceptance_time": 0.0,
-                    "end_time": "2015-08-18T17:03:13Z",
+                    "start_time": "2008-01-02T00:00:00Z",
                     "reservations_accepted": 0,
                     "reservations_canceled": 0,
                     "reservations_created": 0,
                     "reservations_rejected": 0,
                     "reservations_rescinded": 0,
                     "reservations_timed_out": 0,
-                    "start_time": "2015-08-18T16:48:13Z",
+                    "end_time": "2008-01-02T00:00:00Z",
                     "tasks_canceled": 0,
                     "tasks_created": 0,
                     "tasks_deleted": 0,
@@ -91,7 +92,8 @@ class WorkspaceStatisticsTest extends HolodeckTestCase {
                     "tasks_by_status": {
                         "assigned": 0,
                         "pending": 0,
-                        "reserved": 0
+                        "reserved": 0,
+                        "wrapping": 0
                     },
                     "total_tasks": 0,
                     "total_workers": 1
@@ -100,10 +102,10 @@ class WorkspaceStatisticsTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->statistics()->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 }

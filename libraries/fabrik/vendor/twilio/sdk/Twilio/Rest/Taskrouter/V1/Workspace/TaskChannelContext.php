@@ -24,13 +24,10 @@ class TaskChannelContext extends InstanceContext {
      */
     public function __construct(Version $version, $workspaceSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('workspaceSid' => $workspaceSid, 'sid' => $sid, );
+
         $this->uri = '/Workspaces/' . rawurlencode($workspaceSid) . '/TaskChannels/' . rawurlencode($sid) . '';
     }
 
@@ -41,13 +38,13 @@ class TaskChannelContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new TaskChannelInstance(
             $this->version,
             $payload,

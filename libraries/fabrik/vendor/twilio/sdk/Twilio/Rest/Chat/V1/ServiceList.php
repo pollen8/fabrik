@@ -22,10 +22,10 @@ class ServiceList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array();
-        
+
         $this->uri = '/Services';
     }
 
@@ -36,21 +36,16 @@ class ServiceList extends ListResource {
      * @return ServiceInstance Newly created ServiceInstance
      */
     public function create($friendlyName) {
-        $data = Values::of(array(
-            'FriendlyName' => $friendlyName,
-        ));
-        
+        $data = Values::of(array('FriendlyName' => $friendlyName, ));
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new ServiceInstance(
-            $this->version,
-            $payload
-        );
+
+        return new ServiceInstance($this->version, $payload);
     }
 
     /**
@@ -73,9 +68,9 @@ class ServiceList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -94,7 +89,7 @@ class ServiceList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return ServiceInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -113,13 +108,29 @@ class ServiceList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new ServicePage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of ServiceInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of ServiceInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new ServicePage($this->version, $response, $this->solution);
     }
 
@@ -130,10 +141,7 @@ class ServiceList extends ListResource {
      * @return \Twilio\Rest\Chat\V1\ServiceContext 
      */
     public function getContext($sid) {
-        return new ServiceContext(
-            $this->version,
-            $sid
-        );
+        return new ServiceContext($this->version, $sid);
     }
 
     /**

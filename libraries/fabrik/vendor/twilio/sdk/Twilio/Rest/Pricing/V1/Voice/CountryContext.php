@@ -23,12 +23,10 @@ class CountryContext extends InstanceContext {
      */
     public function __construct(Version $version, $isoCountry) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'isoCountry' => $isoCountry,
-        );
-        
+        $this->solution = array('isoCountry' => $isoCountry, );
+
         $this->uri = '/Voice/Countries/' . rawurlencode($isoCountry) . '';
     }
 
@@ -39,18 +37,14 @@ class CountryContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
-        return new CountryInstance(
-            $this->version,
-            $payload,
-            $this->solution['isoCountry']
-        );
+
+        return new CountryInstance($this->version, $payload, $this->solution['isoCountry']);
     }
 
     /**

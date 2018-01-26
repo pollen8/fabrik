@@ -10,6 +10,7 @@
 namespace Twilio\Rest\Trunking\V1\Trunk;
 
 use Twilio\ListResource;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -23,21 +24,19 @@ class OriginationUrlList extends ListResource {
      */
     public function __construct(Version $version, $trunkSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'trunkSid' => $trunkSid,
-        );
-        
+        $this->solution = array('trunkSid' => $trunkSid, );
+
         $this->uri = '/Trunks/' . rawurlencode($trunkSid) . '/OriginationUrls';
     }
 
     /**
      * Create a new OriginationUrlInstance
      * 
-     * @param string $weight The weight
-     * @param string $priority The priority
-     * @param string $enabled The enabled
+     * @param integer $weight The weight
+     * @param integer $priority The priority
+     * @param boolean $enabled The enabled
      * @param string $friendlyName The friendly_name
      * @param string $sipUrl The sip_url
      * @return OriginationUrlInstance Newly created OriginationUrlInstance
@@ -46,23 +45,19 @@ class OriginationUrlList extends ListResource {
         $data = Values::of(array(
             'Weight' => $weight,
             'Priority' => $priority,
-            'Enabled' => $enabled,
+            'Enabled' => Serialize::booleanToString($enabled),
             'FriendlyName' => $friendlyName,
             'SipUrl' => $sipUrl,
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new OriginationUrlInstance(
-            $this->version,
-            $payload,
-            $this->solution['trunkSid']
-        );
+
+        return new OriginationUrlInstance($this->version, $payload, $this->solution['trunkSid']);
     }
 
     /**
@@ -85,9 +80,9 @@ class OriginationUrlList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -106,7 +101,7 @@ class OriginationUrlList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return OriginationUrlInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -125,13 +120,29 @@ class OriginationUrlList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new OriginationUrlPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of OriginationUrlInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of OriginationUrlInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new OriginationUrlPage($this->version, $response, $this->solution);
     }
 
@@ -142,11 +153,7 @@ class OriginationUrlList extends ListResource {
      * @return \Twilio\Rest\Trunking\V1\Trunk\OriginationUrlContext 
      */
     public function getContext($sid) {
-        return new OriginationUrlContext(
-            $this->version,
-            $this->solution['trunkSid'],
-            $sid
-        );
+        return new OriginationUrlContext($this->version, $this->solution['trunkSid'], $sid);
     }
 
     /**

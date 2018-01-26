@@ -23,11 +23,20 @@ abstract class MessageOptions {
     }
 
     /**
+     * @param string $order The order
+     * @return ReadMessageOptions Options builder
+     */
+    public static function read($order = Values::NONE) {
+        return new ReadMessageOptions($order);
+    }
+
+    /**
+     * @param string $body The body
      * @param string $attributes The attributes
      * @return UpdateMessageOptions Options builder
      */
-    public static function update($attributes = Values::NONE) {
-        return new UpdateMessageOptions($attributes);
+    public static function update($body = Values::NONE, $attributes = Values::NONE) {
+        return new UpdateMessageOptions($body, $attributes);
     }
 }
 
@@ -79,12 +88,60 @@ class CreateMessageOptions extends Options {
     }
 }
 
+class ReadMessageOptions extends Options {
+    /**
+     * @param string $order The order
+     */
+    public function __construct($order = Values::NONE) {
+        $this->options['order'] = $order;
+    }
+
+    /**
+     * The order
+     * 
+     * @param string $order The order
+     * @return $this Fluent Builder
+     */
+    public function setOrder($order) {
+        $this->options['order'] = $order;
+        return $this;
+    }
+
+    /**
+     * Provide a friendly representation
+     * 
+     * @return string Machine friendly representation
+     */
+    public function __toString() {
+        $options = array();
+        foreach ($this->options as $key => $value) {
+            if ($value != Values::NONE) {
+                $options[] = "$key=$value";
+            }
+        }
+        return '[Twilio.IpMessaging.V1.ReadMessageOptions ' . implode(' ', $options) . ']';
+    }
+}
+
 class UpdateMessageOptions extends Options {
     /**
+     * @param string $body The body
      * @param string $attributes The attributes
      */
-    public function __construct($attributes = Values::NONE) {
+    public function __construct($body = Values::NONE, $attributes = Values::NONE) {
+        $this->options['body'] = $body;
         $this->options['attributes'] = $attributes;
+    }
+
+    /**
+     * The body
+     * 
+     * @param string $body The body
+     * @return $this Fluent Builder
+     */
+    public function setBody($body) {
+        $this->options['body'] = $body;
+        return $this;
     }
 
     /**

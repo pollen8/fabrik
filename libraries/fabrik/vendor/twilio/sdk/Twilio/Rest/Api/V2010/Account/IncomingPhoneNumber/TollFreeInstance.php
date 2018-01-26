@@ -12,18 +12,22 @@ namespace Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string accountSid
+ * @property string addressSid
  * @property string addressRequirements
  * @property string apiVersion
- * @property string beta
+ * @property boolean beta
  * @property string capabilities
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
  * @property string friendlyName
+ * @property string identitySid
  * @property string phoneNumber
+ * @property string origin
  * @property string sid
  * @property string smsApplicationSid
  * @property string smsFallbackMethod
@@ -32,9 +36,10 @@ use Twilio\Version;
  * @property string smsUrl
  * @property string statusCallback
  * @property string statusCallbackMethod
+ * @property string trunkSid
  * @property string uri
  * @property string voiceApplicationSid
- * @property string voiceCallerIdLookup
+ * @property boolean voiceCallerIdLookup
  * @property string voiceFallbackMethod
  * @property string voiceFallbackUrl
  * @property string voiceMethod
@@ -46,44 +51,45 @@ class TollFreeInstance extends InstanceResource {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $ownerAccountSid A 34 character string that uniquely
-     *                                identifies this resource.
+     * @param string $accountSid The unique sid that identifies this account
      * @return \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber\TollFreeInstance 
      */
-    public function __construct(Version $version, array $payload, $ownerAccountSid) {
+    public function __construct(Version $version, array $payload, $accountSid) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'addressRequirements' => $payload['address_requirements'],
-            'apiVersion' => $payload['api_version'],
-            'beta' => $payload['beta'],
-            'capabilities' => $payload['capabilities'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'friendlyName' => $payload['friendly_name'],
-            'phoneNumber' => $payload['phone_number'],
-            'sid' => $payload['sid'],
-            'smsApplicationSid' => $payload['sms_application_sid'],
-            'smsFallbackMethod' => $payload['sms_fallback_method'],
-            'smsFallbackUrl' => $payload['sms_fallback_url'],
-            'smsMethod' => $payload['sms_method'],
-            'smsUrl' => $payload['sms_url'],
-            'statusCallback' => $payload['status_callback'],
-            'statusCallbackMethod' => $payload['status_callback_method'],
-            'uri' => $payload['uri'],
-            'voiceApplicationSid' => $payload['voice_application_sid'],
-            'voiceCallerIdLookup' => $payload['voice_caller_id_lookup'],
-            'voiceFallbackMethod' => $payload['voice_fallback_method'],
-            'voiceFallbackUrl' => $payload['voice_fallback_url'],
-            'voiceMethod' => $payload['voice_method'],
-            'voiceUrl' => $payload['voice_url'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'addressSid' => Values::array_get($payload, 'address_sid'),
+            'addressRequirements' => Values::array_get($payload, 'address_requirements'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'beta' => Values::array_get($payload, 'beta'),
+            'capabilities' => Values::array_get($payload, 'capabilities'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'identitySid' => Values::array_get($payload, 'identity_sid'),
+            'phoneNumber' => Values::array_get($payload, 'phone_number'),
+            'origin' => Values::array_get($payload, 'origin'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'smsApplicationSid' => Values::array_get($payload, 'sms_application_sid'),
+            'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
+            'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
+            'smsMethod' => Values::array_get($payload, 'sms_method'),
+            'smsUrl' => Values::array_get($payload, 'sms_url'),
+            'statusCallback' => Values::array_get($payload, 'status_callback'),
+            'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
+            'trunkSid' => Values::array_get($payload, 'trunk_sid'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'voiceApplicationSid' => Values::array_get($payload, 'voice_application_sid'),
+            'voiceCallerIdLookup' => Values::array_get($payload, 'voice_caller_id_lookup'),
+            'voiceFallbackMethod' => Values::array_get($payload, 'voice_fallback_method'),
+            'voiceFallbackUrl' => Values::array_get($payload, 'voice_fallback_url'),
+            'voiceMethod' => Values::array_get($payload, 'voice_method'),
+            'voiceUrl' => Values::array_get($payload, 'voice_url'),
         );
-        
-        $this->solution = array(
-            'ownerAccountSid' => $ownerAccountSid,
-        );
+
+        $this->solution = array('accountSid' => $accountSid, );
     }
 
     /**
@@ -97,12 +103,12 @@ class TollFreeInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

@@ -17,10 +17,12 @@ abstract class RecordingOptions {
      * @param string $dateCreatedBefore Filter by date created
      * @param string $dateCreated Filter by date created
      * @param string $dateCreatedAfter Filter by date created
+     * @param string $callSid Filter by call_sid
+     * @param string $conferenceSid The conference_sid
      * @return ReadRecordingOptions Options builder
      */
-    public static function read($dateCreatedBefore = Values::NONE, $dateCreated = Values::NONE, $dateCreatedAfter = Values::NONE) {
-        return new ReadRecordingOptions($dateCreatedBefore, $dateCreated, $dateCreatedAfter);
+    public static function read($dateCreatedBefore = Values::NONE, $dateCreated = Values::NONE, $dateCreatedAfter = Values::NONE, $callSid = Values::NONE, $conferenceSid = Values::NONE) {
+        return new ReadRecordingOptions($dateCreatedBefore, $dateCreated, $dateCreatedAfter, $callSid, $conferenceSid);
     }
 }
 
@@ -29,11 +31,15 @@ class ReadRecordingOptions extends Options {
      * @param string $dateCreatedBefore Filter by date created
      * @param string $dateCreated Filter by date created
      * @param string $dateCreatedAfter Filter by date created
+     * @param string $callSid Filter by call_sid
+     * @param string $conferenceSid The conference_sid
      */
-    public function __construct($dateCreatedBefore = Values::NONE, $dateCreated = Values::NONE, $dateCreatedAfter = Values::NONE) {
+    public function __construct($dateCreatedBefore = Values::NONE, $dateCreated = Values::NONE, $dateCreatedAfter = Values::NONE, $callSid = Values::NONE, $conferenceSid = Values::NONE) {
         $this->options['dateCreatedBefore'] = $dateCreatedBefore;
         $this->options['dateCreated'] = $dateCreated;
         $this->options['dateCreatedAfter'] = $dateCreatedAfter;
+        $this->options['callSid'] = $callSid;
+        $this->options['conferenceSid'] = $conferenceSid;
     }
 
     /**
@@ -66,6 +72,28 @@ class ReadRecordingOptions extends Options {
      */
     public function setDateCreatedAfter($dateCreatedAfter) {
         $this->options['dateCreatedAfter'] = $dateCreatedAfter;
+        return $this;
+    }
+
+    /**
+     * Only show recordings made during the call given by the indicated sid
+     * 
+     * @param string $callSid Filter by call_sid
+     * @return $this Fluent Builder
+     */
+    public function setCallSid($callSid) {
+        $this->options['callSid'] = $callSid;
+        return $this;
+    }
+
+    /**
+     * The conference_sid
+     * 
+     * @param string $conferenceSid The conference_sid
+     * @return $this Fluent Builder
+     */
+    public function setConferenceSid($conferenceSid) {
+        $this->options['conferenceSid'] = $conferenceSid;
         return $this;
     }
 

@@ -18,13 +18,13 @@ use Twilio\Tests\Request;
 class ActivityTest extends HolodeckTestCase {
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities/WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
@@ -47,31 +47,25 @@ class ActivityTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testUpdateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                         ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update("friendlyName");
+                                         ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'FriendlyName' => "friendlyName",
-        );
-        
+
         $this->assertRequest(new Request(
             'post',
-            'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities/WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            null,
-            $values
+            'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities/WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
         ));
     }
 
@@ -91,22 +85,22 @@ class ActivityTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                               ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update("friendlyName");
-        
+                                               ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
+
         $this->assertNotNull($actual);
     }
 
     public function testDeleteRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'delete',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities/WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
@@ -118,22 +112,22 @@ class ActivityTest extends HolodeckTestCase {
             204,
             null
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->activities("WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
-        
+
         $this->assertTrue($actual);
     }
 
     public function testReadRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->activities->read();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities'
@@ -170,10 +164,10 @@ class ActivityTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->activities->read();
-        
+
         $this->assertGreaterThan(0, count($actual));
     }
 
@@ -196,27 +190,24 @@ class ActivityTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->activities->read();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                         ->activities->create("friendlyName", True);
+                                         ->activities->create("friendlyName");
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'FriendlyName' => "friendlyName",
-            'Available' => True,
-        );
-        
+
+        $values = array('FriendlyName' => "friendlyName", );
+
         $this->assertRequest(new Request(
             'post',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Activities',
@@ -227,7 +218,7 @@ class ActivityTest extends HolodeckTestCase {
 
     public function testCreateResponse() {
         $this->holodeck->mock(new Response(
-            200,
+            201,
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -241,10 +232,10 @@ class ActivityTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                               ->activities->create("friendlyName", True);
-        
+                                               ->activities->create("friendlyName");
+
         $this->assertNotNull($actual);
     }
 }

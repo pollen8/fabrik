@@ -12,14 +12,15 @@ namespace Twilio\Rest\Api\V2010\Account\Queue;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string callSid
  * @property \DateTime dateEnqueued
- * @property string position
+ * @property integer position
  * @property string uri
- * @property string waitTime
+ * @property integer waitTime
  */
 class MemberInstance extends InstanceResource {
     /**
@@ -34,16 +35,16 @@ class MemberInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $queueSid, $callSid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'callSid' => $payload['call_sid'],
-            'dateEnqueued' => Deserialize::iso8601DateTime($payload['date_enqueued']),
-            'position' => $payload['position'],
-            'uri' => $payload['uri'],
-            'waitTime' => $payload['wait_time'],
+            'callSid' => Values::array_get($payload, 'call_sid'),
+            'dateEnqueued' => Deserialize::dateTime(Values::array_get($payload, 'date_enqueued')),
+            'position' => Values::array_get($payload, 'position'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'waitTime' => Values::array_get($payload, 'wait_time'),
         );
-        
+
         $this->solution = array(
             'accountSid' => $accountSid,
             'queueSid' => $queueSid,
@@ -67,7 +68,7 @@ class MemberInstance extends InstanceResource {
                 $this->solution['callSid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -88,10 +89,7 @@ class MemberInstance extends InstanceResource {
      * @return MemberInstance Updated MemberInstance
      */
     public function update($url, $method) {
-        return $this->proxy()->update(
-            $url,
-            $method
-        );
+        return $this->proxy()->update($url, $method);
     }
 
     /**
@@ -105,12 +103,12 @@ class MemberInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

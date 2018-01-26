@@ -14,17 +14,13 @@ use Twilio\Page;
 class TaskPage extends Page {
     public function __construct($version, $response, $solution) {
         parent::__construct($version, $response);
-        
+
         // Path Solution
         $this->solution = $solution;
     }
 
     public function buildInstance(array $payload) {
-        return new TaskInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid']
-        );
+        return new TaskInstance($this->version, $payload, $this->solution['workspaceSid']);
     }
 
     /**

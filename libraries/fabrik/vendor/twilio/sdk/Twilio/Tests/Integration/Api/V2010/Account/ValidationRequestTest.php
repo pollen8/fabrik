@@ -18,22 +18,40 @@ use Twilio\Tests\Request;
 class ValidationRequestTest extends HolodeckTestCase {
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                     ->validationRequests->create("+987654321");
+                                     ->validationRequests->create("+15017122661");
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'PhoneNumber' => "+987654321",
-        );
-        
+
+        $values = array('PhoneNumber' => "+15017122661", );
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/OutgoingCallerIds.json',
             null,
             $values
         ));
+    }
+
+    public function testCreateResponse() {
+        $this->holodeck->mock(new Response(
+            201,
+            '
+            {
+                "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "call_sid": "CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "friendly_name": "friendly_name",
+                "phone_number": "+18001234567",
+                "validation_code": 100
+            }
+            '
+        ));
+
+        $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                           ->validationRequests->create("+15017122661");
+
+        $this->assertNotNull($actual);
     }
 }

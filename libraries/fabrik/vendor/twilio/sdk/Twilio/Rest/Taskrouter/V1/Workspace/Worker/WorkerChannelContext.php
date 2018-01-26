@@ -11,6 +11,7 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace\Worker;
 
 use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -26,14 +27,10 @@ class WorkerChannelContext extends InstanceContext {
      */
     public function __construct(Version $version, $workspaceSid, $workerSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'workerSid' => $workerSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('workspaceSid' => $workspaceSid, 'workerSid' => $workerSid, 'sid' => $sid, );
+
         $this->uri = '/Workspaces/' . rawurlencode($workspaceSid) . '/Workers/' . rawurlencode($workerSid) . '/Channels/' . rawurlencode($sid) . '';
     }
 
@@ -44,13 +41,13 @@ class WorkerChannelContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new WorkerChannelInstance(
             $this->version,
             $payload,
@@ -68,19 +65,19 @@ class WorkerChannelContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'Capacity' => $options['capacity'],
-            'Available' => $options['available'],
+            'Available' => Serialize::booleanToString($options['available']),
         ));
-        
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new WorkerChannelInstance(
             $this->version,
             $payload,

@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -37,7 +38,7 @@ use Twilio\Version;
  * @property string sid
  * @property \DateTime startTime
  * @property string status
- * @property string subresourceUris
+ * @property array subresourceUris
  * @property string to
  * @property string toFormatted
  * @property string uri
@@ -59,40 +60,37 @@ class CallInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'annotation' => $payload['annotation'],
-            'answeredBy' => $payload['answered_by'],
-            'apiVersion' => $payload['api_version'],
-            'callerName' => $payload['caller_name'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'direction' => $payload['direction'],
-            'duration' => $payload['duration'],
-            'endTime' => Deserialize::iso8601DateTime($payload['end_time']),
-            'forwardedFrom' => $payload['forwarded_from'],
-            'from' => $payload['from'],
-            'fromFormatted' => $payload['from_formatted'],
-            'groupSid' => $payload['group_sid'],
-            'parentCallSid' => $payload['parent_call_sid'],
-            'phoneNumberSid' => $payload['phone_number_sid'],
-            'price' => $payload['price'],
-            'priceUnit' => $payload['price_unit'],
-            'sid' => $payload['sid'],
-            'startTime' => Deserialize::iso8601DateTime($payload['start_time']),
-            'status' => $payload['status'],
-            'subresourceUris' => $payload['subresource_uris'],
-            'to' => $payload['to'],
-            'toFormatted' => $payload['to_formatted'],
-            'uri' => $payload['uri'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'annotation' => Values::array_get($payload, 'annotation'),
+            'answeredBy' => Values::array_get($payload, 'answered_by'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'callerName' => Values::array_get($payload, 'caller_name'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'direction' => Values::array_get($payload, 'direction'),
+            'duration' => Values::array_get($payload, 'duration'),
+            'endTime' => Deserialize::dateTime(Values::array_get($payload, 'end_time')),
+            'forwardedFrom' => Values::array_get($payload, 'forwarded_from'),
+            'from' => Values::array_get($payload, 'from'),
+            'fromFormatted' => Values::array_get($payload, 'from_formatted'),
+            'groupSid' => Values::array_get($payload, 'group_sid'),
+            'parentCallSid' => Values::array_get($payload, 'parent_call_sid'),
+            'phoneNumberSid' => Values::array_get($payload, 'phone_number_sid'),
+            'price' => Values::array_get($payload, 'price'),
+            'priceUnit' => Values::array_get($payload, 'price_unit'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
+            'status' => Values::array_get($payload, 'status'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+            'to' => Values::array_get($payload, 'to'),
+            'toFormatted' => Values::array_get($payload, 'to_formatted'),
+            'uri' => Values::array_get($payload, 'uri'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -110,7 +108,7 @@ class CallInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -139,9 +137,7 @@ class CallInstance extends InstanceResource {
      * @return CallInstance Updated CallInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -182,12 +178,12 @@ class CallInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

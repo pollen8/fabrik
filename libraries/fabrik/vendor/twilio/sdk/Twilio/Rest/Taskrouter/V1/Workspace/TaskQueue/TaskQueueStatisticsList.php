@@ -23,12 +23,9 @@ class TaskQueueStatisticsList extends ListResource {
      */
     public function __construct(Version $version, $workspaceSid, $taskQueueSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'taskQueueSid' => $taskQueueSid,
-        );
+        $this->solution = array('workspaceSid' => $workspaceSid, 'taskQueueSid' => $taskQueueSid, );
     }
 
     /**

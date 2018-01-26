@@ -25,12 +25,10 @@ class NewKeyList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Keys.json';
     }
 
@@ -42,23 +40,17 @@ class NewKeyList extends ListResource {
      */
     public function create($options = array()) {
         $options = new Values($options);
-        
-        $data = Values::of(array(
-            'FriendlyName' => $options['friendlyName'],
-        ));
-        
+
+        $data = Values::of(array('FriendlyName' => $options['friendlyName'], ));
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new NewKeyInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+
+        return new NewKeyInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**

@@ -12,6 +12,8 @@ namespace Twilio\Rest\Api\V2010\Account;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -20,9 +22,11 @@ use Twilio\Version;
  * @property \DateTime dateUpdated
  * @property string apiVersion
  * @property string friendlyName
+ * @property string region
  * @property string sid
  * @property string status
  * @property string uri
+ * @property array subresourceUris
  */
 class ConferenceInstance extends InstanceResource {
     protected $_participants = null;
@@ -38,23 +42,22 @@ class ConferenceInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'apiVersion' => $payload['api_version'],
-            'friendlyName' => $payload['friendly_name'],
-            'sid' => $payload['sid'],
-            'status' => $payload['status'],
-            'uri' => $payload['uri'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'region' => Values::array_get($payload, 'region'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -72,7 +75,7 @@ class ConferenceInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -83,6 +86,16 @@ class ConferenceInstance extends InstanceResource {
      */
     public function fetch() {
         return $this->proxy()->fetch();
+    }
+
+    /**
+     * Update the ConferenceInstance
+     * 
+     * @param array|Options $options Optional Arguments
+     * @return ConferenceInstance Updated ConferenceInstance
+     */
+    public function update($options = array()) {
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -105,12 +118,12 @@ class ConferenceInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

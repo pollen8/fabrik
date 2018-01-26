@@ -10,6 +10,7 @@
 namespace Twilio\Rest\IpMessaging\V1\Service\Channel;
 
 use Twilio\InstanceContext;
+use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -25,14 +26,10 @@ class MemberContext extends InstanceContext {
      */
     public function __construct(Version $version, $serviceSid, $channelSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'serviceSid' => $serviceSid,
-            'channelSid' => $channelSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('serviceSid' => $serviceSid, 'channelSid' => $channelSid, 'sid' => $sid, );
+
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Channels/' . rawurlencode($channelSid) . '/Members/' . rawurlencode($sid) . '';
     }
 
@@ -43,13 +40,13 @@ class MemberContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new MemberInstance(
             $this->version,
             $payload,
@@ -66,6 +63,36 @@ class MemberContext extends InstanceContext {
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
+    }
+
+    /**
+     * Update the MemberInstance
+     * 
+     * @param array|Options $options Optional Arguments
+     * @return MemberInstance Updated MemberInstance
+     */
+    public function update($options = array()) {
+        $options = new Values($options);
+
+        $data = Values::of(array(
+            'RoleSid' => $options['roleSid'],
+            'LastConsumedMessageIndex' => $options['lastConsumedMessageIndex'],
+        ));
+
+        $payload = $this->version->update(
+            'POST',
+            $this->uri,
+            array(),
+            $data
+        );
+
+        return new MemberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
     }
 
     /**

@@ -18,17 +18,15 @@ use Twilio\Tests\Request;
 class MessageTest extends HolodeckTestCase {
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                     ->messages->create("+123456789");
+                                     ->messages->create("+15558675310");
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'To' => "+123456789",
-        );
-        
+
+        $values = array('To' => "+15558675310", );
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages.json',
@@ -39,7 +37,7 @@ class MessageTest extends HolodeckTestCase {
 
     public function testCreateResponse() {
         $this->holodeck->mock(new Response(
-            200,
+            201,
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -52,6 +50,7 @@ class MessageTest extends HolodeckTestCase {
                 "error_code": null,
                 "error_message": null,
                 "from": "+14155552345",
+                "messaging_service_sid": "MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "num_media": "0",
                 "num_segments": "1",
                 "price": "-0.00750",
@@ -66,22 +65,22 @@ class MessageTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                           ->messages->create("+123456789");
-        
+                                           ->messages->create("+15558675310");
+
         $this->assertNotNull($actual);
     }
 
     public function testDeleteRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'delete',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -93,22 +92,22 @@ class MessageTest extends HolodeckTestCase {
             204,
             null
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
-        
+
         $this->assertTrue($actual);
     }
 
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -130,6 +129,7 @@ class MessageTest extends HolodeckTestCase {
                 "error_code": null,
                 "error_message": null,
                 "from": "+14155552345",
+                "messaging_service_sid": "MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "num_media": "0",
                 "num_segments": "1",
                 "price": "-0.00750",
@@ -144,22 +144,22 @@ class MessageTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testReadRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->messages->read();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages.json'
@@ -186,6 +186,7 @@ class MessageTest extends HolodeckTestCase {
                         "error_code": null,
                         "error_message": null,
                         "from": "+14155552345",
+                        "messaging_service_sid": "MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                         "num_media": "0",
                         "num_segments": "1",
                         "price": "-0.00750",
@@ -210,10 +211,10 @@ class MessageTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->messages->read();
-        
+
         $this->assertGreaterThan(0, count($actual));
     }
 
@@ -237,25 +238,29 @@ class MessageTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->messages->read();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testUpdateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                     ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
+                                     ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update("body");
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
+        $values = array('Body' => "body", );
+
         $this->assertRequest(new Request(
             'post',
-            'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
+            'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
+            null,
+            $values
         ));
     }
 
@@ -274,6 +279,7 @@ class MessageTest extends HolodeckTestCase {
                 "error_code": null,
                 "error_message": null,
                 "from": "+14155552345",
+                "messaging_service_sid": "MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "num_media": "0",
                 "num_segments": "1",
                 "price": "-0.00750",
@@ -288,10 +294,10 @@ class MessageTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                           ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
-        
+                                           ->messages("MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update("body");
+
         $this->assertNotNull($actual);
     }
 }

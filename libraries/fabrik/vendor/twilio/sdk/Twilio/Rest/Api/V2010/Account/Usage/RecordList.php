@@ -20,6 +20,7 @@ use Twilio\Rest\Api\V2010\Account\Usage\Record\ThisMonthList;
 use Twilio\Rest\Api\V2010\Account\Usage\Record\TodayList;
 use Twilio\Rest\Api\V2010\Account\Usage\Record\YearlyList;
 use Twilio\Rest\Api\V2010\Account\Usage\Record\YesterdayList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -53,12 +54,10 @@ class RecordList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Usage/Records.json';
     }
 
@@ -83,9 +82,9 @@ class RecordList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -105,7 +104,7 @@ class RecordList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return RecordInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -123,23 +122,35 @@ class RecordList extends ListResource {
         $options = new Values($options);
         $params = Values::of(array(
             'Category' => $options['category'],
-            'StartDate<' => $options['startDateBefore'],
-            'StartDate' => $options['startDate'],
-            'StartDate>' => $options['startDateAfter'],
-            'EndDate<' => $options['endDateBefore'],
-            'EndDate' => $options['endDate'],
-            'EndDate>' => $options['endDateAfter'],
+            'StartDate' => Serialize::iso8601Date($options['startDate']),
+            'EndDate' => Serialize::iso8601Date($options['endDate']),
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new RecordPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of RecordInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of RecordInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new RecordPage($this->version, $response, $this->solution);
     }
 
@@ -148,12 +159,9 @@ class RecordList extends ListResource {
      */
     protected function getAllTime() {
         if (!$this->_allTime) {
-            $this->_allTime = new AllTimeList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_allTime = new AllTimeList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_allTime;
     }
 
@@ -162,12 +170,9 @@ class RecordList extends ListResource {
      */
     protected function getDaily() {
         if (!$this->_daily) {
-            $this->_daily = new DailyList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_daily = new DailyList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_daily;
     }
 
@@ -176,12 +181,9 @@ class RecordList extends ListResource {
      */
     protected function getLastMonth() {
         if (!$this->_lastMonth) {
-            $this->_lastMonth = new LastMonthList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_lastMonth = new LastMonthList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_lastMonth;
     }
 
@@ -190,12 +192,9 @@ class RecordList extends ListResource {
      */
     protected function getMonthly() {
         if (!$this->_monthly) {
-            $this->_monthly = new MonthlyList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_monthly = new MonthlyList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_monthly;
     }
 
@@ -204,12 +203,9 @@ class RecordList extends ListResource {
      */
     protected function getThisMonth() {
         if (!$this->_thisMonth) {
-            $this->_thisMonth = new ThisMonthList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_thisMonth = new ThisMonthList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_thisMonth;
     }
 
@@ -218,12 +214,9 @@ class RecordList extends ListResource {
      */
     protected function getToday() {
         if (!$this->_today) {
-            $this->_today = new TodayList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_today = new TodayList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_today;
     }
 
@@ -232,12 +225,9 @@ class RecordList extends ListResource {
      */
     protected function getYearly() {
         if (!$this->_yearly) {
-            $this->_yearly = new YearlyList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_yearly = new YearlyList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_yearly;
     }
 
@@ -246,12 +236,9 @@ class RecordList extends ListResource {
      */
     protected function getYesterday() {
         if (!$this->_yesterday) {
-            $this->_yesterday = new YesterdayList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_yesterday = new YesterdayList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_yesterday;
     }
 
@@ -267,7 +254,7 @@ class RecordList extends ListResource {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -284,7 +271,7 @@ class RecordList extends ListResource {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

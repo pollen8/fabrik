@@ -24,13 +24,10 @@ class CredentialListMappingList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $domainSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'domainSid' => $domainSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'domainSid' => $domainSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/SIP/Domains/' . rawurlencode($domainSid) . '/CredentialListMappings.json';
     }
 
@@ -42,17 +39,15 @@ class CredentialListMappingList extends ListResource {
      *                                       CredentialListMappingInstance
      */
     public function create($credentialListSid) {
-        $data = Values::of(array(
-            'CredentialListSid' => $credentialListSid,
-        ));
-        
+        $data = Values::of(array('CredentialListSid' => $credentialListSid, ));
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new CredentialListMappingInstance(
             $this->version,
             $payload,
@@ -82,9 +77,9 @@ class CredentialListMappingList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -103,7 +98,7 @@ class CredentialListMappingList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return CredentialListMappingInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -122,13 +117,30 @@ class CredentialListMappingList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new CredentialListMappingPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of CredentialListMappingInstance records from the
+     * API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of CredentialListMappingInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new CredentialListMappingPage($this->version, $response, $this->solution);
     }
 

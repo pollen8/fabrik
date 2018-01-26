@@ -12,6 +12,7 @@ namespace Twilio\Rest\Api\V2010\Account\Sip;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -20,7 +21,7 @@ use Twilio\Version;
  * @property \DateTime dateUpdated
  * @property string friendlyName
  * @property string sid
- * @property string subresourceUris
+ * @property array subresourceUris
  * @property string uri
  */
 class CredentialListInstance extends InstanceResource {
@@ -38,22 +39,19 @@ class CredentialListInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'friendlyName' => $payload['friendly_name'],
-            'sid' => $payload['sid'],
-            'subresourceUris' => $payload['subresource_uris'],
-            'uri' => $payload['uri'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+            'uri' => Values::array_get($payload, 'uri'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -72,7 +70,7 @@ class CredentialListInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -92,9 +90,7 @@ class CredentialListInstance extends InstanceResource {
      * @return CredentialListInstance Updated CredentialListInstance
      */
     public function update($friendlyName) {
-        return $this->proxy()->update(
-            $friendlyName
-        );
+        return $this->proxy()->update($friendlyName);
     }
 
     /**
@@ -126,12 +122,12 @@ class CredentialListInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

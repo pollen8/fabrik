@@ -15,28 +15,31 @@ use Twilio\Values;
 abstract class TaskQueueStatisticsOptions {
     /**
      * @param \DateTime $endDate The end_date
-     * @param string $friendlyName The friendly_name
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @param \DateTime $startDate The start_date
+     * @param string $taskChannel The task_channel
+     * @param string $splitByWaitTime The split_by_wait_time
      * @return FetchTaskQueueStatisticsOptions Options builder
      */
-    public static function fetch($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE) {
-        return new FetchTaskQueueStatisticsOptions($endDate, $friendlyName, $minutes, $startDate);
+    public static function fetch($endDate = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE, $taskChannel = Values::NONE, $splitByWaitTime = Values::NONE) {
+        return new FetchTaskQueueStatisticsOptions($endDate, $minutes, $startDate, $taskChannel, $splitByWaitTime);
     }
 }
 
 class FetchTaskQueueStatisticsOptions extends Options {
     /**
      * @param \DateTime $endDate The end_date
-     * @param string $friendlyName The friendly_name
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @param \DateTime $startDate The start_date
+     * @param string $taskChannel The task_channel
+     * @param string $splitByWaitTime The split_by_wait_time
      */
-    public function __construct($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE) {
+    public function __construct($endDate = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE, $taskChannel = Values::NONE, $splitByWaitTime = Values::NONE) {
         $this->options['endDate'] = $endDate;
-        $this->options['friendlyName'] = $friendlyName;
         $this->options['minutes'] = $minutes;
         $this->options['startDate'] = $startDate;
+        $this->options['taskChannel'] = $taskChannel;
+        $this->options['splitByWaitTime'] = $splitByWaitTime;
     }
 
     /**
@@ -51,20 +54,9 @@ class FetchTaskQueueStatisticsOptions extends Options {
     }
 
     /**
-     * The friendly_name
-     * 
-     * @param string $friendlyName The friendly_name
-     * @return $this Fluent Builder
-     */
-    public function setFriendlyName($friendlyName) {
-        $this->options['friendlyName'] = $friendlyName;
-        return $this;
-    }
-
-    /**
      * The minutes
      * 
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @return $this Fluent Builder
      */
     public function setMinutes($minutes) {
@@ -80,6 +72,28 @@ class FetchTaskQueueStatisticsOptions extends Options {
      */
     public function setStartDate($startDate) {
         $this->options['startDate'] = $startDate;
+        return $this;
+    }
+
+    /**
+     * The task_channel
+     * 
+     * @param string $taskChannel The task_channel
+     * @return $this Fluent Builder
+     */
+    public function setTaskChannel($taskChannel) {
+        $this->options['taskChannel'] = $taskChannel;
+        return $this;
+    }
+
+    /**
+     * The split_by_wait_time
+     * 
+     * @param string $splitByWaitTime The split_by_wait_time
+     * @return $this Fluent Builder
+     */
+    public function setSplitByWaitTime($splitByWaitTime) {
+        $this->options['splitByWaitTime'] = $splitByWaitTime;
         return $this;
     }
 

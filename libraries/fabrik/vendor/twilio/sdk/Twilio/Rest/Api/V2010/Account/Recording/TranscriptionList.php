@@ -24,13 +24,10 @@ class TranscriptionList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $recordingSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'recordingSid' => $recordingSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'recordingSid' => $recordingSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Recordings/' . rawurlencode($recordingSid) . '/Transcriptions.json';
     }
 
@@ -54,9 +51,9 @@ class TranscriptionList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -75,7 +72,7 @@ class TranscriptionList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return TranscriptionInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -94,13 +91,29 @@ class TranscriptionList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new TranscriptionPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of TranscriptionInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of TranscriptionInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new TranscriptionPage($this->version, $response, $this->solution);
     }
 

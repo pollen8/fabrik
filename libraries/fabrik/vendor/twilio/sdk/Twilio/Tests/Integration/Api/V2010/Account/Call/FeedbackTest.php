@@ -18,18 +18,16 @@ use Twilio\Tests\Request;
 class FeedbackTest extends HolodeckTestCase {
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->feedback()->create(1);
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'QualityScore' => 1,
-        );
-        
+
+        $values = array('QualityScore' => 1, );
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Feedback.json',
@@ -40,7 +38,7 @@ class FeedbackTest extends HolodeckTestCase {
 
     public function testCreateResponse() {
         $this->holodeck->mock(new Response(
-            200,
+            201,
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -55,24 +53,24 @@ class FeedbackTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->feedback()->create(1);
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->feedback()->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Feedback.json'
@@ -96,28 +94,26 @@ class FeedbackTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->feedback()->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testUpdateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->feedback()->update(1);
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'QualityScore' => 1,
-        );
-        
+
+        $values = array('QualityScore' => 1, );
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Feedback.json',
@@ -143,11 +139,11 @@ class FeedbackTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->feedback()->update(1);
-        
+
         $this->assertNotNull($actual);
     }
 }

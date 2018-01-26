@@ -14,17 +14,13 @@ use Twilio\Page;
 class ThisMonthPage extends Page {
     public function __construct($version, $response, $solution) {
         parent::__construct($version, $response);
-        
+
         // Path Solution
         $this->solution = $solution;
     }
 
     public function buildInstance(array $payload) {
-        return new ThisMonthInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+        return new ThisMonthInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**

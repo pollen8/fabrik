@@ -23,12 +23,10 @@ class IpAccessControlListList extends ListResource {
      */
     public function __construct(Version $version, $trunkSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'trunkSid' => $trunkSid,
-        );
-        
+        $this->solution = array('trunkSid' => $trunkSid, );
+
         $this->uri = '/Trunks/' . rawurlencode($trunkSid) . '/IpAccessControlLists';
     }
 
@@ -39,22 +37,16 @@ class IpAccessControlListList extends ListResource {
      * @return IpAccessControlListInstance Newly created IpAccessControlListInstance
      */
     public function create($ipAccessControlListSid) {
-        $data = Values::of(array(
-            'IpAccessControlListSid' => $ipAccessControlListSid,
-        ));
-        
+        $data = Values::of(array('IpAccessControlListSid' => $ipAccessControlListSid, ));
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new IpAccessControlListInstance(
-            $this->version,
-            $payload,
-            $this->solution['trunkSid']
-        );
+
+        return new IpAccessControlListInstance($this->version, $payload, $this->solution['trunkSid']);
     }
 
     /**
@@ -78,9 +70,9 @@ class IpAccessControlListList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -99,7 +91,7 @@ class IpAccessControlListList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return IpAccessControlListInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -118,13 +110,29 @@ class IpAccessControlListList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new IpAccessControlListPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of IpAccessControlListInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of IpAccessControlListInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new IpAccessControlListPage($this->version, $response, $this->solution);
     }
 
@@ -135,11 +143,7 @@ class IpAccessControlListList extends ListResource {
      * @return \Twilio\Rest\Trunking\V1\Trunk\IpAccessControlListContext 
      */
     public function getContext($sid) {
-        return new IpAccessControlListContext(
-            $this->version,
-            $this->solution['trunkSid'],
-            $sid
-        );
+        return new IpAccessControlListContext($this->version, $this->solution['trunkSid'], $sid);
     }
 
     /**

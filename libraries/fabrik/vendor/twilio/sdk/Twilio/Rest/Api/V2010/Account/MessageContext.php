@@ -11,7 +11,6 @@ namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
-use Twilio\Options;
 use Twilio\Rest\Api\V2010\Account\Message\FeedbackList;
 use Twilio\Rest\Api\V2010\Account\Message\MediaList;
 use Twilio\Values;
@@ -36,13 +35,10 @@ class MessageContext extends InstanceContext {
      */
     public function __construct(Version $version, $accountSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Messages/' . rawurlencode($sid) . '.json';
     }
 
@@ -62,13 +58,13 @@ class MessageContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new MessageInstance(
             $this->version,
             $payload,
@@ -80,23 +76,19 @@ class MessageContext extends InstanceContext {
     /**
      * Update the MessageInstance
      * 
-     * @param array|Options $options Optional Arguments
+     * @param string $body The body
      * @return MessageInstance Updated MessageInstance
      */
-    public function update($options = array()) {
-        $options = new Values($options);
-        
-        $data = Values::of(array(
-            'Body' => $options['body'],
-        ));
-        
+    public function update($body) {
+        $data = Values::of(array('Body' => $body, ));
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new MessageInstance(
             $this->version,
             $payload,
@@ -112,13 +104,9 @@ class MessageContext extends InstanceContext {
      */
     protected function getMedia() {
         if (!$this->_media) {
-            $this->_media = new MediaList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
+            $this->_media = new MediaList($this->version, $this->solution['accountSid'], $this->solution['sid']);
         }
-        
+
         return $this->_media;
     }
 
@@ -135,7 +123,7 @@ class MessageContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_feedback;
     }
 
@@ -151,7 +139,7 @@ class MessageContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -168,7 +156,7 @@ class MessageContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

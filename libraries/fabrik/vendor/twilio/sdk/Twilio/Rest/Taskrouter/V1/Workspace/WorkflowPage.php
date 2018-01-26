@@ -14,17 +14,13 @@ use Twilio\Page;
 class WorkflowPage extends Page {
     public function __construct($version, $response, $solution) {
         parent::__construct($version, $response);
-        
+
         // Path Solution
         $this->solution = $solution;
     }
 
     public function buildInstance(array $payload) {
-        return new WorkflowInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid']
-        );
+        return new WorkflowInstance($this->version, $payload, $this->solution['workspaceSid']);
     }
 
     /**

@@ -22,11 +22,9 @@ class WorkspaceStatisticsList extends ListResource {
      */
     public function __construct(Version $version, $workspaceSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-        );
+        $this->solution = array('workspaceSid' => $workspaceSid, );
     }
 
     /**
@@ -35,10 +33,7 @@ class WorkspaceStatisticsList extends ListResource {
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\WorkspaceStatisticsContext 
      */
     public function getContext() {
-        return new WorkspaceStatisticsContext(
-            $this->version,
-            $this->solution['workspaceSid']
-        );
+        return new WorkspaceStatisticsContext($this->version, $this->solution['workspaceSid']);
     }
 
     /**

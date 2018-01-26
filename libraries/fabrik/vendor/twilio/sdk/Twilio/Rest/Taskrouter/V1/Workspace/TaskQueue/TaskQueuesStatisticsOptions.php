@@ -16,12 +16,14 @@ abstract class TaskQueuesStatisticsOptions {
     /**
      * @param \DateTime $endDate The end_date
      * @param string $friendlyName The friendly_name
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @param \DateTime $startDate The start_date
+     * @param string $taskChannel The task_channel
+     * @param string $splitByWaitTime The split_by_wait_time
      * @return ReadTaskQueuesStatisticsOptions Options builder
      */
-    public static function read($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE) {
-        return new ReadTaskQueuesStatisticsOptions($endDate, $friendlyName, $minutes, $startDate);
+    public static function read($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE, $taskChannel = Values::NONE, $splitByWaitTime = Values::NONE) {
+        return new ReadTaskQueuesStatisticsOptions($endDate, $friendlyName, $minutes, $startDate, $taskChannel, $splitByWaitTime);
     }
 }
 
@@ -29,14 +31,18 @@ class ReadTaskQueuesStatisticsOptions extends Options {
     /**
      * @param \DateTime $endDate The end_date
      * @param string $friendlyName The friendly_name
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @param \DateTime $startDate The start_date
+     * @param string $taskChannel The task_channel
+     * @param string $splitByWaitTime The split_by_wait_time
      */
-    public function __construct($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE) {
+    public function __construct($endDate = Values::NONE, $friendlyName = Values::NONE, $minutes = Values::NONE, $startDate = Values::NONE, $taskChannel = Values::NONE, $splitByWaitTime = Values::NONE) {
         $this->options['endDate'] = $endDate;
         $this->options['friendlyName'] = $friendlyName;
         $this->options['minutes'] = $minutes;
         $this->options['startDate'] = $startDate;
+        $this->options['taskChannel'] = $taskChannel;
+        $this->options['splitByWaitTime'] = $splitByWaitTime;
     }
 
     /**
@@ -64,7 +70,7 @@ class ReadTaskQueuesStatisticsOptions extends Options {
     /**
      * The minutes
      * 
-     * @param string $minutes The minutes
+     * @param integer $minutes The minutes
      * @return $this Fluent Builder
      */
     public function setMinutes($minutes) {
@@ -80,6 +86,28 @@ class ReadTaskQueuesStatisticsOptions extends Options {
      */
     public function setStartDate($startDate) {
         $this->options['startDate'] = $startDate;
+        return $this;
+    }
+
+    /**
+     * The task_channel
+     * 
+     * @param string $taskChannel The task_channel
+     * @return $this Fluent Builder
+     */
+    public function setTaskChannel($taskChannel) {
+        $this->options['taskChannel'] = $taskChannel;
+        return $this;
+    }
+
+    /**
+     * The split_by_wait_time
+     * 
+     * @param string $splitByWaitTime The split_by_wait_time
+     * @return $this Fluent Builder
+     */
+    public function setSplitByWaitTime($splitByWaitTime) {
+        $this->options['splitByWaitTime'] = $splitByWaitTime;
         return $this;
     }
 

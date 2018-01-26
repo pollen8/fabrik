@@ -24,12 +24,10 @@ class OutgoingCallerIdList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/OutgoingCallerIds.json';
     }
 
@@ -54,9 +52,9 @@ class OutgoingCallerIdList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -76,7 +74,7 @@ class OutgoingCallerIdList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return OutgoingCallerIdInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -99,13 +97,29 @@ class OutgoingCallerIdList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new OutgoingCallerIdPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of OutgoingCallerIdInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of OutgoingCallerIdInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new OutgoingCallerIdPage($this->version, $response, $this->solution);
     }
 
@@ -116,11 +130,7 @@ class OutgoingCallerIdList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\OutgoingCallerIdContext 
      */
     public function getContext($sid) {
-        return new OutgoingCallerIdContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $sid
-        );
+        return new OutgoingCallerIdContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

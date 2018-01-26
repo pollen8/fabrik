@@ -13,24 +13,30 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string accountSid
- * @property string age
+ * @property integer age
  * @property string assignmentStatus
  * @property string attributes
+ * @property string addons
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
- * @property string priority
+ * @property integer priority
  * @property string reason
  * @property string sid
  * @property string taskQueueSid
+ * @property string taskQueueFriendlyName
  * @property string taskChannelSid
  * @property string taskChannelUniqueName
- * @property string timeout
+ * @property integer timeout
  * @property string workflowSid
+ * @property string workflowFriendlyName
  * @property string workspaceSid
+ * @property string url
+ * @property array links
  */
 class TaskInstance extends InstanceResource {
     protected $_reservations = null;
@@ -46,30 +52,32 @@ class TaskInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $workspaceSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'age' => $payload['age'],
-            'assignmentStatus' => $payload['assignment_status'],
-            'attributes' => $payload['attributes'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'priority' => $payload['priority'],
-            'reason' => $payload['reason'],
-            'sid' => $payload['sid'],
-            'taskQueueSid' => $payload['task_queue_sid'],
-            'taskChannelSid' => $payload['task_channel_sid'],
-            'taskChannelUniqueName' => $payload['task_channel_unique_name'],
-            'timeout' => $payload['timeout'],
-            'workflowSid' => $payload['workflow_sid'],
-            'workspaceSid' => $payload['workspace_sid'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'age' => Values::array_get($payload, 'age'),
+            'assignmentStatus' => Values::array_get($payload, 'assignment_status'),
+            'attributes' => Values::array_get($payload, 'attributes'),
+            'addons' => Values::array_get($payload, 'addons'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'priority' => Values::array_get($payload, 'priority'),
+            'reason' => Values::array_get($payload, 'reason'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'taskQueueSid' => Values::array_get($payload, 'task_queue_sid'),
+            'taskQueueFriendlyName' => Values::array_get($payload, 'task_queue_friendly_name'),
+            'taskChannelSid' => Values::array_get($payload, 'task_channel_sid'),
+            'taskChannelUniqueName' => Values::array_get($payload, 'task_channel_unique_name'),
+            'timeout' => Values::array_get($payload, 'timeout'),
+            'workflowSid' => Values::array_get($payload, 'workflow_sid'),
+            'workflowFriendlyName' => Values::array_get($payload, 'workflow_friendly_name'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
         );
-        
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('workspaceSid' => $workspaceSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -87,7 +95,7 @@ class TaskInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -107,9 +115,7 @@ class TaskInstance extends InstanceResource {
      * @return TaskInstance Updated TaskInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -141,12 +147,12 @@ class TaskInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

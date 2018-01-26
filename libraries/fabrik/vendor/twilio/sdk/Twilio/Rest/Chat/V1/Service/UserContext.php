@@ -9,12 +9,19 @@
 
 namespace Twilio\Rest\Chat\V1\Service;
 
+use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Rest\Chat\V1\Service\User\UserChannelList;
 use Twilio\Values;
 use Twilio\Version;
 
+/**
+ * @property \Twilio\Rest\Chat\V1\Service\User\UserChannelList userChannels
+ */
 class UserContext extends InstanceContext {
+    protected $_userChannels = null;
+
     /**
      * Initialize the UserContext
      * 
@@ -25,13 +32,10 @@ class UserContext extends InstanceContext {
      */
     public function __construct(Version $version, $serviceSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'serviceSid' => $serviceSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('serviceSid' => $serviceSid, 'sid' => $sid, );
+
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Users/' . rawurlencode($sid) . '';
     }
 
@@ -42,13 +46,13 @@ class UserContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new UserInstance(
             $this->version,
             $payload,
@@ -74,26 +78,76 @@ class UserContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'RoleSid' => $options['roleSid'],
             'Attributes' => $options['attributes'],
             'FriendlyName' => $options['friendlyName'],
         ));
-        
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new UserInstance(
             $this->version,
             $payload,
             $this->solution['serviceSid'],
             $this->solution['sid']
         );
+    }
+
+    /**
+     * Access the userChannels
+     * 
+     * @return \Twilio\Rest\Chat\V1\Service\User\UserChannelList 
+     */
+    protected function getUserChannels() {
+        if (!$this->_userChannels) {
+            $this->_userChannels = new UserChannelList(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
+
+        return $this->_userChannels;
+    }
+
+    /**
+     * Magic getter to lazy load subresources
+     * 
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws \Twilio\Exceptions\TwilioException For unknown subresources
+     */
+    public function __get($name) {
+        if (property_exists($this, '_' . $name)) {
+            $method = 'get' . ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     * 
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return \Twilio\InstanceContext The requested resource context
+     * @throws \Twilio\Exceptions\TwilioException For unknown resource
+     */
+    public function __call($name, $arguments) {
+        $property = $this->$name;
+        if (method_exists($property, 'getContext')) {
+            return call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
     }
 
     /**

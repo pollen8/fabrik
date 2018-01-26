@@ -18,17 +18,15 @@ use Twilio\Tests\Request;
 class ApplicationTest extends HolodeckTestCase {
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->applications->create("friendlyName");
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
-        $values = array(
-            'FriendlyName' => "friendlyName",
-        );
-        
+
+        $values = array('FriendlyName' => "friendlyName", );
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Applications.json',
@@ -39,7 +37,7 @@ class ApplicationTest extends HolodeckTestCase {
 
     public function testCreateResponse() {
         $this->holodeck->mock(new Response(
-            200,
+            201,
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -65,22 +63,22 @@ class ApplicationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications->create("friendlyName");
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testDeleteRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'delete',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Applications/APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -92,22 +90,22 @@ class ApplicationTest extends HolodeckTestCase {
             204,
             null
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
-        
+
         $this->assertTrue($actual);
     }
 
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Applications/APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -142,22 +140,22 @@ class ApplicationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testReadRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->applications->read();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Applications.json'
@@ -207,10 +205,10 @@ class ApplicationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications->read();
-        
+
         $this->assertGreaterThan(0, count($actual));
     }
 
@@ -234,22 +232,22 @@ class ApplicationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications->read();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testUpdateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Applications/APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -284,10 +282,10 @@ class ApplicationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->applications("APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
-        
+
         $this->assertNotNull($actual);
     }
 }

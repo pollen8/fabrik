@@ -23,12 +23,10 @@ class NumberContext extends InstanceContext {
      */
     public function __construct(Version $version, $number) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'number' => $number,
-        );
-        
+        $this->solution = array('number' => $number, );
+
         $this->uri = '/Voice/Numbers/' . rawurlencode($number) . '';
     }
 
@@ -39,18 +37,14 @@ class NumberContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
-        return new NumberInstance(
-            $this->version,
-            $payload,
-            $this->solution['number']
-        );
+
+        return new NumberInstance($this->version, $payload, $this->solution['number']);
     }
 
     /**

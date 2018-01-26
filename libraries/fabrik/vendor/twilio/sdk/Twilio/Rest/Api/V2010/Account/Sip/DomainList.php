@@ -11,6 +11,7 @@ namespace Twilio\Rest\Api\V2010\Account\Sip;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -25,12 +26,10 @@ class DomainList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/SIP/Domains.json';
     }
 
@@ -54,9 +53,9 @@ class DomainList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -75,7 +74,7 @@ class DomainList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return DomainInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -94,13 +93,29 @@ class DomainList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new DomainPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of DomainInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of DomainInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new DomainPage($this->version, $response, $this->solution);
     }
 
@@ -113,7 +128,7 @@ class DomainList extends ListResource {
      */
     public function create($domainName, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'DomainName' => $domainName,
             'FriendlyName' => $options['friendlyName'],
@@ -124,20 +139,17 @@ class DomainList extends ListResource {
             'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
             'VoiceStatusCallbackUrl' => $options['voiceStatusCallbackUrl'],
             'VoiceStatusCallbackMethod' => $options['voiceStatusCallbackMethod'],
+            'SipRegistration' => Serialize::booleanToString($options['sipRegistration']),
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new DomainInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+
+        return new DomainInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**
@@ -147,11 +159,7 @@ class DomainList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\Sip\DomainContext 
      */
     public function getContext($sid) {
-        return new DomainContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $sid
-        );
+        return new DomainContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

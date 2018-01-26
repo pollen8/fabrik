@@ -12,25 +12,26 @@ namespace Twilio\Tests\Integration\Api\V2010\Account\Call;
 use Twilio\Exceptions\DeserializeException;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Http\Response;
+use Twilio\Serialize;
 use Twilio\Tests\HolodeckTestCase;
 use Twilio\Tests\Request;
 
 class FeedbackSummaryTest extends HolodeckTestCase {
     public function testCreateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls
                                      ->feedbackSummaries->create(new \DateTime('2008-01-02'), new \DateTime('2008-01-02'));
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $values = array(
-            'StartDate' => new \DateTime('2008-01-02'),
-            'EndDate' => new \DateTime('2008-01-02'),
+            'StartDate' => Serialize::iso8601Date(new \DateTime('2008-01-02')),
+            'EndDate' => Serialize::iso8601Date(new \DateTime('2008-01-02')),
         );
-        
+
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/FeedbackSummary.json',
@@ -41,7 +42,7 @@ class FeedbackSummaryTest extends HolodeckTestCase {
 
     public function testCreateResponse() {
         $this->holodeck->mock(new Response(
-            200,
+            201,
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -67,24 +68,24 @@ class FeedbackSummaryTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls
                                            ->feedbackSummaries->create(new \DateTime('2008-01-02'), new \DateTime('2008-01-02'));
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls
                                      ->feedbackSummaries("FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/FeedbackSummary/FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -119,24 +120,24 @@ class FeedbackSummaryTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls
                                            ->feedbackSummaries("FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testDeleteRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls
                                      ->feedbackSummaries("FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'delete',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/FeedbackSummary/FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -148,11 +149,11 @@ class FeedbackSummaryTest extends HolodeckTestCase {
             204,
             null
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls
                                            ->feedbackSummaries("FSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
-        
+
         $this->assertTrue($actual);
     }
 }

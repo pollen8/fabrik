@@ -12,16 +12,24 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueCumulativeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueRealTimeStatisticsList;
 use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueStatisticsList;
 use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueStatisticsList statistics
+ * @property \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueRealTimeStatisticsList realTimeStatistics
+ * @property \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueCumulativeStatisticsList cumulativeStatistics
  * @method \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueStatisticsContext statistics()
+ * @method \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueRealTimeStatisticsContext realTimeStatistics()
+ * @method \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueCumulativeStatisticsContext cumulativeStatistics()
  */
 class TaskQueueContext extends InstanceContext {
     protected $_statistics = null;
+    protected $_realTimeStatistics = null;
+    protected $_cumulativeStatistics = null;
 
     /**
      * Initialize the TaskQueueContext
@@ -33,13 +41,10 @@ class TaskQueueContext extends InstanceContext {
      */
     public function __construct(Version $version, $workspaceSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('workspaceSid' => $workspaceSid, 'sid' => $sid, );
+
         $this->uri = '/Workspaces/' . rawurlencode($workspaceSid) . '/TaskQueues/' . rawurlencode($sid) . '';
     }
 
@@ -50,13 +55,13 @@ class TaskQueueContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new TaskQueueInstance(
             $this->version,
             $payload,
@@ -73,22 +78,23 @@ class TaskQueueContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'FriendlyName' => $options['friendlyName'],
             'TargetWorkers' => $options['targetWorkers'],
             'ReservationActivitySid' => $options['reservationActivitySid'],
             'AssignmentActivitySid' => $options['assignmentActivitySid'],
             'MaxReservedWorkers' => $options['maxReservedWorkers'],
+            'TaskOrder' => $options['taskOrder'],
         ));
-        
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new TaskQueueInstance(
             $this->version,
             $payload,
@@ -119,8 +125,42 @@ class TaskQueueContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_statistics;
+    }
+
+    /**
+     * Access the realTimeStatistics
+     * 
+     * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueRealTimeStatisticsList 
+     */
+    protected function getRealTimeStatistics() {
+        if (!$this->_realTimeStatistics) {
+            $this->_realTimeStatistics = new TaskQueueRealTimeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
+
+        return $this->_realTimeStatistics;
+    }
+
+    /**
+     * Access the cumulativeStatistics
+     * 
+     * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueCumulativeStatisticsList 
+     */
+    protected function getCumulativeStatistics() {
+        if (!$this->_cumulativeStatistics) {
+            $this->_cumulativeStatistics = new TaskQueueCumulativeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
+
+        return $this->_cumulativeStatistics;
     }
 
     /**
@@ -135,7 +175,7 @@ class TaskQueueContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -152,7 +192,7 @@ class TaskQueueContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

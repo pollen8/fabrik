@@ -18,14 +18,14 @@ use Twilio\Tests\Request;
 class ReservationTest extends HolodeckTestCase {
     public function testReadRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->reservations->read();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations'
@@ -44,7 +44,7 @@ class ReservationTest extends HolodeckTestCase {
                     "page": 0,
                     "page_size": 50,
                     "previous_page_url": null,
-                    "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations"
+                    "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations?PageSize=50&Page=0"
                 },
                 "reservations": [
                     {
@@ -56,7 +56,7 @@ class ReservationTest extends HolodeckTestCase {
                             "worker": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                             "workspace": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                         },
-                        "reservation_status": "reserved",
+                        "reservation_status": "accepted",
                         "sid": "WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                         "task_sid": "WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                         "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations/WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -68,11 +68,11 @@ class ReservationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->reservations->read();
-        
+
         $this->assertGreaterThan(0, count($actual));
     }
 
@@ -88,30 +88,30 @@ class ReservationTest extends HolodeckTestCase {
                     "page": 0,
                     "page_size": 50,
                     "previous_page_url": null,
-                    "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations"
+                    "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations?PageSize=50&Page=0"
                 },
                 "reservations": []
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->reservations->read();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->reservations("WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations/WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
@@ -131,7 +131,7 @@ class ReservationTest extends HolodeckTestCase {
                     "worker": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     "workspace": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 },
-                "reservation_status": "reserved",
+                "reservation_status": "accepted",
                 "sid": "WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "task_sid": "WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations/WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -141,24 +141,24 @@ class ReservationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->reservations("WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testUpdateRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                          ->reservations("WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'post',
             'https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations/WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
@@ -178,7 +178,7 @@ class ReservationTest extends HolodeckTestCase {
                     "worker": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     "workspace": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 },
-                "reservation_status": "reserved",
+                "reservation_status": "accepted",
                 "sid": "WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "task_sid": "WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "url": "https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Tasks/WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Reservations/WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -188,11 +188,11 @@ class ReservationTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->taskrouter->v1->workspaces("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->tasks("WTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                ->reservations("WRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->update();
-        
+
         $this->assertNotNull($actual);
     }
 }

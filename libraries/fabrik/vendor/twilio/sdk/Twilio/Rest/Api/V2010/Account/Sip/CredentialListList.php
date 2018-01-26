@@ -24,12 +24,10 @@ class CredentialListList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/SIP/CredentialLists.json';
     }
 
@@ -53,9 +51,9 @@ class CredentialListList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -74,7 +72,7 @@ class CredentialListList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return CredentialListInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -93,13 +91,29 @@ class CredentialListList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new CredentialListPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of CredentialListInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of CredentialListInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new CredentialListPage($this->version, $response, $this->solution);
     }
 
@@ -110,22 +124,16 @@ class CredentialListList extends ListResource {
      * @return CredentialListInstance Newly created CredentialListInstance
      */
     public function create($friendlyName) {
-        $data = Values::of(array(
-            'FriendlyName' => $friendlyName,
-        ));
-        
+        $data = Values::of(array('FriendlyName' => $friendlyName, ));
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new CredentialListInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+
+        return new CredentialListInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**
@@ -135,11 +143,7 @@ class CredentialListList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\Sip\CredentialListContext 
      */
     public function getContext($sid) {
-        return new CredentialListContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $sid
-        );
+        return new CredentialListContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

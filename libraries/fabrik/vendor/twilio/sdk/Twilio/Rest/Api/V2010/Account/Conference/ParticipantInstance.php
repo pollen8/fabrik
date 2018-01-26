@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -21,10 +22,11 @@ use Twilio\Version;
  * @property string conferenceSid
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
- * @property string endConferenceOnExit
- * @property string muted
- * @property string hold
- * @property string startConferenceOnEnter
+ * @property boolean endConferenceOnExit
+ * @property boolean muted
+ * @property boolean hold
+ * @property boolean startConferenceOnEnter
+ * @property string status
  * @property string uri
  */
 class ParticipantInstance extends InstanceResource {
@@ -41,21 +43,22 @@ class ParticipantInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $conferenceSid, $callSid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'callSid' => $payload['call_sid'],
-            'conferenceSid' => $payload['conference_sid'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'endConferenceOnExit' => $payload['end_conference_on_exit'],
-            'muted' => $payload['muted'],
-            'hold' => $payload['hold'],
-            'startConferenceOnEnter' => $payload['start_conference_on_enter'],
-            'uri' => $payload['uri'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'callSid' => Values::array_get($payload, 'call_sid'),
+            'conferenceSid' => Values::array_get($payload, 'conference_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'endConferenceOnExit' => Values::array_get($payload, 'end_conference_on_exit'),
+            'muted' => Values::array_get($payload, 'muted'),
+            'hold' => Values::array_get($payload, 'hold'),
+            'startConferenceOnEnter' => Values::array_get($payload, 'start_conference_on_enter'),
+            'status' => Values::array_get($payload, 'status'),
+            'uri' => Values::array_get($payload, 'uri'),
         );
-        
+
         $this->solution = array(
             'accountSid' => $accountSid,
             'conferenceSid' => $conferenceSid,
@@ -81,7 +84,7 @@ class ParticipantInstance extends InstanceResource {
                 $this->solution['callSid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -101,9 +104,7 @@ class ParticipantInstance extends InstanceResource {
      * @return ParticipantInstance Updated ParticipantInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -126,12 +127,12 @@ class ParticipantInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

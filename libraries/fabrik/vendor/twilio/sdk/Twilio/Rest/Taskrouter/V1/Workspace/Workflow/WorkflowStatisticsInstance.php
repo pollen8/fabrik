@@ -12,14 +12,16 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace\Workflow;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string accountSid
- * @property string cumulative
- * @property string realtime
+ * @property array cumulative
+ * @property array realtime
  * @property string workflowSid
  * @property string workspaceSid
+ * @property string url
  */
 class WorkflowStatisticsInstance extends InstanceResource {
     /**
@@ -33,20 +35,18 @@ class WorkflowStatisticsInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $workspaceSid, $workflowSid) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'cumulative' => $payload['cumulative'],
-            'realtime' => $payload['realtime'],
-            'workflowSid' => $payload['workflow_sid'],
-            'workspaceSid' => $payload['workspace_sid'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'cumulative' => Values::array_get($payload, 'cumulative'),
+            'realtime' => Values::array_get($payload, 'realtime'),
+            'workflowSid' => Values::array_get($payload, 'workflow_sid'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'url' => Values::array_get($payload, 'url'),
         );
-        
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'workflowSid' => $workflowSid,
-        );
+
+        $this->solution = array('workspaceSid' => $workspaceSid, 'workflowSid' => $workflowSid, );
     }
 
     /**
@@ -64,7 +64,7 @@ class WorkflowStatisticsInstance extends InstanceResource {
                 $this->solution['workflowSid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -75,9 +75,7 @@ class WorkflowStatisticsInstance extends InstanceResource {
      * @return WorkflowStatisticsInstance Fetched WorkflowStatisticsInstance
      */
     public function fetch($options = array()) {
-        return $this->proxy()->fetch(
-            $options
-        );
+        return $this->proxy()->fetch($options);
     }
 
     /**
@@ -91,12 +89,12 @@ class WorkflowStatisticsInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

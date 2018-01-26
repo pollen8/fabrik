@@ -24,13 +24,10 @@ class DependentPhoneNumberList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $addressSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'addressSid' => $addressSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'addressSid' => $addressSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Addresses/' . rawurlencode($addressSid) . '/DependentPhoneNumbers.json';
     }
 
@@ -55,9 +52,9 @@ class DependentPhoneNumberList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -76,7 +73,7 @@ class DependentPhoneNumberList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return DependentPhoneNumberInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -95,13 +92,30 @@ class DependentPhoneNumberList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new DependentPhoneNumberPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of DependentPhoneNumberInstance records from the
+     * API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of DependentPhoneNumberInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new DependentPhoneNumberPage($this->version, $response, $this->solution);
     }
 

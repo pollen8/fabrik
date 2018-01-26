@@ -39,11 +39,9 @@ class SipList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
+        $this->solution = array('accountSid' => $accountSid, );
     }
 
     /**
@@ -51,12 +49,9 @@ class SipList extends ListResource {
      */
     protected function getDomains() {
         if (!$this->_domains) {
-            $this->_domains = new DomainList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_domains = new DomainList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_domains;
     }
 
@@ -70,7 +65,7 @@ class SipList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_ipAccessControlLists;
     }
 
@@ -79,12 +74,9 @@ class SipList extends ListResource {
      */
     protected function getCredentialLists() {
         if (!$this->_credentialLists) {
-            $this->_credentialLists = new CredentialListList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_credentialLists = new CredentialListList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_credentialLists;
     }
 
@@ -100,7 +92,7 @@ class SipList extends ListResource {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -117,7 +109,7 @@ class SipList extends ListResource {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

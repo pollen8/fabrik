@@ -34,11 +34,9 @@ class UsageList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
+        $this->solution = array('accountSid' => $accountSid, );
     }
 
     /**
@@ -46,12 +44,9 @@ class UsageList extends ListResource {
      */
     protected function getRecords() {
         if (!$this->_records) {
-            $this->_records = new RecordList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_records = new RecordList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_records;
     }
 
@@ -60,12 +55,9 @@ class UsageList extends ListResource {
      */
     protected function getTriggers() {
         if (!$this->_triggers) {
-            $this->_triggers = new TriggerList(
-                $this->version,
-                $this->solution['accountSid']
-            );
+            $this->_triggers = new TriggerList($this->version, $this->solution['accountSid']);
         }
-        
+
         return $this->_triggers;
     }
 
@@ -81,7 +73,7 @@ class UsageList extends ListResource {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -98,7 +90,7 @@ class UsageList extends ListResource {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

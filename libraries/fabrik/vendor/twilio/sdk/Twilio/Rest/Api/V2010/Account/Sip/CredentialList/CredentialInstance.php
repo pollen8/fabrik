@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -37,18 +38,18 @@ class CredentialInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $credentialListSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'sid' => $payload['sid'],
-            'accountSid' => $payload['account_sid'],
-            'credentialListSid' => $payload['credential_list_sid'],
-            'username' => $payload['username'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'uri' => $payload['uri'],
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'credentialListSid' => Values::array_get($payload, 'credential_list_sid'),
+            'username' => Values::array_get($payload, 'username'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'uri' => Values::array_get($payload, 'uri'),
         );
-        
+
         $this->solution = array(
             'accountSid' => $accountSid,
             'credentialListSid' => $credentialListSid,
@@ -71,7 +72,7 @@ class CredentialInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -91,9 +92,7 @@ class CredentialInstance extends InstanceResource {
      * @return CredentialInstance Updated CredentialInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -116,12 +115,12 @@ class CredentialInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

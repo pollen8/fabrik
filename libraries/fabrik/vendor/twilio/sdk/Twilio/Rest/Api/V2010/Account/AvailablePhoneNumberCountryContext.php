@@ -12,8 +12,12 @@ namespace Twilio\Rest\Api\V2010\Account;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\LocalList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MachineToMachineList;
 use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MobileList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\NationalList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\SharedCostList;
 use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\VoipList;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -21,11 +25,19 @@ use Twilio\Version;
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\LocalList local
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeList tollFree
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MobileList mobile
+ * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\NationalList national
+ * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\VoipList voip
+ * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\SharedCostList sharedCost
+ * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MachineToMachineList machineToMachine
  */
 class AvailablePhoneNumberCountryContext extends InstanceContext {
     protected $_local = null;
     protected $_tollFree = null;
     protected $_mobile = null;
+    protected $_national = null;
+    protected $_voip = null;
+    protected $_sharedCost = null;
+    protected $_machineToMachine = null;
 
     /**
      * Initialize the AvailablePhoneNumberCountryContext
@@ -37,13 +49,10 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
      */
     public function __construct(Version $version, $accountSid, $countryCode) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'countryCode' => $countryCode,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'countryCode' => $countryCode, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/AvailablePhoneNumbers/' . rawurlencode($countryCode) . '.json';
     }
 
@@ -55,13 +64,13 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new AvailablePhoneNumberCountryInstance(
             $this->version,
             $payload,
@@ -83,7 +92,7 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
                 $this->solution['countryCode']
             );
         }
-        
+
         return $this->_local;
     }
 
@@ -100,7 +109,7 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
                 $this->solution['countryCode']
             );
         }
-        
+
         return $this->_tollFree;
     }
 
@@ -117,8 +126,76 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
                 $this->solution['countryCode']
             );
         }
-        
+
         return $this->_mobile;
+    }
+
+    /**
+     * Access the national
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\NationalList 
+     */
+    protected function getNational() {
+        if (!$this->_national) {
+            $this->_national = new NationalList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['countryCode']
+            );
+        }
+
+        return $this->_national;
+    }
+
+    /**
+     * Access the voip
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\VoipList 
+     */
+    protected function getVoip() {
+        if (!$this->_voip) {
+            $this->_voip = new VoipList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['countryCode']
+            );
+        }
+
+        return $this->_voip;
+    }
+
+    /**
+     * Access the sharedCost
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\SharedCostList 
+     */
+    protected function getSharedCost() {
+        if (!$this->_sharedCost) {
+            $this->_sharedCost = new SharedCostList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['countryCode']
+            );
+        }
+
+        return $this->_sharedCost;
+    }
+
+    /**
+     * Access the machineToMachine
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MachineToMachineList 
+     */
+    protected function getMachineToMachine() {
+        if (!$this->_machineToMachine) {
+            $this->_machineToMachine = new MachineToMachineList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['countryCode']
+            );
+        }
+
+        return $this->_machineToMachine;
     }
 
     /**
@@ -133,7 +210,7 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -150,7 +227,7 @@ class AvailablePhoneNumberCountryContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

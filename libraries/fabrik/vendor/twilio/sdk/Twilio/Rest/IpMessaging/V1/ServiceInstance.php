@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -24,12 +25,19 @@ use Twilio\Version;
  * @property string defaultServiceRoleSid
  * @property string defaultChannelRoleSid
  * @property string defaultChannelCreatorRoleSid
- * @property string readStatusEnabled
- * @property string typingIndicatorTimeout
- * @property string consumptionReportInterval
- * @property string webhooks
+ * @property boolean readStatusEnabled
+ * @property boolean reachabilityEnabled
+ * @property integer typingIndicatorTimeout
+ * @property integer consumptionReportInterval
+ * @property array limits
+ * @property array webhooks
+ * @property string preWebhookUrl
+ * @property string postWebhookUrl
+ * @property string webhookMethod
+ * @property string webhookFilters
+ * @property array notifications
  * @property string url
- * @property string links
+ * @property array links
  */
 class ServiceInstance extends InstanceResource {
     protected $_channels = null;
@@ -46,28 +54,33 @@ class ServiceInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'sid' => $payload['sid'],
-            'accountSid' => $payload['account_sid'],
-            'friendlyName' => $payload['friendly_name'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'defaultServiceRoleSid' => $payload['default_service_role_sid'],
-            'defaultChannelRoleSid' => $payload['default_channel_role_sid'],
-            'defaultChannelCreatorRoleSid' => $payload['default_channel_creator_role_sid'],
-            'readStatusEnabled' => $payload['read_status_enabled'],
-            'typingIndicatorTimeout' => $payload['typing_indicator_timeout'],
-            'consumptionReportInterval' => $payload['consumption_report_interval'],
-            'webhooks' => $payload['webhooks'],
-            'url' => $payload['url'],
-            'links' => $payload['links'],
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'defaultServiceRoleSid' => Values::array_get($payload, 'default_service_role_sid'),
+            'defaultChannelRoleSid' => Values::array_get($payload, 'default_channel_role_sid'),
+            'defaultChannelCreatorRoleSid' => Values::array_get($payload, 'default_channel_creator_role_sid'),
+            'readStatusEnabled' => Values::array_get($payload, 'read_status_enabled'),
+            'reachabilityEnabled' => Values::array_get($payload, 'reachability_enabled'),
+            'typingIndicatorTimeout' => Values::array_get($payload, 'typing_indicator_timeout'),
+            'consumptionReportInterval' => Values::array_get($payload, 'consumption_report_interval'),
+            'limits' => Values::array_get($payload, 'limits'),
+            'webhooks' => Values::array_get($payload, 'webhooks'),
+            'preWebhookUrl' => Values::array_get($payload, 'pre_webhook_url'),
+            'postWebhookUrl' => Values::array_get($payload, 'post_webhook_url'),
+            'webhookMethod' => Values::array_get($payload, 'webhook_method'),
+            'webhookFilters' => Values::array_get($payload, 'webhook_filters'),
+            'notifications' => Values::array_get($payload, 'notifications'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
         );
-        
-        $this->solution = array(
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -79,12 +92,9 @@ class ServiceInstance extends InstanceResource {
      */
     protected function proxy() {
         if (!$this->context) {
-            $this->context = new ServiceContext(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->context = new ServiceContext($this->version, $this->solution['sid']);
         }
-        
+
         return $this->context;
     }
 
@@ -113,9 +123,7 @@ class ServiceInstance extends InstanceResource {
      * @return ServiceInstance Updated ServiceInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -156,12 +164,12 @@ class ServiceInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

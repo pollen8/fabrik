@@ -32,13 +32,10 @@ class CredentialListContext extends InstanceContext {
      */
     public function __construct(Version $version, $accountSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/SIP/CredentialLists/' . rawurlencode($sid) . '.json';
     }
 
@@ -49,13 +46,13 @@ class CredentialListContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new CredentialListInstance(
             $this->version,
             $payload,
@@ -71,17 +68,15 @@ class CredentialListContext extends InstanceContext {
      * @return CredentialListInstance Updated CredentialListInstance
      */
     public function update($friendlyName) {
-        $data = Values::of(array(
-            'FriendlyName' => $friendlyName,
-        ));
-        
+        $data = Values::of(array('FriendlyName' => $friendlyName, ));
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new CredentialListInstance(
             $this->version,
             $payload,
@@ -112,7 +107,7 @@ class CredentialListContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_credentials;
     }
 
@@ -128,7 +123,7 @@ class CredentialListContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -145,7 +140,7 @@ class CredentialListContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

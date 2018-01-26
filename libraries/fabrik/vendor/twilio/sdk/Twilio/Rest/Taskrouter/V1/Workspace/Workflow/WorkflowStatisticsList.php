@@ -23,12 +23,9 @@ class WorkflowStatisticsList extends ListResource {
      */
     public function __construct(Version $version, $workspaceSid, $workflowSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'workflowSid' => $workflowSid,
-        );
+        $this->solution = array('workspaceSid' => $workspaceSid, 'workflowSid' => $workflowSid, );
     }
 
     /**

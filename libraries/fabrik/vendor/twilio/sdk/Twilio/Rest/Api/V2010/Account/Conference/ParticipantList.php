@@ -11,6 +11,7 @@ namespace Twilio\Rest\Api\V2010\Account\Conference;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -26,14 +27,70 @@ class ParticipantList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $conferenceSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'conferenceSid' => $conferenceSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, 'conferenceSid' => $conferenceSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Conferences/' . rawurlencode($conferenceSid) . '/Participants.json';
+    }
+
+    /**
+     * Create a new ParticipantInstance
+     * 
+     * @param string $from The from
+     * @param string $to The to
+     * @param array|Options $options Optional Arguments
+     * @return ParticipantInstance Newly created ParticipantInstance
+     */
+    public function create($from, $to, $options = array()) {
+        $options = new Values($options);
+
+        $data = Values::of(array(
+            'From' => $from,
+            'To' => $to,
+            'StatusCallback' => $options['statusCallback'],
+            'StatusCallbackMethod' => $options['statusCallbackMethod'],
+            'StatusCallbackEvent' => Serialize::map($options['statusCallbackEvent'], function($e) { return $e; }),
+            'Timeout' => $options['timeout'],
+            'Record' => Serialize::booleanToString($options['record']),
+            'Muted' => Serialize::booleanToString($options['muted']),
+            'Beep' => $options['beep'],
+            'StartConferenceOnEnter' => Serialize::booleanToString($options['startConferenceOnEnter']),
+            'EndConferenceOnExit' => Serialize::booleanToString($options['endConferenceOnExit']),
+            'WaitUrl' => $options['waitUrl'],
+            'WaitMethod' => $options['waitMethod'],
+            'EarlyMedia' => Serialize::booleanToString($options['earlyMedia']),
+            'MaxParticipants' => $options['maxParticipants'],
+            'ConferenceRecord' => $options['conferenceRecord'],
+            'ConferenceTrim' => $options['conferenceTrim'],
+            'ConferenceStatusCallback' => $options['conferenceStatusCallback'],
+            'ConferenceStatusCallbackMethod' => $options['conferenceStatusCallbackMethod'],
+            'ConferenceStatusCallbackEvent' => Serialize::map($options['conferenceStatusCallbackEvent'], function($e) { return $e; }),
+            'RecordingChannels' => $options['recordingChannels'],
+            'RecordingStatusCallback' => $options['recordingStatusCallback'],
+            'RecordingStatusCallbackMethod' => $options['recordingStatusCallbackMethod'],
+            'SipAuthUsername' => $options['sipAuthUsername'],
+            'SipAuthPassword' => $options['sipAuthPassword'],
+            'Region' => $options['region'],
+            'ConferenceRecordingStatusCallback' => $options['conferenceRecordingStatusCallback'],
+            'ConferenceRecordingStatusCallbackMethod' => $options['conferenceRecordingStatusCallbackMethod'],
+            'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
+            'ConferenceRecordingStatusCallbackEvent' => Serialize::map($options['conferenceRecordingStatusCallbackEvent'], function($e) { return $e; }),
+        ));
+
+        $payload = $this->version->create(
+            'POST',
+            $this->uri,
+            array(),
+            $data
+        );
+
+        return new ParticipantInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['conferenceSid']
+        );
     }
 
     /**
@@ -57,9 +114,9 @@ class ParticipantList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -79,7 +136,7 @@ class ParticipantList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return ParticipantInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -96,19 +153,35 @@ class ParticipantList extends ListResource {
     public function page($options = array(), $pageSize = Values::NONE, $pageToken = Values::NONE, $pageNumber = Values::NONE) {
         $options = new Values($options);
         $params = Values::of(array(
-            'Muted' => $options['muted'],
-            'Hold' => $options['hold'],
+            'Muted' => Serialize::booleanToString($options['muted']),
+            'Hold' => Serialize::booleanToString($options['hold']),
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new ParticipantPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of ParticipantInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of ParticipantInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new ParticipantPage($this->version, $response, $this->solution);
     }
 

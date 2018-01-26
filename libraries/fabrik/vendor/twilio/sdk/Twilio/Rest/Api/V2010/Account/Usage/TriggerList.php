@@ -25,12 +25,10 @@ class TriggerList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Usage/Triggers.json';
     }
 
@@ -45,7 +43,7 @@ class TriggerList extends ListResource {
      */
     public function create($callbackUrl, $triggerValue, $usageCategory, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'CallbackUrl' => $callbackUrl,
             'TriggerValue' => $triggerValue,
@@ -55,19 +53,15 @@ class TriggerList extends ListResource {
             'Recurring' => $options['recurring'],
             'TriggerBy' => $options['triggerBy'],
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new TriggerInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+
+        return new TriggerInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**
@@ -91,9 +85,9 @@ class TriggerList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -113,7 +107,7 @@ class TriggerList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return TriggerInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -137,13 +131,29 @@ class TriggerList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new TriggerPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of TriggerInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of TriggerInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new TriggerPage($this->version, $response, $this->solution);
     }
 
@@ -154,11 +164,7 @@ class TriggerList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\Usage\TriggerContext 
      */
     public function getContext($sid) {
-        return new TriggerContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $sid
-        );
+        return new TriggerContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

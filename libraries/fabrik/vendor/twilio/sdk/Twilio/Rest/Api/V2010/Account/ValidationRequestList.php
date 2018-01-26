@@ -24,12 +24,10 @@ class ValidationRequestList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/OutgoingCallerIds.json';
     }
 
@@ -42,7 +40,7 @@ class ValidationRequestList extends ListResource {
      */
     public function create($phoneNumber, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'PhoneNumber' => $phoneNumber,
             'FriendlyName' => $options['friendlyName'],
@@ -51,19 +49,15 @@ class ValidationRequestList extends ListResource {
             'StatusCallback' => $options['statusCallback'],
             'StatusCallbackMethod' => $options['statusCallbackMethod'],
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new ValidationRequestInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
+
+        return new ValidationRequestInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**

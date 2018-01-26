@@ -13,19 +13,28 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string sid
  * @property string accountSid
  * @property string serviceSid
+ * @property string attributes
+ * @property string friendlyName
  * @property string roleSid
  * @property string identity
+ * @property boolean isOnline
+ * @property boolean isNotifiable
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
+ * @property integer joinedChannelsCount
+ * @property array links
  * @property string url
  */
 class UserInstance extends InstanceResource {
+    protected $_userChannels = null;
+
     /**
      * Initialize the UserInstance
      * 
@@ -37,23 +46,26 @@ class UserInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $serviceSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'sid' => $payload['sid'],
-            'accountSid' => $payload['account_sid'],
-            'serviceSid' => $payload['service_sid'],
-            'roleSid' => $payload['role_sid'],
-            'identity' => $payload['identity'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'url' => $payload['url'],
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'attributes' => Values::array_get($payload, 'attributes'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'roleSid' => Values::array_get($payload, 'role_sid'),
+            'identity' => Values::array_get($payload, 'identity'),
+            'isOnline' => Values::array_get($payload, 'is_online'),
+            'isNotifiable' => Values::array_get($payload, 'is_notifiable'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'joinedChannelsCount' => Values::array_get($payload, 'joined_channels_count'),
+            'links' => Values::array_get($payload, 'links'),
+            'url' => Values::array_get($payload, 'url'),
         );
-        
-        $this->solution = array(
-            'serviceSid' => $serviceSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -71,7 +83,7 @@ class UserInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -100,9 +112,16 @@ class UserInstance extends InstanceResource {
      * @return UserInstance Updated UserInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
+    }
+
+    /**
+     * Access the userChannels
+     * 
+     * @return \Twilio\Rest\Chat\V1\Service\User\UserChannelList 
+     */
+    protected function getUserChannels() {
+        return $this->proxy()->userChannels;
     }
 
     /**
@@ -116,12 +135,12 @@ class UserInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

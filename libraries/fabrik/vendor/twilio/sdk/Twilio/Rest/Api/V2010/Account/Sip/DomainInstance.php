@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -31,6 +32,8 @@ use Twilio\Version;
  * @property string voiceStatusCallbackMethod
  * @property string voiceStatusCallbackUrl
  * @property string voiceUrl
+ * @property array subresourceUris
+ * @property boolean sipRegistration
  */
 class DomainInstance extends InstanceResource {
     protected $_ipAccessControlListMappings = null;
@@ -48,30 +51,29 @@ class DomainInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'apiVersion' => $payload['api_version'],
-            'authType' => $payload['auth_type'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'domainName' => $payload['domain_name'],
-            'friendlyName' => $payload['friendly_name'],
-            'sid' => $payload['sid'],
-            'uri' => $payload['uri'],
-            'voiceFallbackMethod' => $payload['voice_fallback_method'],
-            'voiceFallbackUrl' => $payload['voice_fallback_url'],
-            'voiceMethod' => $payload['voice_method'],
-            'voiceStatusCallbackMethod' => $payload['voice_status_callback_method'],
-            'voiceStatusCallbackUrl' => $payload['voice_status_callback_url'],
-            'voiceUrl' => $payload['voice_url'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'authType' => Values::array_get($payload, 'auth_type'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'domainName' => Values::array_get($payload, 'domain_name'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'voiceFallbackMethod' => Values::array_get($payload, 'voice_fallback_method'),
+            'voiceFallbackUrl' => Values::array_get($payload, 'voice_fallback_url'),
+            'voiceMethod' => Values::array_get($payload, 'voice_method'),
+            'voiceStatusCallbackMethod' => Values::array_get($payload, 'voice_status_callback_method'),
+            'voiceStatusCallbackUrl' => Values::array_get($payload, 'voice_status_callback_url'),
+            'voiceUrl' => Values::array_get($payload, 'voice_url'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+            'sipRegistration' => Values::array_get($payload, 'sip_registration'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -89,7 +91,7 @@ class DomainInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -109,9 +111,7 @@ class DomainInstance extends InstanceResource {
      * @return DomainInstance Updated DomainInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -152,12 +152,12 @@ class DomainInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

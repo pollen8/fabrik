@@ -14,51 +14,57 @@ use Twilio\Values;
 
 abstract class MobileOptions {
     /**
-     * @param string $areaCode The area_code
+     * @param integer $areaCode The area_code
      * @param string $contains The contains
-     * @param string $smsEnabled The sms_enabled
-     * @param string $mmsEnabled The mms_enabled
-     * @param string $voiceEnabled The voice_enabled
-     * @param string $excludeAllAddressRequired The exclude_all_address_required
-     * @param string $excludeLocalAddressRequired The exclude_local_address_required
-     * @param string $excludeForeignAddressRequired The
-     *                                              exclude_foreign_address_required
-     * @param string $beta The beta
+     * @param boolean $smsEnabled The sms_enabled
+     * @param boolean $mmsEnabled The mms_enabled
+     * @param boolean $voiceEnabled The voice_enabled
+     * @param boolean $excludeAllAddressRequired The exclude_all_address_required
+     * @param boolean $excludeLocalAddressRequired The
+     *                                             exclude_local_address_required
+     * @param boolean $excludeForeignAddressRequired The
+     *                                               exclude_foreign_address_required
+     * @param boolean $beta The beta
      * @param string $nearNumber The near_number
      * @param string $nearLatLong The near_lat_long
-     * @param string $distance The distance
+     * @param integer $distance The distance
      * @param string $inPostalCode The in_postal_code
      * @param string $inRegion The in_region
      * @param string $inRateCenter The in_rate_center
      * @param string $inLata The in_lata
+     * @param string $inLocality The in_locality
+     * @param boolean $faxEnabled The fax_enabled
      * @return ReadMobileOptions Options builder
      */
-    public static function read($areaCode = Values::NONE, $contains = Values::NONE, $smsEnabled = Values::NONE, $mmsEnabled = Values::NONE, $voiceEnabled = Values::NONE, $excludeAllAddressRequired = Values::NONE, $excludeLocalAddressRequired = Values::NONE, $excludeForeignAddressRequired = Values::NONE, $beta = Values::NONE, $nearNumber = Values::NONE, $nearLatLong = Values::NONE, $distance = Values::NONE, $inPostalCode = Values::NONE, $inRegion = Values::NONE, $inRateCenter = Values::NONE, $inLata = Values::NONE) {
-        return new ReadMobileOptions($areaCode, $contains, $smsEnabled, $mmsEnabled, $voiceEnabled, $excludeAllAddressRequired, $excludeLocalAddressRequired, $excludeForeignAddressRequired, $beta, $nearNumber, $nearLatLong, $distance, $inPostalCode, $inRegion, $inRateCenter, $inLata);
+    public static function read($areaCode = Values::NONE, $contains = Values::NONE, $smsEnabled = Values::NONE, $mmsEnabled = Values::NONE, $voiceEnabled = Values::NONE, $excludeAllAddressRequired = Values::NONE, $excludeLocalAddressRequired = Values::NONE, $excludeForeignAddressRequired = Values::NONE, $beta = Values::NONE, $nearNumber = Values::NONE, $nearLatLong = Values::NONE, $distance = Values::NONE, $inPostalCode = Values::NONE, $inRegion = Values::NONE, $inRateCenter = Values::NONE, $inLata = Values::NONE, $inLocality = Values::NONE, $faxEnabled = Values::NONE) {
+        return new ReadMobileOptions($areaCode, $contains, $smsEnabled, $mmsEnabled, $voiceEnabled, $excludeAllAddressRequired, $excludeLocalAddressRequired, $excludeForeignAddressRequired, $beta, $nearNumber, $nearLatLong, $distance, $inPostalCode, $inRegion, $inRateCenter, $inLata, $inLocality, $faxEnabled);
     }
 }
 
 class ReadMobileOptions extends Options {
     /**
-     * @param string $areaCode The area_code
+     * @param integer $areaCode The area_code
      * @param string $contains The contains
-     * @param string $smsEnabled The sms_enabled
-     * @param string $mmsEnabled The mms_enabled
-     * @param string $voiceEnabled The voice_enabled
-     * @param string $excludeAllAddressRequired The exclude_all_address_required
-     * @param string $excludeLocalAddressRequired The exclude_local_address_required
-     * @param string $excludeForeignAddressRequired The
-     *                                              exclude_foreign_address_required
-     * @param string $beta The beta
+     * @param boolean $smsEnabled The sms_enabled
+     * @param boolean $mmsEnabled The mms_enabled
+     * @param boolean $voiceEnabled The voice_enabled
+     * @param boolean $excludeAllAddressRequired The exclude_all_address_required
+     * @param boolean $excludeLocalAddressRequired The
+     *                                             exclude_local_address_required
+     * @param boolean $excludeForeignAddressRequired The
+     *                                               exclude_foreign_address_required
+     * @param boolean $beta The beta
      * @param string $nearNumber The near_number
      * @param string $nearLatLong The near_lat_long
-     * @param string $distance The distance
+     * @param integer $distance The distance
      * @param string $inPostalCode The in_postal_code
      * @param string $inRegion The in_region
      * @param string $inRateCenter The in_rate_center
      * @param string $inLata The in_lata
+     * @param string $inLocality The in_locality
+     * @param boolean $faxEnabled The fax_enabled
      */
-    public function __construct($areaCode = Values::NONE, $contains = Values::NONE, $smsEnabled = Values::NONE, $mmsEnabled = Values::NONE, $voiceEnabled = Values::NONE, $excludeAllAddressRequired = Values::NONE, $excludeLocalAddressRequired = Values::NONE, $excludeForeignAddressRequired = Values::NONE, $beta = Values::NONE, $nearNumber = Values::NONE, $nearLatLong = Values::NONE, $distance = Values::NONE, $inPostalCode = Values::NONE, $inRegion = Values::NONE, $inRateCenter = Values::NONE, $inLata = Values::NONE) {
+    public function __construct($areaCode = Values::NONE, $contains = Values::NONE, $smsEnabled = Values::NONE, $mmsEnabled = Values::NONE, $voiceEnabled = Values::NONE, $excludeAllAddressRequired = Values::NONE, $excludeLocalAddressRequired = Values::NONE, $excludeForeignAddressRequired = Values::NONE, $beta = Values::NONE, $nearNumber = Values::NONE, $nearLatLong = Values::NONE, $distance = Values::NONE, $inPostalCode = Values::NONE, $inRegion = Values::NONE, $inRateCenter = Values::NONE, $inLata = Values::NONE, $inLocality = Values::NONE, $faxEnabled = Values::NONE) {
         $this->options['areaCode'] = $areaCode;
         $this->options['contains'] = $contains;
         $this->options['smsEnabled'] = $smsEnabled;
@@ -75,12 +81,14 @@ class ReadMobileOptions extends Options {
         $this->options['inRegion'] = $inRegion;
         $this->options['inRateCenter'] = $inRateCenter;
         $this->options['inLata'] = $inLata;
+        $this->options['inLocality'] = $inLocality;
+        $this->options['faxEnabled'] = $faxEnabled;
     }
 
     /**
      * The area_code
      * 
-     * @param string $areaCode The area_code
+     * @param integer $areaCode The area_code
      * @return $this Fluent Builder
      */
     public function setAreaCode($areaCode) {
@@ -102,7 +110,7 @@ class ReadMobileOptions extends Options {
     /**
      * The sms_enabled
      * 
-     * @param string $smsEnabled The sms_enabled
+     * @param boolean $smsEnabled The sms_enabled
      * @return $this Fluent Builder
      */
     public function setSmsEnabled($smsEnabled) {
@@ -113,7 +121,7 @@ class ReadMobileOptions extends Options {
     /**
      * The mms_enabled
      * 
-     * @param string $mmsEnabled The mms_enabled
+     * @param boolean $mmsEnabled The mms_enabled
      * @return $this Fluent Builder
      */
     public function setMmsEnabled($mmsEnabled) {
@@ -124,7 +132,7 @@ class ReadMobileOptions extends Options {
     /**
      * The voice_enabled
      * 
-     * @param string $voiceEnabled The voice_enabled
+     * @param boolean $voiceEnabled The voice_enabled
      * @return $this Fluent Builder
      */
     public function setVoiceEnabled($voiceEnabled) {
@@ -135,7 +143,7 @@ class ReadMobileOptions extends Options {
     /**
      * The exclude_all_address_required
      * 
-     * @param string $excludeAllAddressRequired The exclude_all_address_required
+     * @param boolean $excludeAllAddressRequired The exclude_all_address_required
      * @return $this Fluent Builder
      */
     public function setExcludeAllAddressRequired($excludeAllAddressRequired) {
@@ -146,7 +154,8 @@ class ReadMobileOptions extends Options {
     /**
      * The exclude_local_address_required
      * 
-     * @param string $excludeLocalAddressRequired The exclude_local_address_required
+     * @param boolean $excludeLocalAddressRequired The
+     *                                             exclude_local_address_required
      * @return $this Fluent Builder
      */
     public function setExcludeLocalAddressRequired($excludeLocalAddressRequired) {
@@ -157,8 +166,8 @@ class ReadMobileOptions extends Options {
     /**
      * The exclude_foreign_address_required
      * 
-     * @param string $excludeForeignAddressRequired The
-     *                                              exclude_foreign_address_required
+     * @param boolean $excludeForeignAddressRequired The
+     *                                               exclude_foreign_address_required
      * @return $this Fluent Builder
      */
     public function setExcludeForeignAddressRequired($excludeForeignAddressRequired) {
@@ -169,7 +178,7 @@ class ReadMobileOptions extends Options {
     /**
      * The beta
      * 
-     * @param string $beta The beta
+     * @param boolean $beta The beta
      * @return $this Fluent Builder
      */
     public function setBeta($beta) {
@@ -202,7 +211,7 @@ class ReadMobileOptions extends Options {
     /**
      * The distance
      * 
-     * @param string $distance The distance
+     * @param integer $distance The distance
      * @return $this Fluent Builder
      */
     public function setDistance($distance) {
@@ -251,6 +260,28 @@ class ReadMobileOptions extends Options {
      */
     public function setInLata($inLata) {
         $this->options['inLata'] = $inLata;
+        return $this;
+    }
+
+    /**
+     * The in_locality
+     * 
+     * @param string $inLocality The in_locality
+     * @return $this Fluent Builder
+     */
+    public function setInLocality($inLocality) {
+        $this->options['inLocality'] = $inLocality;
+        return $this;
+    }
+
+    /**
+     * The fax_enabled
+     * 
+     * @param boolean $faxEnabled The fax_enabled
+     * @return $this Fluent Builder
+     */
+    public function setFaxEnabled($faxEnabled) {
+        $this->options['faxEnabled'] = $faxEnabled;
         return $this;
     }
 

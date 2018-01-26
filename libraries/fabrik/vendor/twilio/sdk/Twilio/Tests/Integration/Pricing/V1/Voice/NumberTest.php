@@ -18,16 +18,16 @@ use Twilio\Tests\Request;
 class NumberTest extends HolodeckTestCase {
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->pricing->v1->voice
-                                      ->numbers("+987654321")->fetch();
+                                      ->numbers("+15017122661")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
-            'https://pricing.twilio.com/v1/Voice/Numbers/%2B987654321'
+            'https://pricing.twilio.com/v1/Voice/Numbers/%2B15017122661'
         ));
     }
 
@@ -53,10 +53,10 @@ class NumberTest extends HolodeckTestCase {
             }
             '
         ));
-        
+
         $actual = $this->twilio->pricing->v1->voice
-                                            ->numbers("+987654321")->fetch();
-        
+                                            ->numbers("+15017122661")->fetch();
+
         $this->assertNotNull($actual);
     }
 }

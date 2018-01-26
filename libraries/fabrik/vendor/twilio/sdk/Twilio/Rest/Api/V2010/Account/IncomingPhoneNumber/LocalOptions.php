@@ -14,13 +14,14 @@ use Twilio\Values;
 
 abstract class LocalOptions {
     /**
-     * @param string $beta The beta
+     * @param boolean $beta The beta
      * @param string $friendlyName The friendly_name
      * @param string $phoneNumber The phone_number
+     * @param string $origin The origin
      * @return ReadLocalOptions Options builder
      */
-    public static function read($beta = Values::NONE, $friendlyName = Values::NONE, $phoneNumber = Values::NONE) {
-        return new ReadLocalOptions($beta, $friendlyName, $phoneNumber);
+    public static function read($beta = Values::NONE, $friendlyName = Values::NONE, $phoneNumber = Values::NONE, $origin = Values::NONE) {
+        return new ReadLocalOptions($beta, $friendlyName, $phoneNumber, $origin);
     }
 
     /**
@@ -34,34 +35,38 @@ abstract class LocalOptions {
      * @param string $statusCallback The status_callback
      * @param string $statusCallbackMethod The status_callback_method
      * @param string $voiceApplicationSid The voice_application_sid
-     * @param string $voiceCallerIdLookup The voice_caller_id_lookup
+     * @param boolean $voiceCallerIdLookup The voice_caller_id_lookup
      * @param string $voiceFallbackMethod The voice_fallback_method
      * @param string $voiceFallbackUrl The voice_fallback_url
      * @param string $voiceMethod The voice_method
      * @param string $voiceUrl The voice_url
+     * @param string $identitySid The identity_sid
+     * @param string $addressSid The address_sid
      * @return CreateLocalOptions Options builder
      */
-    public static function create($apiVersion = Values::NONE, $friendlyName = Values::NONE, $smsApplicationSid = Values::NONE, $smsFallbackMethod = Values::NONE, $smsFallbackUrl = Values::NONE, $smsMethod = Values::NONE, $smsUrl = Values::NONE, $statusCallback = Values::NONE, $statusCallbackMethod = Values::NONE, $voiceApplicationSid = Values::NONE, $voiceCallerIdLookup = Values::NONE, $voiceFallbackMethod = Values::NONE, $voiceFallbackUrl = Values::NONE, $voiceMethod = Values::NONE, $voiceUrl = Values::NONE) {
-        return new CreateLocalOptions($apiVersion, $friendlyName, $smsApplicationSid, $smsFallbackMethod, $smsFallbackUrl, $smsMethod, $smsUrl, $statusCallback, $statusCallbackMethod, $voiceApplicationSid, $voiceCallerIdLookup, $voiceFallbackMethod, $voiceFallbackUrl, $voiceMethod, $voiceUrl);
+    public static function create($apiVersion = Values::NONE, $friendlyName = Values::NONE, $smsApplicationSid = Values::NONE, $smsFallbackMethod = Values::NONE, $smsFallbackUrl = Values::NONE, $smsMethod = Values::NONE, $smsUrl = Values::NONE, $statusCallback = Values::NONE, $statusCallbackMethod = Values::NONE, $voiceApplicationSid = Values::NONE, $voiceCallerIdLookup = Values::NONE, $voiceFallbackMethod = Values::NONE, $voiceFallbackUrl = Values::NONE, $voiceMethod = Values::NONE, $voiceUrl = Values::NONE, $identitySid = Values::NONE, $addressSid = Values::NONE) {
+        return new CreateLocalOptions($apiVersion, $friendlyName, $smsApplicationSid, $smsFallbackMethod, $smsFallbackUrl, $smsMethod, $smsUrl, $statusCallback, $statusCallbackMethod, $voiceApplicationSid, $voiceCallerIdLookup, $voiceFallbackMethod, $voiceFallbackUrl, $voiceMethod, $voiceUrl, $identitySid, $addressSid);
     }
 }
 
 class ReadLocalOptions extends Options {
     /**
-     * @param string $beta The beta
+     * @param boolean $beta The beta
      * @param string $friendlyName The friendly_name
      * @param string $phoneNumber The phone_number
+     * @param string $origin The origin
      */
-    public function __construct($beta = Values::NONE, $friendlyName = Values::NONE, $phoneNumber = Values::NONE) {
+    public function __construct($beta = Values::NONE, $friendlyName = Values::NONE, $phoneNumber = Values::NONE, $origin = Values::NONE) {
         $this->options['beta'] = $beta;
         $this->options['friendlyName'] = $friendlyName;
         $this->options['phoneNumber'] = $phoneNumber;
+        $this->options['origin'] = $origin;
     }
 
     /**
      * The beta
      * 
-     * @param string $beta The beta
+     * @param boolean $beta The beta
      * @return $this Fluent Builder
      */
     public function setBeta($beta) {
@@ -88,6 +93,17 @@ class ReadLocalOptions extends Options {
      */
     public function setPhoneNumber($phoneNumber) {
         $this->options['phoneNumber'] = $phoneNumber;
+        return $this;
+    }
+
+    /**
+     * The origin
+     * 
+     * @param string $origin The origin
+     * @return $this Fluent Builder
+     */
+    public function setOrigin($origin) {
+        $this->options['origin'] = $origin;
         return $this;
     }
 
@@ -119,13 +135,15 @@ class CreateLocalOptions extends Options {
      * @param string $statusCallback The status_callback
      * @param string $statusCallbackMethod The status_callback_method
      * @param string $voiceApplicationSid The voice_application_sid
-     * @param string $voiceCallerIdLookup The voice_caller_id_lookup
+     * @param boolean $voiceCallerIdLookup The voice_caller_id_lookup
      * @param string $voiceFallbackMethod The voice_fallback_method
      * @param string $voiceFallbackUrl The voice_fallback_url
      * @param string $voiceMethod The voice_method
      * @param string $voiceUrl The voice_url
+     * @param string $identitySid The identity_sid
+     * @param string $addressSid The address_sid
      */
-    public function __construct($apiVersion = Values::NONE, $friendlyName = Values::NONE, $smsApplicationSid = Values::NONE, $smsFallbackMethod = Values::NONE, $smsFallbackUrl = Values::NONE, $smsMethod = Values::NONE, $smsUrl = Values::NONE, $statusCallback = Values::NONE, $statusCallbackMethod = Values::NONE, $voiceApplicationSid = Values::NONE, $voiceCallerIdLookup = Values::NONE, $voiceFallbackMethod = Values::NONE, $voiceFallbackUrl = Values::NONE, $voiceMethod = Values::NONE, $voiceUrl = Values::NONE) {
+    public function __construct($apiVersion = Values::NONE, $friendlyName = Values::NONE, $smsApplicationSid = Values::NONE, $smsFallbackMethod = Values::NONE, $smsFallbackUrl = Values::NONE, $smsMethod = Values::NONE, $smsUrl = Values::NONE, $statusCallback = Values::NONE, $statusCallbackMethod = Values::NONE, $voiceApplicationSid = Values::NONE, $voiceCallerIdLookup = Values::NONE, $voiceFallbackMethod = Values::NONE, $voiceFallbackUrl = Values::NONE, $voiceMethod = Values::NONE, $voiceUrl = Values::NONE, $identitySid = Values::NONE, $addressSid = Values::NONE) {
         $this->options['apiVersion'] = $apiVersion;
         $this->options['friendlyName'] = $friendlyName;
         $this->options['smsApplicationSid'] = $smsApplicationSid;
@@ -141,6 +159,8 @@ class CreateLocalOptions extends Options {
         $this->options['voiceFallbackUrl'] = $voiceFallbackUrl;
         $this->options['voiceMethod'] = $voiceMethod;
         $this->options['voiceUrl'] = $voiceUrl;
+        $this->options['identitySid'] = $identitySid;
+        $this->options['addressSid'] = $addressSid;
     }
 
     /**
@@ -256,7 +276,7 @@ class CreateLocalOptions extends Options {
     /**
      * The voice_caller_id_lookup
      * 
-     * @param string $voiceCallerIdLookup The voice_caller_id_lookup
+     * @param boolean $voiceCallerIdLookup The voice_caller_id_lookup
      * @return $this Fluent Builder
      */
     public function setVoiceCallerIdLookup($voiceCallerIdLookup) {
@@ -305,6 +325,28 @@ class CreateLocalOptions extends Options {
      */
     public function setVoiceUrl($voiceUrl) {
         $this->options['voiceUrl'] = $voiceUrl;
+        return $this;
+    }
+
+    /**
+     * The identity_sid
+     * 
+     * @param string $identitySid The identity_sid
+     * @return $this Fluent Builder
+     */
+    public function setIdentitySid($identitySid) {
+        $this->options['identitySid'] = $identitySid;
+        return $this;
+    }
+
+    /**
+     * The address_sid
+     * 
+     * @param string $addressSid The address_sid
+     * @return $this Fluent Builder
+     */
+    public function setAddressSid($addressSid) {
+        $this->options['addressSid'] = $addressSid;
         return $this;
     }
 

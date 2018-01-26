@@ -11,6 +11,7 @@ namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -24,12 +25,10 @@ class ConferenceList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
-        
+        $this->solution = array('accountSid' => $accountSid, );
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Conferences.json';
     }
 
@@ -54,9 +53,9 @@ class ConferenceList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -76,7 +75,7 @@ class ConferenceList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return ConferenceInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -93,25 +92,41 @@ class ConferenceList extends ListResource {
     public function page($options = array(), $pageSize = Values::NONE, $pageToken = Values::NONE, $pageNumber = Values::NONE) {
         $options = new Values($options);
         $params = Values::of(array(
-            'DateCreated<' => $options['dateCreatedBefore'],
-            'DateCreated' => $options['dateCreated'],
-            'DateCreated>' => $options['dateCreatedAfter'],
-            'DateUpdated<' => $options['dateUpdatedBefore'],
-            'DateUpdated' => $options['dateUpdated'],
-            'DateUpdated>' => $options['dateUpdatedAfter'],
+            'DateCreated<' => Serialize::iso8601Date($options['dateCreatedBefore']),
+            'DateCreated' => Serialize::iso8601Date($options['dateCreated']),
+            'DateCreated>' => Serialize::iso8601Date($options['dateCreatedAfter']),
+            'DateUpdated<' => Serialize::iso8601Date($options['dateUpdatedBefore']),
+            'DateUpdated' => Serialize::iso8601Date($options['dateUpdated']),
+            'DateUpdated>' => Serialize::iso8601Date($options['dateUpdatedAfter']),
             'FriendlyName' => $options['friendlyName'],
             'Status' => $options['status'],
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new ConferencePage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of ConferenceInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of ConferenceInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new ConferencePage($this->version, $response, $this->solution);
     }
 
@@ -122,11 +137,7 @@ class ConferenceList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\ConferenceContext 
      */
     public function getContext($sid) {
-        return new ConferenceContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $sid
-        );
+        return new ConferenceContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

@@ -15,6 +15,7 @@ use Twilio\Options;
 use Twilio\Rest\IpMessaging\V1\Service\ChannelList;
 use Twilio\Rest\IpMessaging\V1\Service\RoleList;
 use Twilio\Rest\IpMessaging\V1\Service\UserList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -40,12 +41,10 @@ class ServiceContext extends InstanceContext {
      */
     public function __construct(Version $version, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('sid' => $sid, );
+
         $this->uri = '/Services/' . rawurlencode($sid) . '';
     }
 
@@ -56,18 +55,14 @@ class ServiceContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
-        return new ServiceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
+
+        return new ServiceInstance($this->version, $payload, $this->solution['sid']);
     }
 
     /**
@@ -87,30 +82,88 @@ class ServiceContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'FriendlyName' => $options['friendlyName'],
             'DefaultServiceRoleSid' => $options['defaultServiceRoleSid'],
             'DefaultChannelRoleSid' => $options['defaultChannelRoleSid'],
             'DefaultChannelCreatorRoleSid' => $options['defaultChannelCreatorRoleSid'],
-            'ReadStatusEnabled' => $options['readStatusEnabled'],
+            'ReadStatusEnabled' => Serialize::booleanToString($options['readStatusEnabled']),
+            'ReachabilityEnabled' => Serialize::booleanToString($options['reachabilityEnabled']),
             'TypingIndicatorTimeout' => $options['typingIndicatorTimeout'],
             'ConsumptionReportInterval' => $options['consumptionReportInterval'],
-            'Webhooks' => $options['webhooks'],
+            'Notifications.NewMessage.Enabled' => Serialize::booleanToString($options['notificationsNewMessageEnabled']),
+            'Notifications.NewMessage.Template' => $options['notificationsNewMessageTemplate'],
+            'Notifications.AddedToChannel.Enabled' => Serialize::booleanToString($options['notificationsAddedToChannelEnabled']),
+            'Notifications.AddedToChannel.Template' => $options['notificationsAddedToChannelTemplate'],
+            'Notifications.RemovedFromChannel.Enabled' => Serialize::booleanToString($options['notificationsRemovedFromChannelEnabled']),
+            'Notifications.RemovedFromChannel.Template' => $options['notificationsRemovedFromChannelTemplate'],
+            'Notifications.InvitedToChannel.Enabled' => Serialize::booleanToString($options['notificationsInvitedToChannelEnabled']),
+            'Notifications.InvitedToChannel.Template' => $options['notificationsInvitedToChannelTemplate'],
+            'PreWebhookUrl' => $options['preWebhookUrl'],
+            'PostWebhookUrl' => $options['postWebhookUrl'],
+            'WebhookMethod' => $options['webhookMethod'],
+            'WebhookFilters' => Serialize::map($options['webhookFilters'], function($e) { return $e; }),
+            'Webhooks.OnMessageSend.Url' => $options['webhooksOnMessageSendUrl'],
+            'Webhooks.OnMessageSend.Method' => $options['webhooksOnMessageSendMethod'],
+            'Webhooks.OnMessageSend.Format' => $options['webhooksOnMessageSendFormat'],
+            'Webhooks.OnMessageUpdate.Url' => $options['webhooksOnMessageUpdateUrl'],
+            'Webhooks.OnMessageUpdate.Method' => $options['webhooksOnMessageUpdateMethod'],
+            'Webhooks.OnMessageUpdate.Format' => $options['webhooksOnMessageUpdateFormat'],
+            'Webhooks.OnMessageRemove.Url' => $options['webhooksOnMessageRemoveUrl'],
+            'Webhooks.OnMessageRemove.Method' => $options['webhooksOnMessageRemoveMethod'],
+            'Webhooks.OnMessageRemove.Format' => $options['webhooksOnMessageRemoveFormat'],
+            'Webhooks.OnChannelAdd.Url' => $options['webhooksOnChannelAddUrl'],
+            'Webhooks.OnChannelAdd.Method' => $options['webhooksOnChannelAddMethod'],
+            'Webhooks.OnChannelAdd.Format' => $options['webhooksOnChannelAddFormat'],
+            'Webhooks.OnChannelDestroy.Url' => $options['webhooksOnChannelDestroyUrl'],
+            'Webhooks.OnChannelDestroy.Method' => $options['webhooksOnChannelDestroyMethod'],
+            'Webhooks.OnChannelDestroy.Format' => $options['webhooksOnChannelDestroyFormat'],
+            'Webhooks.OnChannelUpdate.Url' => $options['webhooksOnChannelUpdateUrl'],
+            'Webhooks.OnChannelUpdate.Method' => $options['webhooksOnChannelUpdateMethod'],
+            'Webhooks.OnChannelUpdate.Format' => $options['webhooksOnChannelUpdateFormat'],
+            'Webhooks.OnMemberAdd.Url' => $options['webhooksOnMemberAddUrl'],
+            'Webhooks.OnMemberAdd.Method' => $options['webhooksOnMemberAddMethod'],
+            'Webhooks.OnMemberAdd.Format' => $options['webhooksOnMemberAddFormat'],
+            'Webhooks.OnMemberRemove.Url' => $options['webhooksOnMemberRemoveUrl'],
+            'Webhooks.OnMemberRemove.Method' => $options['webhooksOnMemberRemoveMethod'],
+            'Webhooks.OnMemberRemove.Format' => $options['webhooksOnMemberRemoveFormat'],
+            'Webhooks.OnMessageSent.Url' => $options['webhooksOnMessageSentUrl'],
+            'Webhooks.OnMessageSent.Method' => $options['webhooksOnMessageSentMethod'],
+            'Webhooks.OnMessageSent.Format' => $options['webhooksOnMessageSentFormat'],
+            'Webhooks.OnMessageUpdated.Url' => $options['webhooksOnMessageUpdatedUrl'],
+            'Webhooks.OnMessageUpdated.Method' => $options['webhooksOnMessageUpdatedMethod'],
+            'Webhooks.OnMessageUpdated.Format' => $options['webhooksOnMessageUpdatedFormat'],
+            'Webhooks.OnMessageRemoved.Url' => $options['webhooksOnMessageRemovedUrl'],
+            'Webhooks.OnMessageRemoved.Method' => $options['webhooksOnMessageRemovedMethod'],
+            'Webhooks.OnMessageRemoved.Format' => $options['webhooksOnMessageRemovedFormat'],
+            'Webhooks.OnChannelAdded.Url' => $options['webhooksOnChannelAddedUrl'],
+            'Webhooks.OnChannelAdded.Method' => $options['webhooksOnChannelAddedMethod'],
+            'Webhooks.OnChannelAdded.Format' => $options['webhooksOnChannelAddedFormat'],
+            'Webhooks.OnChannelDestroyed.Url' => $options['webhooksOnChannelDestroyedUrl'],
+            'Webhooks.OnChannelDestroyed.Method' => $options['webhooksOnChannelDestroyedMethod'],
+            'Webhooks.OnChannelDestroyed.Format' => $options['webhooksOnChannelDestroyedFormat'],
+            'Webhooks.OnChannelUpdated.Url' => $options['webhooksOnChannelUpdatedUrl'],
+            'Webhooks.OnChannelUpdated.Method' => $options['webhooksOnChannelUpdatedMethod'],
+            'Webhooks.OnChannelUpdated.Format' => $options['webhooksOnChannelUpdatedFormat'],
+            'Webhooks.OnMemberAdded.Url' => $options['webhooksOnMemberAddedUrl'],
+            'Webhooks.OnMemberAdded.Method' => $options['webhooksOnMemberAddedMethod'],
+            'Webhooks.OnMemberAdded.Format' => $options['webhooksOnMemberAddedFormat'],
+            'Webhooks.OnMemberRemoved.Url' => $options['webhooksOnMemberRemovedUrl'],
+            'Webhooks.OnMemberRemoved.Method' => $options['webhooksOnMemberRemovedMethod'],
+            'Webhooks.OnMemberRemoved.Format' => $options['webhooksOnMemberRemovedFormat'],
+            'Limits.ChannelMembers' => $options['limitsChannelMembers'],
+            'Limits.UserChannels' => $options['limitsUserChannels'],
         ));
-        
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new ServiceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
+
+        return new ServiceInstance($this->version, $payload, $this->solution['sid']);
     }
 
     /**
@@ -120,12 +173,9 @@ class ServiceContext extends InstanceContext {
      */
     protected function getChannels() {
         if (!$this->_channels) {
-            $this->_channels = new ChannelList(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->_channels = new ChannelList($this->version, $this->solution['sid']);
         }
-        
+
         return $this->_channels;
     }
 
@@ -136,12 +186,9 @@ class ServiceContext extends InstanceContext {
      */
     protected function getRoles() {
         if (!$this->_roles) {
-            $this->_roles = new RoleList(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->_roles = new RoleList($this->version, $this->solution['sid']);
         }
-        
+
         return $this->_roles;
     }
 
@@ -152,12 +199,9 @@ class ServiceContext extends InstanceContext {
      */
     protected function getUsers() {
         if (!$this->_users) {
-            $this->_users = new UserList(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->_users = new UserList($this->version, $this->solution['sid']);
         }
-        
+
         return $this->_users;
     }
 
@@ -173,7 +217,7 @@ class ServiceContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -190,7 +234,7 @@ class ServiceContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

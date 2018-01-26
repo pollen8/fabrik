@@ -12,6 +12,7 @@ namespace Twilio\Rest\Api\V2010\Account\Usage\Record;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -25,7 +26,7 @@ use Twilio\Version;
  * @property string price
  * @property string priceUnit
  * @property \DateTime startDate
- * @property string subresourceUris
+ * @property array subresourceUris
  * @property string uri
  * @property string usage
  * @property string usageUnit
@@ -42,28 +43,26 @@ class ThisMonthInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'apiVersion' => $payload['api_version'],
-            'category' => $payload['category'],
-            'count' => $payload['count'],
-            'countUnit' => $payload['count_unit'],
-            'description' => $payload['description'],
-            'endDate' => Deserialize::iso8601DateTime($payload['end_date']),
-            'price' => $payload['price'],
-            'priceUnit' => $payload['price_unit'],
-            'startDate' => Deserialize::iso8601DateTime($payload['start_date']),
-            'subresourceUris' => $payload['subresource_uris'],
-            'uri' => $payload['uri'],
-            'usage' => $payload['usage'],
-            'usageUnit' => $payload['usage_unit'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'category' => Values::array_get($payload, 'category'),
+            'count' => Values::array_get($payload, 'count'),
+            'countUnit' => Values::array_get($payload, 'count_unit'),
+            'description' => Values::array_get($payload, 'description'),
+            'endDate' => Deserialize::dateTime(Values::array_get($payload, 'end_date')),
+            'price' => Values::array_get($payload, 'price'),
+            'priceUnit' => Values::array_get($payload, 'price_unit'),
+            'startDate' => Deserialize::dateTime(Values::array_get($payload, 'start_date')),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'usage' => Values::array_get($payload, 'usage'),
+            'usageUnit' => Values::array_get($payload, 'usage_unit'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-        );
+
+        $this->solution = array('accountSid' => $accountSid, );
     }
 
     /**
@@ -77,12 +76,12 @@ class ThisMonthInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

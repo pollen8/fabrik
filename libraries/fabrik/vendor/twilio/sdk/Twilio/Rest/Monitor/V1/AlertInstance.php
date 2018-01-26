@@ -12,6 +12,7 @@ namespace Twilio\Rest\Monitor\V1;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -44,31 +45,29 @@ class AlertInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'alertText' => $payload['alert_text'],
-            'apiVersion' => $payload['api_version'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateGenerated' => Deserialize::iso8601DateTime($payload['date_generated']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'errorCode' => $payload['error_code'],
-            'logLevel' => $payload['log_level'],
-            'moreInfo' => $payload['more_info'],
-            'requestMethod' => $payload['request_method'],
-            'requestUrl' => $payload['request_url'],
-            'resourceSid' => $payload['resource_sid'],
-            'sid' => $payload['sid'],
-            'url' => $payload['url'],
-            'requestVariables' => array_key_exists('request_variables', $payload) ? $payload['request_variables'] : null,
-            'responseBody' => array_key_exists('response_body', $payload) ? $payload['response_body'] : null,
-            'responseHeaders' => array_key_exists('response_headers', $payload) ? $payload['response_headers'] : null,
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'alertText' => Values::array_get($payload, 'alert_text'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateGenerated' => Deserialize::dateTime(Values::array_get($payload, 'date_generated')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'errorCode' => Values::array_get($payload, 'error_code'),
+            'logLevel' => Values::array_get($payload, 'log_level'),
+            'moreInfo' => Values::array_get($payload, 'more_info'),
+            'requestMethod' => Values::array_get($payload, 'request_method'),
+            'requestUrl' => Values::array_get($payload, 'request_url'),
+            'resourceSid' => Values::array_get($payload, 'resource_sid'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'requestVariables' => Values::array_get($payload, 'request_variables'),
+            'responseBody' => Values::array_get($payload, 'response_body'),
+            'responseHeaders' => Values::array_get($payload, 'response_headers'),
         );
-        
-        $this->solution = array(
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -79,12 +78,9 @@ class AlertInstance extends InstanceResource {
      */
     protected function proxy() {
         if (!$this->context) {
-            $this->context = new AlertContext(
-                $this->version,
-                $this->solution['sid']
-            );
+            $this->context = new AlertContext($this->version, $this->solution['sid']);
         }
-        
+
         return $this->context;
     }
 
@@ -117,12 +113,12 @@ class AlertInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

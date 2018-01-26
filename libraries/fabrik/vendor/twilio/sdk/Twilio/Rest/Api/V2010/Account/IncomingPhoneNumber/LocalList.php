@@ -11,6 +11,7 @@ namespace Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -19,19 +20,16 @@ class LocalList extends ListResource {
      * Construct the LocalList
      * 
      * @param Version $version Version that contains the resource
-     * @param string $ownerAccountSid A 34 character string that uniquely
-     *                                identifies this resource.
+     * @param string $accountSid The unique sid that identifies this account
      * @return \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber\LocalList 
      */
-    public function __construct(Version $version, $ownerAccountSid) {
+    public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'ownerAccountSid' => $ownerAccountSid,
-        );
-        
-        $this->uri = '/Accounts/' . rawurlencode($ownerAccountSid) . '/IncomingPhoneNumbers/Local.json';
+        $this->solution = array('accountSid' => $accountSid, );
+
+        $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/IncomingPhoneNumbers/Local.json';
     }
 
     /**
@@ -55,9 +53,9 @@ class LocalList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -77,7 +75,7 @@ class LocalList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return LocalInstance[] Array of results
      */
-    public function read($options = array(), $limit = null, $pageSize = Values::NONE) {
+    public function read($options = array(), $limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
@@ -94,20 +92,37 @@ class LocalList extends ListResource {
     public function page($options = array(), $pageSize = Values::NONE, $pageToken = Values::NONE, $pageNumber = Values::NONE) {
         $options = new Values($options);
         $params = Values::of(array(
-            'Beta' => $options['beta'],
+            'Beta' => Serialize::booleanToString($options['beta']),
             'FriendlyName' => $options['friendlyName'],
             'PhoneNumber' => $options['phoneNumber'],
+            'Origin' => $options['origin'],
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new LocalPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of LocalInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of LocalInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new LocalPage($this->version, $response, $this->solution);
     }
 
@@ -120,7 +135,7 @@ class LocalList extends ListResource {
      */
     public function create($phoneNumber, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'PhoneNumber' => $phoneNumber,
             'ApiVersion' => $options['apiVersion'],
@@ -133,25 +148,23 @@ class LocalList extends ListResource {
             'StatusCallback' => $options['statusCallback'],
             'StatusCallbackMethod' => $options['statusCallbackMethod'],
             'VoiceApplicationSid' => $options['voiceApplicationSid'],
-            'VoiceCallerIdLookup' => $options['voiceCallerIdLookup'],
+            'VoiceCallerIdLookup' => Serialize::booleanToString($options['voiceCallerIdLookup']),
             'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
             'VoiceFallbackUrl' => $options['voiceFallbackUrl'],
             'VoiceMethod' => $options['voiceMethod'],
             'VoiceUrl' => $options['voiceUrl'],
+            'IdentitySid' => $options['identitySid'],
+            'AddressSid' => $options['addressSid'],
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new LocalInstance(
-            $this->version,
-            $payload,
-            $this->solution['ownerAccountSid']
-        );
+
+        return new LocalInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
     /**

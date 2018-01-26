@@ -1,15 +1,402 @@
 # Upgrade Guide
 
-_After `5.1.1` all `MINOR` and `MAJOR` version bumps will have upgrade notes 
+_After `5.1.1` all `MINOR` and `MAJOR` version bumps will have upgrade notes
 posted here._
 
-[2015-09-15] 5.3.x to 5.4.x
+[2017-09-28] 5.1x.x to 5.15.x
+---------------------------
+
+### CHANGED - `Body` parameter on Chat `Message` creation is no longer required.
+
+#### Rationale
+This was changed to add support for sending media in Chat messages, users can now either provide a `body` or a `media_sid`.
+
+#### 5.1x.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v2->service('IS123')->channel('CH123')->message->create("this is the body");
+```
+
+#### 5.15.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v2->service('IS123')->channel('CH123')->message->create(array("body"=>"this is the body"));
+```
+
+
+[2017-05-22] 5.9.x to 5.10.x
+---------------------------
+
+### CHANGED - Rename room `Recordings` resource to `RoomRecordings` to avoid class name conflict (backwards incompatible).
+
+[2017-03-03] 5.5.x to 5.6.x
+---------------------------
+
+### CHANGED - Removed end of life Sandbox Resource
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->api->v2010->sandbox->read();
+```
+
+#### 5.6.x
+Not Supported.
+
+#### Rationale
+The Sandbox resource has been removed from the API and is no longer supported.
+
+### CHANGED - Accounts property on Client now references Accounts subdomain
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+// Access api.twilio.com/2010-04-01/Accounts
+$client->accounts->read();
+```
+
+#### 5.6.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+// Access accounts.twilio.com/v1
+$client->accounts;
+// Access new PublicKeys resource
+$client->accounts->credentials->publicKey->read();
+
+// Access api.twilio.com/2010-04-01/Accounts
+$client->api->v2010->accounts->read();
+```
+
+#### Rationale
+`accounts.twilio.com` is now publicly available, following our convention of
+accessing subdomains of twilio via `client->{subdomain}` we replaced the shortcut
+to 2010 Accounts with a reference to the new Accounts subdomain. 2010 Accounts
+are still accessible the long way `client->api->v2010->accounts` or `client->api->accounts`.
+
+### CHANGED - Chat Messages listing methods now take options array as first parameter
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->messages->read(10); // limit to 10 messages
+```
+
+#### 5.6.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->messages->read(array(), 10); // limit to 10 messages
+$client->chat->messages->read(array(
+    "order" => "asc"
+), 10); // limit to 10 messages and filter by order
+```
+
+#### Rationale
+Options arrays are placed at the beginning of the function signature if the resource accepts optional params and is ommited if the resource does not accept any. Chat messages previously did not accept any optional params and now do.
+
+
+[2017-02-01] 5.4.x to 5.5.x
+---------------------------
+
+### CHANGED - Removed uri field from Pricing Phone Number Countries resource
+  - the `uri` property on this object has been removed and is no longer returned by the api.
+  - the `url` property is still present and unchanged and should be used instead of the `uri` property.
+
+#### Rationale
+This corrects a oversight in our code generation, new style resources such as this use `url` and `links` properties
+while legacy resources use `uri` and `subresource_uris`. Previously we were incorrectly returning both `uri` and `url`.
+
+### CHANGED - Use DateTime objects for dates and remove unsupported date query param filters
+  - Listing some resources and filtering by `StartDate<`, `StartDate>`, `EndDate<`, and `EndDate>` will no longer work.
+  - Filtering by `StartDate` and `EndDate` will continue to work, these dates are inclusive.
+  - `StartDate` and `EndDate` params are now `DateTime` objects rather than `strings`. They will automcatically be converted to UTC timezone, the original DateTime object will not be modified.
+
+#### Affected Resources
+  - All Account Usage Record Resources (Last Month, This Month, Yesterday, All Time, Monthly, Yearly, Today, Daily).
+  - Monitor Alerts, Events.
+  - Taskrouter All Statistics endpoints (Workspace, TaskQueues, Workers...), Workspace Events.
+  - Call Feedback Summaries.
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->usage->records->read(array(
+    "StartDate" => "1999-09-07",
+    "EndDate<" => "2000-01-01"      // Allowed but would have had no effect.
+));
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$startDate = new DateTime("now", new DateTimeZone("America/Los_Angeles"));
+$endDate = clone $startDate;
+$endDate->add(new DateInterval("P2D")); // Add 2 days
+
+$client = new Client();
+$client->usage->records->read(array(
+    "StartDate" => $startDate,
+    "EndDate" => $endDate
+));
+
+// Passing strings will still work
+$client->usage->records->read(array(
+    "StartDate" => "1999-09-07" // OK
+));
+```
+
+#### Rationale
+Not serializing API Dates into DateTimes was an oversight initially, removing library support for date inequality filters (ie `StartDate>` etc) brings the library into alignment with the API behavior. Only select resources on our 2010 API support date inequalities, date inequalities were included on unsupported resources mistakenly and that functionality would never have worked anyways.
+
+### CHANGED - Chat Members and Channels List Takes Optional Parameters
+  - Reading members of channel and listing channels now takes an array of options as is its first argument.
+  - Affects the `read`, `stream`, and `page` methods of MemberList.
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v1->services('IS123')->channels('CH123')->members->read(10);
+$client->chat->v1->services('IS123')->channels->read(10);
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v1->services('IS123')->channels('CH123')->members->read(array(), 10);
+$client->chat->v1->services('IS123')->channels->read(array(), 10);
+$client->chat->v1->services('IS123')->channels('CH123')->members->read(array('type' => 'public'), 10);
+```
+
+### CHANGED - Remove ability to update type on Twilio Chat Channels
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v1->services('IS123')->channels('CH123')->update(array('type'=>'public'));
+```
+
+#### 5.5.x
+Not Supported
+
+#### Rationale
+Make library consistent with public API, changing channel type was never supported and wouldnt have worked in previous versions anyways.
+
+### CHANGED - Chat Message Body parameter is no longer required on updates
+  - Updating a message body no longer requires passing the body directly and is not required.
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v1->services('IS123')->channels('CH123')->messages('IM123')->update('new body', array());
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->chat->v1->services('IS123')->channels('CH123')->messages('IM123')->update(array('body' => 'new body'));
+```
+
+#### Rationale
+This is a correction for what the API actually expects.
+
+### CHANGED - Taskrouter Activity demote some parameters to be optional
+  - Updating a taskrouter activity now optionally takes a `friendlyName` parameter (was previously required).
+  - Creating a taskrouter activity now optionally takes a `available` parameter (was previously required).
+  - Creating a taskrouter task now optional takes `workflowSid` and `attributes` (were both previously required).
+
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->taskrouter->v1->workspaces('WS123')->activities('WA123')->update('new friendly name');
+$client->taskrouter->v1->workspaces('WS123')->activities->create('new friendly name', true);
+$client->taskrouter->v1->workspaces('WS123')->tasks->create('attributes', 'WW123', array('timeout' => 10));
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->taskrouter->v1->workspaces('WS123')->activities('WA123')->update(array('friendlyName' => 'new friendly name'));
+$client->taskrouter->v1->workspaces('WS123')->activities->create('new friendly name', array('available' => true));
+$client->taskrouter->v1->workspaces('WS123')->tasks->create(array(
+    'attributes' => 'attributes',
+    'workflowSid' => 'WW123',
+    'timeout' => 10
+));
+```
+
+#### Rationale
+This is a correction for what the API actually expects.
+
+### CHANGED - Taskrouter Task list no longer filterable by TaskChannel
+  - Previous version incorrectly allowed setting a `taskChannel` on a `TaskReadOptions` object, this is no longer supported.
+
+#### Rationale
+This is a correction for what the API actually allows. Previous versions allowed this to be set but it would not have
+had any effect.
+
+### CHANGED - Rename getStatistics to getTaskQueueStatistics method on Taskrouter TaskQueues
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+
+// Get statistics for a single task queue
+$taskQueue = $client->taskrouter->v1->workspaces('WS123')->taskQueues('WQ123')->fetch();
+$taskQueueStatistics = $taskQueue->getStatistics();
+
+// Get statistics for all task queues
+$client->taskrouter->v1->workspaces('WS123')->taskQueues->getStatistics();
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+
+// Get statistics for a single task queue
+$taskQueue = $client->taskrouter->v1->workspaces('WS123')->taskQueues('WQ123')->fetch();
+$taskQueueStatistics = $taskQueue->getTaskQueueStatistics();
+
+// Get statistics for all task queues
+$client->taskrouter->v1->workspaces('WS123')->taskQueues->getTaskQueuesStatistics();
+```
+
+#### Rationale
+There was a naming conflict between TaskQueueStatistics and TaskQueuesStatistics. Both were trying to generate
+methods named `getStatistics`.
+
+### CHANGED - MMS Message Body parameter is now required on updates
+  - Updating a message body now requires passing the body directly and is required.
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->api->v2010->accounts('AC123')->messages('MM123')->update(array('body' => ''));
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->api->v2010->accounts('AC123')->messages('MM123')->update('');
+```
+
+#### Rationale
+This is used to redact a message body and the api expects the body parameter to be present, allowing
+this to be an optional parameter was an oversight.
+
+### CHANGED - Queues now require friendlyName parameter on creation
+  - Updating a message body now requires passing the body directly and is required.
+
+#### 5.4.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->api->v2010->accounts('AC123')->queues('QU123')->create(array('friendlyName' => 'Test'));
+```
+
+#### 5.5.x
+```php
+<?php
+
+use Twilio\Rest\Client;
+
+$client = new Client();
+$client->api->v2010->accounts('AC123')->queues('QU123')->create('Test', array());
+```
+
+#### Rationale
+This was made to enforce consistency with the API, the API will return a 400 if a friendlyName is not
+provided.
+
+
+[2016-09-15] 5.3.x to 5.4.x
 ---------------------------
 
 ### CHANGED - IP Messaging / Chat Roles Update
   - `RoleInstance::update(string $friendlyName, string[] $permission)` to `RoleInstance::update(string[] $permission)`
   - `RoleContext::update(string $friendlyName, string[] $permission)` to `RoleContext::update(string[] $permission)`
-  
+
 #### 5.3.x
 ```php
 <?php
@@ -37,7 +424,7 @@ Role Updates do not support updating the friendlyName.
 
 ### CHANGED - Page Load Exception
   - `Page::processResponse(Response $response) throws DeserializeException` to `Page::processResponse(Response $response) throws RestException`
-  
+
 #### 5.3.x
 ```php
 <?php
@@ -89,7 +476,7 @@ try {
 
 #### Rationale
 Exceptions were improved to include more information about what went wrong.  The
-`Page` class that is used by `read` and `stream` was missed, this bring `Page` 
+`Page` class that is used by `read` and `stream` was missed, this bring `Page`
 up to parity with other exceptions.
 
 The Exception class was changed to reflect that the failure is not in processing

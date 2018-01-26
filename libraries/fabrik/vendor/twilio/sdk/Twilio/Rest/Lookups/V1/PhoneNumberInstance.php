@@ -12,6 +12,7 @@ namespace Twilio\Rest\Lookups\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -20,7 +21,8 @@ use Twilio\Version;
  * @property string phoneNumber
  * @property string nationalFormat
  * @property string carrier
- * @property string addOns
+ * @property array addOns
+ * @property string url
  */
 class PhoneNumberInstance extends InstanceResource {
     /**
@@ -33,20 +35,19 @@ class PhoneNumberInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $phoneNumber = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'callerName' => $payload['caller_name'],
-            'countryCode' => $payload['country_code'],
-            'phoneNumber' => $payload['phone_number'],
-            'nationalFormat' => $payload['national_format'],
-            'carrier' => $payload['carrier'],
-            'addOns' => $payload['add_ons'],
+            'callerName' => Values::array_get($payload, 'caller_name'),
+            'countryCode' => Values::array_get($payload, 'country_code'),
+            'phoneNumber' => Values::array_get($payload, 'phone_number'),
+            'nationalFormat' => Values::array_get($payload, 'national_format'),
+            'carrier' => Values::array_get($payload, 'carrier'),
+            'addOns' => Values::array_get($payload, 'add_ons'),
+            'url' => Values::array_get($payload, 'url'),
         );
-        
-        $this->solution = array(
-            'phoneNumber' => $phoneNumber ?: $this->properties['phoneNumber'],
-        );
+
+        $this->solution = array('phoneNumber' => $phoneNumber ?: $this->properties['phoneNumber'], );
     }
 
     /**
@@ -58,12 +59,9 @@ class PhoneNumberInstance extends InstanceResource {
      */
     protected function proxy() {
         if (!$this->context) {
-            $this->context = new PhoneNumberContext(
-                $this->version,
-                $this->solution['phoneNumber']
-            );
+            $this->context = new PhoneNumberContext($this->version, $this->solution['phoneNumber']);
         }
-        
+
         return $this->context;
     }
 
@@ -74,9 +72,7 @@ class PhoneNumberInstance extends InstanceResource {
      * @return PhoneNumberInstance Fetched PhoneNumberInstance
      */
     public function fetch($options = array()) {
-        return $this->proxy()->fetch(
-            $options
-        );
+        return $this->proxy()->fetch($options);
     }
 
     /**
@@ -90,12 +86,12 @@ class PhoneNumberInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

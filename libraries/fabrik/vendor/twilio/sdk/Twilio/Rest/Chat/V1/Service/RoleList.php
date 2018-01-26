@@ -10,6 +10,7 @@
 namespace Twilio\Rest\Chat\V1\Service;
 
 use Twilio\ListResource;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -23,12 +24,10 @@ class RoleList extends ListResource {
      */
     public function __construct(Version $version, $serviceSid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'serviceSid' => $serviceSid,
-        );
-        
+        $this->solution = array('serviceSid' => $serviceSid, );
+
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Roles';
     }
 
@@ -44,21 +43,17 @@ class RoleList extends ListResource {
         $data = Values::of(array(
             'FriendlyName' => $friendlyName,
             'Type' => $type,
-            'Permission' => $permission,
+            'Permission' => Serialize::map($permission, function($e) { return $e; }),
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
-        return new RoleInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid']
-        );
+
+        return new RoleInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
     /**
@@ -81,9 +76,9 @@ class RoleList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -102,7 +97,7 @@ class RoleList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return RoleInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -121,13 +116,29 @@ class RoleList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new RolePage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of RoleInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of RoleInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new RolePage($this->version, $response, $this->solution);
     }
 
@@ -138,11 +149,7 @@ class RoleList extends ListResource {
      * @return \Twilio\Rest\Chat\V1\Service\RoleContext 
      */
     public function getContext($sid) {
-        return new RoleContext(
-            $this->version,
-            $this->solution['serviceSid'],
-            $sid
-        );
+        return new RoleContext($this->version, $this->solution['serviceSid'], $sid);
     }
 
     /**

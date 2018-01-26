@@ -22,10 +22,10 @@ class CountryList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array();
-        
+
         $this->uri = '/Messaging/Countries';
     }
 
@@ -49,9 +49,9 @@ class CountryList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -70,7 +70,7 @@ class CountryList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return CountryInstance[] Array of results
      */
-    public function read($limit = null, $pageSize = Values::NONE) {
+    public function read($limit = null, $pageSize = null) {
         return iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -89,13 +89,29 @@ class CountryList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new CountryPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of CountryInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of CountryInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new CountryPage($this->version, $response, $this->solution);
     }
 
@@ -106,10 +122,7 @@ class CountryList extends ListResource {
      * @return \Twilio\Rest\Pricing\V1\Messaging\CountryContext 
      */
     public function getContext($isoCountry) {
-        return new CountryContext(
-            $this->version,
-            $isoCountry
-        );
+        return new CountryContext($this->version, $isoCountry);
     }
 
     /**

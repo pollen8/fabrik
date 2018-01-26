@@ -10,6 +10,7 @@
 namespace Twilio\Rest\IpMessaging\V1\Service;
 
 use Twilio\InstanceContext;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -24,13 +25,10 @@ class RoleContext extends InstanceContext {
      */
     public function __construct(Version $version, $serviceSid, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
-        $this->solution = array(
-            'serviceSid' => $serviceSid,
-            'sid' => $sid,
-        );
-        
+        $this->solution = array('serviceSid' => $serviceSid, 'sid' => $sid, );
+
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Roles/' . rawurlencode($sid) . '';
     }
 
@@ -41,13 +39,13 @@ class RoleContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new RoleInstance(
             $this->version,
             $payload,
@@ -72,17 +70,15 @@ class RoleContext extends InstanceContext {
      * @return RoleInstance Updated RoleInstance
      */
     public function update($permission) {
-        $data = Values::of(array(
-            'Permission' => $permission,
-        ));
-        
+        $data = Values::of(array('Permission' => Serialize::map($permission, function($e) { return $e; }), ));
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new RoleInstance(
             $this->version,
             $payload,

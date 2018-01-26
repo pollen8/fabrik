@@ -18,14 +18,14 @@ use Twilio\Tests\Request;
 class RecordingTest extends HolodeckTestCase {
     public function testFetchRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->recordings("REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -38,35 +38,48 @@ class RecordingTest extends HolodeckTestCase {
             '
             {
                 "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "api_version": "2008-08-01",
+                "api_version": "2010-04-01",
                 "call_sid": "CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "date_created": "Mon, 22 Aug 2011 20:58:45 +0000",
-                "date_updated": "Mon, 22 Aug 2011 20:58:45 +0000",
-                "duration": "6",
-                "price": null,
+                "conference_sid": null,
+                "channels": 2,
+                "date_created": "Fri, 14 Oct 2016 21:56:34 +0000",
+                "date_updated": "Fri, 14 Oct 2016 21:56:38 +0000",
+                "start_time": "Fri, 14 Oct 2016 21:56:34 +0000",
+                "end_time": "Fri, 14 Oct 2016 21:56:38 +0000",
+                "price": "-0.0025",
+                "price_unit": "USD",
+                "duration": "4",
                 "sid": "REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json"
+                "encryption_details": {
+                    "encryption_public_key_sid": "CRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "encryption_cek": "OV4h6zrsxMIW7h0Zfqwfn6TI2GCNl54KALlg8wn8YB8KYZhXt6HlgvBWAmQTlfYVeLWydMiCewY0YkDDT1xmNe5huEo9vjuKBS5OmYK4CZkSx1NVv3XOGrZHpd2Pl/5WJHVhUK//AUO87uh5qnUP2E0KoLh1nyCLeGcEkXU0RfpPn/6nxjof/n6m6OzZOyeIRK4Oed5+rEtjqFDfqT0EVKjs6JAxv+f0DCc1xYRHl2yV8bahUPVKs+bHYdy4PVszFKa76M/Uae4jFA9Lv233JqWcxj+K2UoghuGhAFbV/JQIIswY2CBYI8JlVSifSqNEl9vvsTJ8bkVMm3MKbG2P7Q==",
+                    "encryption_iv": "8I2hhNIYNTrwxfHk"
+                },
+                "source": "StartCallRecordingAPI",
+                "status": "completed",
+                "error_code": null,
+                "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json"
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->recordings("REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        
+
         $this->assertNotNull($actual);
     }
 
     public function testDeleteRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->recordings("REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'delete',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json'
@@ -78,24 +91,24 @@ class RecordingTest extends HolodeckTestCase {
             204,
             null
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->recordings("REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->delete();
-        
+
         $this->assertTrue($actual);
     }
 
     public function testReadRequest() {
         $this->holodeck->mock(new Response(500, ''));
-        
+
         try {
             $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                      ->recordings->read();
         } catch (DeserializeException $e) {}
           catch (TwilioException $e) {}
-        
+
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json'
@@ -109,36 +122,46 @@ class RecordingTest extends HolodeckTestCase {
             {
                 "end": 0,
                 "first_page_uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0",
-                "last_page_uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0",
                 "next_page_uri": null,
-                "num_pages": 1,
                 "page": 0,
                 "page_size": 50,
                 "previous_page_uri": null,
                 "recordings": [
                     {
                         "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                        "api_version": "2008-08-01",
+                        "api_version": "2010-04-01",
                         "call_sid": "CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                        "date_created": "Mon, 22 Aug 2011 20:58:45 +0000",
-                        "date_updated": "Mon, 22 Aug 2011 20:58:45 +0000",
-                        "duration": "6",
-                        "price": null,
+                        "conference_sid": null,
+                        "channels": 2,
+                        "date_created": "Fri, 14 Oct 2016 21:56:34 +0000",
+                        "date_updated": "Fri, 14 Oct 2016 21:56:38 +0000",
+                        "start_time": "Fri, 14 Oct 2016 21:56:34 +0000",
+                        "end_time": "Fri, 14 Oct 2016 21:56:38 +0000",
+                        "price": "-0.0025",
+                        "price_unit": "USD",
+                        "duration": "4",
                         "sid": "REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                        "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json"
+                        "encryption_details": {
+                            "encryption_public_key_sid": "CRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                            "encryption_cek": "OV4h6zrsxMIW7h0Zfqwfn6TI2GCNl54KALlg8wn8YB8KYZhXt6HlgvBWAmQTlfYVeLWydMiCewY0YkDDT1xmNe5huEo9vjuKBS5OmYK4CZkSx1NVv3XOGrZHpd2Pl/5WJHVhUK//AUO87uh5qnUP2E0KoLh1nyCLeGcEkXU0RfpPn/6nxjof/n6m6OzZOyeIRK4Oed5+rEtjqFDfqT0EVKjs6JAxv+f0DCc1xYRHl2yV8bahUPVKs+bHYdy4PVszFKa76M/Uae4jFA9Lv233JqWcxj+K2UoghuGhAFbV/JQIIswY2CBYI8JlVSifSqNEl9vvsTJ8bkVMm3MKbG2P7Q==",
+                            "encryption_iv": "8I2hhNIYNTrwxfHk"
+                        },
+                        "source": "StartCallRecordingAPI",
+                        "status": "completed",
+                        "error_code": null,
+                        "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings/REaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json"
                     }
                 ],
                 "start": 0,
-                "total": 1,
                 "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0"
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->recordings->read();
-        
+
         $this->assertGreaterThan(0, count($actual));
     }
 
@@ -149,24 +172,21 @@ class RecordingTest extends HolodeckTestCase {
             {
                 "end": 0,
                 "first_page_uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0",
-                "last_page_uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0",
                 "next_page_uri": null,
-                "num_pages": 1,
                 "page": 0,
                 "page_size": 50,
                 "previous_page_uri": null,
                 "recordings": [],
                 "start": 0,
-                "total": 1,
                 "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Recordings.json?PageSize=50&Page=0"
             }
             '
         ));
-        
+
         $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->calls("CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                            ->recordings->read();
-        
+
         $this->assertNotNull($actual);
     }
 }

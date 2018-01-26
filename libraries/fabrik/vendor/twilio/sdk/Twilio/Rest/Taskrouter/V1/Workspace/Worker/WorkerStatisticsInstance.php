@@ -12,13 +12,15 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace\Worker;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
  * @property string accountSid
- * @property string cumulative
+ * @property array cumulative
  * @property string workerSid
  * @property string workspaceSid
+ * @property string url
  */
 class WorkerStatisticsInstance extends InstanceResource {
     /**
@@ -32,19 +34,17 @@ class WorkerStatisticsInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $workspaceSid, $workerSid) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'cumulative' => $payload['cumulative'],
-            'workerSid' => $payload['worker_sid'],
-            'workspaceSid' => $payload['workspace_sid'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'cumulative' => Values::array_get($payload, 'cumulative'),
+            'workerSid' => Values::array_get($payload, 'worker_sid'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'url' => Values::array_get($payload, 'url'),
         );
-        
-        $this->solution = array(
-            'workspaceSid' => $workspaceSid,
-            'workerSid' => $workerSid,
-        );
+
+        $this->solution = array('workspaceSid' => $workspaceSid, 'workerSid' => $workerSid, );
     }
 
     /**
@@ -61,7 +61,7 @@ class WorkerStatisticsInstance extends InstanceResource {
                 $this->solution['workerSid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -72,9 +72,7 @@ class WorkerStatisticsInstance extends InstanceResource {
      * @return WorkerStatisticsInstance Fetched WorkerStatisticsInstance
      */
     public function fetch($options = array()) {
-        return $this->proxy()->fetch(
-            $options
-        );
+        return $this->proxy()->fetch($options);
     }
 
     /**
@@ -88,12 +86,12 @@ class WorkerStatisticsInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

@@ -9,9 +9,14 @@ use Twilio\Exceptions\EnvironmentException;
 class CurlClient implements Client {
     const DEFAULT_TIMEOUT = 60;
     protected $curlOptions = array();
+    protected $debugHttp = false;
+
+    public $lastRequest = null;
+    public $lastResponse = null;
 
     public function __construct(array $options = array()) {
         $this->curlOptions = $options;
+        $this->debugHttp = getenv('DEBUG_HTTP_TRAFFIC') === 'true';
     }
 
     public function request($method, $url, $params = array(), $data = array(),
@@ -19,6 +24,9 @@ class CurlClient implements Client {
                             $timeout = null) {
         $options = $this->options($method, $url, $params, $data, $headers,
                                   $user, $password, $timeout);
+
+        $this->lastRequest = $options;
+        $this->lastResponse = null;
 
         try {
             if (!$curl = curl_init()) {
@@ -38,6 +46,20 @@ class CurlClient implements Client {
                                ? array($parts[1], $parts[2])
                                : array($parts[0], $parts[1]);
 
+            if ($this->debugHttp) {
+                $u = parse_url($url);
+                $hdrLine = $method . ' ' . $u['path'];
+                if (isset($u['query']) && strlen($u['query']) > 0 ) {
+                    $hdrLine = $hdrLine . '?' . $u['query'];
+                }
+                error_log($hdrLine);
+                foreach ($headers as $key => $value) {
+                    error_log("$key: $value");
+                }
+                if ($method === 'POST') {
+                    error_log("\n" . $options[CURLOPT_POSTFIELDS] . "\n");
+                }
+            }
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
             $responseHeaders = array();
@@ -54,7 +76,17 @@ class CurlClient implements Client {
                 fclose($buffer);
             }
 
-            return new Response($statusCode, $body, $responseHeaders);
+            if ($this->debugHttp) {
+                error_log("HTTP/1.1 $statusCode");
+                foreach ($responseHeaders as $key => $value) {
+                    error_log("$key: $value");
+                }
+                error_log("\n$body");
+            }
+
+            $this->lastResponse = new Response($statusCode, $body, $responseHeaders);
+
+            return $this->lastResponse;
         } catch (\ErrorException $e) {
             if (isset($curl) && is_resource($curl)) {
                 curl_close($curl);
@@ -75,12 +107,11 @@ class CurlClient implements Client {
         $timeout = is_null($timeout)
             ? self::DEFAULT_TIMEOUT
             : $timeout;
-
         $options = $this->curlOptions + array(
             CURLOPT_URL => $url,
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_INFILESIZE => -1,
+            CURLOPT_INFILESIZE => Null,
             CURLOPT_HTTPHEADER => array(),
             CURLOPT_TIMEOUT => $timeout,
         );
@@ -133,6 +164,10 @@ class CurlClient implements Client {
 
     public function buildQuery($params) {
         $parts = array();
+
+        if (is_string($params)) {
+            return $params;
+        }
 
         $params = $params ?: array();
 

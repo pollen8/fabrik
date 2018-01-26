@@ -14,16 +14,13 @@ use Twilio\Page;
 class MessagingPage extends Page {
     public function __construct($version, $response, $solution) {
         parent::__construct($version, $response);
-        
+
         // Path Solution
         $this->solution = $solution;
     }
 
     public function buildInstance(array $payload) {
-        return new MessagingInstance(
-            $this->version,
-            $payload
-        );
+        return new MessagingInstance($this->version, $payload);
     }
 
     /**

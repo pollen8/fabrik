@@ -13,6 +13,7 @@ use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
 use Twilio\Version;
 
 /**
@@ -41,27 +42,24 @@ class ShortCodeInstance extends InstanceResource {
      */
     public function __construct(Version $version, array $payload, $accountSid, $sid = null) {
         parent::__construct($version);
-        
+
         // Marshaled Properties
         $this->properties = array(
-            'accountSid' => $payload['account_sid'],
-            'apiVersion' => $payload['api_version'],
-            'dateCreated' => Deserialize::iso8601DateTime($payload['date_created']),
-            'dateUpdated' => Deserialize::iso8601DateTime($payload['date_updated']),
-            'friendlyName' => $payload['friendly_name'],
-            'shortCode' => $payload['short_code'],
-            'sid' => $payload['sid'],
-            'smsFallbackMethod' => $payload['sms_fallback_method'],
-            'smsFallbackUrl' => $payload['sms_fallback_url'],
-            'smsMethod' => $payload['sms_method'],
-            'smsUrl' => $payload['sms_url'],
-            'uri' => $payload['uri'],
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'shortCode' => Values::array_get($payload, 'short_code'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
+            'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
+            'smsMethod' => Values::array_get($payload, 'sms_method'),
+            'smsUrl' => Values::array_get($payload, 'sms_url'),
+            'uri' => Values::array_get($payload, 'uri'),
         );
-        
-        $this->solution = array(
-            'accountSid' => $accountSid,
-            'sid' => $sid ?: $this->properties['sid'],
-        );
+
+        $this->solution = array('accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], );
     }
 
     /**
@@ -79,7 +77,7 @@ class ShortCodeInstance extends InstanceResource {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->context;
     }
 
@@ -99,9 +97,7 @@ class ShortCodeInstance extends InstanceResource {
      * @return ShortCodeInstance Updated ShortCodeInstance
      */
     public function update($options = array()) {
-        return $this->proxy()->update(
-            $options
-        );
+        return $this->proxy()->update($options);
     }
 
     /**
@@ -115,12 +111,12 @@ class ShortCodeInstance extends InstanceResource {
         if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
-        
+
         if (property_exists($this, '_' . $name)) {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown property: ' . $name);
     }
 

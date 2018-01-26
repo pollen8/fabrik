@@ -1,11 +1,429 @@
 twilio-php Changelog
 ====================
 
+[2018-01-19] Version 5.16.3
+----------------------------
+**Api**
+- Add `conference_sid` property on Recordings
+- Add proxy and sms usage key
+
+**Chat**
+- Make user channels accessible by identity
+- Add notifications logs flag parameter
+
+**Fax**
+- Added `ttl` parameter
+  `ttl` is the number of minutes a fax is considered valid.
+
+**Preview**
+- Add `call_delay`, `extension`, `verification_code`, and `verification_call_sids`.
+- Add `failure_reason` to HostedNumberOrders.
+- Add DependentHostedNumberOrders endpoint for AuthorizationDocuments preview API.
+
+**Taskrouter**
+- Less verbose naming of cumulative and real time statistics *(breaking change)*
+
+
+[2017-12-15] Version 5.16.2
+----------------------------
+**Api**
+- Add `voip`, `national`, `shared_cost`, and `machine_to_machine` sub-resources to `/2010-04-01/Accounts/{AccountSid}/AvailablePhoneNumbers/{IsoCountryCode}/`
+- Add programmable video keys
+
+**Preview**
+- Add `verification_type` and `verification_document_sid` to HostedNumberOrders.
+
+**Proxy**
+- Fixed typo in session status enum value
+
+**Twiml**
+- Fix Dial record property incorrectly typed as accepting TrimEnum values when it actually has its own enum of values. *(breaking change)*
+- Add `priority` and `timeout` properties to Task TwiML.
+- Add support for `recording_status_callback_event` for Dial verb and for Conference
+
+
+[2017-12-01] Version 5.16.1
+----------------------------
+**Api**
+- Use the correct properties for Dependent Phone Numbers of an Address *(breaking change)*
+- Update Call Recordings with the correct properties
+
+**Preview**
+- Add `status` and `email` query param filters for AuthorizationDocument list endpoint
+
+**Proxy**
+- Added DELETE support to Interaction
+- Standardized enum values to dash-case
+- Rename Service#friendly_name to Service#unique_name
+
+**Video**
+- Remove beta flag from `media_region` and `video_codecs`
+
+**Wireless**
+- Bug fix: Changed `operator_mcc` and `operator_mnc` in `DataSessions` subresource from `integer` to `string`
+
+
+[2017-11-17] Version 5.16.0
+----------------------------
+**Sync**
+- Add TTL support for Sync objects *(breaking change)*
+  - The required `data` parameter on the following actions is now optional: "Update Document", "Update Map Item", "Update List Item"
+  - New actions available for updating TTL of Sync objects: "Update List", "Update Map", "Update Stream"
+
+**Video**
+- [bi] Rename `RoomParticipant` to `Participant`
+- Add Recording Settings resource
+- Expose EncryptionKey and MediaExternalLocation properties in Recording resource
+
+
+[2017-11-10] Version 5.15.6
+----------------------------
+**Accounts**
+- Add AWS credential type
+
+**Preview**
+- Removed `iso_country` as required field for creating a HostedNumberOrder.
+
+**Proxy**
+- Added new fields to Service: geo_match_level, number_selection_behavior, intercept_callback_url, out_of_session_callback_url
+
+
+[2017-11-03] Version 5.15.5
+----------------------------
+**Library**
+- Issue 451: Do not set CURLOPT_INFILESIZE by default
+- PR #454: Fix the JsonSerializable. Thanks @vinu!
+
+**Api**
+- Add programmable video keys
+
+**Video**
+- Add `Participants`
+
+
+[2017-10-27] Version 5.15.4
+----------------------------
+**Chat**
+- Add Binding resource
+- Add UserBinding resource
+
+
+[2017-10-20] Version 5.15.3
+----------------------------
+**Api**
+- Add `address_sid` param to IncomingPhoneNumbers create and update
+- Add 'fax_enabled' option for Phone Number Search
+
+
+[2017-10-13] Version 5.15.2
+----------------------------
+**Api**
+- Add `smart_encoded` param for Messages
+- Add `identity_sid` param to IncomingPhoneNumbers create and update
+
+**Preview**
+- Make 'address_sid' and 'email' optional fields when creating a HostedNumberOrder
+- Add AuthorizationDocuments preview API.
+
+**Proxy**
+- Initial Release
+
+**Wireless**
+- Added `ip_address` to sim resource
+
+
+[2017-10-06] Version 5.15.1
+----------------------------
+**Preview**
+- Add `acc_security` (authy-phone-verification) initial api-definitions
+
+**Taskrouter**
+- [bi] Less verbose naming of cumulative and real time statistics
+
+
+[2017-09-28] Version 5.15.0
+----------------------------
+**Library**
+- Add warnings when trying to import/use objects from legacy versions of the library.
+
+**Chat**
+- Make member accessible through identity
+- Make channel subresources accessible by channel unique name
+- Set get list 'max_page_size' parameter to 100
+- Add service instance webhook retry configuration
+- Add media message capability
+- Make `body` an optional parameter on Message creation. *(breaking change)*
+
+**Notify**
+- `data`, `apn`, `gcm`, `fcm`, `sms` parameters in `Notifications` create resource now accept objects instead of strings. Passing manually stringified json objects will continue to work.
+
+**Taskrouter**
+- Add new query ability by TaskChannelSid or TaskChannelUniqueName
+- Move Events, Worker, Workers endpoint over to CPR
+- Add new RealTime and Cumulative Statistics endpoints
+
+**Video**
+- Create should allow an array of video_codecs.
+- Add video_codecs as a property of room to make it externally visible.
+
+
+[2017-09-15] Version 5.14.1
+----------------------------
+**Api**
+- Add `sip_registration` property on SIP Domains
+- Add new video and market usage category keys
+
+
+[2017-09-01] Version 5.14.0
+----------------------------
+**TwiML**
+- Add classes for all TwiML verbs.
+
+[2017-09-01] Version 5.13.4
+----------------------------
+**Sync**
+- Add support for Streams
+
+**Wireless**
+- Added DataSessions sub-resource to Sims.
+
+
+[2017-08-25] Version 5.13.3
+----------------------------
+**Library**
+- Add `lastRequest` and `lastResponse` properties to `CurlClient` to help debugging.
+
+**Api**
+- Update `status` enum for Recordings to include 'failed'
+- Add `errorCode` property on Recordings
+
+**Chat**
+- Add mutable parameters for channel, members and messages
+
+**Video**
+- New `media_region` parameter when creating a room, which controls which region media will be served out of.
+
+
+[2017-08-18] Version 5.13.2
+----------------------------
+**Api**
+- Add VoiceReceiveMode {'voice', 'fax'} option to IncomingPhoneNumber UPDATE requests
+
+**Chat**
+- Add channel message media information
+- Add service instance message media information
+
+**Preview**
+- Removed 'email' from bulk_exports configuration api [bi]. No migration plan needed because api has not been used yet.
+- Add DeployedDevices.
+
+**Sync**
+- Add support for Service Instance unique names
+
+
+[2017-08-10] Version 5.13.1
+----------------------------
+**Api**
+- Add New wireless usage keys added
+- Add `auto_correct_address` param for Addresses create and update
+- Add ChatGrant to Grants and deprecate IpMessagingGrant
+
+**Video**
+- Add `video_codec` enum and `video_codecs` parameter, which can be set to either `VP8` or `H264` during room creation.
+- Restrict recordings page size to 100
+
+
+[2017-07-27] Version 5.13.0
+----------------------------
+This release adds Beta and Preview products to main artifact.
+
+Previously, Beta and Preview products were only included in the `alpha`
+artifact. They are now being included in the main artifact to ease product
+discoverability and the collective operational overhead of maintaining multiple
+artifacts per library.
+
+**Api**
+- Remove unused `encryption_type` property on Recordings *(breaking change)*
+- Update `status` enum for Messages to include 'accepted'
+
+**Messaging**
+- Fix incorrectly typed capabilities property for PhoneNumbers.
+
+**Notify**
+- Add `ToBinding` optional parameter on Notifications resource creation. Accepted values are json strings.
+
+**Preview**
+- Add `sms_application_sid` to HostedNumberOrders.
+
+**Taskrouter**
+- Fully support conference functionality in reservations.
+
+
+[2017-07-13] Version 5.12.1
+---------------------------
+- This release drops official support for PHP 5.3 and PHP 5.4, which were EOL'd
+  in 2014 and 2015 respectively.
+- Reinstate `getPage` functionality.
+
+
+[2017-07-13] Version 5.12.0
+----------------------------
+**Api**
+- Update `AnnounceMethod` parameter naming for consistency
+
+**Notify**
+- Add `ToBinding` optional parameter on Notifications resource creation. Accepted values are json strings.
+
+**Preview**
+- Add `verification_attempts` to HostedNumberOrders.
+- Add `status_callback_url` and `status_callback_method` to HostedNumberOrders.
+
+**Video**
+- Filter recordings by date using the parameters `DateCreatedAfter` and `DateCreatedBefore`.
+- Override the default time-to-live of a recording's media URL through the `Ttl` parameter (in seconds, default value is 3600).
+- Add query parameters `SourceSid`, `Status`, `DateCreatedAfter` and `DateCreatedBefore` to the convenience method for retrieving Room recordings.
+
+**Wireless**
+- Added national and international data limits to the RatePlans resource.
+
+
+[2017-06-16] Version 5.11.0
+---------------------------
+
+- Add `locality` field to `AvailablePhoneNumbers`.
+- Add `origin` field to `IncomingPhoneNumbers`.
+- Add `in_locality` parameter to `AvailablePhoneNumbers`.
+- Add `origin` parameter to `IncomingPhoneNumbers`.
+- Add `announce_url` parameter to `Participants`.
+- Add `announce_url_method` parameter to `Participants`.
+- Add `getPage()` methods to lists to begin paging starting from a given url.
+
+[2017-05-24] Version 5.10.0
+--------------------------
+- Rename room `Recordings` resource to `RoomRecordings` to avoid class name conflict (backwards incompatible).
+
+[2017-05-19] Version 5.9.0
+--------------------------
+- Add support for video.twilio.com.
+
+[2017-04-27] Version 5.8.0
+--------------------------
+- Add support for Twilio Chat v2
+- Add `recordingChannels`, `recordingStatusCallback`, `recordingStatusCallbackMethod`, `sipAuthUsername`, `sipAuthPassword`, `region`, `conferenceRecordingStatusCallback`, `conferenceRecordingStatusCallbackMethod` optional parameters to conference participant resource.
+- Add support for setting `DEBUG_HTTP_TRAFFIC=true` environment varibale to dump request and response information. Thanks @kevinburke, PR #394.
+- Add deprecation warning to `ConversationsGrant`, it is being replaced by `VideoGrant`.
+
+[2017-04-12] Version 5.7.3
+--------------------------
+- Add TaskRouterGrant.
+- Update VideoGrant.
+    - Add `room` as preferred grant granularity.
+    - Deprecate setting `configurationProfileSid` on grant.
+
+[2017-04-04] Version 5.7.2
+--------------------------
+- Add `validityPeriod` parameter to Message creation
+
+[2017-03-22] Version 5.7.1
+--------------------------
+- Add Answering Machine Detection to Call creation
+- Add `WRAPPING` entry to Status for Task
+
+- **Twilio Chat**
+  - Add `limits` map to Service
+  - Add `limitsChannelMembers` and `limitsUserChannels` field to ServiceUpdater
+
+[2017-03-13] Version 5.7.0
+--------------------------
+Breaking Changes, refer to [Upgrade Guide][upgrade]
+
+ - Restore ability to transfer IncomingPhoneNumbers between accounts.
+
+[2017-03-03] Version 5.6.0
+-------------------------
+Breaking Changes, refer to [Upgrade Guide][upgrade]
+
+ - Remove end of life Sandbox resource (backwards incompatible).
+ - Support new `accounts.twilio.com` subdomain and products.
+    - `client->accounts` now references `accounts.twilio.com` instead of Accounts resource (backwards incompatible).
+ - Fix resources throwing error on instantiation when response is missing a field.
+ - Chat:
+    - Add `order` as filter when listing Messages.
+    - Messages `.read()`, `.stream()`, `.page()` now accept options array as first parameter (backwards incompatible).
+
+
+[2017-02-01] Version 5.5.0
+-------------------------
+Breaking Changes, refer to [Upgrade Guide][upgrade]
+
+ - Fix broken default page size for all reads, thanks @rtek! Issue [#388] (https://github.com/twilio/twilio-php/issues/388)
+    - Credential List Mappings, IP ACL Mappings, SIP Domains.
+ - Fix incorrect types documentation of `links`/`subresourceUri` fields on various resources. Was incorrectly documented as string, actual type was an array.
+ - Fix some properties incorrectly documented as `string` when actually were `array` types.
+ - Fix boolean parameters did not accept boolean values, now accept both boolean and strings for backwards compatibility.
+ - Add `emergencyEnabled` field to Addresses.
+ - Add `price` and `callSid` fields to Recordings.
+    - Allow filtering recordings list by call sid.
+ - Add `trunkSid`, `emergencyStatus`, and `emergencyAddressSid` fields to IncomingPhoneNumbers.
+ - Add `messagingServiceSid` field to Messages.
+ - Add `url` and/or `links` fields to various resources which were missing them.
+    - Lookups PhoneNumber, Monitor Events.
+ - Add `subresourceUri` fields to resources where missing.
+ - Accept DateTime inputs for date parameters for various resources, previously expected strings.
+ - Remove `uri` field from Pricing Phone Number Countries resource (backwards incompatible).
+ - Properly deserialize date times for various resources (backwards incompatible).
+ - Remove library support for date inquality for resources that don't support them (backwards incompatible).
+ - Message `body` parameter now required on update (backwards incompatible).
+ - Require `friendlyName` on Queue creation (backwards incompatible).
+
+ - Taskrouter
+    - Add `url` and/or `links` fields to resources where missing.
+        - Activities, Reservations, TaskQueue Statistics, WorkerStatistics, WorkersStatistics, Worker, Workflow, WorkflowStatistics, WorkspaceStatistics, Tasks, TaskQueues, Workspaces.
+    - Add `addons`, `taskQueueFriendlyName`, `workflowFriendlyName` fields to Tasks.
+    - Add `taskOrder` field to TaskQueues, allow updating `taskOrder`.
+    - Add `prioritizeQueueOrder` field to Workspace.
+    - Allow filtering Tasks list by `evaluateTaskAttributes`, `ordering`, `hasAddons`.
+    - Disallow filtering Tasks list by `taskChannel`, was never supported.
+    - Allow filtering TaskQueues list by `workerSid` and `taskOrder`.
+    - Allow updating `prioritizeQueueOrder` on Workspaces.
+    - Demote `friendlyName` to optional parameter when updating Activities (backwards incompatible).
+    - Demote `available` to optional parameter when creating Activities (backwards incompatible).
+    - Demote `workflowSid` and `attributes` to optional parameters when creating a Task (backwards incompatible).
+    - Remove `friendlyName` as optional parameter when fetching Task Queue Statistics (backwards incompatible).
+    - WorkspaceStatistics now take `DateTime` objects when filtering by `startDate` and `endDate` (backwards incompatible).
+
+ - Chat
+    - Add `Secret` field to Chat credentials and allow setting on create and update.
+    - Add Channel Invite resource.
+    - Add `lastConsumedMessageIndex` and `lastConsumptionTimestamp` fields to Channel Members.
+    - `Body` parameter no longer required for updating a message.
+    - Add `attributes` and `index` fields to Messages.
+    - Add `membersCount` and `messagesCount` to Channels.
+    - Add UserChannel resource.
+    - Add `attributes`, `friendlyName`, `isOnline`, `isNotifiable`, `links` to Users.
+    - Add `reachabilityEnabled`, `preWebhookUrl`, `postWebhookUrl`, `webhookMethod`, `webhookFilters`, `notifications` to Services.
+    - Fix webhooks, notifications updating on Service by separating into individual parameters.
+    - Remove ability to update `type` on Channels, was never supported by api (backwards incompatible).
+    - Demote update Message `body` to optional parameter (backwards incompatible).
+
+ - Conferences
+    - Add `status` field to Participants.
+    - Add ability to add/remove Participants via the API.
+    - Add ability to end Conferences via the API.
+    - Add `region` and `subresourceUri` fields to Conference.
+
+ - Marketplace
+    - Add resources for Recording AddOns.
+        - AddOnResults.
+        - AddOnResultPayloads.
+    - Add `getAddOnResults` helper to Recordings.
+
+
 [2016-10-12] Version 5.4.2
 --------------------------
 
  - Add `InstanceResource::toArray()`
- 
+
 Thanks to @johnpaulmedina for this suggestion.
 
 [2016-09-19] Version 5.4.1
@@ -19,8 +437,8 @@ Thanks to @johnpaulmedina for this suggestion.
 
   - Remove required parameter `friendlyName` on IP Messaging/Chat Role update.
   - Alphabetize domain mounts
-  - Better exceptions when an error is encountered loading a page of records,  
-    the exception class has been corrected from `DeserializeException` to 
+  - Better exceptions when an error is encountered loading a page of records,
+    the exception class has been corrected from `DeserializeException` to
     `RestException`.
 
 [2016-08-30] Version 5.3.0
@@ -41,12 +459,12 @@ Thanks to @johnpaulmedina for this suggestion.
   - New options for Conference Participant management.
      - Adds support for `hold`, `holdUrl`, `holdMethod`
   - Mount `ip-messaging` under the new `chat` domain
-  - Demote `assignmentCallbackUrl` from a required argument to optional for 
+  - Demote `assignmentCallbackUrl` from a required argument to optional for
     Taskrouter Workflows to better support client managed reservations.
 
 [2016-08-29] Version 5.1.1
 --------------------------
-Changes the way that `uri`s are constructed to make sure that they are always 
+Changes the way that `uri`s are constructed to make sure that they are always
 `rawurlencode()`d by the `twilio-php` library
 
 Updates the output of the unit tests on failure introducing a new method,
@@ -55,12 +473,12 @@ missing in the `Holodeck` network mock.
 
 [2016-08-19] Version 5.1.0
 --------------------------
-Optional arguments are handled in the `twilio-php` by accepting an associative 
-array of optional keys and values to pass to the API.  This makes it easy to 
-support all the optional parameters, but lessens developer ergonomics, since it 
+Optional arguments are handled in the `twilio-php` by accepting an associative
+array of optional keys and values to pass to the API.  This makes it easy to
+support all the optional parameters, but lessens developer ergonomics, since it
 doesn't provide any inline documentation or autocomplete for optional arguments.
 
-This change introduces new Options builders that support 2 new ways for 
+This change introduces new Options builders that support 2 new ways for
 specifying optional arguments that provide better usability.
 
 ```php
@@ -102,12 +520,12 @@ $client->calls->create(
 );
 ```
 
-The `Options Factory` provides fully documented optional arguments for every 
-optional argument supported by the Resource's Action.  This is a fast way to 
+The `Options Factory` provides fully documented optional arguments for every
+optional argument supported by the Resource's Action.  This is a fast way to
 handle endpoints that have a few optional arguments.
 
-The `Options Builder` provides fully documented setters for every optional 
-arguments, this is great for actions that support a large number of optional 
+The `Options Builder` provides fully documented setters for every optional
+arguments, this is great for actions that support a large number of optional
 arguments, so that you don't need to provided tons of default values.
 
 Both of these options work well with autocompleting IDEs.
@@ -134,8 +552,8 @@ Add the VERSIONS.md to explain the versioning strategy, first alpha release.
 
 The newest version of the `twilio-php` helper library, supporting PHP 5.3+
 
-This version brings a host of changes to update and modernize the `twilio-php` 
-helper library.  It is auto-generated to produce a more consistent and correct 
+This version brings a host of changes to update and modernize the `twilio-php`
+helper library.  It is auto-generated to produce a more consistent and correct
 product.
 
 - [Migration Guide](https://www.twilio.com/docs/libraries/php/migration-guide)
