@@ -215,7 +215,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			}
 		}
 
-		if ($checkValue != $value)
+		if ($input->get('fabrik_confirmation', '') !== '2' && $checkValue != $value)
 		{
 			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 
@@ -241,6 +241,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 				return false;
 			}
+
+			// need to set the fullname back in case confirmation plugin is being used
+			$this->setFullName($name, true, false);
 
 			return true;
 		}

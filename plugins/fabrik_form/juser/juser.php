@@ -151,9 +151,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		// If we are editing a user, we need to make sure the password field is cleared
 		if ($rowId > 0 || $loadCurrentUser)
 		{
-			$this->passwordfield                            = $this->getFieldName('juser_field_password');
-			$formModel->data[$this->passwordfield]          = '';
-			$formModel->data[$this->passwordfield . '_raw'] = '';
+			// don't clear if confirmation plugin is loading, leave it, it'll get encrypted readonly and resubmitted
+			if ($this->app->input->get('fabrik_confirmation', '') !== '1')
+			{
+				$this->passwordfield                            = $this->getFieldName('juser_field_password');
+				$formModel->data[$this->passwordfield]          = '';
+				$formModel->data[$this->passwordfield . '_raw'] = '';
+			}
 
 			$userId = $loadCurrentUser ? JFactory::getUser()->id : null;
 
@@ -316,6 +320,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$formModel = $this->getModel();
 		$params    = $this->getParams();
 		$input     = $this->app->input;
+
+		// check for confirmation plugin first submit
+		if ($input->get('fabrik_confirmation', '') === '0')
+		{
+			return;
+		}
+
 		$mail      = JFactory::getMailer();
 		$mail->isHtml(true);
 

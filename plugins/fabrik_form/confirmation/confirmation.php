@@ -265,8 +265,13 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 						});
 				});
 			");
-			$this->html = implode("\n", $fields);
 		}
+		else
+		{
+			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="0" />';
+		}
+
+		$this->html = implode("\n", $fields);
 	}
 
 	/**
