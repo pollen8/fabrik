@@ -11,9 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\LayoutFile;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\LayoutFile;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -8067,13 +8067,17 @@ class PlgFabrik_Element extends FabrikPlugin
 				$fullKey = $elementModel->getFullName(true, false);
 				$value = $data[$fullKey];
 
-				if ($this->getGroupModel()->canRepeat() && is_array($value))
+				if ($groupModel->canRepeat() && is_array($value))
 				{
-					$value = FArrayHelper::getValue($value, $repeatCounter);
+					foreach ($value as $k => $v)
+					{
+						$data[$fullKey][$k] = $elementModel->storeDatabaseFormat($v, $data);
+					}
 				}
-
-				// For radio buttons and dropdowns otherwise nothing is stored for them??
-				$data[$fullKey] = $elementModel->storeDatabaseFormat($value, $data);
+				else
+				{
+					$data[$fullKey] = $elementModel->storeDatabaseFormat($value, $data);
+				}
 			}
 		}
 	}
