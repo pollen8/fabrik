@@ -10248,13 +10248,11 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+
 		// $$$ rob needs the item id for when sef urls are turned on
-		if ($input->get('option') !== 'com_' . $package)
+		if (!array_key_exists('Itemid', $querystring))
 		{
-			if (!array_key_exists('Itemid', $querystring))
-			{
-				$qs['Itemid'] = $itemId;
-			}
+			$qs['Itemid'] = $itemId;
 		}
 
 		if (empty($url))
