@@ -13,9 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modelform');
 
+use Fabrik\Helpers\Pagination;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Pagination;
 
 require_once COM_FABRIK_FRONTEND . '/models/list-advanced-search.php';
 
@@ -5278,6 +5278,16 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function storeRequestData($request)
 	{
+		/**
+		 * If we're processing a record count for related data, don't store the filter.  Corner case when you have
+		 * multiple list plugins, and one has related data to another, and they happen to use that element
+		 * in a plugin filter
+		 */
+		if (!$this->app->input->get('fabrik_incsessionfilters', true))
+		{
+			return;
+		}
+
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $this->app->input;
 		$registry = $this->session->get('registry');
