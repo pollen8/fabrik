@@ -63,7 +63,8 @@
 
             <field name="joompush_group"
                    type="sql"
-                   default="1"
+                   default=""
+				   header="COM_FABRIK_PLEASE_SELECT"
                    repeat="true"
                    label="PLG_FABRIK_FORM_JOOMPUSH_GROUP_LABEL"
                    description="PLG_FABRIK_FORM_JOOMPUSH_GROUP_DESC"
