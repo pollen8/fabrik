@@ -35,8 +35,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$input       = $app->input;
 		$model       = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id          = $input->get('id', $usersConfig->get('visualizationid', $input->get('visualizationid', 0)));
-		$model->setId($id);
+		$this->id    = $input->get('id', $usersConfig->get('visualizationid', $input->get('visualizationid', 0)));
+		$model->setId($this->id);
 		$this->row = $model->getVisualization();
 
 		if (!$model->canView())
@@ -106,6 +106,9 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		// Adding custom.css, just for the heck of it
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/custom.css');
+		FabrikHelperHTML::stylesheetFromPath(
+			'plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/custom_css.php?c=' . $this->containerId . '&id=' . $this->id
+		);
 	}
 
 	/**
