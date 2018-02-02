@@ -369,6 +369,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$nameChanged  = $data['name'] !== $elementModel->getElement()->name;
 		$elementModel->getElement()->bind($data);
 		$listModel = $elementModel->getListModel();
+		$isView = !empty($listModel->isView());
 
 		if ($data['id'] == '')
 		{
@@ -377,7 +378,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
 			{
-				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
+				if ($isView)
+				{
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_LIST_VIEW_SCHEMA_NOT_ALTERED'));
+				}
+				else
+				{
+					$this->setError(FText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
+				}
 			}
 
 			if (!FabrikWorker::validElementName($data['name']))
@@ -389,7 +397,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			if ($listModel->canAlterFields() === false && $nameChanged && $listModel->noTable() === false)
 			{
-				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+				if ($isView)
+				{
+					$this->app->enqueueMessage(FText::_('COM_FABRIK_LIST_VIEW_SCHEMA_NOT_ALTERED'));
+				}
+				else
+				{
+					$this->setError(FText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+				}
 			}
 
 			if ($nameChanged && !FabrikWorker::validElementName($data['name'], false))
