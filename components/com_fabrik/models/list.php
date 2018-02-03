@@ -8131,8 +8131,15 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function doCalculations()
 	{
-		$cache = FabrikWorker::getCache($this);
-		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
+		if ($this->config->get('dbtype') === 'pdomysql')
+		{
+			echo $this->cacheDoCalculations($this, $this->getId());
+		}
+		else
+		{
+			$cache = FabrikWorker::getCache($this);
+			$cache->call(array(get_class($this), 'cacheDoCalculations'), $this, $this->getId());
+		}
 	}
 
 	/**
@@ -8142,7 +8149,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  void
 	 */
-	public static function cacheDoCalculations($listId)
+	public static function cacheDoCalculations($listModel, $listId)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('cacheDoCalculations: start') : null;

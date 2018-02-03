@@ -175,8 +175,10 @@ class FabrikFEModelImportcsv extends JModelForm
 		/* Track errors message- so if from frontend menu redirect 
 		    to current url rather than throwing exception
 		 */
-		$errmsg = ''; 
-		
+		$errmsg = '';
+		$app      = JFactory::getApplication();
+		$input    = $app->input;
+
 		if (!(bool) ini_get('file_uploads'))
 		{
             $errmsg = FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED');
@@ -184,10 +186,9 @@ class FabrikFEModelImportcsv extends JModelForm
 		}
 		else
 		{
-		    $app      = JFactory::getApplication();
-		    $input    = $app->input;
+
 		    $userFile = $input->files->get('jform');
-		}    
+		}
 
 		if (!$userFile)
 		{
