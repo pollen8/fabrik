@@ -271,7 +271,10 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 			$this->sendEmails($ids);
 		}
 
-		$this->msg = $params->get('update_message', '');
+		if (empty($this->msg))
+		{
+			$this->msg = $params->get('update_message', '');
+		}
 
 		if (empty($this->msg))
 		{
