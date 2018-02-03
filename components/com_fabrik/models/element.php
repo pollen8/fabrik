@@ -5497,7 +5497,39 @@ class PlgFabrik_Element extends FabrikPlugin
 			if ($plugin->hasSubElements)
 			{
 				// http://fabrikar.com/forums/index.php?threads/calculation-split-on-problem.40122/
-				$val->label = ($type != 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key, $key);
+				$labelParts = explode(' & ', $val->label);
+				if (count($labelParts) > 1)
+				{
+					$label = $labelParts[1];
+				}
+				else
+				{
+					$label = $labelParts[0];
+				}
+
+				$label = FabrikWorker::JSONtoData($label);
+				$ls = array();
+
+				if (is_array($label))
+				{
+					foreach ($label as $l)
+					{
+						$ls[] = ($type != 'median') ? $plugin->getLabelForValue($l) : $plugin->getLabelForValue($key, $key);
+					}
+				}
+				else
+				{
+					$ls[] = ($type != 'median') ? $plugin->getLabelForValue($label) : $plugin->getLabelForValue($key, $key);
+				}
+
+				if (count($labelParts > 1))
+				{
+					$val->label = $labelParts[0] . ' & ' . implode(',', $ls);
+				}
+				else
+				{
+					$val->label = impode(',', $ls);
+				}
 			}
 			else
 			{
