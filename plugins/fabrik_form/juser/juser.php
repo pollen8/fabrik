@@ -321,6 +321,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$params    = $this->getParams();
 		$input     = $this->app->input;
 
+		// clear the 'newuserid' stuff
+		$input->set('newuserid', '');
+		$input->cookie->set('newuserid', '');
+		$this->session->set('newuserid', '');
+		$input->set('newuserid_element', '');
+		$input->cookie->set('newuserid_element', '');
+		$this->session->set('newuserid_element', '');
+
 		// check for confirmation plugin first submit
 		if ($input->get('fabrik_confirmation', '') === '0')
 		{
