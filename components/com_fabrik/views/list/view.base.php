@@ -731,7 +731,7 @@ class FabrikViewListBase extends FabrikView
 	{
 		$model                     = $this->getModel();
 		$this->buttons             = new stdClass;
-		$buttonProperties          = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
+		$buttonProperties          = array('class' => 'fabrikTip', 'opts' => '{"notice":true}',
 			'title' => '<span>' . FText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');
 		$buttonProperties['alt']   = FText::_('COM_FABRIK_EXPORT_TO_CSV');
 		$this->buttons->csvexport  = FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);

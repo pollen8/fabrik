@@ -18,7 +18,7 @@ $icon        = $usersConfig->get('error_icon', 'warning');
 <?php
 if ($d->err !== '') :
 	?>
-	<a href="#" class="fabrikTip" title="<span><?php echo $d->err;?></span>" opts="{notice:true}">
+	<a href="#" class="fabrikTip" title="<span><?php echo $d->err;?></span>" opts='{"notice":true}'>
 	<?php echo FabrikHelperHTML::image($icon, 'form', $d->tmpl);?>
 	</a>
 <?php
