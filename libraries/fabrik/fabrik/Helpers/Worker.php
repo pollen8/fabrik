@@ -34,6 +34,7 @@ use JLog;
 use JMail;
 use JMailHelper;
 use JModelLegacy;
+use Joomla\CMS\Application\CMSApplication;
 use JPath;
 use JSession;
 use JTable;
@@ -2657,12 +2658,12 @@ class Worker
 	/**
 	 * Remove messages from JApplicationCMS
 	 *
-	 * @param   JApplicationCMS $app  Application to kill messages from
+	 * @param   CMSApplication $app  Application to kill messages from
 	 * @param   string          $type Message type e.g. 'warning', 'error'
 	 *
 	 * @return  array  Remaining messages.
 	 */
-	public static function killMessage(\JApplicationSite $app, $type)
+	public static function killMessage(CMSApplication $app, $type)
 	{
 		$appReflection = new \ReflectionClass(get_class($app));
 		$_messageQueue = $appReflection->getProperty('_messageQueue');
