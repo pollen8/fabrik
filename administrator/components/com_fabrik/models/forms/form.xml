@@ -142,6 +142,13 @@
 			       description="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_LABEL"/>
 
+			<field name="reset_button_class"
+			       type="text"
+			       default="btn-warning"
+			       description="COM_FABRIK_FIELD_RESET_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_RESET_CLASS_LABEL">
+			</field>
+
 			<field name="reset_icon"
 			       type="text"
 			       label="COM_FABRIK_FIELD_RESET_ICON_LABEL"
@@ -177,6 +184,12 @@
 			       translate_default="true"
 			       description="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL"/>
+
+			<field name="copy_button_class"
+			       type="text"
+			       description="COM_FABRIK_FIELD_COPY_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_COPY_CLASS_LABEL">
+			</field>
 
 			<field name="copy_icon"
 			       type="text"
@@ -214,6 +227,12 @@
 			       description="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_LABEL"/>
 
+			<field name="goback_button_class"
+			       type="text"
+			       description="COM_FABRIK_FIELD_GO_BACK_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_GO_BACK_CLASS_LABEL">
+			</field>
+
 			<field name="goback_icon"
 			       type="text"
 			       label="COM_FABRIK_FIELD_GO_BACK_ICON_LABEL"
@@ -249,6 +268,12 @@
 			       translate_default="true"
 			       description="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_LABEL"/>
+
+			<field name="apply_button_class"
+			       type="text"
+			       description="COM_FABRIK_FIELD_APPLY_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_APPLY_CLASS_LABEL">
+			</field>
 
 			<field name="apply_icon"
 			       type="text"
@@ -286,6 +311,13 @@
 			       description="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_LABEL"/>
 
+			<field name="delete_button_class"
+			       type="text"
+			       default="btn-danger"
+			       description="COM_FABRIK_FIELD_DELETE_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_DELETE_CLASS_LABEL">
+			</field>
+
 			<field name="delete_icon"
 			       type="text"
 			       label="COM_FABRIK_FIELD_DELETE_ICON_LABEL"
@@ -321,6 +353,13 @@
 			       translate_default="true"
 			       description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC"
 			       label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL"/>
+
+			<field name="save_button_class"
+			       type="text"
+			       default="btn-primary"
+			       description="COM_FABRIK_FIELD_SAVE_CLASS_DESC"
+			       label="COM_FABRIK_FIELD_SAVE_CLASS_LABEL">
+			</field>
 
 			<field name="save_icon"
 			       type="text"
