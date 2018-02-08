@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9309e7e8ef5eb93a2f3f50da258611fb",
+    "content-hash": "6b72aa76002fe13895d6dfb332890317",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -611,16 +611,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v4.13.0",
+            "version": "v5.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "834681b9cdfa68d88a27e36ec9e356b598a5f0e6"
+                "reference": "d1978a7f20cdbd05c5c462ffa6728f279f03e0c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/834681b9cdfa68d88a27e36ec9e356b598a5f0e6",
-                "reference": "834681b9cdfa68d88a27e36ec9e356b598a5f0e6",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/d1978a7f20cdbd05c5c462ffa6728f279f03e0c9",
+                "reference": "d1978a7f20cdbd05c5c462ffa6728f279f03e0c9",
                 "shasum": ""
             },
             "require": {
@@ -662,7 +662,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2017-06-20T01:39:06+00:00"
+            "time": "2018-01-17T20:53:33+00:00"
         },
         {
             "name": "twilio/sdk",

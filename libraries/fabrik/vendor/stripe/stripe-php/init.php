@@ -26,6 +26,15 @@ require(dirname(__FILE__) . '/lib/Error/Permission.php');
 require(dirname(__FILE__) . '/lib/Error/RateLimit.php');
 require(dirname(__FILE__) . '/lib/Error/SignatureVerification.php');
 
+// OAuth errors
+require(dirname(__FILE__) . '/lib/Error/OAuth/OAuthBase.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/InvalidClient.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/InvalidGrant.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/InvalidRequest.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/InvalidScope.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/UnsupportedGrantType.php');
+require(dirname(__FILE__) . '/lib/Error/OAuth/UnsupportedResponseType.php');
+
 // Plumbing
 require(dirname(__FILE__) . '/lib/ApiResponse.php');
 require(dirname(__FILE__) . '/lib/JsonSerializable.php');
@@ -56,6 +65,7 @@ require(dirname(__FILE__) . '/lib/Customer.php');
 require(dirname(__FILE__) . '/lib/Dispute.php');
 require(dirname(__FILE__) . '/lib/EphemeralKey.php');
 require(dirname(__FILE__) . '/lib/Event.php');
+require(dirname(__FILE__) . '/lib/ExchangeRate.php');
 require(dirname(__FILE__) . '/lib/FileUpload.php');
 require(dirname(__FILE__) . '/lib/Invoice.php');
 require(dirname(__FILE__) . '/lib/InvoiceItem.php');
@@ -70,11 +80,17 @@ require(dirname(__FILE__) . '/lib/RecipientTransfer.php');
 require(dirname(__FILE__) . '/lib/Refund.php');
 require(dirname(__FILE__) . '/lib/SKU.php');
 require(dirname(__FILE__) . '/lib/Source.php');
+require(dirname(__FILE__) . '/lib/SourceTransaction.php');
 require(dirname(__FILE__) . '/lib/Subscription.php');
 require(dirname(__FILE__) . '/lib/SubscriptionItem.php');
 require(dirname(__FILE__) . '/lib/ThreeDSecure.php');
 require(dirname(__FILE__) . '/lib/Token.php');
 require(dirname(__FILE__) . '/lib/Transfer.php');
 require(dirname(__FILE__) . '/lib/TransferReversal.php');
+
+// OAuth
+require(dirname(__FILE__) . '/lib/OAuth.php');
+
+// Webhooks
 require(dirname(__FILE__) . '/lib/Webhook.php');
 require(dirname(__FILE__) . '/lib/WebhookSignature.php');

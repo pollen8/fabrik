@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Stripe;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -60,6 +60,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	public function onBeforeStore()
 	{
 		$params     = $this->getParams();
+
+		if (!Stripe::setupStripe($params, 'stripe'))
+		{
+			$this->app->enqueueMessage(JText::_('PLG_FORM_STRIPEPLANS_ERROR_INTERNAL'));
+
+			return false;
+		}
+
 		$formModel  = $this->getModel();
 		$listModel  = $formModel->getListModel();
 		$input      = $this->app->input;
@@ -118,7 +126,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($amount === false)
 			{
-				$msgType   = 'fabrik.stripe.cost.eval';
+				$msgType   = 'fabrik.form.stripe.cost.eval.err';
 				$msg       = new stdClass;
 				$msg->data = $this->data;
 				$msg->msg  = "Eval amount code returned false.";
@@ -190,6 +198,17 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		else if ($params->get('stripe_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
+
+			if ($item === false)
+			{
+				$msgType   = 'fabrik.form.stripe.item.eval.err';
+				$msg       = new stdClass;
+				$msg->data = $this->data;
+				$msg->msg  = "Eval item code returned false.";
+				$msg       = json_encode($msg);
+				$this->doLog($msgType, $msg);
+				throw new RuntimeException(FText::_('PLG_FORM_STRIPE_ITEM_ELEMENT_ERROR'), 500);
+			}
 		}
 
 		$itemRaw = $item;
@@ -222,8 +241,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		{
 			$customerId = $this->getCustomerId($userId);
 		}
-
-		\Stripe\Stripe::setApiKey($secretKey);
 
 		$logErrMsg = '';
 		$logErrType = '';
@@ -305,21 +322,21 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$body = $e->getJsonBody();
 			$err  = $body['error'];
 			$logErrMsg = json_encode($body);
-			$logErrType = 'fabrik.form.stripe.charge.err.declined';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_DECLINED', $err['message']);
 		}
 		catch (\Stripe\Error\RateLimit $e)
 		{
 			// Too many requests made to the API too quickly
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.ratelimit';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_RATE_LIMITED');
 		}
 		catch (\Stripe\Error\InvalidRequest $e)
 		{
 			// Invalid parameters were supplied to Stripe's API
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.request';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 		catch (\Stripe\Error\Authentication $e)
@@ -327,14 +344,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			// Authentication with Stripe's API failed
 			// (maybe you changed API keys recently)
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.authentication';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
 		}
 		catch (\Stripe\Error\ApiConnection $e)
 		{
 			// Network communication with Stripe failed
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.connection';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_NETWORK');
 		}
 		catch (\Stripe\Error\Base $e)
@@ -342,14 +359,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			// Display a very generic error to the user, and maybe send
 			// yourself an email
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.base';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 		catch (Exception $e)
 		{
 			// Something else happened, completely unrelated to Stripe
 			$logErrMsg = $e->getMessage();
-			$logErrType = 'fabrik.form.stripe.charge.err.exception';
+			$logErrType = 'fabrik.form.stripe.charge.err';
 			$chargeErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 		}
 
@@ -410,7 +427,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->userid   = $userId;
 		$opts->charge = $this->charge;
 		$opts->customer = $customer;
-		$msgType   = 'fabrik.stripe.charge.success.prestore';
+		$msgType   = 'fabrik.form.stripe.charge.prestore.success';
 		$msg       = new stdClass;
 		$msg->opts  = $opts;
 		$msg->data = $this->data;
@@ -454,7 +471,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				{
 					// meh
 					$this->app->enqueueMessage('Error updating metadata');
-					$msgType         = 'fabrik.stripe.charge.success.err.metadata';
+					$msgType         = 'fabrik.form.stripe.charge.poststore.err';
 					$msg             = new stdClass;
 					$msg->opts       = $opts;
 					$msg             = json_encode($msg);
@@ -462,7 +479,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				}
 			}
 
-			$msgType         = 'fabrik.stripe.charge.success.stored';
+			$msgType         = 'fabrik.form.stripe.charge.poststore.success';
 			$msg             = new stdClass;
 			$msg->opts       = $opts;
 			$msg             = json_encode($msg);
@@ -485,6 +502,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		}
 
 		$params     = $this->getParams();
+
+		if (!Stripe::setupStripe($params, 'stripe'))
+		{
+			$this->app->enqueueMessage(JText::_('PLG_FORM_STRIPEPLANS_ERROR_INTERNAL'));
+
+			return false;
+		}
+
 		$formModel  = $this->getModel();
 		$input      = $this->app->input;
 		$this->data = $formModel->data;
@@ -538,7 +563,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($amount === false)
 			{
-				$msgType   = 'fabrik.stripe.onAfterProcess';
+				$msgType   = 'fabrik.form.stripe.cost.eval.err';
 				$msg       = new stdClass;
 				$msg->data = $this->data;
 				$msg->msg  = "Eval amount code returned false.";
@@ -593,6 +618,17 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		if ($params->get('stripe_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
+
+			if ($item === false)
+			{
+				$msgType   = 'fabrik.form.stripe.item.eval.err';
+				$msg       = new stdClass;
+				$msg->data = $this->data;
+				$msg->msg  = "Eval item code returned false.";
+				$msg       = json_encode($msg);
+				$this->doLog($msgType, $msg);
+				throw new RuntimeException(FText::_('PLG_FORM_STRIPE_ITEM_ELEMENT_ERROR'), 500);
+			}
 		}
 
 		if ($params->get('stripe_item_eval_to_element', '0') === '1')
@@ -637,7 +673,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		{
 			$opts->useCheckout = false;
 
-			\Stripe\Stripe::setApiKey($secretKey);
 			try
 			{
 				$customer = \Stripe\Customer::retrieve($customerId);
@@ -647,14 +682,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			{
 				// Too many requests made to the API too quickly
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.ratelimit';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_RATE_LIMITED');
 			}
 			catch (\Stripe\Error\InvalidRequest $e)
 			{
 				// Invalid parameters were supplied to Stripe's API
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.invalid';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$body = $e->getJsonBody();
 				$err  = $body['error'];
 				$customerErrMsg = FText::sprintf('PLG_FORM_STRIPE_ERROR_CUSTOMER',$err['message'] );
@@ -664,14 +699,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				// Authentication with Stripe's API failed
 				// (maybe you changed API keys recently)
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.authentication';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_AUTHENTICATION');
 			}
 			catch (\Stripe\Error\ApiConnection $e)
 			{
 				// Network communication with Stripe failed
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.connection';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_NETWORK');
 			}
 			catch (\Stripe\Error\Base $e)
@@ -679,14 +714,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				// Display a very generic error to the user, and maybe send
 				// yourself an email
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.base';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 			catch (Exception $e)
 			{
 				// Something else happened, completely unrelated to Stripe
 				$logErrMsg    = $e->getMessage();
-				$logErrType   = 'fabrik.form.stripe.customer.err.exception';
+				$logErrType   = 'fabrik.form.stripe.customer.err';
 				$customerErrMsg = JText::_('PLG_FORM_STRIPE_ERROR_INTERNAL');
 			}
 
@@ -721,7 +756,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			{
 				$opts->updateCheckout = true;
 				$opts->panelLabel = FText::_(
-					$params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME")
+					$params->get('stripe_customers_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME")
 				);
 				FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
 				JText::script('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED');
@@ -735,7 +770,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$layoutData = new stdClass();
 			$layoutData->testMode = $testMode;
 			$layoutData->useUpdateButton = $opts->updateCheckout;
-			$layoutData->updateButtonName = FText::_($params->get('stripe_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME"));
+			$layoutData->updateButtonName = FText::_($params->get('stripe_customers_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME"));
 			$layoutData->card = $card;
 			$layoutData->amount = $amount;
 			$layoutData->currencyCode = $currencyCode;
@@ -1001,7 +1036,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		}
 		catch (Exception $e)
 		{
-			$this->doLog('fabrik.form.stripe.customer.error', $e->getMessage());
+			$this->doLog('fabrik.form.stripe.customer.err', $e->getMessage());
 			$this->app->enqueueMessage($e->getMessage(), 'error');
 
 			return false;
@@ -1277,20 +1312,23 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$formModel->setId($formId);
 		$params      = $formModel->getParams();
 		$params      = $this->setParams($params, $renderOrder);
+
+		if (!Stripe::setupStripe($params, 'stripe'))
+		{
+			http_response_code(400);
+			jexit();
+		}
+
 		$testMode    = $params->get('stripe_test_mode', $this->app->input->get('stripe_testmode', false));
 
 		if ($testMode)
 		{
-			$secretKey = trim($params->get('stripe_test_secret_key', ''));
 			$webhookSecret = trim($params->get('stripe_test_webhook_secret', ''));
 		}
 		else
 		{
-			$secretKey = trim($params->get('stripe_secret_key', ''));
 			$webhookSecret = trim($params->get('stripe_webhook_secret', ''));
 		}
-
-		\Stripe\Stripe::setApiKey($secretKey);
 
 		$input = @file_get_contents("php://input");
 		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'];

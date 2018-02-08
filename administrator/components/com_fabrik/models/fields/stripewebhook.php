@@ -45,9 +45,11 @@ class JFormFieldStripewebhook extends JFormField
 		}
 		else
 		{
+			$plugin = (string) $this->getAttribute('plugin', 'stripe');
 			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax';
 			$url .= '&formid=' . $formId;
-			$url .= '&g=form&plugin=stripe&method=webhook';
+			$url .= '&g=form&plugin=' . $plugin;
+			$url .= '&method=webhook';
 			$url .= '&renderOrder=' . $this->form->repeatCounter;
 		}
 

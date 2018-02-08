@@ -114,6 +114,15 @@ end up there instead of `error_log`:
 \Stripe\Stripe::setLogger($logger);
 ```
 
+### Accessing response data
+
+You can access the data from the last API response on any object via `getLastResponse()`.
+
+```php
+$charge = \Stripe\Charge::create(array('amount' => 2000, 'currency' => 'usd', 'source' => 'tok_visa'));
+echo $charge->getLastResponse()->headers['Request-Id'];
+```
+
 ### SSL / TLS compatibility issues
 
 Stripe's API now requires that [all connections use TLS 1.2](https://stripe.com/blog/upgrading-tls). Some systems (most notably some older CentOS and RHEL versions) are capable of using TLS 1.2 but will use TLS 1.0 or 1.1 by default. In this case, you'd get an `invalid_request_error` with the following error message: "Stripe no longer supports API requests made with TLS 1.0. Please initiate HTTPS connections with TLS 1.2 or later. You can learn more about this at [https://stripe.com/blog/upgrading-tls](https://stripe.com/blog/upgrading-tls).".
@@ -134,6 +143,13 @@ composer install
 ```
 
 ## Tests
+
+The test suite depends on [stripe-mock], so make sure to fetch and run it from a
+background terminal ([stripe-mock's README][stripe-mock] also contains
+instructions for installing via Homebrew and other methods):
+
+    go get -u github.com/stripe/stripe-mock
+    stripe-mock
 
 Install dependencies as mentioned above (which will resolve [PHPUnit](http://packagist.org/packages/phpunit/phpunit)), then you can run the test suite:
 
@@ -162,3 +178,4 @@ The method should be called once, before any request is sent to the API. The sec
 See the "SSL / TLS compatibility issues" paragraph above for full context. If you want to ensure that your plugin can be used on all systems, you should add a configuration option to let your users choose between different values for `CURLOPT_SSLVERSION`: none (default), `CURL_SSLVERSION_TLSv1` and `CURL_SSLVERSION_TLSv1_2`.
 
 [psr3]: http://www.php-fig.org/psr/psr-3/
+[stripe-mock]: https://github.com/stripe/stripe-mock
