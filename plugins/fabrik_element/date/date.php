@@ -294,7 +294,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$name .= '[date]';
 		}
 
-		$class          = 'fabrikinput inputbox inout ' . $params->get('bootstrap_class', 'input-small');
+		$class          = 'fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-small');
 		$element->width = (int) $element->width < 0 ? 1 : (int) $element->width;
 		$calOpts        = array('class' => $class, 'size' => $element->width, 'maxlength' => '19');
 
