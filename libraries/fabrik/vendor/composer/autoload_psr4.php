@@ -16,5 +16,6 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src/FontLib'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
+    'Clickatell\\' => array($vendorDir . '/arcturial/clickatell/src', $vendorDir . '/arcturial/clickatell/test'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
 );

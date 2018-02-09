@@ -46,6 +46,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         array (
             'Dompdf\\' => 7,
         ),
+        'C' => 
+        array (
+            'Clickatell\\' => 11,
+        ),
         'A' => 
         array (
             'Aws\\' => 4,
@@ -92,6 +96,11 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
+        ),
+        'Clickatell\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/arcturial/clickatell/src',
+            1 => __DIR__ . '/..' . '/arcturial/clickatell/test',
         ),
         'Aws\\' => 
         array (

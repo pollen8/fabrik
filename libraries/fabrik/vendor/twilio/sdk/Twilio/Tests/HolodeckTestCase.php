@@ -2,7 +2,7 @@
 
 namespace Twilio\Tests;
 
-use \PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestCase;
 use Twilio\Rest\Client;
 
 

@@ -1,5 +1,50 @@
 [
     {
+        "name": "arcturial/clickatell",
+        "version": "2.0.0",
+        "version_normalized": "2.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/arcturial/clickatell.git",
+            "reference": "68b6a42c87f6c062673c980f04af4153d30eab30"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/arcturial/clickatell/zipball/68b6a42c87f6c062673c980f04af4153d30eab30",
+            "reference": "68b6a42c87f6c062673c980f04af4153d30eab30",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.3.*"
+        },
+        "time": "2014-12-29T18:04:47+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Clickatell\\": [
+                    "src",
+                    "test"
+                ]
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GNU General Public License"
+        ],
+        "authors": [
+            {
+                "name": "Chris Brand",
+                "email": "webmaster@cainsvault.com"
+            }
+        ],
+        "description": "Standalone PHP library to integrate with the Clickatell SMS gateway",
+        "homepage": "http://www.cainsvault.com"
+    },
+    {
         "name": "aws/aws-sdk-php",
         "version": "3.24.4",
         "version_normalized": "3.24.4.0",
@@ -524,7 +569,8 @@
             "pop php",
             "shipping",
             "shipping rates"
-        ]
+        ],
+        "abandoned": true
     },
     {
         "name": "psr/http-message",
@@ -626,31 +672,31 @@
     },
     {
         "name": "stripe/stripe-php",
-        "version": "v5.9.0",
-        "version_normalized": "5.9.0.0",
+        "version": "v6.0.0",
+        "version_normalized": "6.0.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/stripe/stripe-php.git",
-            "reference": "d1978a7f20cdbd05c5c462ffa6728f279f03e0c9"
+            "reference": "702a3ee91d1ec61c1b058b1a8b1e192849fd8856"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/stripe/stripe-php/zipball/d1978a7f20cdbd05c5c462ffa6728f279f03e0c9",
-            "reference": "d1978a7f20cdbd05c5c462ffa6728f279f03e0c9",
+            "url": "https://api.github.com/repos/stripe/stripe-php/zipball/702a3ee91d1ec61c1b058b1a8b1e192849fd8856",
+            "reference": "702a3ee91d1ec61c1b058b1a8b1e192849fd8856",
             "shasum": ""
         },
         "require": {
             "ext-curl": "*",
             "ext-json": "*",
             "ext-mbstring": "*",
-            "php": ">=5.3.3"
+            "php": ">=5.4.0"
         },
         "require-dev": {
             "phpunit/phpunit": "~4.0",
             "satooshi/php-coveralls": "~0.6.1",
             "squizlabs/php_codesniffer": "~2.0"
         },
-        "time": "2018-01-17T20:53:33+00:00",
+        "time": "2018-02-07T23:32:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -683,17 +729,17 @@
     },
     {
         "name": "twilio/sdk",
-        "version": "5.16.3",
-        "version_normalized": "5.16.3.0",
+        "version": "5.16.4",
+        "version_normalized": "5.16.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twilio/twilio-php.git",
-            "reference": "4d4d146365f584f2204e0de28e620fd717889834"
+            "reference": "6e940122b8ff50e1cd35f9502832649cd73f2854"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twilio/twilio-php/zipball/4d4d146365f584f2204e0de28e620fd717889834",
-            "reference": "4d4d146365f584f2204e0de28e620fd717889834",
+            "url": "https://api.github.com/repos/twilio/twilio-php/zipball/6e940122b8ff50e1cd35f9502832649cd73f2854",
+            "reference": "6e940122b8ff50e1cd35f9502832649cd73f2854",
             "shasum": ""
         },
         "require": {
@@ -703,7 +749,7 @@
             "apigen/apigen": "^4.1",
             "phpunit/phpunit": "4.5.*"
         },
-        "time": "2018-01-20T02:33:56+00:00",
+        "time": "2018-01-31T01:48:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

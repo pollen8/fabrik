@@ -1,7 +1,25 @@
 # Changelog
 
+## 6.0.0 - 2018-02-07
+* [#410](https://github.com/stripe/stripe-php/pull/410) Drop support for PHP 5.3
+* [#411](https://github.com/stripe/stripe-php/pull/411) Use traits for common API operations
+* [#414](https://github.com/stripe/stripe-php/pull/414) Use short array syntax
+* [#404](https://github.com/stripe/stripe-php/pull/404) Fix serialization logic
+* [#417](https://github.com/stripe/stripe-php/pull/417) Remove `ExternalAccount` class
+* [#418](https://github.com/stripe/stripe-php/pull/418) Increase test coverage
+* [#421](https://github.com/stripe/stripe-php/pull/421) Update CA bundle and add script for future updates
+* [#422](https://github.com/stripe/stripe-php/pull/422) Use vendored CA bundle for all requests
+* [#428](https://github.com/stripe/stripe-php/pull/428) Support for automatic request retries
+
+## 5.9.2 - 2018-02-07
+* [#431](https://github.com/stripe/stripe-php/pull/431) Update PHPDoc @property tags for latest API version
+
+## 5.9.1 - 2018-02-06
+* [#427](https://github.com/stripe/stripe-php/pull/427) Add and update PHPDoc @property tags on all API resources
+
 ## 5.9.0 - 2018-01-17
 * [#421](https://github.com/stripe/stripe-php/pull/421) Updated bundled CA certificates
+* [#423](https://github.com/stripe/stripe-php/pull/423) Escape unsanitized input in OAuth example
 
 ## 5.8.0 - 2017-12-20
 * [#403](https://github.com/stripe/stripe-php/pull/403) Add `__debugInfo()` magic method to `StripeObject`

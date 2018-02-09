@@ -14,9 +14,9 @@ use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\ReservationList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerChannelList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersCumulativeStatisticsList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersRealTimeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
 use Twilio\Values;
 use Twilio\Version;
 

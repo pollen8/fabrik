@@ -2,16 +2,15 @@
 
 namespace Twilio\Tests\Unit\Jwt;
 
+use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\ChatGrant;
-use Twilio\Jwt\Grants\ConversationsGrant;
 use Twilio\Jwt\Grants\IpMessagingGrant;
-use Twilio\Jwt\Grants\VideoGrant;
-use Twilio\Jwt\Grants\VoiceGrant;
 use Twilio\Jwt\Grants\SyncGrant;
 use Twilio\Jwt\Grants\TaskRouterGrant;
+use Twilio\Jwt\Grants\VideoGrant;
+use Twilio\Jwt\Grants\VoiceGrant;
 use Twilio\Jwt\JWT;
 use Twilio\Tests\Unit\UnitTest;
-use Twilio\Jwt\AccessToken;
 
 class AccessTokenTest extends UnitTest {
     const SIGNING_KEY_SID = 'SK123';
