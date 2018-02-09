@@ -1,6 +1,6 @@
 <?php
 /**
- * Twilio SMS gateway class
+ * Clickatell SMS gateway class
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
@@ -15,7 +15,7 @@ use Clickatell\Api\ClickatellRest;
 use Fabrik\Helpers\ArrayHelper;
 
 /**
- * Twilio SMS gateway class
+ * Clickatell SMS gateway class
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
@@ -35,6 +35,7 @@ class Clickatell extends JObject
 
 	public function process($message = '', $opts)
 	{
+		// Clickatell only uses token, no SID, use whichever param isn't empty
 		$sid = ArrayHelper::getValue($opts, 'sms-username');
 		$token = ArrayHelper::getValue($opts, 'sms-password');
 
@@ -43,15 +44,13 @@ class Clickatell extends JObject
 			$token = $sid;
 		}
 
+		// no sms-from setting for Clickatell, just set up 'to' array
 		$smsto = ArrayHelper::getValue($opts, 'sms-to');
-
-		// From a valid Twilio number
-		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
 		$smstos = empty($smsto) ? array() : explode(",", $smsto);
 
-		//$client = new Twilio\Rest\Client($sid, $token);
 		$client = new ClickatellRest($token);
 
+		// Clickatell API doesn't throw exceptions, but something else might
 		try {
 			$response = $client->sendMessage(
 				$smstos,
@@ -65,10 +64,12 @@ class Clickatell extends JObject
 			return false;
 		}
 
+		// check the response array
 		foreach ($response as $item)
 		{
 			if ($item->error === false)
 			{
+				// @TODO add language for this
 				JFactory::getApplication()->enqueueMessage('SMS failed with error code: ' . $item->errorCode, 'error');
 
 				return false;
