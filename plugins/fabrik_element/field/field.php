@@ -533,9 +533,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$url = 'index.php';
 		$this->lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
 
-		if (!$this->canView())
+		if (!$this->getListModel()->canView() || !$this->canView())
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'));
 			$this->app->redirect($url);
 			exit;
 		}
