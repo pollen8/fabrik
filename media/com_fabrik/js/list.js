@@ -478,7 +478,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 opts.option = 'com_fabrik';
                 opts.view = 'list';
                 opts.format = 'csv';
-                opts.Itemid = this.options.Itemid;
+                //opts.Itemid = this.options.Itemid;
                 opts.listid = this.id;
                 opts.listref = this.options.listRef;
                 opts.download = 0;
@@ -489,9 +489,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     opts[key[0]] = key[1];
                 });
 
+                var url = '?' + 'Itemid=' + this.options.Itemid;
+
                 // Append the custom_qs to the URL to enable querystring filtering of the list data
                 var myAjax = new Request.JSON({
-                    url       : '?' + this.options.csvOpts.custom_qs,
+                    url       : url,
                     method    : 'post',
                     data      : opts,
                     onError   : function (text, error) {
