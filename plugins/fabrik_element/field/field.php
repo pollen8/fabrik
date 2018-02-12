@@ -663,6 +663,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$layout = $this->getLayout('qr');
 		$displayData = new stdClass;
 		$displayData->src = $src;
+		$displayData->data = $thisRow;
 
 		return $layout->render($displayData);
 	}
