@@ -1,6 +1,13 @@
 /**
- * Created by rob on 22/03/2016.
+ * Fabrik Admin List / Data / Pre-Filters manager
+ *
+ * @copyright: Copyright (C) 2005-2018, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
+
+/*jshint mootools: true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Asset:true */
+
 define(['jquery'], function (jQuery) {
 
     var adminFilters = new Class({
@@ -162,6 +169,7 @@ define(['jquery'], function (jQuery) {
                     'class' : 'btn' + ((grouped === '1') ? ' active btn-success' : ''),
                 }
                 divGrouped.appendChild(new Element('label', opts).set('text', Joomla.JText._('JYES')));
+                var tdGrouped = new Element('td').adopt(divGrouped);
             }
 
             var td = new Element('td');
@@ -210,7 +218,7 @@ define(['jquery'], function (jQuery) {
             tr.appendChild(td3);
             tr.appendChild(tdType);
             tr.appendChild(td4);
-            tr.appendChild(new Element('td').adopt(divGrouped));
+            tr.appendChild(tdGrouped);
             tr.appendChild(td5);
 
             this.el.appendChild(tr);
