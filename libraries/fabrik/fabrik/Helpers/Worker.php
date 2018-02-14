@@ -2033,6 +2033,63 @@ class Worker
 	}
 
 	/**
+	 * Get a user's TZ offset in MySql format, suitable for CONVERT_TZ
+	 *
+	 * @param  int  userId  userid or null (use logged on user if null)
+	 *
+	 * @return  string  symbolic timezone name (America/Chicago)
+	 */
+	public static function getUserTzOffsetMySql($userId = null)
+	{
+		$tz = self::getUserTzName($userId);
+		$tz = new \DateTimeZone($tz);
+		$date = new \DateTime("now", $tz);
+		$offset = $tz->getOffset($date) . ' seconds';
+		$dateOffset = clone $date;
+		$dateOffset->sub(\DateInterval::createFromDateString($offset));
+		$interval = $dateOffset->diff($date);
+		return $interval->format('%R%H:%I');
+	}
+
+	/**
+	 * Get a user's TZ offset in seconds
+	 *
+	 * @param  int  userId  userid or null (use logged on user if null)
+	 *
+	 * @return  int  seconds offset
+	 */
+	public static function getUserTzOffset($userId = null)
+	{
+		$tz = self::getUserTzName($userId);
+		$tz = new \DateTimeZone($tz);
+		$date = new \DateTime("now", $tz);
+		return $tz->getOffset($date);
+	}
+
+	/**
+	 * Get a user's TZ name
+	 *
+	 * @param  int  userId  userid or null (use logged on user if null)
+	 *
+	 * @return  string  symbolic timezone name (America/Chicago)
+	 */
+	public static function getUserTzName($userId = null)
+	{
+		if (empty($userId))
+		{
+			$user = JFactory::getUser();
+		}
+		else
+		{
+			$user = JFactory::getUser($userId);
+		}
+		$config = JFactory::getConfig();
+		$tz = $user->getParam('timezone', $config->get('offset'));
+
+		return $tz;
+	}
+
+	/**
 	 * See if data is JSON or not.
 	 *
 	 * @param   mixed $data Date to test
