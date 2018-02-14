@@ -661,7 +661,7 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					if (is_numeric($search) && $condition == '=')
 					{
-						$eval = FABRKFILTER_NOQUOTES;
+						$eval = FABRIKFILTER_NOQUOTES;
 					}
 				}
 
@@ -1027,7 +1027,7 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					if (is_numeric($val) && $condition == '=')
 					{
-						$eval = FABRKFILTER_NOQUOTES;
+						$eval = FABRIKFILTER_NOQUOTES;
 					}
 				}
 			}
@@ -1339,7 +1339,7 @@ class FabrikFEModelListfilter extends FabModel
 					{
 						if (is_numeric($value) && $request['condition'][$i] == '=')
 						{
-							$eval = FABRKFILTER_NOQUOTES;
+							$eval = FABRIKFILTER_NOQUOTES;
 						}
 					}
 				}
@@ -1565,7 +1565,7 @@ class FabrikFEModelListfilter extends FabModel
 						{
 							if (is_numeric($search) && $condition == '=')
 							{
-								$eval = FABRKFILTER_NOQUOTES;
+								$eval = FABRIKFILTER_NOQUOTES;
 							}
 						}
 					}

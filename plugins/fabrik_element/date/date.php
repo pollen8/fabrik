@@ -1180,9 +1180,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				{
 					$v = str_replace(array("'", '"'), '', $v);
 				}
+
+				$filterType = 'FABRIKFILTER_NOQUOTES';
+			}
+			else
+			{
+				$filterType = FabrikWorker::isNullDate($value) ? 'FABRIKFILTER_TEXT' : 'FABRIKFILTER_QUERY';
 			}
 
-			return parent::getFilterValue($value, $condition, FABRIKFILTER_QUERY);
+			return parent::getFilterValue($value, $condition, $filterType);
 		}
 
 		$params       = $this->getParams();

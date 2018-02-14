@@ -29,7 +29,7 @@ define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme',
 define("FABRIKFILTER_TEXT", 0);
 define("FABRIKFILTER_EVAL", 1);
 define("FABRIKFILTER_QUERY", 2);
-define("FABRKFILTER_NOQUOTES", 3);
+define("FABRIKFILTER_NOQUOTES", 3);
 
 /** @var delimiter used to define separator in csv export */
 define("COM_FABRIK_CSV_DELIMITER", ",");

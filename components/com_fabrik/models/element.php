@@ -4522,7 +4522,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						case FABRIKFILTER_QUERY:
 							$value = '(' . $value . ')';
 							break;
-						case FABRKFILTER_NOQUOTES:
+						case FABRIKFILTER_NOQUOTES:
 							$value = $value;
 							break;
 						default:
@@ -4588,7 +4588,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					break;
 			}
 			// $$$ hugh - if 'noquotes' (3) selected, strip off the quotes again!
-			if ($eval == FABRKFILTER_NOQUOTES)
+			if ($eval == FABRIKFILTER_NOQUOTES)
 			{
 				// $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
 				$value = JString::ltrim($value, "'");

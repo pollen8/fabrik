@@ -1980,22 +1980,35 @@ class Worker
 	 * Test if a string is a compatible date
 	 *
 	 * @param   string $d Date to test
+	 * @param   bool   $notNull  don't allow null / empty dates
+	 *
+	 * @return    bool
+	 */
+	public static function isNullDate($d)
+	{
+		$db         = self::getDbo();
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
+
+		return in_array($d, $aNullDates);
+	}
+
+	/**
+	 * Test if a string is a compatible date
+	 *
+	 * @param   string $d Date to test
      * @param   bool   $notNull  don't allow null / empty dates
 	 *
 	 * @return    bool
 	 */
 	public static function isDate($d, $notNull = true)
 	{
-		$db         = self::getDbo();
-		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
-
 		// Catch for ','
 		if (strlen($d) < 2)
 		{
 			return false;
 		}
 
-		if ($notNull && in_array($d, $aNullDates))
+		if ($notNull && self::isNullDate($d))
 		{
 			return false;
 		}
