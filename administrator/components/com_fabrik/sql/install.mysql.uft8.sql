@@ -62,7 +62,12 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_elements` (
 	`use_in_page_title` INT(1) NOT NULL default '0',
 	`parent_id` MEDIUMINT(6) NOT NULL,
 	`params` MEDIUMTEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `show_in_list_summary_INDEX` (`show_in_list_summary`),
+	KEY `plugin_INDEX` (`plugin`(10)),
+	KEY `checked_out_INDEX` (`checked_out`),
+	KEY `group_id_INDEX` (`group_id`),
+	KEY `parent_id_INDEX` (`parent_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_formgroup` (
@@ -70,7 +75,11 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_formgroup` (
 	`form_id` INT(4) NOT NULL,
 	`group_id` INT(4) NOT NULL,
 	`ordering` INT(4) NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `form_id_INDEX` (`form_id`),
+	KEY `group_id_INDEX` (`group_id`),
+	KEY `ordering_INDEX` (`ordering`)
+
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_forms` (
@@ -95,7 +104,8 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_forms` (
 	`published` INT(1) NOT NULL DEFAULT 0,
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `published_INDEX` (`published`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_form_sessions` (
@@ -127,7 +137,8 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_groups` (
 	`is_join` INT(1) NOT NULL DEFAULT '0',
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `published_INDEX` (`published`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_joins` (
@@ -141,7 +152,11 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_joins` (
 	`join_type` VARCHAR(255) NOT NULL,
 	`group_id` INT(10) NOT NULL,
 	`params` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `list_id_INDEX` (`list_id`),
+	KEY `element_id_INDEX` (`element_id`),
+	KEY `group_id_INDEX` (`group_id`),
+	KEY `table_join_INDEX` (`table_join`(10))
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_jsactions` (
@@ -150,7 +165,8 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_jsactions` (
 	`action` VARCHAR(255) NOT NULL,
 	`code` TEXT NOT NULL,
 	`params` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `element_id_INDEX` (`element_id`)
 ) DEFAULT CHARSET=utf8;
 
 
@@ -183,7 +199,8 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_lists` (
 	`group_by` VARCHAR(255) NOT NULL, 
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	KEY `form_id_INDEX` (`form_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_log` (
