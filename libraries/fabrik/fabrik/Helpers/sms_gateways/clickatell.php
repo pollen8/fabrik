@@ -48,6 +48,12 @@ class Clickatell extends JObject
 		$smsto = ArrayHelper::getValue($opts, 'sms-to');
 		$smstos = empty($smsto) ? array() : explode(",", $smsto);
 
+		// Clickatell is picky about numbers, no spaces or dashes
+		foreach ($smstos as &$smsto)
+		{
+			$smsto = preg_replace("/[^0-9]/","", $smsto);
+		}
+
 		$client = new ClickatellRest($token);
 
 		// Clickatell API doesn't throw exceptions, but something else might
