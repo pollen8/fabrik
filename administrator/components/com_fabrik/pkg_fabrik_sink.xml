@@ -2,12 +2,12 @@
 <extension type="package" version="3">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.8</version>
+	<version>3.8.1</version>
 	<url>http://www.joomla.org</url>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
-	<creationDate>October 2017</creationDate>
-	<copyright>Copyright (C) 2005-2017 Media A-Team, Inc. - All rights reserved.</copyright>
+	<creationDate>February 2018</creationDate>
+	<copyright>Copyright (C) 2005-2018 Media A-Team, Inc. - All rights reserved.</copyright>
 	<description>Fabrik Free Package</description>
 	<update>http://fabrikar.com/update/packages/free</update>
 	<files folder="packages">
@@ -66,13 +66,17 @@
 		<file group="fabrik_element" id="yesno" type="plugin">plg_fabrik_element_yesno_{version}.zip</file>
 		<file group="fabrik_element" id="youtube" type="plugin">plg_fabrik_element_youtube_{version}.zip</file>
 
+		<file group="fabrik_form" id="alphauserpoints" type="plugin">plg_fabrik_form_alphauserpoints_{version}.zip</file>
+		<file group="fabrik_form" id="article" type="plugin">plg_fabrik_form_article_{version}.zip</file>
 		<file group="fabrik_form" id="autofill" type="plugin">plg_fabrik_form_autofill_{version}.zip</file>
 		<file group="fabrik_form" id="clone" type="plugin">plg_fabrik_form_clone_{version}.zip</file>
 		<file group="fabrik_form" id="comment" type="plugin">plg_fabrik_form_comment_{version}.zip</file>
 		<file group="fabrik_form" id="confirmation" type="plugin">plg_fabrik_form_confirmation_{version}.zip</file>
 		<file group="fabrik_form" id="email" type="plugin">plg_fabrik_form_email_{version}.zip</file>
 		<file group="fabrik_form" id="exif" type="plugin">plg_fabrik_form_exif_{version}.zip</file>
-		<file group="fabrik_form" id="js" type="plugin">plg_fabrik_form_js_{version}.zip</file>
+		<file group="fabrik_form" id="ftp" type="plugin">plg_fabrik_form_ftp_{version}.zip</file>
+		<file group="fabrik_form" id="j2store" type="plugin">plg_fabrik_form_j2store_{version}.zip</file>
+		<file group="fabrik_form" id="joompush" type="plugin">plg_fabrik_form_joompush_{version}.zip</file>
 		<file group="fabrik_form" id="juser" type="plugin">plg_fabrik_form_juser_{version}.zip</file>
 		<file group="fabrik_form" id="kunena" type="plugin">plg_fabrik_form_kunena_{version}.zip</file>
 		<file group="fabrik_form" id="limit" type="plugin">plg_fabrik_form_limit_{version}.zip</file>
@@ -85,6 +89,7 @@
 		<file group="fabrik_form" id="salesforce" type="plugin">plg_fabrik_form_salesforce_{version}.zip</file>
 		<file group="fabrik_form" id="sms" type="plugin">plg_fabrik_form_sms_{version}.zip</file>
 		<file group="fabrik_form" id="twitter" type="plugin">plg_fabrik_form_twitter_{version}.zip</file>
+		<file group="fabrik_form" id="upsert" type="plugin">plg_fabrik_form_upsert_{version}.zip</file>
 
 		<file group="fabrik_list" id="copy" type="plugin">plg_fabrik_list_copy_{version}.zip</file>
 		<file group="fabrik_list" id="download" type="plugin">plg_fabrik_list_download_{version}.zip</file>
