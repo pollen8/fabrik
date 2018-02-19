@@ -54,6 +54,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 				// A group has been duplicated
 				if (oEl.strElement === self.element.strElement) {
 					// The element is a clone of our observable element
+					// $$$ hugh - don't think we need to do this any more as events get cloned during group duplication
 					//self.element = false;
 					//self.setupDone = false;
 					//self.setUp(form);
@@ -149,6 +150,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 			else {
 				this.attached.push(e.options.element);
+                self.newAttach.push(e.options.element);
 			}
 
 			this.element = e;
