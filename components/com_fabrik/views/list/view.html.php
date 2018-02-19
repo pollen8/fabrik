@@ -109,7 +109,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->filter_action = $this->filter_action;
 		if ($this->filterMode === 5)
 		{
-			$layoutFile = $this->filterMode === 5;
+			$layoutFile = 'fabrik-filters-modal';
 		}
 		else
 		{
