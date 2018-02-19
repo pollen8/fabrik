@@ -580,11 +580,20 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 }
                 else {
                     /*
-                     * need to use parseDate() with a format string instead of just parse(), otherwise if advanced
-                     * formats is enabled, parse() will overridden and use the "culture" specific parsing, and if
-                     * language is en-GB, that will switch day and month round.
+                     * Even though always standard format, need to use 'advanced' handling to work round a bug in
+                     * the JoomlaFarsi implementation of the calendar JS which applies TZ offsets in parseDate()
                      */
-                    date = Date.parseDate(val, '%Y-%m-%d %H:%M');
+                    if (this.options.advanced) {
+                        date = Date.parseExact(val, Date.normalizeFormat('%Y-%m-%d %H:%M:%S'));
+                    }
+                    else {
+                        /*
+                         * need to use parseDate() with a format string instead of just parse(), otherwise if advanced
+                         * formats is enabled, parse() will overridden and use the "culture" specific parsing, and if
+                         * language is en-GB, that will switch day and month round.
+                         */
+                        date = Date.parseDate(val, '%Y-%m-%d %H:%M');
+                    }
                 }
             } else {
                 date = val;
