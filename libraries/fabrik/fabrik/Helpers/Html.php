@@ -13,18 +13,18 @@ namespace Fabrik\Helpers;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \JComponentHelper;
-use \stdClass;
-use \JModelLegacy;
-use \JHtmlBootstrap;
-use \JVersion;
-use \JUri;
-use \JRoute;
-use \JHtml;
-use \JFactory;
-use \JFile;
-use \JText;
-use \JBrowser;
+use JBrowser;
+use JComponentHelper;
+use JFactory;
+use JFile;
+use JHtml;
+use JHtmlBootstrap;
+use JModelLegacy;
+use JRoute;
+use JText;
+use JUri;
+use JVersion;
+use stdClass;
 
 jimport('joomla.filesystem.file');
 
@@ -2350,8 +2350,11 @@ EOT;
 
 		foreach ($bits as $key => $val)
 		{
-			$val = str_replace('"', "'", $val);
-			$p .= $key . '="' . $val . '" ';
+		    if (!\FabrikWorker::isJSON($val))
+            {
+			    $val = str_replace('"', "'", $val);
+			    $p .= $key . '="' . $val . '" ';
+			}
 		}
 
 		return $p;
