@@ -11,8 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\StringHelper;
+use Joomla\Utilities\ArrayHelper;
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -113,6 +113,23 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$opts               = $this->getElementJSOptions();
 		$opts->renderOrder  = $this->renderOrder;
 		$opts->additionalQS = $w->parseMessageForPlaceHolder($params->get('list_email_additional_qs', ''));
+
+		$url = 'index.php?option=com_fabrik';
+		$url .= '&view=list';
+		$url .= '&controller=list.email';
+		//$url .= '&task=popupwin';
+		$url .= '&tmpl=component';
+		$url .= '&ajax=1';
+		$url .= '&id=' . $this->getModel()->getId();
+		$url .= '&renderOrder=' . $this->renderOrder;
+		$url .= '&format=partial';
+
+		if (!empty($opts->additionalQS))
+		{
+			$url .= '&' . $opts->additionalQS;
+		}
+
+		$opts->popupUrl = JRoute::_($url);
 		$opts               = json_encode($opts);
 		$this->jsInstance   = "new FbListEmail($opts)";
 
@@ -1115,7 +1132,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if ($params->get('wysiwyg', true))
 		{
-			$editor = JEditor::getInstance($this->config->get('editor'));
+			$editor = \JEditor::getInstance($this->config->get('editor'));
 
 			return $editor->display('message', $msg, '100%', '200px', 75, 10, true, 'message');
 		}
