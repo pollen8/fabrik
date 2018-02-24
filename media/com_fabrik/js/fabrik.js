@@ -35,11 +35,15 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         var pluginFn = jQuery.fn[pluginName];
         if (pluginFn) {
             if (pluginFn.VERSION) {
-                return pluginFn.VERSION;
+                return pluginFn.VERSION.match(/(\d+)\./)[0].toInt();
             }
-            if (pluginName === 'modal') {
+            else if (pluginFn.Constructor.VERSION)
+            {
+                return pluginFn.Constructor.VERSION.match(/(\d+)\./)[0].toInt();
+            }
+            else if (pluginName === 'modal') {
                 // Bootstrap 2 doesn't use namespace on modal data (at least for now...)
-                return pluginFn.toString().indexOf('bs.modal') === -1 ? '2.x' : '3.x';
+                return pluginFn.toString().indexOf('bs.modal') === -1 ? 2 : 3;
             }
         }
     };
