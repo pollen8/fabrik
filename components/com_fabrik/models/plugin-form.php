@@ -54,7 +54,9 @@ class PlgFabrik_Form extends FabrikPlugin
 	protected $data = array();
 
 	/**
-	 * Log
+	 * J! Log
+	 *
+	 * @var  object
 	 */
 	protected $log = null;
 
