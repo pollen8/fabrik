@@ -31,21 +31,23 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
      * @returns {*}
      */
     Fabrik.bootstrapVersion = function (pluginName) {
-        pluginName = pluginName || 'modal';
-        var pluginFn = jQuery.fn[pluginName];
-        if (pluginFn) {
-            if (pluginFn.VERSION) {
-                return pluginFn.VERSION.match(/(\d+)\./)[0].toInt();
-            }
-            else if (pluginFn.Constructor.VERSION)
-            {
-                return pluginFn.Constructor.VERSION.match(/(\d+)\./)[0].toInt();
-            }
-            else if (pluginName === 'modal') {
-                // Bootstrap 2 doesn't use namespace on modal data (at least for now...)
-                return pluginFn.toString().indexOf('bs.modal') === -1 ? 2 : 3;
+        // try the function provided first, punt to 'tooltip' if it doesn't exist (some plugins override 'modal')
+        var i, s, pluginNames = [pluginName || 'modal', 'tooltip'], len = pluginNames.length;
+        for (i=0; i<len; ++i) {
+            var pluginFn = jQuery.fn[pluginNames[i]];
+            if (pluginFn) {
+                if (pluginFn.VERSION) {
+                    return pluginFn.VERSION.match(/(\d+)\./)[0].toInt();
+                }
+                else if (pluginFn.Constructor && pluginFn.Constructor.VERSION)
+                {
+                    return pluginFn.Constructor.VERSION.match(/(\d+)\./)[0].toInt();
+                }
             }
         }
+
+        // if we got this far, it's not 3 or 4, so either 2, or not Bootstrap!
+        return 2;
     };
 
     Fabrik.Windows = {};
