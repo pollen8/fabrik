@@ -688,7 +688,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		$thisMsg = $w->parseMessageForPlaceholder($thisMsg, $row);
 
-		if ($params->get('wysiwyg', true))
+		if (!$sendSMS && $params->get('wysiwyg', true))
 		{
 			Pdf::fullPaths($thisMsg);
 		}
