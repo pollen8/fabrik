@@ -32,7 +32,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
      */
     Fabrik.bootstrapVersion = function (pluginName) {
         // try the function provided first, punt to 'tooltip' if it doesn't exist (some plugins override 'modal')
-        var i, s, pluginNames = [pluginName || 'modal', 'tooltip'], len = pluginNames.length;
+        var i, pluginNames = [pluginName || 'modal', 'tooltip'], len = pluginNames.length;
         for (i=0; i<len; ++i) {
             var pluginFn = jQuery.fn[pluginNames[i]];
             if (pluginFn) {
