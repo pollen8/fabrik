@@ -11,6 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Pdf;
 use Fabrik\Helpers\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
@@ -129,7 +130,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$url .= '&' . $opts->additionalQS;
 		}
 
-		$opts->popupUrl = JRoute::_($url);
+		$opts->popupUrl = JRoute::_($url, false);
 		$opts               = json_encode($opts);
 		$this->jsInstance   = "new FbListEmail($opts)";
 
@@ -687,6 +688,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		$thisMsg = $w->parseMessageForPlaceholder($thisMsg, $row);
 
+		if ($params->get('wysiwyg', true))
+		{
+			Pdf::fullPaths($thisMsg);
+		}
+
 		if ($sendSMS)
 		{
 			return $this->sendSMS($mailTo, $thisMsg, $row);
@@ -960,6 +966,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		if (!$oldStyle)
 		{
 			$mergedMsg = $coverMessage . $mergedMsg;
+		}
+
+		if ($params->get('wysiwyg', true))
+		{
+			Pdf::fullPaths($coverMessage);
 		}
 
 		if ($toHow == 'single')
