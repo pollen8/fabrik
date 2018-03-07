@@ -930,6 +930,15 @@ class FabrikViewFormBase extends FabrikView
 		$fields[]  = '<input type="hidden" name="package" value="' . $this->app->getUserState('com_fabrik.package', 'fabrik') . '" />';
 		$fields[]  = '<input type="hidden" name="packageId" value="' . $model->packageId . '" />';
 
+		if ($model->noData)
+		{
+			$fields[] = '<input type="hidden" name="nodata" value="1"" />';
+		}
+		else
+		{
+			$fields[] = '<input type="hidden" name="nodata" value="0" />';
+		}
+
 		/*
 		if ($input->get('fabrikdebug', '') === '2')
         {

@@ -11,9 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Uploader;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Uploader;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -353,6 +353,15 @@ class FabrikFEModelForm extends FabModelForm
 	 * @var string
 	 */
 	public $tmpl = null;
+
+	/**
+	 * did we find any data in getData()
+	 *
+	 * @since 3.8
+	 *
+	 * @var bool
+	 */
+	public $noData = false;
 
 	/**
 	 * Constructor
@@ -2873,7 +2882,31 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function isNewRecord()
 	{
-		return $this->getRowId() === '';
+		if ($this->getRowId() === '')
+		{
+			return true;
+		}
+		else
+		{
+			/*
+			 * special case when using 'useley', rowid will be set on submission, even on a new record,
+			 * so test for hidden 'nodata' field, which is set on form load if getData() finds no existing data.
+			 */
+			if ($this->app->input->get('task', '') === 'form.process')
+			{
+				$opts   = array(
+					'formid' => $this->getId()
+				);
+				$useKey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var', $opts);
+
+				if ($useKey && $this->app->input->get('nodata', '') === '1')
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -3319,6 +3352,12 @@ class FabrikFEModelForm extends FabModelForm
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
 							}
+
+							$this->noData = false;
+						}
+						else
+						{
+							$this->noData = true;
 						}
 
 						FabrikHelperHTML::debug($data, 'form:getData from querying rowid= ' . $this->rowId . ' (form not in Mambot and no errors)');
