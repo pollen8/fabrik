@@ -234,11 +234,28 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$w = new FabrikWorker;
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
+			$attrs = $params->get('link_attributes', '');
+
+			if (!empty($attrs))
+			{
+				$attrs = $w->parseMessageForPlaceHolder($attrs);
+				$attrs = explode(' ', $attrs);
+
+				foreach ($attrs as $attr)
+				{
+					list($k, $v) = explode('=', $attr);
+					$opts[$k] = trim($v, '"');
+				}
+			}
+			else
+			{
+				$attrs = array();
+			}
 
 			if ((new MediaHelper)->isImage($value))
 			{
 				$alt = empty($title) ? '' : 'alt="' . strip_tags($w->parseMessageForPlaceHolder($title, $data)) . '"';
-				$value = '<img src="' . $value . '" ' . $alt . ' />';
+				$value = '<img src="' . $value . '" ' . $alt . ' ' . implode(' ', $attrs) . ' />';
 			}
 			else
 			{
