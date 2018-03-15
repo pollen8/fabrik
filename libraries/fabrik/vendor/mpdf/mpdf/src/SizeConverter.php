@@ -35,6 +35,8 @@ class SizeConverter
 			$size = 'auto';
 		}
 
+		$size = preg_replace('/\s*!important/', '', $size);
+
 		$res = preg_match('/^(?P<size>[-0-9.,]+)?(?P<unit>[%a-z-]+)?$/', $size, $parts);
 		if (!$res) {
 			throw new \Mpdf\MpdfException(sprintf('Invalid size representation "%s"', $size));
