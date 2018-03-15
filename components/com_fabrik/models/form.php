@@ -4400,44 +4400,46 @@ class FabrikFEModelForm extends FabModelForm
 		$linkedform_linktype = $facetedLinks->linkedform_linktype;
 		$linkedtable_linktype = $facetedLinks->linkedlist_linktype;
 		$f = 0;
+		$allPks = array();
 
 		foreach ($joinsToThisKey as $joinKey => $element)
 		{
 			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
+			$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
+			$val = $input->get($qsKey);
 
-			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
+			if ($val == '')
 			{
-				$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
-				$val = $input->get($qsKey);
+				// Default to row id if we are coming from a main link (and not a related data link)
+				$val = $input->get($qsKey . '_raw', '', 'string');
 
-				if ($val == '')
+				if (empty($val))
 				{
-					// Default to row id if we are coming from a main link (and not a related data link)
-					$val = $input->get($qsKey . '_raw', '', 'string');
+					$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
+					$val = FArrayHelper::getValue($this->data, $thisKey, $val);
 
 					if (empty($val))
 					{
-						$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
-						$val = FArrayHelper::getValue($this->data, $thisKey, $val);
-
-						if (empty($val))
-						{
-							$val = $input->get('rowid');
-						}
+						$val = $input->get('rowid');
 					}
 				}
+			}
 
-				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
-				 * use it to restrict the count to just this entry.
-				 */
+			/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
+			 * use it to restrict the count to just this entry.
+			 */
 
-				$pks = array();
+			$pks = array();
 
-				if (!empty($val))
-				{
-					$pks[] = $val;
-				}
+			if (!empty($val))
+			{
+				$pks[] = $val;
+			}
 
+			$allPks[$key] = $pks;
+
+			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
+			{
 				$recordCounts = $referringTable->getRecordCounts($element, $pks);
 
 				// Jaanus - 18.10.2013 - get correct element fullnames as link keys
@@ -4473,12 +4475,13 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					if (is_object($element))
 					{
-						$linkKeyData = $referringTable->getRecordCounts($element, $pks);
+						$linkKeyData = $referringTable->getRecordCounts($element, $allPks[$key]);
 						$linkKey = $linkKeyData['linkKey'];
 						$val = $input->get($linkKey, '', 'string');
 
 						if ($val == '')
 						{
+							$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
 							$val = $input->get($qsKey . '_raw', $input->get('rowid'));
 						}
 
