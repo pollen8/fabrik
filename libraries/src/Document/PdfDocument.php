@@ -209,14 +209,13 @@ class PdfDocument extends HtmlDocument
 			{
 				case 'landscape':
 					$this->orientation = 'L';
+					$this->size .= '-' . $this->orientation;
 					break;
 				case 'portrait':
 				default:
 					$this->orientation = 'P';
 					break;
 			}
-
-			$this->size .= '-' . $this->orientation;
 		}
 	}
 
@@ -286,14 +285,24 @@ class PdfDocument extends HtmlDocument
 		}
 		else
 		{
-			$mpdf = new \Mpdf\Mpdf(
-				[
-					'format' => $this->size,
-					'orientation' => $this->orientation
-				]
-			);
-			$mpdf->WriteHTML($data);
-			$mpdf->Output();
+			try
+			{
+				$mpdf = new \Mpdf\Mpdf(
+					[
+						'tempDir'     => \JFactory::getConfig()->get('tmp_path', JPATH_ROOT . '/tmp'),
+						'mode'        => 'utf-8',
+						'format'      => $this->size,
+						'orientation' => $this->orientation
+					]
+				);
+				$mpdf->WriteHTML($data);
+				$mpdf->Output();
+			}
+			catch (\Mpdf\MpdfException $e)
+			{
+				// mmmphh
+				echo 'Error creating PDF: ' . ($e->getMessage());
+			}
 		}
 
 		return '';
