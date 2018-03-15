@@ -216,6 +216,7 @@ class PdfDocument extends HtmlDocument
 					break;
 			}
 
+			$this->size .= '-' . $this->orientation;
 		}
 	}
 
