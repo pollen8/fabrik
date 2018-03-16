@@ -267,11 +267,11 @@ class PdfDocument extends HtmlDocument
 		 * but haven't tested it much
 		 */
 		$data = mb_convert_encoding($data,'HTML-ENTITIES','UTF-8');
+		$config = \JComponentHelper::getParams('com_fabrik');
 
 		if ($this->config->get('fabrik_pdf_lib', 'dompdf') === 'dompdf')
 		{
 			$this->engine->load_html($data);
-			$config = \JComponentHelper::getParams('com_fabrik');
 
 			if ($config->get('pdf_debug', false))
 			{
@@ -285,23 +285,30 @@ class PdfDocument extends HtmlDocument
 		}
 		else
 		{
-			try
+			if ($config->get('pdf_debug', false))
 			{
-				$mpdf = new \Mpdf\Mpdf(
-					[
-						'tempDir'     => \JFactory::getConfig()->get('tmp_path', JPATH_ROOT . '/tmp'),
-						'mode'        => 'utf-8',
-						'format'      => $this->size,
-						'orientation' => $this->orientation
-					]
-				);
-				$mpdf->WriteHTML($data);
-				$mpdf->Output();
+				return $data;
 			}
-			catch (\Mpdf\MpdfException $e)
+			else
 			{
-				// mmmphh
-				echo 'Error creating PDF: ' . ($e->getMessage());
+				try
+				{
+					$mpdf = new \Mpdf\Mpdf(
+						[
+							'tempDir'     => \JFactory::getConfig()->get('tmp_path', JPATH_ROOT . '/tmp'),
+							'mode'        => 'utf-8',
+							'format'      => $this->size,
+							'orientation' => $this->orientation
+						]
+					);
+					$mpdf->WriteHTML($data);
+					$mpdf->Output($this->getName() . '.pdf');
+				}
+				catch (\Mpdf\MpdfException $e)
+				{
+					// mmmphh
+					echo 'Error creating PDF: ' . ($e->getMessage());
+				}
 			}
 		}
 

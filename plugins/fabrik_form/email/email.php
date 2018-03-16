@@ -503,29 +503,23 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			//require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 
-			// if DOMPDF isn't installed, this will throw an exception which we should catch
-			$domPdf = Pdf::iniDomPdf(true);
+			// if selected PDF engine isn't installed, this will throw an exception which we should catch
+			\Fabrik\Helpers\Worker::canPdf(true);
 
 			$size = strtoupper($params->get('pdf_size', 'A4'));
 			$orientation = $params->get('pdf_orientation', 'portrait');
-			$domPdf->set_paper($size, $orientation);
-
-			$controller = new FabrikControllerDetails;
-			/**
-			 * $$$ hugh - stuff our model in there, with already formatted data, so it doesn't get rendered
-			 * all over again by the view, with unformatted data.  Should probably use a setModel() method
-			 * here instead of poking in to the _model, but I don't think there is a setModel for controllers?
-			 */
-			$controller->_model = $model;
 
 			/**
 			 * Unfortunately, we need to reload the data, so it's in the right format.  Can't use the
 			 * submitted data.  "One of these days" we need to have a serious look at normalizing the data formats,
 			 * so submitted data is in the same format (once processed) as data read from the database.
 			 */
+			$controller = new FabrikControllerDetails;
 			$model->data = null;
+			$controller->_model = $model;
 			$controller->_model->data = $model->getData();
 			$controller->_model->tmpl = null;
+
 			/*
 			 * Allows us to bypass "view records" ACL settings for creating the details view
 			 */
@@ -559,12 +553,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				$html = "<style>\n" . implode("\n", $formCss) . "</style>\n" . $html;
 			}
 
-			// Load the HTML into DOMPdf and render it.
-			// $$$trob: convert as in libraries\joomla\document\pdf\pdf.php
-			$html = mb_convert_encoding($html,'HTML-ENTITIES','UTF-8');
-			$domPdf->load_html($html);
-			$domPdf->render();
-
 			// Store the file in the tmp folder so it can be attached
 			$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
 			$displayData         = new stdClass;
@@ -573,7 +561,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$fileName = $layout->render($displayData);
 			$file = $this->config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($fileName) . '.pdf';
 
-			$pdf = $domPdf->output();
+			$pdf = Pdf::renderPdf($html, $size, $orientation);
 
 			if (JFile::write($file, $pdf))
 			{

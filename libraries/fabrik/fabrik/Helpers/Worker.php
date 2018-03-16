@@ -2613,7 +2613,16 @@ class Worker
 	 */
 	public static function canPdf($puke = true)
 	{
-		$file = COM_FABRIK_LIBRARY . '/vendor/dompdf/dompdf/composer.json';
+		$config = \JComponentHelper::getParams('com_fabrik');
+
+		if ($config->get('fabrik_pdf_lib', 'dompdf') === 'dompdf')
+		{
+			$file = COM_FABRIK_LIBRARY . '/vendor/dompdf/dompdf/composer.json';
+		}
+		else
+		{
+			$file = COM_FABRIK_LIBRARY . '/vendor/mpdf/mpdf/composer.json';
+		}
 
 		if (!JFile::exists($file))
 		{
