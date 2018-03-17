@@ -302,7 +302,7 @@ class PdfDocument extends HtmlDocument
 						]
 					);
 					$mpdf->WriteHTML($data);
-					$mpdf->Output($this->getName() . '.pdf');
+					$mpdf->Output($this->getName() . '.pdf', \Mpdf\Output\Destination::INLINE);
 				}
 				catch (\Mpdf\MpdfException $e)
 				{
