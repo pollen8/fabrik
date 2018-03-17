@@ -275,7 +275,7 @@ class PdfDocument extends HtmlDocument
 
 			if ($config->get('pdf_debug', false))
 			{
-				return $this->engiine->output_html();
+				return $this->engine->output_html();
 			}
 			else
 			{
