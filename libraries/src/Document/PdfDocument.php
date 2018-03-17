@@ -301,6 +301,8 @@ class PdfDocument extends HtmlDocument
 							'orientation' => $this->orientation
 						]
 					);
+					//$mpdf->shrink_tables_to_fit = 1;
+					$mpdf->use_kwt = true;
 					$mpdf->WriteHTML($data);
 					$mpdf->Output($this->getName() . '.pdf', \Mpdf\Output\Destination::INLINE);
 				}
