@@ -553,7 +553,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         hideGroupTab: function (groupId) {
             var tab = this.getGroupTab(groupId);
             if (tab !== false) {
-                tab.hide();
+                jQuery(tab).hide();
                 if (tab.hasClass('active')) {
                     if (tab.getPrevious()) {
                         jQuery(tab.getPrevious().getFirst()).tab('show');
@@ -587,7 +587,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         showGroupTab: function (groupId) {
             var tab = this.getGroupTab(groupId);
             if (tab !== false) {
-                tab.show();
+                jQuery(tab).show();
             }
         },
 
