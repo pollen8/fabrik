@@ -661,6 +661,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$icons[$v[0] . $v[1]][5] = $height;
 			}
 
+			// $$$ hugh - not used?  And doesn't make sense
+			/*
 			if (!empty($icons))
 			{
 				$this->iconRowData[] = array(
@@ -668,6 +670,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					'data' => $rowData
 				);
 			}
+			*/
 
 			$c++;
 		}
