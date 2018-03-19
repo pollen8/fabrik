@@ -2014,10 +2014,16 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         hideLastGroup: function (groupId, subGroup) {
+            var msg = this.options.noDataMsg[groupId];
+
+            if (msg === '') {
+                msg = Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA');
+            }
+
             var sge = subGroup.getElement('.fabrikSubGroupElements');
             var notice = new Element(
                 'div', {'class': 'fabrikNotice alert'}
-            ).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
+            ).appendText(msg);
             if (typeOf(sge) === 'null') {
                 sge = subGroup;
                 var add = sge.getElement('.addGroup');
