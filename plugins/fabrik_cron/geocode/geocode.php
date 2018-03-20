@@ -221,7 +221,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 						{
 							// OK!  Lets try and geocode it ...
 							$total_attempts++;
-							$full_addr = urlencode($full_addr);
+							$full_addr = urlencode(html_entity_decode($full_addr, ENT_QUOTES));
 							$res = $gmap->getLatLng($full_addr, 'array', $apiKey);
 
 							if ($res['status'] == 'OK')
