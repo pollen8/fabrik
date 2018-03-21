@@ -3298,9 +3298,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$filePath    = $storage->getFullPath($filePath);
 
-		$fileContent = $storage->read($filePath);
+		//$fileContent = $storage->read($filePath);
 
-		if ($fileContent !== false)
+		if ($storage->exists($filePath))
 		{
 			$thisFileInfo = $storage->getFileInfo($filePath);
 
@@ -3324,7 +3324,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
 
 			// Serve up the file
-			echo $fileContent;
+			$storage->stream($filePath);
 
 			// $this->downloadEmail($row, $filePath);
 			$this->downloadHit($rowId, $repeatCount);
