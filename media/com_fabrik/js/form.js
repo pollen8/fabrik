@@ -1846,7 +1846,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 if (repeat_rows === 1) {
                     repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
 
-                    if (typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
+                    // check rowid - if new form and failed validation
+                    if (this.options.rowid !== '' && typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
                         repeat_real = 0;
                     }
                 }
