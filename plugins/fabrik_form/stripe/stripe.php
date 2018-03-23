@@ -538,8 +538,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->panelLabel = FText::_($params->get('stripe_panel_label', 'PLG_FORM_STRIPE_PAY'));
 		$opts->allowRememberMe = false;
 		$opts->zipCode = $params->get('stripe_zipcode_check', '1') === '1';
-
-		$opts->couponElement = str_replace('.', '___', $params->get('stripe_coupon_element'));
+		$opts->couponElement = $couponKey = FabrikString::safeColNameToArrayKey($params->get('stripe_coupon_element'));
 		$opts->ccOnFree = $params->get('stripe_coupons_cc_on_free', '0') === '1';
 		$opts->renderOrder = $this->renderOrder;
 
@@ -769,6 +768,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$layoutData->currencyCode = $currencyCode;
 			$layoutData->langTag = JFactory::getLanguage()->getTag();
 			$layoutData->item = $item;
+			$layoutData->showCoupon = !empty($couponKey);
 			$layoutData->bottomText = FText::_($params->get('stripe_charge_bottom_text_existing', 'PLG_FORM_STRIPE_CHARGE_BOTTOM_TEXT_EXISTING'));
 			$this->html = $layout->render($layoutData);
 		}
@@ -784,6 +784,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$layoutData->bottomText = FText::_($params->get('stripe_charge_bottom_text_new', 'PLG_FORM_STRIPE_CHARGE_BOTTOM_TEXT_NEW'));
 			$layoutData->bottomText = $w->parseMessageForPlaceHolder($layoutData->bottomText, $this->data);
 			$layoutData->item = $item;
+			$layoutData->showCoupon = !empty($couponKey);
 			$this->html = $layout->render($layoutData);
 			FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
 		}
