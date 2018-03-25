@@ -82,8 +82,8 @@
 			   default="dompdf"
 			   label="COM_FABRIK_FIELD_PDF_LIB_LABEL"
 			   description="COM_FABRIK_FIELD_PDF_LIB_DESC">
-			<option value="0">DOMPDF</option>
-			<option value="1">MPDF</option>
+			<option value="dompdf">DOMPDF</option>
+			<option value="mpdf">MPDF</option>
 		</field>
 
 		<field name="fabrik_truncate_length"
