@@ -32,7 +32,7 @@
 				   default="0"
 				   class="btn-group"
 				   label="PLG_VALIDATIONRULE_ISUNIQUE_WITHIN_GROUP_LABEL"
-				   desc="PLG_VALIDATIONRULE_ISUNIQUE_WITHIN_GROUP_DESC"
+				   description="PLG_VALIDATIONRULE_ISUNIQUE_WITHIN_GROUP_DESC"
 				   repeat="true">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
