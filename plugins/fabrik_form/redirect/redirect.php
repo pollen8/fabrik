@@ -299,6 +299,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			$queryvars['isMambot'] = 'isMambot=1';
 		}
 
+		if ($this->app->isAdmin())
+        {
+            $jumpPage = preg_replace('/&view=(\w+)/', '&task=$1.view', $jumpPage);
+            $jumpPage = preg_replace('/&Itemid=(\d*)/', '', $jumpPage);
+        }
+
 		if (empty($queryvars))
 		{
 			return $jumpPage;
