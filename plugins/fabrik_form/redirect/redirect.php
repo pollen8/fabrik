@@ -300,10 +300,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 
 		if ($this->app->isAdmin() && substr($jumpPage, 0, 10) === 'index.php?')
-        {
-            $jumpPage = preg_replace('/&view=(\w+)/', '&task=$1.view', $jumpPage);
-            $jumpPage = preg_replace('/&Itemid=(\d*)/', '', $jumpPage);
-        }
+		{
+			$jumpPage = preg_replace('/&view=(\w+)/', '&task=$1.view', $jumpPage);
+			$jumpPage = preg_replace('/&Itemid=(\d*)/', '', $jumpPage);
+		}
 
 		if (empty($queryvars))
 		{
