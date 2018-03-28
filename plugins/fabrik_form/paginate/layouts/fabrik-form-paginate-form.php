@@ -12,7 +12,7 @@ $next = FText::_('COM_FABRIK_NEXT');
 $prev = FText::_('COM_FABRIK_PREV');
 $end = FText::_('COM_FABRIK_END');
 ?>
-<div class="pagination">
+<div class="pagination form-actions">
 	<ul class="pagination-list">
 		<li data-paginate="first" class="pagination-start <?php echo $displayData['first-active'] ? 'active' : ''?>">
 			<a class="pagenav" href="<?php echo $displayData['first'];?>" title="<?php echo $start; ?>">
