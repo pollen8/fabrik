@@ -100,9 +100,16 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$query = $db->getQuery(true);
 			$query->select('id AS value, label AS text')->from('#__{package}_lists')->where('id IN (' . implode(',', $lists) . ')');
 			$db->setQuery($query);
-			$rows = $db->loadObjectList();
+			$rows = $db->loadObjectList('value');
 
-			for ($i = 0; $i < count($rows); $i++)
+			$dupes = array();
+
+			foreach ($lists as $listId)
+			{
+				$dupes[] = clone($rows[$listId]);
+			}
+
+			for ($i = 0; $i < count($dupes); $i++)
 			{
 				if (!isset($colours[$i]))
 				{
@@ -114,14 +121,14 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 					$stati[$i] = '';
 				}
 
-				$rows[$i]->startdate_element = $dateFields[$i];
-				$rows[$i]->enddate_element   = FArrayHelper::getValue($dateFields2, $i);
-				$rows[$i]->label_element     = $labels[$i];
-				$rows[$i]->status            = FArrayHelper::getValue($stati, $i, '');
-				$rows[$i]->colour            = $colours[$i];
+				$dupes[$i]->startdate_element = $dateFields[$i];
+				$dupes[$i]->enddate_element   = FArrayHelper::getValue($dateFields2, $i);
+				$dupes[$i]->label_element     = $labels[$i];
+				$dupes[$i]->status            = FArrayHelper::getValue($stati, $i, '');
+				$dupes[$i]->colour            = $colours[$i];
 			}
 
-			$this->eventLists = $rows;
+			$this->eventLists = $dupes;
 		}
 
 		return $this->eventLists;
@@ -217,7 +224,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 						$startShowTime = $startDateEl->getParams()->get('date_showtime', true);
 					}
 
-					$endShowTime = true;
+					$endShowTime = false;
 
 					if ($endDate !== '')
 					{
