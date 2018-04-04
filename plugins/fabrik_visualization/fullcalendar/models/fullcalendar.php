@@ -102,6 +102,10 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$db->setQuery($query);
 			$rows = $db->loadObjectList('value');
 
+			/**
+			 * If the same list ID has been selected multiple times, the query will only have returned it once,
+			 * so we need to manually add any duplicates.
+			 */
 			$dupes = array();
 
 			foreach ($lists as $listId)
