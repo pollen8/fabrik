@@ -506,6 +506,11 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
+							if (empty($row->enddate))
+							{
+								$row->enddate = $row->startdate;
+							}
+
 							$defaultURL    = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
 								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
