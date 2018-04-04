@@ -260,7 +260,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 					$customUrl                   = FArrayHelper::getValue($customUrls, $i, '');
 					$status                      = FArrayHelper::getValue($stati, $i, '');
 					$allday                      = FArrayHelper::getValue($allDayEl, $i, '');
-					$this->events[$tables[$i]][] = array(
+					$this->events[$tables[$i]][$i] = array(
 						'startdate'     => $startDate,
 						'enddate'       => $endDate,
 						'startShowTime' => $startShowTime,
@@ -402,7 +402,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 	 * @return  string    javascript array containing json objects
 	 */
 
-	public function getEvents($listid = '')
+	public function getEvents($listid = '', $eventListKey = '')
 	{
 		$app      = JFactory::getApplication();
 		$package  = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -441,8 +441,13 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$els       = $listModel->getElements();
 			$formModel = $listModel->getFormModel();
 
-			foreach ($record as $data)
+			foreach ($record as $key => $data)
 			{
+				if (!empty($eventListKey) && $key != $eventListKey)
+				{
+					continue;
+				}
+
 				$db        = $listModel->getDb();
 				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : '\'\'';
 
