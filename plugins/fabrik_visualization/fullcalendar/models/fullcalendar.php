@@ -443,7 +443,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 			foreach ($record as $key => $data)
 			{
-				if (!empty($eventListKey) && $key != $eventListKey)
+				if ($eventListKey !== '' && (int)$key !== (int)$eventListKey)
 				{
 					continue;
 				}
@@ -547,7 +547,6 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							}
 
 							$date = JFactory::getDate($row->enddate);
-
 							// Full Calendar allDay end date is now exclusive, need to add a day
 							if ($row->allday)
 							{
