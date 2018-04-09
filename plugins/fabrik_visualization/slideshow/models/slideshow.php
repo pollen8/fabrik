@@ -212,10 +212,28 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					$picData = $pic->$slideshow_viz_file;
 				}
 
+				if (FabrikWorker::isJSON($picData))
+				{
+					$picData = json_decode($picData);
+
+					if (is_array($picData))
+					{
+						$picData = array_pop($picData);
+					}
+
+					if (is_object($picData) && isset($picData->file))
+					{
+						$picData = $picData->file;
+					}
+					else
+					{
+						continue;
+					}
+				}
 				$picData = str_replace("\\", "/", $picData);
 
                 // just in case ...
-                if (!JFile::exists(JPATH_SITE . $picData))
+                if (!$slideElement->getStorage()->exists($picData))
                 {
                     continue;
                 }
