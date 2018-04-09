@@ -589,6 +589,15 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 } else {
                     this.marker.setPosition(results[0].geometry.location);
                     this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
+
+                    if (this.options.reverse_geocode)
+                    {
+                        if (this.options.reverse_geocode_fields.formatted_address) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(
+                                results[0].formatted_address
+                            );
+                        }
+                    }
                 }
             }.bind(this));
         },
@@ -735,95 +744,88 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             this.map.setZoom(this.map.getZoom());
         },
 
+        fillReverseGeocode: function(result) {
+            if (this.options.reverse_geocode_fields.formatted_address) {
+                this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(result.formatted_address);
+            }
+
+            var streetAddress = '';
+            var streetNumber = '';
+            var streetRoute = '';
+
+            result.address_components.each(function (component) {
+                component.types.each(function (type) {
+                    if (type === 'street_number') {
+                        if (this.options.reverse_geocode_fields.route) {
+                            streetNumber = component.long_name;
+                        }
+                    }
+                    else if (type === 'route') {
+                        if (this.options.reverse_geocode_fields.route) {
+                            streetRoute = component.long_name;
+                        }
+                    }
+                    else if (type === 'street_address') {
+                        if (this.options.reverse_geocode_fields.route) {
+                            streetAddress = component.long_name;
+                        }
+                    }
+                    else if (type === 'neighborhood') {
+                        if (this.options.reverse_geocode_fields.neighborhood) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
+                        }
+                    }
+                    else if (type === 'locality') {
+                        if (this.options.reverse_geocode_fields.locality) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
+                        }
+                    }
+                    else if (type === 'administrative_area_level_1') {
+                        if (this.options.reverse_geocode_fields.administrative_area_level_1) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
+                        }
+                    }
+                    else if (type === 'postal_code') {
+                        if (this.options.reverse_geocode_fields.postal_code) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
+                        }
+                    }
+                    else if (type === 'country') {
+                        if (this.options.reverse_geocode_fields.country) {
+                            this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
+                        }
+                    }
+                }.bind(this));
+            }.bind(this));
+
+            if (this.options.reverse_geocode_fields.route) {
+                /**
+                 * Create the street address.  I'm really not sure what the difference between 'route'
+                 * and 'street_address' is in Google's component types, so for now just use 'street_address'
+                 * as the prrefence, use 'route' if no 'street_address', and prepend 'street_number'
+                 */
+                if (streetRoute !== '')
+                {
+                    if (streetAddress === '')
+                    {
+                        streetAddress = streetRoute;
+                    }
+                }
+
+                if (streetNumber !== '')
+                {
+                    streetAddress = streetNumber + ' ' + streetAddress;
+                }
+
+                this.form.formElements.get(this.options.reverse_geocode_fields.route).update(streetAddress);
+            }
+        },
+
         reverseGeocode: function () {
             this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     if (results[0]) {
-                        if (this.options.reverse_geocode_fields.formatted_address) {
-                            this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(results[0].formatted_address);
-                        }
-
-                        var streetAddress = '';
-                        var streetNumber = '';
-                        var streetRoute = '';
-
-                        results[0].address_components.each(function (component) {
-                            component.types.each(function (type) {
-                                if (type === 'street_number') {
-                                    if (this.options.reverse_geocode_fields.route) {
-                                        //document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
-                                        //this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name + ' ');
-                                        streetNumber = component.long_name;
-                                    }
-                                }
-                                else if (type === 'route') {
-                                    if (this.options.reverse_geocode_fields.route) {
-                                        //document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
-                                        //this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
-                                        streetRoute = component.long_name;
-                                    }
-                                }
-                                else if (type === 'street_address') {
-                                    if (this.options.reverse_geocode_fields.route) {
-                                        //document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
-                                        //this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
-                                        streetAddress = component.long_name;
-                                    }
-                                }
-                                else if (type === 'neighborhood') {
-                                    if (this.options.reverse_geocode_fields.neighborhood) {
-                                        //document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
-                                        this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
-                                    }
-                                }
-                                else if (type === 'locality') {
-                                    if (this.options.reverse_geocode_fields.locality) {
-                                        //document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
-                                        this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
-                                    }
-                                }
-                                else if (type === 'administrative_area_level_1') {
-                                    if (this.options.reverse_geocode_fields.administrative_area_level_1) {
-                                        //document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
-                                        this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
-                                    }
-                                }
-                                else if (type === 'postal_code') {
-                                    if (this.options.reverse_geocode_fields.postal_code) {
-                                        //document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
-                                        this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
-                                    }
-                                }
-                                else if (type === 'country') {
-                                    if (this.options.reverse_geocode_fields.country) {
-                                        //document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
-                                        this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
-                                    }
-                                }
-                            }.bind(this));
-                        }.bind(this));
-
-                        if (this.options.reverse_geocode_fields.route) {
-                            /**
-                             * Create the street address.  I'm really not sure what the difference between 'route'
-                             * and 'street_address' is in Google's component types, so for now just use 'street_address'
-                             * as the prrefence, use 'route' if no 'street_address', and prepend 'street_number'
-                             */
-                            if (streetRoute !== '')
-                            {
-                                if (streetAddress === '')
-                                {
-                                    streetAddress = streetRoute;
-                                }
-                            }
-
-                            if (streetNumber !== '')
-                            {
-                                streetAddress = streetNumber + ' ' + streetAddress;
-                            }
-
-                            this.form.formElements.get(this.options.reverse_geocode_fields.route).update(streetAddress);
-                        }
+                        this.fillReverseGeocode(results[0]);
                     }
                     else {
                         window.alert('No results found');
