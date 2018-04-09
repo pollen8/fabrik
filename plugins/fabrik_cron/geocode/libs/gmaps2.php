@@ -92,6 +92,7 @@ Class GeoCode
 
 				    $resultFromGl['status']  = $result->status;
 				    $resultFromGl['address'] = $addressFromGoogle;
+				    $resultFromGl['components'] = $addressFromGoogle = $result->results[0]->address_components;
 				    $resultFromGl['lat']     = $lat;
 				    $resultFromGl['lng']     = $lng;
 			    }

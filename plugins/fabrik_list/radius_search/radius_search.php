@@ -83,6 +83,32 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 	}
 
 	/**
+	 * Build the select list for distance options in simple mode
+	 *
+	 * @param   array  $default  Selected distance
+	 *
+	 * @return mixed
+	 */
+	protected function distanceSelectList($default)
+	{
+		$options = array();
+		$params = $this->getParams();
+		$distances = $params->get('radius_simple_distances', '1,10,100');
+		$distances = explode(',', str_replace(' ', '', $distances));
+
+		foreach ($distances as $distance)
+		{
+			$options[] = JHtml::_('select.option', $distance, $distance);
+		}
+
+		$selectName = 'radius_search_distance' . $this->renderOrder . '[]';
+		$select = JHtml::_('select.genericlist', $options, $selectName, 'class="input-small"', 'value', 'text', $default);
+
+		return $select;
+	}
+
+
+	/**
 	 * Build the radius search HTML
 	 *
 	 * @param   array  &$args  Plugin args
@@ -117,10 +143,24 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		list($layoutData->searchLatitude, $layoutData->searchLongitude) = $this->getSearchLatLon();
 		$layoutData->geocodeAsYouType = $params->get('geocode_as_type', 1);
 		$layoutData->hasGeocode = $params->get('geocode', 1) == 1;
-		$layoutData->address = $address = $this->app->getUserStateFromRequest($layoutData->baseContext . 'geocode' . $this->renderOrder, 'radius_search_geocode_field' . $this->renderOrder);
+		$layoutData->usePopup = $params->get('radius_use_popup', '1') === '1';
+		$layoutData->simpleDistances = $this->distanceSelectList($this->getValue());
 
-		$lat   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
-		$lon   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
+		if ($layoutData->usePopup)
+		{
+			$layoutData->address = $this->app->getUserStateFromRequest($layoutData->baseContext . 'geocode' . $this->renderOrder, 'radius_search_geocode_field' . $this->renderOrder);
+			$lat   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
+			$lon   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
+
+		}
+		else
+		{
+			$layoutData->address = $this->app->getUserStateFromRequest($layoutData->baseContext . 'geocomplete' . $this->renderOrder, 'radius_search_geocomplete_field' . $this->renderOrder);
+			$lat   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_geocomplete_lat' . $this->renderOrder);
+			$lon   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_geocomplete_lon' . $this->renderOrder);
+
+		}
+
 		$o = FabrikString::mapStrToCoords($layoutData->geocodeDefault);
 		$layoutData->defaultLat  = $lat ? $lat : (float) $o->lat;
 		$layoutData->defaultLon  = $lon ? $lon : (float) $o->long;
@@ -129,6 +169,7 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$layoutData->lon = $lon;
 		$active    = $this->app->getUserStateFromRequest($layoutData->baseContext . 'radius_search_active', 'radius_search_active' . $this->renderOrder, array($layoutData->startActive));
 		$layoutData->active = $active[0];
+
 		$layout = $this->getLayout('filters');
 		$str = $layout->render($layoutData);
 
@@ -288,6 +329,10 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 				$latitude = $this->app->getUserStateFromRequest($baseContext . 'lat' . $this->renderOrder, 'radius_search_geocode_lat' . $this->renderOrder);
 				$longitude = $this->app->getUserStateFromRequest($baseContext . 'lon' . $this->renderOrder, 'radius_search_geocode_lon' . $this->renderOrder);
 				break;
+			case 'geocomplete':
+				$latitude = $this->app->getUserStateFromRequest($baseContext . 'lat' . $this->renderOrder, 'radius_search_geocomplete_lat' . $this->renderOrder);
+				$longitude = $this->app->getUserStateFromRequest($baseContext . 'lon' . $this->renderOrder, 'radius_search_geocomplete_lon' . $this->renderOrder);
+				break;
 		}
 
 		return array($latitude, $longitude);
@@ -348,17 +393,17 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 
 	protected function getValue()
 	{
-		$baseContext = $this->getSessionContext();
-		$v = $this->app->getUserStateFromRequest($baseContext . 'radius_search_distance' . $this->renderOrder, 'radius_search_distance' . $this->renderOrder, '');
+		$params = $this->getParams();
 
-		if ($v == '')
+		$baseContext = $this->getSessionContext();
+		$v           = $this->app->getUserStateFromRequest($baseContext . 'radius_search_distance' . $this->renderOrder, 'radius_search_distance' . $this->renderOrder, '');
+
+		if (is_array($v))
 		{
-			return;
+			$v = array_pop($v);
 		}
 
-		$v = (int) $v;
-
-		return $v;
+		return (int) $v;
 	}
 
 
@@ -455,6 +500,12 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
+		if ($params->get('radius_use_popup', '1') === '0')
+		{
+			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+			FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/geocomplete/jquery.geocomplete' . $ext);
+		}
+
 		parent::loadJavascriptClass();
 	}
 
@@ -504,6 +555,7 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$config = JComponentHelper::getParams('com_fabrik');
 		$apiKey = $config->get('google_api_key', '');
 		$opts->key = empty($apiKey) ? false : $apiKey;
+		$opts->usePopup = $params->get('radius_use_popup', '1') === '1';
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadius_search($opts)";
 
