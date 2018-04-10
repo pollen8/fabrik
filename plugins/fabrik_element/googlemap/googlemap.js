@@ -630,13 +630,30 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                                 }.bind(this));
                             }
                             else {
-                                Fabrik.addEvent('fabrik.element.field.geocode', function(el) {
+                                Fabrik.addEvent('fabrik.element.field.geocode', function(el, results) {
                                    //fconsole('fired: ' + el.element.id);
                                     this.geoCode();
                                 }.bind(this));
                             }
                         }
                     }.bind(this));
+
+                    if (this.options.reverse_geocode_fields.formatted_address) {
+                        var el = this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address);
+                        if (el.options.geocomplete) {
+                            Fabrik.addEvent('fabrik.element.field.geocode', function (el, result) {
+                                if (el.element.id === this.options.reverse_geocode_fields.formatted_address) {
+                                    var pnt = new google.maps.LatLng(
+                                        result.geometry.location.lat(),
+                                        result.geometry.location.lng()
+                                    );
+                                    this.marker.setPosition(pnt);
+                                    this.doSetCenter(pnt, this.map.getZoom(), false);
+                                    this.fillReverseGeocode(result);
+                                }
+                            }.bind(this));
+                        }
+                    }
                 } else {
                     if (this.options.geocode_event === 'button') {
                         this.element.getElement('.geocode').addEvent('click', function (e) {
