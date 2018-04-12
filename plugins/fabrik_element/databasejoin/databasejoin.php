@@ -563,7 +563,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		// $$$ hugh - attempting to make sure we never do an unconstrained query for auto-complete
 		$displayType = $this->getDisplayType();
-		$value       = (array) $this->getValue($data, $repeatCounter);
+		$value       = (array) $this->getValue($data, $repeatCounter, $opts);
 
 		/*
 		 *  $$$ rob 20/08/2012 - removed empty test - seems that this method is called more than one time, when in auto-complete filter
@@ -1988,7 +1988,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 */
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$tmp = $this->_getOptions($data, $repeatCounter);
+		/**
+		 * The 'emailValue' option doesn't "do" anything, it's there for a specific case where form submission plugins
+		 * want to change formData[] for this join, and if we don't provide some unique option, the getValue() called
+		 * by _getOptions() will cache, and the key (which includes serialized options) will then match during
+		 * processing to the DB.  So we add 'emaiValue' as an option here, so the cache key will be different when the
+		 * data is actually being stored, so it'll use formData[] rather than the cached value.
+		 */
+		$tmp = $this->_getOptions($data, $repeatCounter, true, array('emailValue' => true));
+
 		// $$$ hugh - PLEASE LEAVE.  No, we don't use $name, but I'm in here xdebug'ing stuff frequently, I use it as a time saver.
 		$name = $this->getFullName(false, true);
 
