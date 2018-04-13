@@ -3406,12 +3406,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onSaveAsCopy($val)
 	{
-		if (empty($val))
+		if ($this->defaultOnCopy())
 		{
-			$formModel = $this->getFormModel();
-			$origData  = $formModel->getOrigData();
-			$name      = $this->getFullName(true, false);
-			$val       = $origData[$name];
+			$val = '';
+		}
+		else
+		{
+			if (empty($val))
+			{
+				$formModel = $this->getFormModel();
+				$origData  = $formModel->getOrigData();
+				$name      = $this->getFullName(true, false);
+				$val       = $origData[$name];
+			}
 		}
 
 		return $val;
