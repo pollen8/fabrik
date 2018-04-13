@@ -9219,6 +9219,10 @@ class FabrikFEModelList extends JModelForm
 			return $match;
 		}
 
+		$config = JFactory::getConfig();
+		$prefix = $config->get('dbprefix');
+		$match  = str_replace('#__', $prefix, $match);
+
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
