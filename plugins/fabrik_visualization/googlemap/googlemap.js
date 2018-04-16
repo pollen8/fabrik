@@ -52,6 +52,7 @@ FbGoogleMapViz = new Class({
 			this.clusterMarkers = [];
 			this.markers = [];
 			this.points = [];
+			this.weightedLocations = [];
 			this.distanceWidgets = [];
 			this.icons = [];
 			this.setOptions(options);
@@ -180,7 +181,7 @@ FbGoogleMapViz = new Class({
 			if (this.options.heatmap)
 			{
                 var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: this.points
+                    data: this.weightedLocations
                 });
                 heatmap.setMap(this.map);
 			}
@@ -316,6 +317,16 @@ FbGoogleMapViz = new Class({
             	var point = new google.maps.LatLng(i[0], i[1]);
                 this.bounds.extend(point);
                 this.points.push(point);
+
+                if (i.heatmapWeighting !== 1) {
+                	this.weightedLocations.push({
+                		location: point,
+						weight: i.heatmapWeighting
+					});
+				}
+				else {
+                    this.weightedLocations.push(point);
+				}
             }.bind(this));
 		}
 		else {

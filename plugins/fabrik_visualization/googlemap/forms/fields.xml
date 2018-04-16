@@ -298,6 +298,16 @@
 				<option value="k">Kilometers</option>
 			</field>
 
+			<field
+					name="fb_gm_heatmap_weighting_element"
+					type="element"
+					connection="params_googlemap_connection"
+					connection_in_repeat="false"
+					description="PLG_VISUALIZATION_GOOGLEMAP_HEATMAP_WEIGHTING_ELEMENT_DESC"
+					label="PLG_VISUALIZATION_GOOGLEMAP_HEATMAP_WEIGHTING_ELEMENT_LABEL"
+					table="params_googlemap_table" />
+
+
 		</fieldset>
 
 		<fieldset

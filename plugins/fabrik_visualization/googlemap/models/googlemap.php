@@ -84,8 +84,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$viz    = $this->getVisualization();
 
 		$opts            = new stdClass;
-		$opts->lat       = (float) $params->get('fb_gm_default_lat', 0);
-		$opts->lon       = (float) $params->get('fb_gm_default_lon', 0);
+		$opts->lat       = floatval($params->get('fb_gm_default_lat', 0));
+		$opts->lon       = floatval($params->get('fb_gm_default_lon', 0));
 		$opts->ajaxDefer = (bool) $params->get('fb_gm_ajax_defer', '0');
 
 		if ($params->get('fb_gm_ajax_defer', '0') !== '1')
@@ -357,6 +357,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$radiusDefaults = (array) $params->get('fb_gm_radius_default');
 		$radiusUnits = (array) $params->get('fb_gm_radius_unit');
 		$groupClass = (array) $params->get('fb_gm_group_class');
+		$heatmapWeightingElements = (array) $params->get('fb_gm_heatmap_weighting_element');
 
 		$c = 0;
 		$this->recordCount = 0;
@@ -642,6 +643,21 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							$default = (float) ArrayHelper::getvalue($radiusDefaults, $c, 50);
 							$default *= $radiusMeters;
 							$icons[$v[0] . $v[1]]['radius'] = $default;
+						}
+					}
+
+					if ($params->get('fb_gm_heatmap', '0') == '1')
+					{
+						$heatmapWeightingElement = FArrayHelper::getValue($heatmapWeightingElements, $c, '');
+
+						if (!empty($heatmapWeightingElement))
+						{
+							$heatmapWeighting = (float) $row->$heatmapWeightingElement;
+							$icons[$v[0] . $v[1]]['heatmapWeighting'] = $heatmapWeighting;
+						}
+						else
+						{
+							$icons[$v[0] . $v[1]]['heatmapWeighting'] = 1;
 						}
 					}
 
