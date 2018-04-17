@@ -1,0 +1,3 @@
+/*! Fabrik */
+
+define(["jquery","fab/fabrik"],function(t,r){"use strict";return new Class({options:{renderOrder:""},initialize:function(i){this.options=t.extend(this.options,i),this.form=r.getBlock("form_"+this.options.formid),r.addEvent("fabrik.form.submit.failed",function(i,r){i===this.form&&(t(".consentError").removeClass("fabrikHide"),this.form.showMainError(this.form.options.error))}.bind(this)),r.addEvent("fabrik.form.submitted",function(i,r,o){i===this.form&&t(".consentError").addClass("fabrikHide")}.bind(this))}})});
