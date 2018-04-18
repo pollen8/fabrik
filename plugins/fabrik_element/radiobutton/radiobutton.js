@@ -203,11 +203,12 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
 
         /**
          * Get the dom selector that events should be attached to, need to include label for button groups
+         * (don't think we need this after changing the grid layout to include 'for')
          * @returns {string}
          */
         eventDelegate: function () {
             var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
-            str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
+            //str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
 
             return str;
         }
