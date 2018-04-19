@@ -28,7 +28,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 				    if (typeOf(json.errors.consent_required) !== 'null') {
                         jQuery('.consentError.requireConsent').removeClass('fabrikHide');
                     }
-                    else if (typeOf(json.errors.consent_required) !== 'null') {
+                    else if (typeOf(json.errors.consent_remove) !== 'null') {
                         jQuery('.consentError.removeConsent').removeClass('fabrikHide');
                     }
                     this.form.showMainError(this.form.options.error);
