@@ -6519,18 +6519,11 @@ class FabrikFEModelList extends JModelForm
 			|| ($params->get('search-mode', '0') == 'OR'))
 		{
 			// One field to search them all (and in the darkness bind them)
-			//$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
-			//$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
-			//$searchLabel = FText::_($params->get('search-all-label', 'COM_FABRIK_SEARCH'));
-			//$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->id = 'searchall_' . $this->getRenderContext();
 			$o->displayValue = '';
-			//$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '"title="' . $searchLabel . '" value="' . $v
-			//. '" class="' . $class . '" name="' . $requestKey . '" id="' . $id . '" />';
-
 			$displayData = new stdClass;
-			$displayData->id = $id;
+			$displayData->id = $o->id;
 			$displayData->searchLabel = FText::_($params->get('search-all-label', 'COM_FABRIK_SEARCH'));;
 			$displayData->class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$displayData->v = $this->getFilterModel()->getSearchAllValue('html');
@@ -6549,9 +6542,6 @@ class FabrikFEModelList extends JModelForm
 					'search-mode-advanced',
 					$params->get('search-mode-advanced-default', 'all')
 				);
-
-				//$o->filter .= '&nbsp;'
-				//		. JHTML::_('select.genericList', $searchOpts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
 			else
 			{
