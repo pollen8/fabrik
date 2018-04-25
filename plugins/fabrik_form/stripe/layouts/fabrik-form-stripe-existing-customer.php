@@ -37,7 +37,7 @@ endif;
 if ($d->showCoupon) :
 	?>
     <div class="fabrikStripeCouponText">
-		<?php echo FText::_('PLG_FORM_STRIPE_COUPON_NO_COUPON_TEXT'); ?>
+		<?php echo $d->couponMsg; ?>
     </div>
 <?php
 endif;
