@@ -335,9 +335,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			return;
 		}
 
-		$mail      = JFactory::getMailer();
-		$mail->isHtml(true);
-
 		// Load up com_users lang - used in email text
 		$this->lang->load('com_users', JPATH_SITE);
 		/*
@@ -677,8 +674,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				// Send the registration email.
 				if ($emailSubject !== '')
 				{
-					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
-
+					$return = FabrikWorker::sendMail(
+						$data['mailfrom'],
+						$data['fromname'],
+						$data['email'],
+						$emailSubject,
+						$emailBody,
+						true
+					);
 					/*
 					 * Added email to admin code, but haven't had a chance to test it yet.
 					 */
@@ -878,7 +881,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			// Send mail to all superadministrators id
 			foreach ($rows as $row)
 			{
-				$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
+				$return = FabrikWorker::sendMail(
+					$data['mailfrom'],
+					$data['fromname'],
+					$row->email, $emailSubject,
+					$emailBodyAdmin
+				);
 
 				// Check for an error.
 				if ($return !== true)
