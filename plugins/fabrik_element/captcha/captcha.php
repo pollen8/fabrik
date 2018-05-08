@@ -68,6 +68,11 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 		}
 
+		if ($params->get('captcha-method') == 'invisible')
+		{
+			return '';
+		}
+
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
@@ -242,6 +247,17 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			return $layout->render($displayData);
 		}
+		elseif ($params->get('captcha-method') == 'invisible')
+		{
+			$layout                = $this->getLayout('nocaptcha-invisible');
+			$displayData           = new stdClass;
+			$displayData->id       = $id;
+			$displayData->name     = $name;
+			$displayData->site_key = $params->get('recaptcha_publickey');
+			$displayData->lang     = FabrikWorker::replaceWithLanguageTags(JString::strtolower($params->get('recaptcha_lang', 'en')));
+
+			return $layout->render($displayData);
+		}
 		else
 		{
 			if (!function_exists('imagettfbbox'))
@@ -312,7 +328,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			return true;
 		}
 
-		if ($params->get('captcha-method') == 'recaptcha')
+		$method = $params->get('captcha-method', '');
+
+		if ($method === 'recaptcha')
 		{
 			if (!function_exists('_recaptcha_qsencode'))
 			{
@@ -332,12 +350,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			return false;
 		}
-		elseif ($params->get('captcha-method') == 'nocaptcha')
+		elseif ($method === 'nocaptcha' || $method === 'invisible')
 		{
 			if ($input->get('g-recaptcha-response'))
 			{
 				$privateKey = $params->get('recaptcha_privatekey');
-				$noCaptcha  = new ReCaptcha($privateKey, new \ReCaptcha\RequestMethod\SocketPost());
+				$noCaptcha  = new ReCaptcha($privateKey, new \ReCaptcha\RequestMethod\CurlPost());
 				$response   = $input->get('g-recaptcha-response');
 				$server     = $input->server->get('REMOTE_ADDR');
 				$resp       = $noCaptcha->verify($response, $server);
@@ -417,10 +435,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 */
 	public function elementJavascript($repeatCounter)
 	{
-		if ($this->user->get('id') == 0)
+		$params = $this->getParams();
+
+		if ($params->get('captcha-showloggedin', 0) == 1 || $this->user->get('id') == 0)
 		{
-			$id   = $this->getHTMLId($repeatCounter);
-			$opts = $this->getElementJSOptions($repeatCounter);
+			$params       = $this->getParams();
+			$id           = $this->getHTMLId($repeatCounter);
+			$opts         = $this->getElementJSOptions($repeatCounter);
+			$opts->method = $params->get('captcha-method');
+			$opts->siteKey = $params->get('recaptcha_publickey');
 
 			return array('FbCaptcha', $id, $opts);
 		}
