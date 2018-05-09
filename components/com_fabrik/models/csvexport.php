@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 
@@ -344,16 +345,12 @@ class FabrikFEModelCSVExport extends FabModel
 	private function getFileName()
 	{
 		$this->model->setId($this->app->input->getInt('listid'));
-		$table    = $this->model->getTable();
-		$filename = $this->model->getParams()->get('csv_filename');
-		if ($filename == '')
-		{
-			$filename = $table->db_table_name . '-export.csv';
-		}
-		else
-		{
-			$filename = sprintf($filename, date('Y-m-d'));
-		}
+
+		$filename = Html::getLayout('fabrik-csv-filename')
+			->render((object) array(
+				'model' => $this->model,
+				'filename' => $this->model->getParams()->get('csv_filename')
+			));
 		return $filename;
 	}
 
