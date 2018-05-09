@@ -52,6 +52,7 @@ FbGoogleMapViz = new Class({
 			this.clusterMarkers = [];
 			this.markers = [];
 			this.points = [];
+			this.heatmap = false;
 			this.weightedLocations = [];
 			this.distanceWidgets = [];
 			this.icons = [];
@@ -74,6 +75,13 @@ FbGoogleMapViz = new Class({
 					this.clearPolyLines();
 					this.options.icons = json;
 					this.addIcons();
+                    if (this.options.heatmap)
+                    {
+                        this.heatmap = new google.maps.visualization.HeatmapLayer({
+                            data: this.weightedLocations
+                        });
+                        this.heatmap.setMap(this.map);
+                    }
 					this.setPolyLines();
 					if (this.options.ajax_refresh_center) {
 						this.center();
@@ -180,10 +188,10 @@ FbGoogleMapViz = new Class({
 
 			if (this.options.heatmap)
 			{
-                var heatmap = new google.maps.visualization.HeatmapLayer({
+                this.heatmap = new google.maps.visualization.HeatmapLayer({
                     data: this.weightedLocations
                 });
-                heatmap.setMap(this.map);
+                this.heatmap.setMap(this.map);
 			}
 
 			google.maps.event.addListener(this.map, "click", function (e) {
@@ -304,12 +312,52 @@ FbGoogleMapViz = new Class({
 		if (this.options.clustering) {
 			this.cluster.clearMarkers();
 		}
+        if (this.options.heatmap)
+        {
+            this.weightedLocations = [];
+        	if (this.heatmap !== false) {
+                this.heatmap.setMap(null);
+            }
+        }
 		this.bounds = new google.maps.LatLngBounds(null);
 	},
 
 	noData: function () {
 		return this.options.icons.length === 0;
 	},
+
+    showRadiusFilterLocation: function() {
+        if (typeOf(this.container) !== 'null') {
+            var form = this.container.getElement('form[name=filter]');
+            var self = this;
+            jQuery(form).find('.radius_search').each(function (k, v) {
+                var active = jQuery(v).find('input[name="radius_search_active' + k + '[]"]');
+                if (active.length > 0 && active[0].value === '1')
+                {
+                    var lat = jQuery(v).find('input[name="radius_search_geocomplete_lat' + k + '"]');
+                    var lon = jQuery(v).find('input[name="radius_search_geocomplete_lon' + k + '"]');
+                    if (lat.length > 0 && lon.length > 0) {
+                        if (lat[0].value !== '' && lon[0].value !== '') {
+                            var point = new google.maps.LatLng(lat[0].value, lon[0].value);
+                            var addr = jQuery(v).find('input[name="radius_search_geocomplete_field' + k + '"]');
+
+                            var markerOptions = {
+                                position: point,
+                                map: self.map
+                            };
+
+                            if (addr.length > 0) {
+                                markerOptions.title = addr[0].value;
+                            }
+
+                            var marker = new google.maps.Marker(markerOptions);
+                            self.bounds.extend(new google.maps.LatLng(lat[0].value, lon[0].value));
+                        }
+                    }
+                }
+            });
+        }
+    },
 
 	addIcons: function () {
 		if (this.options.heatmap) {
@@ -336,6 +384,7 @@ FbGoogleMapViz = new Class({
                 this.bounds.extend(new google.maps.LatLng(i[0], i[1]));
                 this.markers.push(this.addIcon(i[0], i[1], i[2], i[3], i[4], i[5], i.groupkey, i.title, i.radius, i.c));
             }.bind(this));
+            this.showRadiusFilterLocation();
             this.renderGroupedSideBar();
             if (this.options.clustering) {
                 // Using MarkerClusterer, http://gmaps-utility-library.googlecode.com/svn/trunk/markerclusterer/1.0/docs/reference.html

@@ -202,6 +202,12 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->zoom                 = $params->get('fb_gm_zoom', 1);
 		$opts->show_radius          = $params->get('fb_gm_use_radius', '1') == '1' ? true : false;
 		$opts->heatmap              = $params->get('fb_gm_heatmap', '0') == '1' ? true : false;
+
+		if ($opts->heatmap)
+		{
+			$opts->clustering = false;
+		}
+
 		$opts->radius_defaults      = (array) $params->get('fb_gm_radius_default');
 		$opts->radius_fill_colors   = (array) $params->get('fb_gm_radius_fill_color');
 		$opts->styles               = Googlemap::styleJs($params);
