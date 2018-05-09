@@ -186,8 +186,14 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function cleanName($filename, $repeatCounter)
 	{
-		// Replace any non-alphanumeric chars (except _ and - and .) with _
-		$filename = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
+		$params = $this->getParams();
+
+		if ($params->get('fu_clean_filename', '1') === '1')
+		{
+			// Replace any non-alphanumeric chars (except _ and - and .) with _
+			$filename = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
+		}
+
 		$this->randomizeName($filename);
 
 		return $filename;

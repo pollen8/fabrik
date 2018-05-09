@@ -15,7 +15,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
         },
         initialize: function (element, options) {
             var self = this;
-            this.setPlugin('fileupload');
+            this.setPlugin('fileupl/oad');
             this.parent(element, options);
             this.container = jQuery(this.container);
             this.toppath = this.options.dir;

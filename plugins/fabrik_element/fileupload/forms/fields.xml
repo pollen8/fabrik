@@ -120,6 +120,16 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="fu_clean_filename"
+				   type="radio"
+				   class="btn-group"
+				   default="1"
+				   description="PLG_ELEMENT_FILEUPLOAD_CLEAN_FILENAME_DESC"
+				   label="PLG_ELEMENT_FILEUPLOAD_CLEAN_FILENAME_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="fu_rename_file_code"
 				   type="fabrikeditor"
 				   mode="php"
