@@ -5419,8 +5419,9 @@ class FabrikFEModelList extends JModelForm
 					{
 						$matchSql[] = 'MATCH(' . implode(',', $fields) . ')' . ' ' . $condition . ' (' . $db->q($value) . ' IN BOOLEAN MODE)';
 					}
-
-					$this->filters['sqlCond'][$i] = '(' . implode(' OR ', $matchSql) . ')';
+					$mode = $this->app->input->get('search-mode-advanced', 'all');
+					$join = $mode === 'none' ? ' AND ' : ' OR ';
+					$this->filters['sqlCond'][$i] = '(' . implode($join, $matchSql) . ')';
 				}
 				else
 				{
@@ -9320,6 +9321,16 @@ class FabrikFEModelList extends JModelForm
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$row = ArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
+
+		// special case, if someone is using a link element placeholder as a custom link
+		if (FabrikWorker::isJSON($link))
+		{
+			$test = FabrikWorker::JSONtoData($link);
+			if (is_object($test) && isset($test->link))
+			{
+				$link = $test->link;
+			}
+		}
 
 		if (preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
 		{
