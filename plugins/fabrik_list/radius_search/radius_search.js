@@ -255,6 +255,19 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
                 this.makeWin(mapid);
             }
             else {
+                Fabrik.addEvent('fabrik.list.submit.ajax.complete', function(list, json) {
+                    if (this.listid === list.id) {
+                        var $emptyMsgDiv = jQuery('#radius_search' + this.options.renderOrder).find('.fabrikRadiusSearchEmptyMsg');
+                        if ($emptyMsgDiv) {
+                            if (json.nav.total === 0) {
+                                $emptyMsgDiv.parent().removeClass('fabrikHide');
+                            }
+                            else {
+                                $emptyMsgDiv.parent().addClass('fabrikHide');
+                            }
+                        }
+                    }
+                }.bind(this));
                 this.listform.getElement('input[name^=radius_search_active]').value = 1;
 			}
 		},
