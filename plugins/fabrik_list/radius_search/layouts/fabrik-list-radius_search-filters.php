@@ -151,6 +151,11 @@ else :
                        value="<?php echo $d->address; ?>" />
             </div>
         </div>
+        <div class="row <?php echo $d->emptyMsgClass; ?>">
+            <div class=" fabrikRadiusSearchEmptyMsg <?php echo FabrikHelperHTML::getGridSpan('12'); ?>">
+                <?php echo FText::_('PLG_VIEW_RADIUS_EMPTY_MSG'); ?>
+            </div>
+        </div>
 
         <input type="hidden" name="radius_search_geocomplete_lat<?php echo $d->renderOrder; ?>" value="<?php echo $d->searchLatitude; ?>" />
         <input type="hidden" name="radius_search_geocomplete_lon<?php echo $d->renderOrder; ?>" value="<?php echo $d->searchLongitude; ?>" />

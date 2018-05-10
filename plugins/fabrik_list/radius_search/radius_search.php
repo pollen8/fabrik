@@ -145,6 +145,7 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$layoutData->hasGeocode = $params->get('geocode', 1) == 1;
 		$layoutData->usePopup = $params->get('radius_use_popup', '1') === '1';
 		$layoutData->simpleDistances = $this->distanceSelectList($this->getValue());
+		$active    = $this->app->getUserStateFromRequest($layoutData->baseContext . 'radius_search_active', 'radius_search_active' . $this->renderOrder, array($layoutData->startActive));
 
 		if ($layoutData->usePopup)
 		{
@@ -155,10 +156,30 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		}
 		else
 		{
-			$layoutData->address = $this->app->getUserStateFromRequest($layoutData->baseContext . 'geocomplete' . $this->renderOrder, 'radius_search_geocomplete_field' . $this->renderOrder);
-			$lat   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_geocomplete_lat' . $this->renderOrder);
-			$lon   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_geocomplete_lon' . $this->renderOrder);
-
+			// don't use session for simple mode
+			$active = $this->app->input->get('radius_search_active' . $this->renderOrder, array(0), 'array');
+			if ($active[0] == 0)
+			{
+				$layoutData->address = '';
+				$lat = $layoutData->searchLatitude = '';
+				$lon = $layoutData->searchLongitude = '';
+				$layoutData->emptyMsgClass = 'fabrikHide';
+			}
+			else
+			{
+				$layoutData->address = $this->app->getUserStateFromRequest($layoutData->baseContext . 'geocomplete' . $this->renderOrder, 'radius_search_geocomplete_field' . $this->renderOrder);
+				$lat                 = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_geocomplete_lat' . $this->renderOrder);
+				$lon                 = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_geocomplete_lon' . $this->renderOrder);
+				$rowCount            = (int) $model->getTotalRecords();
+				if ($rowCount === 0 && !empty($layoutData->address))
+				{
+					$layoutData->emptyMsgClass = '';
+				}
+				else
+				{
+					$layoutData->emptyMsgClass = 'fabrikHide';
+				}
+			}
 		}
 
 		$o = FabrikString::mapStrToCoords($layoutData->geocodeDefault);
@@ -167,7 +188,6 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$layoutData->defaultZoom = (int) $o->zoom === 0 ? 7 : (int) $o->zoom;
 		$layoutData->lat = $lat;
 		$layoutData->lon = $lon;
-		$active    = $this->app->getUserStateFromRequest($layoutData->baseContext . 'radius_search_active', 'radius_search_active' . $this->renderOrder, array($layoutData->startActive));
 		$layoutData->active = $active[0];
 
 		$layout = $this->getLayout('filters');
