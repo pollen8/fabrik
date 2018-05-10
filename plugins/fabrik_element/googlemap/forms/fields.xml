@@ -136,7 +136,7 @@
 				description="PLG_ELEMENT_GOOGLE_MAP_CONTROL_DESC"
 				label="PLG_ELEMENT_GOOGLE_MAP_CONTROL_LABEL"
 				>
-					<option value="">None</option>
+					<option value="none">None</option>
 					<option value="GLargeMapControl">PLG_ELEMENT_GOOGLE_MAP_LARGE_MAP_CONTROL</option>
 					<option value="GSmallMapControl">PLG_ELEMENT_GOOGLE_MAP_SMALL_MAP_CONTROL</option>
 					<option value="GSmallZoomControl">PLG_ELEMENT_GOOGLE_MAP_SMALL_ZOOM_CONTROL</option>

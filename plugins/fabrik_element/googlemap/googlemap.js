@@ -212,6 +212,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             if (!this.options.staticmap) {
 
                 var zoomControlStyle = this.options.control === 'GSmallMapControl' ? google.maps.ZoomControlStyle.SMALL : google.maps.ZoomControlStyle.LARGE;
+				var vzoomControl = this.options.control !== 'none';
 
                 var mapOpts = {
                     center               : new google.maps.LatLng(this.options.lat, this.options.lon),
@@ -222,7 +223,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     overviewMapControl   : this.options.overviewcontrol,
                     scrollwheel          : this.options.scrollwheel,
                     streetViewControl    : this.options.streetView,
-                    zoomControl          : true,
+                    zoomControl          : vzoomControl,
                     zoomControlOptions   : {
                         style: zoomControlStyle
                     },
