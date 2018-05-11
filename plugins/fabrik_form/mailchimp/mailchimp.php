@@ -73,50 +73,55 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 
+		$confirmElement = $params->get('mailchimp_confirm', '');
+
 		if ($params->get('mailchimp_userconfirm', true))
 		{
-			$listId = $this->getMailchimpListId();
-			$api = $this->getApi();
-
-			//get the list of subscribers
-			//$subList = $api->listMembers($listId,'subscribed', NULL, 0, 100);
-			$formModel   = $this->getModel();
-			$emailKey    = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
-			$email       = $formModel->getElementData($emailKey);
-			$hash = $api->subscriberHash($email);
-			$sub = $api->get("lists/$listId/members/$hash");
-
-			if ($sub !== false)
+			if (empty($confirmElement))
 			{
-				switch ($sub['status'])
-				{
-					case 404:
-					case 'unsubscribed':
-					case 'cleaned':
-						$emailPresent = false;
-						break;
-					case 'subscribed':
-					case 'pending':
-					default:
-						$emailPresent = true;
-				}
+				$listId = $this->getMailchimpListId();
+				$api    = $this->getApi();
 
-				$checked     = $emailPresent ? ' checked="checked"' : '';
-				$this->html = '
+				//get the list of subscribers
+				//$subList = $api->listMembers($listId,'subscribed', NULL, 0, 100);
+				$formModel = $this->getModel();
+				$emailKey  = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
+				$email     = $formModel->getElementData($emailKey);
+				$hash      = $api->subscriberHash($email);
+				$sub       = $api->get("lists/$listId/members/$hash");
+
+				if ($sub !== false)
+				{
+					switch ($sub['status'])
+					{
+						case 404:
+						case 'unsubscribed':
+						case 'cleaned':
+							$emailPresent = false;
+							break;
+						case 'subscribed':
+						case 'pending':
+						default:
+							$emailPresent = true;
+					}
+
+					$checked    = $emailPresent ? ' checked="checked"' : '';
+					$this->html = '
 					<label class="mailchimpsignup">
 						<input type="checkbox" name="fabrik_mailchimp_signup" class="fabrik_mailchimp_signup" value="1" ' . $checked . '/>' .
 						FText::_($params->get('mailchimp_signuplabel')) .
-					'</label>';
-			}
-			else
-			{
-				// API failed, so don't show a checkbox
-				$this->html = JText::_('PLG_FORM_MAILCHIMP_API_FAIL');
-
-				// if in debug, give some feedback
-				if (FabrikHelperHTML::isDebug(true))
+						'</label>';
+				}
+				else
 				{
-					$this->app->enqueueMessage('Mailchimp: ' . $api->getLastError(), 'notice');
+					// API failed, so don't show a checkbox
+					$this->html = JText::_('PLG_FORM_MAILCHIMP_API_FAIL');
+
+					// if in debug, give some feedback
+					if (FabrikHelperHTML::isDebug(true))
+					{
+						$this->app->enqueueMessage('Mailchimp: ' . $api->getLastError(), 'notice');
+					}
 				}
 			}
 		}
@@ -200,6 +205,30 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		return $this->html;
 	}
 
+	private function getSubscribe()
+	{
+		$params = $this->getParams();
+		$confirmElement = $params->get('mailchimp_confirm', '');
+		$subscribe = false;
+
+		if (!empty($confirmElement))
+		{
+			$formModel = $this->getModel();
+			$confirmKey = $formModel->getElement($confirmElement, true)->getFullName();
+			$subscribe    = $formModel->getElementData($confirmKey, true);
+			$subscribe    = is_array($subscribe) ? $subscribe[0] : $subscribe;
+			$subscribe    = !empty($subscribe);
+		}
+		else
+		{
+			$filter = JFilterInput::getInstance();
+			$post = $filter->clean($_POST, 'array');
+			$subscribe = array_key_exists('fabrik_mailchimp_signup', $post);
+		}
+
+		return $subscribe;
+	}
+
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -212,9 +241,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$emailData = $this->getProcessData();
-		$filter = JFilterInput::getInstance();
-		$post = $filter->clean($_POST, 'array');
-		$subscribe = array_key_exists('fabrik_mailchimp_signup', $post);
+		$subscribe = $this->getSubscribe();
 		$confirm = $params->get('mailchimp_userconfirm', '0') === '1';
 
 		if ($formModel->isNewRecord() && $confirm && !$subscribe)
@@ -338,14 +365,20 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 				{
 					if ($updateExisting)
 					{
+						$payload = 	array (
+							'status' => 'subscribed',
+							'merge_fields' => $opts,
+							'email_type' => $emailType
+						);
+
+						if (count($interests) > 0)
+						{
+							$payload['interests'] = $interests;
+						}
+
 						$result = $api->patch(
 							"lists/$listId/members/$hash",
-							array(
-								'status'       => 'subscribed',
-								'merge_fields' => $opts,
-								'email_type' => $emailType,
-								'interests' => $interests
-							)
+							$payload
 						);
 					}
 				}
@@ -353,15 +386,21 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 				{
 					$status = $doubleOptin ? 'pending' : 'subscribed';
 
+					$payload = 	array (
+						'status' => $status,
+						'email_address' => $email,
+						'merge_fields' => $opts,
+						'email_type' => $emailType
+					);
+
+					if (count($interests) > 0)
+					{
+						$payload['interests'] = $interests;
+					}
+
 					$result = $api->post(
 						"lists/$listId/members",
-						array (
-							'status' => $status,
-							'email_address' => $email,
-							'merge_fields' => $opts,
-							'email_type' => $emailType,
-							'interests' => $interests
-						)
+						$payload
 					);
 				}
 			}
@@ -392,6 +431,11 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		}
 		else
 		{
+			if ($params->get('mailchimp_success', '0') === '1')
+			{
+				$this->app->enqueueMessage(FText::_($params->get('mailchimp_success_msg', 'PLG_FORM_MAILCHIMP_API_SUCCESS')));
+			}
+
 			return true;
 		}
 	}

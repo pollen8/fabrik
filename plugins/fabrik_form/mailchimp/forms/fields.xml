@@ -16,6 +16,9 @@
                 <option value="1">JYES</option>
             </field>
 
+            <field description="PLG_FORM_MAILCHIMP_CONFIRM_DESC" label="PLG_FORM_MAILCHIMP_CONFIRM_LABEL"
+                   name="mailchimp_confirm" repeat="true" type="listfields"/>
+
             <field description="PLG_FORM_MAILCHIMP_EMAIL_DESC" label="PLG_FORM_MAILCHIMP_EMAIL_LABEL"
                    name="mailchimp_email" repeat="true" type="listfields"/>
 
@@ -54,6 +57,19 @@
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
+
+
+            <field default="0"
+                   class="btn-group"
+                   description="PLG_FORM_MAILCHIMP_SUCCESS_DESC" label="PLG_FORM_MAILCHIMP_SUCCESS_LABEL"
+                   name="mailchimp_success" repeat="true" type="radio">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
+            <field default="" description="PLG_FORM_MAILCHIMP_SUCCESS_MSG_DESC"
+                   label="PLG_FORM_MAILCHIMP_SUCCESS_MSG_LABEL" name="mailchimp_sucess_msg" repeat="true" size="30"
+                   type="text"/>
 
             <field cols="40" description="PLG_FORM_MAILCHIMP_GROUP_OPTS_DESC"
                    label="PLG_FORM_MAILCHIMP_GROUP_OPTS_LABEL" name="mailchimp_groupopts" repeat="true" rows="6"
