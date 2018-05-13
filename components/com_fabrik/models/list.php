@@ -2320,7 +2320,7 @@ class FabrikFEModelList extends JModelForm
 		$rowId = $this->getSlug($row);
 		$isAjax = $this->isAjaxLinks() ? '1' : '0';
 		$isCustom = $customLink !== '';
-		$isIcon = FALSE;
+		$isIcon = false;
 		
 		/* Check if the data component is html, if it is an icon lnk and image parse it out */
 		if (class_exists('DOMDocument')) {
@@ -2328,15 +2328,20 @@ class FabrikFEModelList extends JModelForm
 			$html->loadHTML($data);
 			$a = $html->getElementsByTagName('a')->item(0);
 			$img = $html->getElementsByTagName('img')->item(0);
-			if (isset($html) && isset($a) && isset($img))
-				$isIcon = TRUE;
+			if (isset($html) && isset($a) && isset($img)) {
+				$isIcon = true;
+			}
 		}
 
 		$paths = array(
 			COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts/element/' . $elementModel->getFullName(true, false)
 		);
 
-		$layout = $isIcon ? $this->getLayout('element.fabrik-element-custom-icon-link', $paths) : $this->getLayout('element.fabrik-element-custom-link', $paths);
+		if ($isIcon === true ) {
+			$layout = $this->getLayout('element.fabrik-element-custom-icon-link', $paths);
+		} else {
+			$layout = $this->getLayout('element.fabrik-element-custom-link', $paths);
+		}
 		$displayData             = new stdClass;
 		$displayData->loadMethod = $loadMethod;
 		$displayData->dataList   = $dataList;
@@ -2354,9 +2359,10 @@ class FabrikFEModelList extends JModelForm
 			$displayData->data = $a->ownerDocument->saveHTML($img);
 			$displayData->title = $a->getAttribute('title');
 		} else {
-			$displayData->data       = $data;
+			$displayData->data = $data;
 		}
-		$data                    = $layout->render($displayData);
+		
+		$data = $layout->render($displayData);
 
 		return $data;
 	}
