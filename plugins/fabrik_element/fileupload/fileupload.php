@@ -3107,12 +3107,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						$v = array_keys($v);
 					}
 
+					/*
 					if (empty($v))
 					{
 						return '';
 					}
+					*/
 
 					$v = ArrayHelper::getValue($v, 0);
+				}
+
+				if ($this->defaultOnCopy())
+				{
+					$v = $params->get('default_image');
 				}
 
 				$render = $this->loadElement($v);
@@ -3141,7 +3148,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if (FArrayHelper::emptyIsh($value))
 			{
-				return '';
+				if ($this->defaultOnCopy())
+				{
+					$value = $params->get('default_image');
+				}
+
+				if (empty($value))
+				{
+					return '';
+				}
 			}
 
 
@@ -3159,6 +3174,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 					$v = ArrayHelper::getValue($v, 0);
 				}
+
+				if ($this->defaultOnCopy())
+				{
+					$v = $params->get('default_image');
+				}
+
 				$output[] = $storage->preRenderPath($v);
 			}
 		}
