@@ -164,6 +164,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			if ($params->get('autocomplete', '0') === '3')
 			{
 				$bits['class'] .= ' fabrikGeocomplete';
+				$bits['autocomplete'] = 'off';
 			}
 		}
 

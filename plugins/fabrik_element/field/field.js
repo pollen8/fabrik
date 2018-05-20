@@ -52,12 +52,10 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                 this.loadFn = function () {
                     if (this.gcMade === false) {
                         var self = this;
-                        jQuery('#' + this.element.id).geocomplete()
-                            .bind(
+                        jQuery('#' + this.element.id).geocomplete({}).bind(
                             'geocode:result',
                             function(event, result){
-                                //self.element.fireEvent('change', new Event.Mock(self.element, 'change'));
-                                Fabrik.fireEvent('fabrik.element.field.geocode', self);
+                                Fabrik.fireEvent('fabrik.element.field.geocode', [self, result]);
                             }
                         );
                         this.gcMade = true;
@@ -98,7 +96,13 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
             }
             if (this.options.geocomplete) {
                 if (element) {
-                    jQuery('#' + element.id).geocomplete();
+                    var self = this;
+                    jQuery('#' + this.element.id).geocomplete().bind(
+                        'geocode:result',
+                        function(event, result){
+                            Fabrik.fireEvent('fabrik.element.field.geocode', [self, result]);
+                        }
+                    );
                 }
             }
             this.parent(c);
