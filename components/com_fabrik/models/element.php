@@ -2712,6 +2712,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				case '5' :
 					$type = 'url';
 					break;
+				case '6' :
+					$type = 'number';
+					break;
 				default :
 					$type = 'text';
 			}

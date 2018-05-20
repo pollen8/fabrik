@@ -56,6 +56,7 @@
 					<option value="3">PLG_ELEMENT_INPUTTYPE_EMAIL</option>
 					<option value="4">PLG_ELEMENT_INPUTTYPE_SEARCH</option>
 					<option value="5">PLG_ELEMENT_INPUTTYPE_URL</option>
+					<option value="6">PLG_ELEMENT_INPUTTYPE_NUMBER</option>
 			</field>
 
 			<field name="maxlength"
