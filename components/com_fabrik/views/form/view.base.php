@@ -1171,7 +1171,7 @@ class FabrikViewFormBase extends FabrikView
 			$form->prevButton = '';
 		}
 
-		// $$$ hugh - hide actions section is we're printing, or if not actions selected
+		// $$$ hugh - hide actions section if we're printing or format=PDF, or if not actions selected
 		$noButtons = (
 			empty($form->nextButton)
 			&& empty($form->prevButton)
@@ -1185,7 +1185,7 @@ class FabrikViewFormBase extends FabrikView
 			&& empty($form->customButtons)
 		);
 
-		$this->hasActions = ($input->get('print', '0') == '1' || $noButtons) ? false : true;
+		$this->hasActions = ($input->get('print', '0') == '1' || $input->get('format') === 'pdf' || $noButtons) ? false : true;
 
 		$format   = $model->isAjax() ? 'raw' : 'html';
 		$fields[] = '<input type="hidden" name="format" value="' . $format . '" />';
