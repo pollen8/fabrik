@@ -242,8 +242,17 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$params = $this->getParams();
 		$params->set('options_per_row', 4);
 
-		return parent::render($data, $repeatCounter);
-	}
+		$rendered = parent::render($data, $repeatCounter);
+
+		$displayData = new stdClass;
+		$displayData->rendered = $rendered;
+		$displayData->elementModel = $this;
+		$displayData->value = $this->getValue($data, $repeatCounter);
+		$displayData->tmpl = @$this->tmpl;
+		$displayData->format = $this->app->input->get('format', '');;
+		$layout = $this->getLayout('form');
+
+		return $layout->render($displayData);	}
 
 	/**
 	 * Should the grid be rendered as a Bootstrap button-group
