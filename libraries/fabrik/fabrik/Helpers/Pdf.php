@@ -266,7 +266,7 @@ class Pdf
 			}
 			*/
 		}
-		catch (Exception $err)
+		catch (\Exception $err)
 		{
 			// Oho malformed html - if we are debugging the site then show the errors
 			// otherwise continue, but it may mean that images/css/links are incorrect

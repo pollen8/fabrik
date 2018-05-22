@@ -1030,7 +1030,7 @@ EOD;
 				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tips';
 			}
 
-			if ($fbConfig->get('advanced_behavior', '0') == '1')
+			if ($fbConfig->get('advanced_behavior', '0') !== '0')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
@@ -1045,7 +1045,7 @@ EOD;
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
 			}
 
-			if ($fbConfig->get('advanced_behavior', '0') == '1')
+			if ($fbConfig->get('advanced_behavior', '0') !== '0')
 			{
 				$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
 						if (Fabrik.buildChosen) {
@@ -1276,7 +1276,7 @@ EOD;
 	 * are not loaded from cache
 	 *
 	 * @return boolean
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected static function getBurstJs()
 	{

@@ -29,7 +29,7 @@ class Lizt
 	 * @param   object  $listModel  list model to search
 	 * @param   array   $filter     array of element properties to match on
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 *
 	 * @return  array
 	 */
@@ -66,7 +66,7 @@ class Lizt
 		if (empty($found))
 		{
 			$filterNames = implode(', ', $filter);
-			throw new Exception(Text::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
+			throw new \Exception(Text::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
 		}
 
 		return $found;

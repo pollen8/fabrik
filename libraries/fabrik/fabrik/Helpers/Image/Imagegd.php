@@ -29,7 +29,7 @@ class Imagegd extends Image
 	 *
 	 * @param   string $file file to create image from
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 *
 	 * @return  array  (image, header string)
 	 */
@@ -77,7 +77,7 @@ class Imagegd extends Image
 			}
 			else
 			{
-				throw new Exception("imagecreate from gif not available");
+				throw new \Exception("imagecreate from gif not available");
 			}
 		}
 

@@ -63,7 +63,7 @@ class Clickatell extends JObject
 				$message
 			);
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 
