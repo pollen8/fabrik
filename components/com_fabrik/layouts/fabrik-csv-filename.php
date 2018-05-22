@@ -23,6 +23,7 @@ else
 {
 	$w = new Worker;
 	$fileName = $w->parseMessageForPlaceholder($fileName);
+	$w->replaceRequest($fileName);
 	$fileName = sprintf($fileName, date('Y-m-d'));
 }
 
