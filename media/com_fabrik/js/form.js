@@ -1165,21 +1165,44 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 if (this.formElements.has(k)) {
                     var el = this.formElements.get(k);
                     if (gids.contains(el.groupid.toInt())) {
-                        if (r.errors[k]) {
-                            // prepare error so that it only triggers for real errors and not success
-                            // msgs
 
-                            var msg = '';
-                            if (typeOf(r.errors[k]) !== 'null') {
-                                msg = r.errors[k].flatten().join('<br />');
+                        if (r.errors[k]) {
+                            if (el.options.inRepeatGroup) {
+                                r.errors[k].each(function (v2, k2) {
+                                    var k3 = k.replace(/_(\d+)$/, '_' + k2);
+                                    var rEl = this.formElements.get(k3);
+
+
+                                    var msg = '';
+                                    if (typeOf(v2) !== 'null') {
+                                        msg = v2.flatten().join('<br />');
+                                    }
+                                    if (msg !== '') {
+                                        tmperr = this._showElementError(v2, k3);
+                                        if (err === false) {
+                                            err = tmperr;
+                                        }
+                                    } else {
+                                        rEl.setErrorMessage('', '');
+                                    }
+                                }.bind(this));
                             }
-                            if (msg !== '') {
-                                tmperr = this._showElementError(r.errors[k], k);
-                                if (err === false) {
-                                    err = tmperr;
+                            else {
+                                // prepare error so that it only triggers for real errors and not success
+                                // msgs
+
+                                var msg = '';
+                                if (typeOf(r.errors[k]) !== 'null') {
+                                    msg = r.errors[k].flatten().join('<br />');
                                 }
-                            } else {
-                                el.setErrorMessage('', '');
+                                if (msg !== '') {
+                                    tmperr = this._showElementError(r.errors[k], k);
+                                    if (err === false) {
+                                        err = tmperr;
+                                    }
+                                } else {
+                                    el.setErrorMessage('', '');
+                                }
                             }
                         }
                         if (r.modified[k]) {
