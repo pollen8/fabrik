@@ -398,14 +398,14 @@
 			label="COM_FABRIK_FIELD_ERROR_ICON_LABEL" />
 
 		<field name="advanced_behavior"
-			type="radio"
+			type="list"
 			default="0"
 			class="btn-group"
 			label="COM_FABRIK_DROPDOWN_JQUERY_CHOSEN_GLOBAL_LABEL"
 			description="COM_FABRIK_DROPDOWN_JQUERY_CHOSEN_GLOBAL_DESC" >
 				<option value="0">JNO</option>
 				<option value="1">COM_FABRIK_DROPDOWN_JQUERY_CHOSEN_PER_ELEMENT</option>
-				<!--<option value="2">JYES</option>-->
+				<option value="2">JYES</option>
 		</field>
 
 		<field name="advanced_behavior_options"
