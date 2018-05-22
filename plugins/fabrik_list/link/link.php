@@ -89,7 +89,7 @@ class PlgFabrik_ListLink extends plgFabrik_List
 	{
 		if ($this->heading)
 		{
-			return '';
+			return '&nbsp;';
 		}
 		else
 		{
