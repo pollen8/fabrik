@@ -316,6 +316,11 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 		if ($params->get('only_process_curl') == 'onElementCanUse')
 		{
+			if ($this->_requirePHP() === false)
+			{
+				return false;
+			}
+
 			$formModel = $this->getModel();
 			$elementModel = FArrayHelper::getValue($args, 0, false);
 			if ($elementModel)
@@ -403,6 +408,38 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		}
 
 		return true;
+	}
+
+	/**
+	 * Require PHP file if specified
+	 *
+	 * @return  bool
+	 */
+	private function _requirePHP()
+	{
+		$params = $this->getParams();
+
+		if ($params->get('form_php_file') != -1)
+		{
+			$require_once = $params->get('form_php_require_once', '0') == '1';
+			$php_file = JFilterInput::getInstance()->clean($params->get('form_php_file'), 'CMD');
+			$php_file = JPATH_ROOT . '/plugins/fabrik_form/php/scripts/' . $php_file;
+
+			if (!JFile::exists($php_file))
+			{
+				throw new RuntimeException('Missing PHP form plugin file');
+			}
+
+			$php_result = $require_once ? require_once $php_file : require $php_file;
+
+			// Bail out if code specifically returns false
+			if ($php_result === false)
+			{
+				return false;
+			}
+		}
+
+		return $php_result;
 	}
 
 	/**
