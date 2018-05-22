@@ -2668,6 +2668,44 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		return $key;
 	}
 
+	/**
+	 * Internal element validation
+	 *
+	 * For the date element, this is just here to add the element to the 'modified' array for AJAX validation,
+	 * so it gets re-displayed.  Need to do this because we change the displayed date format when submitting (or on
+	 * change page in multipage forms, etc).
+	 *
+	 * @param   array $data          form data
+	 * @param   int   $repeatCounter repeat group counter
+	 *
+	 * @return bool
+	 */
+	public function validate($data, $repeatCounter = 0)
+	{
+		if ($this->app->input->get('fabrik_ajax', '0') === '1')
+		{
+			if (FabrikWorker::isDate($data))
+			{
+				$params    = $this->getParams();
+				$localDate = $this->displayDate($data);
+				$formModel = $this->getFormModel();
+				$name      = $this->getFullName(true, false);
+				$group     = $this->getGroup();
+
+				if ($group->canRepeat())
+				{
+					$formModel->modifiedValidationData[$name][$repeatCounter] = $localDate->format('Y-m-d H:i:s', true);
+				}
+				else
+				{
+					$formModel->modifiedValidationData[$name] = $localDate->format('Y-m-d H:i:s', true);
+				}
+			}
+		}
+
+		return true;
+	}
+
 }
 
 /**
@@ -2880,5 +2918,4 @@ class FabDate extends JDate
 
 		return $str;
 	}
-
 }

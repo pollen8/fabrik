@@ -11,7 +11,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         /**
          * master date/time stored in this.cal (the js widget)
          * upon save we get a db formatted version of this date and put it into the date field
-         * this dramitcally simplifies storing dates (no longer have to take account of formatting rules and/or
+         * this dramitcally' simplifies storing dates (no longer have to take account of formatting rules and/or
          * translations on the server side, as the widget has already handled it for us
          */
         options: {
@@ -387,7 +387,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 this.getContainer().getElement('.timeButton').fireEvent('click');
             } else {
                 this.options.calendarSetup.inputField = e.target.id;
-                this.options.calendarSetup.button = this.element.id + '_img';
+                this.options.calendarSetup.button = this.element.id + '_cal_img';
                 //this.addEventToCalOpts();
                 this.cal.showAtElement(f, this.cal.params.align);
                 if (typeof(this.cal.wrapper) !== 'undefined') {
@@ -901,14 +901,14 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.setUpDone = false;
             this.hour = 0;
             delete this.cal;
-            var button = this.element.getElement('img');
+            var button = this.element.getElement('button');
             if (button) {
-                button.id = this.element.id + '_cal_img';
+                button.id = this.element.id + '_cal_cal_img';
             }
             var datefield = this.element.getElement('input');
             datefield.id = this.element.id + '_cal';
             this.options.calendarSetup.inputField = datefield.id;
-            this.options.calendarSetup.button = this.element.id + '_img';
+            this.options.calendarSetup.button = datefield.id + '_img';
 
             this.makeCalendar();
             this.cal.hide();
