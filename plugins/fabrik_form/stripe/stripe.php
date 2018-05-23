@@ -955,14 +955,16 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		if ($getDefaults)
 		{
 			$elementModel = $formModel->getElement($productKey);
-			$productId = $elementModel->getDefaultValue($this->data);
+			$default = $elementModel->getDefaultValue($this->data);
 		}
 		else
 		{
-			$productId = FArrayHelper::getValue($this->data, $productKey);
-			$productId = FArrayHelper::getValue($this->data, $productKey . '_raw', $productId);
-			$productId = is_array($productId) ? $productId[0] : $productId;
+			$default = '';
 		}
+
+		$productId = FArrayHelper::getValue($this->data, $productKey, $default);
+		$productId = FArrayHelper::getValue($this->data, $productKey . '_raw', $productId);
+		$productId = is_array($productId) ? $productId[0] : $productId;
 
 		if (!empty($productId))
 		{
@@ -976,13 +978,15 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				if ($getDefaults)
 				{
 					$elementModel = $formModel->getElement($productQtyKey);
-					$productQty = $elementModel->getDefaultValue($this->data);
+					$default = $elementModel->getDefaultValue($this->data);
 				}
 				else
 				{
-					$productQty = FArrayHelper::getValue($this->data, $productQtyKey);
-					$productQty = FArrayHelper::getValue($this->data, $productQtyKey . '_raw', $productQty);
+					$default = '';
 				}
+
+				$productQty = FArrayHelper::getValue($this->data, $productQtyKey, $default);
+				$productQty = FArrayHelper::getValue($this->data, $productQtyKey . '_raw', $productQty);
 
 				$amount     = $amount * (int) $productQty;
 			}
