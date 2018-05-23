@@ -533,6 +533,9 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                                     finalurl += finalurl.contains('?') ? '&' : '?';
                                     finalurl += 'start=' + res.count;
                                 }
+
+                                finalurl += '&' + self.options.csvOpts.custom_qs;
+
                                 var msg = '<div class="alert alert-success" style="padding:10px;margin-bottom:3px"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
                                 msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
                                     '<i class="icon-download"></i> ' +
