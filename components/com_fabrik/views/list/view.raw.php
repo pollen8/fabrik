@@ -119,6 +119,7 @@ class FabrikViewList extends FabrikViewListBase
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $tmpl) : '';
 		$d['calculations'] = $model->getCalculations();
 		$d['hasFilters'] = $model->gotOptionalFilters();
+		$d['searchallvalue'] = $model->getFilterModel()->getSearchAllValue('html');
 
 		// $$$ hugh - see if we have a message to include, set by a list plugin
 		$context = 'com_' . $this->package . '.list' . $model->getRenderContext() . '.msg';

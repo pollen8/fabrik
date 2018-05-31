@@ -265,19 +265,34 @@ class FabrikFEModelListfilter extends FabModel
 
 		// Seems like post keys 'name.1' get turned into 'name_1'
 		$requestKey = $this->getSearchAllRequestKey();
-		$v = $this->app->getUserStateFromRequest($key, $requestKey);
+		$v = $this->app->getUserStateFromRequest($key, $requestKey, '');
 
 		if (trim($v) == '')
 		{
-			$fromFormId = $this->app->getUserState('com_' . $this->package . '.searchform.fromForm');
+			$fromFormId = $this->app->getUserState('com_' . $this->package . '.searchform.fromForm', '');
 
 			if ($fromFormId != $this->listModel->getFormModel()->getForm()->id)
 			{
-				$v = $this->app->getUserState('com_' . $this->package . '.searchform.form' . $fromFormId . '.searchall');
+				$v = $this->app->getUserState('com_' . $this->package . '.searchform.form' . $fromFormId . '.searchall', '');
 			}
 		}
 
-		$v = $mode == 'html' ? htmlspecialchars($v, ENT_QUOTES) : addslashes(urldecode($v));
+		if (!empty($v))
+		{
+			// if advanced (boolean), strip out words < MySQL full text min chars
+			if ($this->listModel->getParams()->get('search-mode-advanced'))
+			{
+				$searchMode = $this->app->getUserStateFromRequest(
+					'com_' . $this->package . '.list' . $this->listModel->getRenderContext() . '.searchallmode',
+					'search-mode-advanced',
+					$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
+				);
+
+				$v = $this->testBooleanSearchLength($v, $searchMode);
+			}
+
+			$v = $mode == 'html' ? htmlspecialchars($v, ENT_QUOTES) : addslashes(urldecode($v));
+		}
 
 		return $v;
 	}
@@ -396,7 +411,8 @@ class FabrikFEModelListfilter extends FabModel
 	/**
 	 * For extended search all test if the search string is long enough
 	 *
-	 * @param   string  $s  search string
+	 * @param   string  $search  search string
+	 * @param   string  $mode  search mode
 	 *
 	 * @since 3.0.6
 	 *
@@ -404,17 +420,37 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  bool	search string long enough?
 	 */
-	protected function testBooleanSearchLength($s)
+	protected function testBooleanSearchLength($search, $mode = 'any')
 	{
-		$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
-		$res = $this->_db->loadObject();
+		static $min = null;
 
-		if (!JString::strlen($s) >= $res->Value)
+		if (!isset($min))
 		{
-			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
+			$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
+			$res = $this->_db->loadObject();
+			$min = (int) $res->Value;
 		}
 
-		return true;
+		if ($mode !== 'exact')
+		{
+			$search = explode(' ', $search);
+		}
+		else
+		{
+			$search = (array) $search;
+		}
+
+		foreach ($search as $k => $s)
+		{
+			if (JString::strlen($s) < $min)
+			{
+				unset($search[$k]);
+			}
+		}
+
+		$search = implode(' ', $search);
+
+		return $search;
 	}
 
 	/**
@@ -428,14 +464,24 @@ class FabrikFEModelListfilter extends FabModel
 	private function doBooleanSearch(&$filters, $search)
 	{
 		$input = $this->app->input;
-		$mode = $input->get('search-mode-advanced', 'and');
+		$mode = $this->app->getUserStateFromRequest(
+			'com_' . $this->package . '.list' . $this->listModel->getRenderContext() . '.searchallmode',
+			'search-mode-advanced',
+			$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
+		);
 
 		if (trim($search) == '')
 		{
 			return;
 		}
 
-		$this->testBooleanSearchLength($search);
+		$search = $this->testBooleanSearchLength($search, $mode);
+
+		if (trim($search) == '')
+		{
+			return;
+		}
+
 		$search = explode(' ', $search);
 
 		switch ($mode)
@@ -453,9 +499,12 @@ class FabrikFEModelListfilter extends FabModel
 				break;
 		}
 
-		foreach ($search as &$s)
+		if ($mode !== 'exact')
 		{
-			$s = $operator . $s . '*';
+			foreach ($search as &$s)
+			{
+				$s = $operator . $s . '*';
+			}
 		}
 
 		$search = implode(' ', $search);
