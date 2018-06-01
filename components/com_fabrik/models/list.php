@@ -2323,19 +2323,12 @@ class FabrikFEModelList extends JModelForm
 		$isIcon = false;
 		
 		/* Check if the data component is html, if it is an icon lnk and image parse it out */
-		if (class_exists('DOMDocument')) {
-			// DOMDocument loadHTML() will barf is string is empty
-			if (!empty($data))
-			{
-				$html = new DOMDocument;
-				$html->loadHTML($data);
-				$a   = $html->getElementsByTagName('a')->item(0);
-				$img = $html->getElementsByTagName('img')->item(0);
-				if (isset($html) && isset($a) && isset($img))
-				{
-					$isIcon = true;
-				}
-			}
+		$html = FabrikHelperHTML::loadDOMDocument($data);
+		$a   = $html->getElementsByTagName('a')->item(0);
+		$img = $html->getElementsByTagName('img')->item(0);
+		if (isset($html) && isset($a) && isset($img))
+		{
+			$isIcon = true;
 		}
 
 		$paths = array(

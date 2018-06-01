@@ -3145,4 +3145,33 @@ EOT;
 
         return $spans[$viewport][$size];
 	}
+
+	/**
+     * Load markup into DOMDocument, checking for entities.
+     *
+     * The loadXML() chokes if data has & in it.  But we can't htmlspecialchar() it, as that removes
+	 * the HTML markup we're looking for.  So we need to ONLY change &'s which aren't already part of
+	 * any HTML entities which may be in the data.  So use a negative lookahead regex, which finds & followed
+	 * by anything except non-space the ;.
+	 *
+	 * It also chokes if the data already contains any HTML entities which XML doesn't like, like &eacute;,
+	 * so first we need to do an html_entity_decode() to get rid of those!
+     *
+     * @param  string  $html  HTML to load
+     *
+     * @return  \DOMDocument
+     */
+	public static function loadDOMDocument($html)
+    {
+        // suppress output of warnings about DOM structure
+		$previous = libxml_use_internal_errors(true);
+        $doc = new \DOMDocument;
+        $html = html_entity_decode($html);
+        $html = preg_replace('/&(?!\S+;)/', '&amp;', $html);
+        $doc->loadXML($html);
+		libxml_clear_errors();
+		libxml_use_internal_errors($previous);
+
+		return $doc;
+	}
 }
