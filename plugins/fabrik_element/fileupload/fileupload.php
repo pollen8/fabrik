@@ -2100,10 +2100,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * Get the full server file path for the upload, including the file name
 	 *
 	 * @param   int $repeatCounter Repeat group counter
+	 * @param   bool  $runRename  run the rename code
 	 *
 	 * @return    string    Path
 	 */
-	protected function _getFilePath($repeatCounter = 0)
+	protected function _getFilePath($repeatCounter = 0, $runRename = true)
 	{
 		$params = $this->getParams();
 
@@ -2161,7 +2162,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
 		$myFileName = $storage->cleanName($myFileName, $repeatCounter);
-		$myFileName = $this->renameFile($myFileName, $repeatCounter);
+
+		if ($runRename)
+		{
+			$myFileName = $this->renameFile($myFileName, $repeatCounter);
+		}
 
 		$folder = $params->get('ul_directory');
 		$folder = $folder . '/' . $myFileDir;
@@ -3469,6 +3474,34 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$input = $this->app->input;
 		$this->loadMeForAjax();
+		$o         = new stdClass;
+		$o->error  = '';
+		$formModel = $this->getFormModel();
+
+		if (!$this->isAjax())
+		{
+			$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+			echo json_encode($o);
+
+			return;
+		}
+
+		// Check for request forgeries
+		if ($formModel->spoofCheck() && !JSession::checkToken('request'))
+		{
+			$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+			echo json_encode($o);
+
+			return;
+		}
+
+		if (!$this->canUse()) {
+			$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+			echo json_encode($o);
+
+			return;
+		}
+
 		$filename = $input->get('file', 'string', '');
 
 		// Filename may be a path - if so just get the name
@@ -3489,7 +3522,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 
-		$filePath = $this->_getFilePath($repeatCounter);
+		$filePath = $this->_getFilePath($repeatCounter, false);
 		$filePath = str_replace(JPATH_SITE, '', $filePath);
 
 		$storage  = $this->getStorage();
@@ -3510,6 +3543,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $this->user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 			$db->execute();
 		}
+
+		echo json_encode($o);
 	}
 
 	/**

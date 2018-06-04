@@ -695,10 +695,9 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
             this.uploader.files = newFiles;
 
             // Send a request to delete the file from the server.
-            jQuery.ajax({
-                url : '',
-                data: {
-                    'option'       : 'com_fabrik',
+            var self = this;
+            var data = {
+                'option'       : 'com_fabrik',
                     'format'       : 'raw',
                     'task'         : 'plugin.pluginAjax',
                     'plugin'       : 'fileupload',
@@ -707,18 +706,29 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                     'file'         : f,
                     'recordid'     : id,
                     'repeatCounter': this.options.repeatCounter
+            }
+
+            data[this.options.ajaxToken] = 1;
+
+            jQuery.ajax({
+                url : '',
+                data: data
+            }).done(function (r) {
+                r = JSON.parse(r);
+                if (r.error === '') {
+                    Fabrik.trigger('fabrik.fileupload.delete.complete', self);
+                    var li = jQuery(e.target).closest('.plupload_delete');
+                    li.remove();
+
+                    // Remove hidden fields as well
+                    jQuery('#id_alreadyuploaded_' + self.options.id + '_' + id).remove();
+                    jQuery('#coords_alreadyuploaded_' + self.options.id + '_' + id).remove();
+
+                    if (jQuery(self.getContainer()).find('table tbody tr.plupload_delete').length === 0) {
+                        self.addDropArea();
+                    }
                 }
             });
-            var li = jQuery(e.target).closest('.plupload_delete');
-            li.remove();
-
-            // Remove hidden fields as well
-            jQuery('#id_alreadyuploaded_' + this.options.id + '_' + id).remove();
-            jQuery('#coords_alreadyuploaded_' + this.options.id + '_' + id).remove();
-
-            if (jQuery(this.getContainer()).find('table tbody tr.plupload_delete').length === 0) {
-                this.addDropArea();
-            }
         },
 
         /**
