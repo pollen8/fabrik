@@ -3163,6 +3163,12 @@ EOT;
      */
 	public static function loadDOMDocument($html)
     {
+        // libxml_use_internal_errors won't supress the empty string warning, so ...
+        if (empty($html))
+        {
+            $html = '<span></span>';
+        }
+
         // suppress output of warnings about DOM structure
 		$previous = libxml_use_internal_errors(true);
         $doc = new \DOMDocument;
