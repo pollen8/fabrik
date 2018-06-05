@@ -816,6 +816,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				$opts->updateCheckout = false;
 			}
 
+			JText::script('PLG_FORM_STRIPE_CALCULATING');
+
 			$layout     = $this->getLayout('existing-customer');
 			$layoutData = new stdClass();
 			$layoutData->testMode = $this->isTestMode();

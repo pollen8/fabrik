@@ -85,6 +85,18 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                         self.getCost(e);
                     }
                 );
+
+                // if it's a field, watch for input events, like HTML 5 'number' controls, etc
+                if (this.qtyElement.plugin === 'fabrikfield') {
+                    self.form.dispatchEvent(
+                        '',
+                        this.options.qtyElement,
+                        'input',
+                        function (e) {
+                            self.getCost(e);
+                        }
+                    );
+                }
             }
             else
 			{
@@ -203,7 +215,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		},
 
 		getCoupon: function (e) {
-            Fabrik.loader.start('form_' + this.options.formid, Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'));
+            Fabrik.loader.start('form_' + this.options.formid, Joomla.JText._('PLG_FORM_STRIPE_CALCULATING'));
 
             var v = this.couponElement.getValue(),
                 formid = this.options.formid,
@@ -228,19 +240,17 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 
             }).always(function () {
                 Fabrik.loader.stop('form_' + self.options.formid);
-            })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    window.alert(textStatus);
-                })
-                .done(function (json) {
-                    self.updateForm(json);
-                });
-
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+				window.alert(textStatus);
+			}).done(function (json) {
+				self.updateForm(json);
+			});
         },
 
         getCost: function (e) {
-            Fabrik.loader.start('form_' + this.options.formid, Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'));
-
+			if (this.totalElement) {
+                Fabrik.loader.start(this.options.totalElement, Joomla.JText._('PLG_FORM_STRIPE_CALCULATING'));
+			}
             var productId = this.options.productElement !== '' ? this.productElement.getValue() : '',
                 qty = this.options.qtyElement !== '' ? this.qtyElement.getValue() : '',
                 coupon = this.options.couponElement !== '' ? this.couponElement.getValue() : '',
@@ -267,15 +277,14 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 }
 
             }).always(function () {
-                Fabrik.loader.stop('form_' + self.options.formid);
-            })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    window.alert(textStatus);
-                })
-                .done(function (json) {
-                    self.updateForm(json);
-                });
-
+                if (self.totalElement) {
+                    Fabrik.loader.stop(self.options.totalElement);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+				window.alert(textStatus);
+			}).done(function (json) {
+				self.updateForm(json);
+			});
         },
 
 		updateForm: function (json) {
