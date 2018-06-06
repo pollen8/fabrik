@@ -185,7 +185,7 @@ class PlgFabrik_ElementSequence extends PlgFabrik_Element
 		}
 		else
 		{
-			$sequence = (int) ArrayHelper::getValue($data, '__pk_val', '');
+			$sequence = (int) ArrayHelper::getValue($data, 'rowid', '');
 		}
 
 		$sequence = sprintf('%0' . $padding . 'd', $sequence);
