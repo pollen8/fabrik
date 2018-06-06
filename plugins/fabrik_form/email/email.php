@@ -554,7 +554,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 
 			// Store the file in the tmp folder so it can be attached
-			$layout             = Html::getLayout('form.fabrik-pdf-title');
+			$layout             = $model->getLayout('form.fabrik-pdf-title');
 			$displayData        = new stdClass;
 			$displayData->doc   = $document;
 			$displayData->model = $model;
