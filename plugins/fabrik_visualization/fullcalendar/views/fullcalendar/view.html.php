@@ -53,6 +53,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$this->filters       = $this->get('Filters');
 		$this->showFilters   = $model->showFilters();
 		$this->showTitle     = $input->getInt('show-title', 1);
+		$this->row->label    = FText::_($this->row->label);
 		$this->filterFormURL = $this->get('FilterFormURL');
 
 		$this->canAdd               = (bool) $params->get('fullcalendar-read-only', 0) == 1 ? false : $model->getCanAdd();
