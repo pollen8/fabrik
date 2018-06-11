@@ -291,25 +291,36 @@ class FabrikViewFullcalendar extends JViewLegacy
 	 */
 	private function jLayouts()
 	{
+		$model       = $this->getModel();
+		$params = $model->getParams();
+		$tpl          = $params->get('fullcalendar_layout', 'default');
+		$tmplPath     = JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl;
+		$paths = array(
+			JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/layouts',
+			$tmplPath . '/layouts',
+			JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik',
+			JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/visualization'
+		);
+
 		FabrikHelperHTML::jLayoutJs(
 			'fabrik-visualization-fullcalendar-viewbuttons',
 			'fabrik-visualization-fullcalendar-viewbuttons',
 			(object) array(),
-			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
+			$paths
 		);
 
 		FabrikHelperHTML::jLayoutJs(
 			'fabrik-visualization-fullcalendar-event-popup',
 			'fabrik-visualization-fullcalendar-event-popup',
 			(object) array(),
-			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
+			$paths
 		);
 
 		FabrikHelperHTML::jLayoutJs(
 			'fabrik-visualization-fullcalendar-viewevent',
 			'fabrik-visualization-fullcalendar-viewevent',
 			(object) array(),
-			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
+			$paths
 		);
 
 		$modalOpts = array(
