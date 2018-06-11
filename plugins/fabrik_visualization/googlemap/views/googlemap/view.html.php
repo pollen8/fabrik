@@ -50,6 +50,7 @@ class FabrikViewGooglemap extends JViewLegacy
 			return false;
 		}
 
+		$this->row->label     = FText::_($this->row->label);
 		$js                   = $model->getJs();
 		$this->txt            = $model->getText();
 		$params               = $model->getParams();
