@@ -24,7 +24,7 @@ if ($this->showFilters) :
 						<?php
 						if (count($this->filters) > 1) :
 						?>
-                        <th><?php echo $table ?></th>
+                        <th><?php echo FText::_($table) ?></th>
                         <th style="text-align:right">
                             <?php
 							else :

@@ -34,7 +34,7 @@ if ($this->showFilters) :?>
 			endforeach;
 		?>
 	  </tbody>
-	  <thead><tr><th colspan='2'><?php echo $table ?></th></tr></thead>
+	  <thead><tr><th colspan='2'><?php echo FText::_($table); ?></th></tr></thead>
 	  <tfoot><tr><th colspan='2' style="text-align:right;">
 	  <button type="submit" class="btn btn-info">
 	  	<i class="icon-filter"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_GO') ?>

@@ -22,7 +22,7 @@ if ($this->showFilters) :
 
 	   <thead>
 	  	<tr>
-	  		<th><?php echo $table ?></th>
+	  		<th><?php echo FText::_($table) ?></th>
 	  		<th style="text-align:right">
 	  			<a href="#" class="clearFilters">
 				    <?php echo FabrikHelperHTML::icon('icon-refresh'); ?> <?php echo FText::_('COM_FABRIK_CLEAR'); ?>

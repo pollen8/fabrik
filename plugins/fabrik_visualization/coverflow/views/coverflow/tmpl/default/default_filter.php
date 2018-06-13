@@ -47,7 +47,7 @@ if ($this->showFilters) :
 		<thead>
 			<tr>
 		  		<th colspan="2">
-		  			<?php echo $table ?>
+		  			<?php echo FText::_($table) ?>
 		  		</th>
 		  	</tr>
 		</thead>

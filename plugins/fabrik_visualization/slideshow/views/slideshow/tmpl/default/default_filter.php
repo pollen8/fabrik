@@ -21,7 +21,7 @@ if ($this->showFilters) :
 	  <table class="filtertable fabrikTable fabrikList">
 		  <thead>
 		  	<tr>
-		  		<th colspan="2"><?php echo $table ?></th>
+		  		<th colspan="2"><?php echo FText::_($table) ?></th>
 		  	</tr>
 		  </thead>
 		  <tfoot>
