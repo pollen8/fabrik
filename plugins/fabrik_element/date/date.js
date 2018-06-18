@@ -130,6 +130,11 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     // Fired when form failed after AJAX submit
                     this.afterAjaxValidation();
                 }.bind(this));
+
+                Fabrik.addEvent('fabrik.form.page.change.end', function(form, dir) {
+                    // Fired when multipage form changes page
+                    this.afterAjaxValidation();
+                }.bind(this));
             }
 
         },
