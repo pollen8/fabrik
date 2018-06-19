@@ -23,7 +23,7 @@
 			       label="PLG_FORM_STRIPE_PUBLISHABLE_KEY_LABEL"
 			       repeat="true"/>
 
-			<field name="stripe_currencycode"
+			<field name="stripe_currency_code"
 			       type="text"
 			       default="USD"
 			       description="PLG_FORM_STRIPE_CURRENCY_CODE_DESC"
