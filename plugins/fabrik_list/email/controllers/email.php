@@ -60,7 +60,8 @@ class FabrikControllerListemail extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId($input->getInt('id'));
+		// if SEF'ed, router will have changed 'id' to 'listid'
+		$listModel->setId($input->getInt('id', $input->getInt('listid')));
 		$formModel = $listModel->getFormModel();
 
 		// Push a model into the view
