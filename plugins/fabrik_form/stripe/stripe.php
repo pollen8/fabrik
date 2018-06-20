@@ -558,7 +558,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->renderOrder = $this->renderOrder;
 
 		$this->couponMsg  = JText::_('PLG_FORM_STRIPE_COUPON_NO_COUPON_TEXT');
-		$currencyCode       = $params->get('stripe_currencycode', 'USD');
+		$currencyCode       = $params->get('stripe_currency_code', 'USD');
 		$currencyCode       = $w->parseMessageForPlaceHolder($currencyCode, $this->data);
 		$opts->currencyCode = $currencyCode;
 

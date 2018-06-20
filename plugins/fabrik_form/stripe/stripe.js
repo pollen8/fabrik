@@ -116,6 +116,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					key   : this.options.publicKey,
 					image : 'https://stripe.com/img/documentation/checkout/marketplace.png',
 					locale: 'auto',
+					currency: this.options.currencyCode,
 					token : function (token, opts) {
 						Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
 							'name' : 'stripe_token_id',
@@ -178,6 +179,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 						key   : this.options.publicKey,
 						image : 'https://stripe.com/img/documentation/checkout/marketplace.png',
 						locale: 'auto',
+						currency: this.options.currencyCode,
 						token : function (token, opts) {
 							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
 								'name' : 'stripe_token_id',
@@ -258,9 +260,9 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 self = this;
 
             jQuery.ajax({
+                dataType: 'json',
                 url     : 'index.php',
                 method  : 'post',
-                dataType: 'json',
                 'data'  : {
                     'option'               : 'com_fabrik',
                     'format'               : 'raw',
