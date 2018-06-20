@@ -1,10 +1,10 @@
 <?php
 /**
- * Redirects the browser to paypal to perform payment
+ * Stripe payment gateway processor
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.form.paypal
- * @copyright   Copyright (C) 2005-2016  Media A-Team, Inc. - All rights reserved.
+ * @subpackage  Fabrik.form.stripe
+ * @copyright   Copyright (C) 2005-2018  Media A-Team, Inc. - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -17,10 +17,10 @@ use Fabrik\Helpers\Stripe;
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
- * Redirects the browser to paypal to perform payment
+ * Stripe payment gateway processor
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.form.paypal
+ * @subpackage  Fabrik.form.stripe
  * @since       3.0
  */
 class PlgFabrik_FormStripe extends PlgFabrik_Form
@@ -196,7 +196,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if (trim($item) == '')
 			{
-				$itemRaw = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
+				$itemRaw = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('stripe_item_element') . '_raw'));
 				$item    = $this->data[FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'))];
 
 				if (is_array($item))
