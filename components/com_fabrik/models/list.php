@@ -4215,20 +4215,11 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			// plugins didn't express a preference, so check user next
-			$canUserDo = $this->canUserDo($row, 'allow_edit_details');
-
-			if ($canUserDo !== -1)
-			{
-				// $canUserDo expressed a boolean preference, so use that
-				$this->access->viewdetails = $canUserDo;
-			}
-
-			// no user preference, so use normal ACL
+			// no plugin preference, so use normal ACL
 			if (!array_key_exists('viewdetails', $this->access))
 			{
 				$groups                    = $this->user->getAuthorisedViewLevels();
-				$this->access->viewdetails = in_array($this->getParams()->get('allow_edit_details'), $groups);
+				$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
 			}
 		}
 
