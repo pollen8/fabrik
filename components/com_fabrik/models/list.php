@@ -1588,7 +1588,7 @@ class FabrikFEModelList extends JModelForm
 
 						$row->fabrik_edit_url = $edit_link;
 
-						if ($this->canViewDetails() && $this->floatingDetailLink())
+						if ($this->canViewDetails($row) && $this->floatingDetailLink())
 						{
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
@@ -1596,7 +1596,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					else
 					{
-						if ($this->canViewDetails() && $this->floatingDetailLink())
+						if ($this->canViewDetails($row) && $this->floatingDetailLink())
 						{
 							if (empty($this->_aLinkElements))
 							{
@@ -1612,7 +1612,7 @@ class FabrikFEModelList extends JModelForm
 					}
 				}
 
-				if ($this->canViewDetails() && !$viewLinkAdded && $this->floatingDetailLink())
+				if ($this->canViewDetails($row) && !$viewLinkAdded && $this->floatingDetailLink())
 				{
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
@@ -4135,54 +4135,106 @@ class FabrikFEModelList extends JModelForm
     }
 
 	/**
-	 * Check if the user can view the detailed records
+	 * Check if the user can view the detailed record
+	 *
+	 * @param   object  $row  of data currently active
 	 *
 	 * @return  bool
 	 */
-	public function canViewDetails()
+	public function canViewDetails($row = null)
 	{
-		if (!array_key_exists('viewdetails', $this->access))
+		static $acls = array();
+
+		if (isset($row->__pk_val) && !empty($row->__pk_val))
 		{
-			$allowPDF = false;
-
-			if ($this->app->input->get('format', 'html') === 'pdf')
+			/**
+			 * If we've got the results for this PK, return them.  Set result, so customProcessResult() gets it right
+			 */
+			if (array_key_exists($row->__pk_val, $acls))
 			{
-				$config = JComponentHelper::getParams('com_fabrik');
+				return $acls[$row->__pk_val];
+			}
+		}
 
-				if ($config->get('allow_pdf_localhost_view', '0') === '1')
+		$allowPDF = false;
+
+		if ($this->app->input->get('format', 'html') === 'pdf')
+		{
+			$config = JComponentHelper::getParams('com_fabrik');
+
+			if ($config->get('allow_pdf_localhost_view', '0') === '1')
+			{
+				if ($this->localPdf)
 				{
-				    if ($this->localPdf)
-                    {
-                        $allowPDF = true;
-                    }
-                    else {
-                        $whitelist = array(
-                            '127.0.0.1',
-                            '::1'
-                        );
-                        $pdfLocalhostIP = $config->get('allow_pdf_localhost_ip', '');
+					$allowPDF = true;
+				}
+				else {
+					$whitelist = array(
+						'127.0.0.1',
+						'::1'
+					);
+					$pdfLocalhostIP = $config->get('allow_pdf_localhost_ip', '');
 
-                        if (!empty($pdfLocalhostIP)) {
-                            $whitelist[] = $pdfLocalhostIP;
-                        }
+					if (!empty($pdfLocalhostIP)) {
+						$whitelist[] = $pdfLocalhostIP;
+					}
 
-                        if (in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
-                            $allowPDF = true;
-                        }
-                    }
+					if (in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
+						$allowPDF = true;
+					}
+				}
+			}
+
+		}
+
+		if ($allowPDF)
+		{
+			$this->access->viewdetails = true;
+		}
+		else
+		{
+			/**
+			 * Allow the plugin to take precedence.  If no plugins, or all plugin(s) return null (or any
+			 * value other than true or false) then we drop through to normal useDo/ACL checks.  If any plugin returns
+			 * false, access is denied.  If no plugin returns false, and any return true, access is allowed.
+			 */
+			$pluginCanView = FabrikWorker::getPluginManager()->runPlugins('onCanView', $this, 'list', $row);
+
+			// At least one plugin run, so plugin results take precedence over anything else.
+			if (!empty($pluginCanView))
+			{
+				// test false first, so if any plugin returns false, access is denied
+				if (in_array(false, $pluginCanView, true))
+				{
+					$this->access->viewdetails = false;
 				}
 
+				if (in_array(true, $pluginCanView, true))
+				{
+					$this->access->viewdetails = true;
+				}
 			}
 
-			if ($allowPDF)
+			// plugins didn't express a preference, so check user next
+			$canUserDo = $this->canUserDo($row, 'allow_edit_details');
+
+			if ($canUserDo !== -1)
 			{
-				$this->access->viewdetails = true;
+				// $canUserDo expressed a boolean preference, so use that
+				$this->access->viewdetails = $canUserDo;
 			}
-			else
+
+			// no user preference, so use normal ACL
+			if (!array_key_exists('viewdetails', $this->access))
 			{
 				$groups                    = $this->user->getAuthorisedViewLevels();
-				$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
+				$this->access->viewdetails = in_array($this->getParams()->get('allow_edit_details'), $groups);
 			}
+		}
+
+		if (isset($row->__pk_val) && !empty($row->__pk_val))
+		{
+			$acls[$row->__pk_val] = $this->access->viewdetails;
 		}
 
 		return $this->access->viewdetails;
@@ -4440,7 +4492,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Check use can view the list
+	 * Check user can view the list
 	 *
 	 * @return  bool  can view or not
 	 */

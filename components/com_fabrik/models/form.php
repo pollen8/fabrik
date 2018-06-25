@@ -487,9 +487,16 @@ class FabrikFEModelForm extends FabModelForm
 		$data = $this->getData();
 		$ret = 0;
 
-		if ($listModel->canViewDetails())
+		if ($listModel->canViewDetails(ArrayHelper::toObject($data)))
 		{
 			$ret = 1;
+		}
+		else
+		{
+			if ($this->app->input->get('view', 'form') == 'details')
+			{
+				return 0;
+			}
 		}
 
 		//$isUserRowId = $this->isUserRowId();
