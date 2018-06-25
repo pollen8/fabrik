@@ -907,6 +907,8 @@ class Worker
 			$user = JFactory::getUser();
 		}
 
+		$user->levels = $user->getAuthorisedViewLevels();
+
 		if (is_object($user))
 		{
 			foreach ($user as $key => $val)
