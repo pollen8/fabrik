@@ -1083,7 +1083,30 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
          */
         updateUsingRaw: function () {
             return true;
-        }
+        },
+
+        /**
+         * Called from FbFormSubmit
+         *
+         * @params   function  cb  Callback function to run when the element is in an acceptable state for the form processing to continue
+         *
+         * @return  void
+         */
+        onsubmit: function (cb) {
+            /**
+             * if the selected option in a dropdown is disabled, unset the disabled property,
+             * otherwise the value won't get submitted with the form.
+             */
+            if (this.options.editable) {
+                switch (this.options.displayType) {
+                    case 'dropdown':
+                    case 'multilist':
+                        jQuery('#' + this.element.id + ' option:selected:disabled').prop('disabled',false);
+                }
+            }
+            this.parent(cb);
+        },
+
     });
 
     return window.FbDatabasejoin;
