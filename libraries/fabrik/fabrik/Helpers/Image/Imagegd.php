@@ -12,6 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \JHtml;
 use \Error;
+use \Fabrik\Helpers\StringHelper;
 
 /**
  * GD image manipulation class
