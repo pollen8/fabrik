@@ -744,6 +744,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	 */
 	public function insertData()
 	{
+		$origMaxExecution = ini_get("max_execution_time");
+		ini_set("max_execution_time", 300);
+
 		$app                 = JFactory::getApplication();
 		$jForm               = $app->input->get('jform', array(), 'array');
 		
@@ -916,6 +919,8 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->updatedCount = $updatedCount;
 
 		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
+
+		ini_set('max_execution_time', $origMaxExecution);
 	}
 
 	/**
