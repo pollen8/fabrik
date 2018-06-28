@@ -310,6 +310,9 @@ class FabrikFEModelImportcsv extends JModelForm
 			throw new UnexpectedValueException('Csv file : ' . $baseDir . '/' . $file . ' not found');
 		}
 
+		$origLineEnding = ini_get("auto_detect_line_endings");
+		ini_set("auto_detect_line_endings", true);
+
 		$csv              = new Csv_Bv($baseDir . '/' . $file, $field_delimiter, $text_delimiter, '\\');
 		$csv->inPutFormat = FArrayHelper::getValue($data, 'inPutFormat', 'csv');
 
@@ -378,6 +381,8 @@ class FabrikFEModelImportcsv extends JModelForm
 		}
 
 		fclose($csv->mHandle);
+
+		ini_set("auto_detect_line_endings", $origLineEnding);
 	}
 
 	/**
