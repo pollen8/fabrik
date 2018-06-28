@@ -38,17 +38,44 @@ Class GeoCode
         }
     }
 
+	public function getAddress($lat, $lng, $returnType="array", $apiKey = "")
+	{
+		$this->lat = $lat;
+		$this->lng = $lng;
+		$this->apiKey  = $apiKey;
+
+		$this->makeUrl('latlng');
+
+		$final = $this->parseGeoData();
+
+		if($returnType == "json")
+		{
+			return $this->makeJson($final);
+		}
+		else
+		{
+			return $final;
+		}
+	}
+
 
     private function makeJson($data)
     {
         return json_encode($data);
     }
 
-    private function makeUrl()
+    private function makeUrl($which = 'address')
     {
-        $this->address = str_replace(" ", "+",$this->address);
-        $this->url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$this->address;
-
+    	switch ($which)
+		{
+			case 'address':
+				$this->address = str_replace(" ", "+", $this->address);
+				$this->url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$this->address;
+				break;
+			case 'latlng':
+				$this->url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=".$this->lat.",".$this->lng;
+				break;
+		}
         if (!empty($this->apiKey)) {
         	$this->url .= "&key=" . $this->apiKey;
         }

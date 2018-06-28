@@ -98,6 +98,8 @@
 				<option value="1">PLG_CRON_GEOCODE_FROM_ADDRESS</option>
 				<option value="2">PLG_CRON_GEOCODE_FROM_LAT_LON</option>
 				<option value="3">PLG_CRON_GEOCODE_FROM_MAP_TO_LAT_LON</option>
+				<option value="4">PLG_CRON_GEOCODE_FROM_LAT_LON_TO_ADDRESS</option>
+				<option value="5">PLG_CRON_GEOCODE_FROM_MAP_TO_ADDRESS</option>
 			</field>
 						
 			<field name="geocode_is_empty"
