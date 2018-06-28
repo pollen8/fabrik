@@ -312,6 +312,8 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$origLineEnding = ini_get("auto_detect_line_endings");
 		ini_set("auto_detect_line_endings", true);
+		$origMaxExecution = ini_get("max_execution_time");
+		ini_set("max_execution_time", 300);
 
 		$csv              = new Csv_Bv($baseDir . '/' . $file, $field_delimiter, $text_delimiter, '\\');
 		$csv->inPutFormat = FArrayHelper::getValue($data, 'inPutFormat', 'csv');
@@ -383,6 +385,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		fclose($csv->mHandle);
 
 		ini_set("auto_detect_line_endings", $origLineEnding);
+		ini_set("max_execution_time", $origMaxExecution);
 	}
 
 	/**
