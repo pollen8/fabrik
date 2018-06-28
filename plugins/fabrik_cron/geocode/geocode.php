@@ -124,6 +124,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 				{
 					$lat = '';
 					$long = '';
+					$fields = array();
 
 					/*
 					 * See if the map element is considered empty
@@ -143,6 +144,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 						$do_geocode = empty($row->$geocode_map_element_long_raw);
 					}
 
+					// 1 - geocode from address components
 					if ($geocode_from === '1')
 					{
 						if ($geocode_batch_limit > 0 && $total_attempts >= $geocode_batch_limit)
@@ -224,8 +226,22 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 
 								if ($res['status'] == 'OK')
 								{
-									$lat  = $res['lat'];
-									$long = $res['lng'];
+									if (!empty($geocode_lat_element))
+									{
+										$fields[$geocode_lat_element] = $res['lat'];
+									}
+
+									if (!empty($geocode_lon_element))
+									{
+										$fields[$geocode_lon_element] = $res['lng'];
+									}
+
+									if (!empty($geocode_map_element))
+									{
+										$fields[$geocode_map_element] = "(" . $res['lat'] . "," . $res['lng'] . "):$geocode_zoom_level";
+									}
+
+									$total_encoded++;
 								}
 								else
 								{
@@ -244,29 +260,192 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 							}
 						}
 					}
+					// 2 - convert separate lat/lon elements to a map element, no geocoding
 					else if ($geocode_from === '2')
 					{
-						$lat = $row->$geocode_lat_element_long_raw;
-						$long = $row->$geocode_lon_element_long_raw;
+						$total_attempts++;
+
+						if (!empty($geocode_map_element))
+						{
+							$lat = $row->$geocode_lat_element_long_raw;
+							$long = $row->$geocode_lon_element_long_raw;
+							$fields[$geocode_map_element] = "($lat,$long):$geocode_zoom_level";
+						}
+
+						$total_encoded++;
 					}
+					// 3 - bust map element out to separate lat/lon fields, no geocoding
 					else if ($geocode_from === '3')
 					{
+						$total_attempts++;
+
 						$coords = FabrikString::mapStrToCoords($row->$geocode_map_element_long_raw);
-						$listModel->storeCell($row->$primary_key_element_long, $geocode_lat_element, $coords->lat);
-						$listModel->storeCell($row->$primary_key_element_long, $geocode_lon_element, $coords->long);
+
+						if (!empty($geocode_lat_element))
+						{
+							$fields[$geocode_lat_element] = $coords->lat;
+						}
+
+						if (!empty($geocode_lon_element))
+						{
+							$fields[$geocode_lon_element] = $coords->long;
+						}
+
 						$total_encoded++;
 					}
-
-					if (($do_geocode === '1' || $do_geocode == '2') && (!empty($lat) && !empty($long)))
+					// 4/5 - reverse geocode from map ot lat/lon
+					else if ($geocode_from === '4' || $geocode_from === '5')
 					{
-						$map_value = "($lat,$long):$geocode_zoom_level";
-						$listModel->storeCell($row->$primary_key_element_long, $geocode_map_element, $map_value);
-						$total_encoded++;
+						if ($geocode_batch_limit > 0 && $total_attempts >= $geocode_batch_limit)
+						{
+							FabrikWorker::log('plg.cron.geocode.information', 'reached batch limit');
+							break 2;
+						}
+
+						if ($do_geocode)
+						{
+							switch ($geocode_from)
+							{
+								case '4':
+									$lat  = $row->$geocode_lat_element_long_raw;
+									$long = $row->$geocode_lon_element_long_raw;
+									break;
+								case '5':
+									$coords = FabrikString::mapStrToCoords($row->$geocode_map_element_long_raw);
+									$lat = $coords->lat;
+									$long = $coords->long;
+									break;
+							}
+
+							if (!empty($lat) && !empty($long))
+							{
+								// OK!  Lets try and geocode it ...
+								$total_attempts++;
+								$res       = $gmap->getAddress($lat, $long, 'array', $apiKey);
+
+								if ($res['status'] == 'OK')
+								{
+									$types = array();
+
+									// pivot the address components by type
+									foreach($res['components'] as $component)
+									{
+										foreach ($component->types as $type)
+										{
+											$types[$type]['short_name'] = $component->short_name;
+											$types[$type]['long_name'] = $component->long_name;
+										}
+									}
+
+									/**
+									 * Assign selected address components to their fields
+									 *
+									 * @todo - add UI to choose short / long form for each address component
+									 */
+
+									if (!empty($geocode_addr1_element))
+									{
+										if (array_key_exists('street_number', $types))
+										{
+											$fields[$geocode_addr1_element] = $types['street_number']['long_name'] . ' ' . $types['route']['long_name'];
+										}
+										else
+										{
+											$fields[$geocode_addr1_element] = $types['route']['long_name'];
+										}
+									}
+
+									if (!empty($geocode_city_element))
+									{
+										$fields[$geocode_city_element] = $types['locality']['long_name'];
+									}
+
+									if (!empty($geocode_state_element))
+									{
+										$fields[$geocode_state_element] = $types['administrative_area_level_1']['short_name'];
+									}
+
+									if (!empty($geocode_zip_element))
+									{
+										$fields[$geocode_zip_element] = $types['postal_code']['long_name'];
+									}
+
+									if (!empty($geocode_country_element))
+									{
+										$fields[$geocode_country_element] = $types['country']['short_name'];
+									}
+
+									switch ($geocode_from)
+									{
+										case '4':
+											if (!empty($geocode_map_element))
+											{
+												$fields[$geocode_map_element] = "($lat,$long):$geocode_zoom_level";
+											}
+											break;
+										case '5':
+											if (!empty($geocode_lat_element))
+											{
+												$fields[$geocode_lat_element] = $lat;
+											}
+
+											if (!empty($geocode_lon_element))
+											{
+												$fields[$geocode_lon_element] = $long;
+											}
+
+											break;
+									}
+
+									$total_encoded++;
+								}
+								else
+								{
+									$logMsg = sprintf('Error (%s), id %s , no geocode result for: %s', $res['status'], $row->$primary_key_element_long, $lat.",".$long);
+									FabrikWorker::log('plg.cron.geocode.information', $logMsg);
+								}
+
+								if ($geocode_delay > 0)
+								{
+									usleep($geocode_delay);
+								}
+							}
+							else
+							{
+								FabrikWorker::log('plg.cron.geocode.information', 'empty lat/lng, id = ' . $row->$primary_key_element_long);
+							}
+						}
+					}
+
+					// if we've got fields to update, make it so ...
+					if (!empty($fields))
+					{
+						$query->clear();
+						$query->update($db->quoteName($table_name));
+
+						foreach ($fields as $fieldName => $value)
+						{
+							$query->set($db->quoteName($fieldName) . ' = ' . $db->quote($value));
+						}
+
+						$query->where($primary_key_element . ' = ' . $db->quote($row->$primary_key_element_long));
+						$db->setQuery($query);
+
+						try
+						{
+							$db->execute();
+						}
+						catch (Exception $e)
+						{
+							FabrikWorker::log('plg.cron.geocode.error', 'update query error: ' . $e->getMessage());
+						}
 					}
 				}
 			}
 		}
+
 		FabrikWorker::log('plg.cron.geocode.information', 'Total encoded: '.$total_encoded);
+
 		return $total_encoded;
 	}
 }
