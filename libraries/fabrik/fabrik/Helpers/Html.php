@@ -1728,6 +1728,28 @@ EOD;
 	}
 
 	/**
+	 * Add jLayouts to session - will then be added via Fabrik System plugin
+	 *
+	 * @return  void
+	 */
+	public static function addToSessionCacheIds($id)
+	{
+		$key     = 'fabrik.js.cacheids';
+		$session = JFactory::getSession();
+
+		if ($session->has($key))
+		{
+			$cacheIds = $session->get($key);
+		}
+		else
+		{
+			$cacheIds = array();
+		}
+
+		$cacheIds[] = $id;
+		$session->set($key, array_values(array_unique($cacheIds)));
+	}
+	/**
 	 * Load the slimbox / media box css and js files
 	 *
 	 * @return  void

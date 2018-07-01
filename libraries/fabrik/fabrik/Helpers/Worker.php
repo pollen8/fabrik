@@ -2645,21 +2645,23 @@ class Worker
 	 * Get a cache handler
 	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
-	 * @param   object $listModel List Model
+	 * @param   object  $listModel  List Model
+	 * @param   string  $group  group name (will default to package)
+	 * @param   int  $ttl  time to live in minutes, defaults to J! config
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  JCache
 	 */
-	public static function getCache($listModel = null)
+	public static function getCache($listModel = null, $group = null, $ttl = null)
 	{
+		$config  = JFactory::getConfig();
 		$app     = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$time    = ((float) 2 * 60 * 60);
+		$package = isset($group) ? $group : $app->getUserState('com_fabrik.package', 'fabrik');
+		$time    = isset($ttl) ? (int) $ttl : (int) $config->get('cachetime');
 		$base    = JPATH_BASE . '/cache/';
 		$opts    = array('defaultgroup' => 'com_' . $package, 'cachebase' => $base, 'lifetime' => $time, 'language' => 'en-GB', 'storage' => 'file');
 		$cache   = JCache::getInstance('callback', $opts);
-		$config  = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
 
 		if ($doCache && $listModel !== null)
@@ -2670,6 +2672,67 @@ class Worker
 		$cache->setCaching($doCache);
 
 		return $cache;
+	}
+
+	/**
+	 * Is caching enabled
+	 *
+	 * @param   object  $listModel  List Model
+	 * @param   bool    $noGuest    disable caching for guests
+	 *
+	 * @since   3.8
+	 *
+	 * @return  JCache
+	 */
+	public static function useCache($listModel = null, $noGuest = true, $excludedFormats = null)
+	{
+		$config  = JFactory::getConfig();
+		$app = JFactory::getApplication();
+
+		if (!isset($excludedFormats))
+		{
+			$excludedFormats =  array('raw', 'csv', 'pdf', 'json', 'fabrikfeed', 'feed');
+		}
+
+		// check global J! system cache setting
+		$doCache = $config->get('caching', 0) > 0 ? true : false;
+
+		// if enabled, see if any other settingg disables it
+		if ($doCache)
+		{
+			// Check the Fabrik global option
+			$fabrikConfig = JComponentHelper::getParams('com_fabrik');
+
+			if ($fabrikConfig->get('disable_caching', '0') === '1')
+			{
+				return false;
+			}
+
+			// If a list model has been specified, see if caching is disabled for this list
+			if ($listModel !== null)
+			{
+				if ($listModel->getParams()->get('list_disable_caching', '0') === '1')
+				{
+					return false;
+				}
+			}
+
+			// Check if caching is disabled for guests
+			if ($noGuest)
+			{
+				if (JFactory::getUser()->get('id') === '0')
+				{
+					return false;
+				}
+			}
+
+			if (in_array($app->input->get('format'), $excludedFormats))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

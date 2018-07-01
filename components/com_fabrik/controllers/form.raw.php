@@ -79,19 +79,8 @@ class FabrikControllerForm extends JControllerLegacy
 		// Display the view
 		$view->error = $this->getError();
 
-		// Only allow cached pages for users not logged in.
+		// run the view (no caching)
 		return $view->display();
-
-		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
-		{
-			$cache = JFactory::getCache('com_' . $package, 'view');
-
-			return $cache->get($view, 'display');
-		}
-		else
-		{
-			return $view->display();
-		}
 	}
 
 	/**

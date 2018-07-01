@@ -13,6 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 /**
  * Fabrik List Controller
  *
@@ -77,8 +80,7 @@ class FabrikControllerList extends JControllerLegacy
 		 * $$$ hugh @TODO - we really shouldn't cache for guests (user ID 0), unless we can come up with a way of creating a unique
 		 * cache ID for guests.  We can't use their IP, as it could be two different machines behind a NAT'ing firewall.
 		 */
-		if ($model->getParams()->get('list_disable_caching', '0') === '1'
-			|| in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
+		if (!Worker::useCache($model))
 		{
 			$view->display();
 		}
@@ -91,6 +93,7 @@ class FabrikControllerList extends JControllerLegacy
 			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheId);
+			Html::addToSessionCacheIds($cacheId);
 		}
 	}
 

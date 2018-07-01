@@ -73,29 +73,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$view->display();
 
 		return;
-
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
-		{
-			$view->display();
-		}
-		else
-		{
-			$user    = JFactory::getUser();
-			$uri     = JURI::getInstance();
-			$uri     = $uri->toString(array('path', 'query'));
-			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-			$cache   = JFactory::getCache('com_fabrik', 'view');
-			ob_start();
-			$cache->get($view, 'display', $cacheId);
-			$contents = ob_get_contents();
-			ob_end_clean();
-			$token       = JSession::getFormToken();
-			$search      = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
-			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
-			echo preg_replace($search, $replacement, $contents);
-		}
-
-		FabrikAdminHelper::addSubmenu($input->get('view', 'lists', 'word'));
 	}
 
 	/**

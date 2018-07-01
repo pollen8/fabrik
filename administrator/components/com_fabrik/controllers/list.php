@@ -13,6 +13,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabcontrollerform.php';
 
@@ -144,13 +146,14 @@ class FabrikAdminControllerList extends FabControllerForm
 		$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache   = JFactory::getCache('com_fabrik', 'view');
 
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
+		if (!Worker::useCache($model))
 		{
 			$view->display();
 		}
 		else
 		{
 			$cache->get($view, 'display', $cacheId);
+			Html::addToSessionCacheIds($cacheId);
 		}
 
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));

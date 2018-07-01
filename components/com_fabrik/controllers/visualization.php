@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Controllers\Controller;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.controller');
 
@@ -72,7 +74,7 @@ class FabrikControllerVisualization extends Controller
 		$view->error = $this->getError();
 
 		// F3 cache with raw view gives error
-		if (in_array($input->get('format'), array('raw', 'csv')))
+		if (!Worker::useCache())
 		{
 			$view->display();
 		}
@@ -85,6 +87,7 @@ class FabrikControllerVisualization extends Controller
 			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheId);
+			Html::addToSessionCacheIds($cacheId);
 		}
 
 		return $this;

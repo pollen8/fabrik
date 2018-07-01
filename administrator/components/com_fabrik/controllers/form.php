@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.controllerform');
 
 require_once 'fabcontrollerform.php';
@@ -70,11 +73,9 @@ class FabrikAdminControllerForm extends FabControllerForm
 		// @TODO check for cached version
 		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'file-2');
 
-		$view->display();
+		$listModel = $model->getListModel();
 
-		return;
-
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
+		if (!Worker::useCache($listModel))
 		{
 			$view->display();
 		}
@@ -89,6 +90,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 			$cache->get($view, 'display', $cacheId);
 			$contents = ob_get_contents();
 			ob_end_clean();
+			Html::addToSessionCacheIds($this->cacheId);
 			$token       = JSession::getFormToken();
 			$search      = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
