@@ -250,6 +250,33 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
+	 * Get the advanced search mode.  If doing a J! global search, use the J! search mode.  Otherwise, use
+	 * the list's advanced search mode.
+	 *
+	 * @return  string
+	 */
+	private function getAdvancedSearchMode()
+	{
+		if ($this->app->input->get('option', '') === 'com_search')
+		{
+			$mode = $this->app->input->get(
+				'searchphrase',
+				$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
+			);
+		}
+		else
+		{
+			$mode = $this->app->getUserStateFromRequest(
+				'com_' . $this->package . '.list' . $this->listModel->getRenderContext() . '.searchallmode',
+				'search-mode-advanced',
+				$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
+			);
+		}
+
+		return $mode;
+	}
+
+	/**
 	 * get the search all posted (or session) value
 	 *
 	 * @param   string  $mode  html (performs htmlspecialchars on value) OR 'query' (adds slashes and url decodes)
@@ -282,12 +309,7 @@ class FabrikFEModelListfilter extends FabModel
 			// if advanced (boolean), strip out words < MySQL full text min chars
 			if ($this->listModel->getParams()->get('search-mode-advanced'))
 			{
-				$searchMode = $this->app->getUserStateFromRequest(
-					'com_' . $this->package . '.list' . $this->listModel->getRenderContext() . '.searchallmode',
-					'search-mode-advanced',
-					$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
-				);
-
+				$searchMode = $this->getAdvancedSearchMode();
 				$v = $this->testBooleanSearchLength($v, $searchMode);
 			}
 
@@ -464,11 +486,7 @@ class FabrikFEModelListfilter extends FabModel
 	private function doBooleanSearch(&$filters, $search)
 	{
 		$input = $this->app->input;
-		$mode = $this->app->getUserStateFromRequest(
-			'com_' . $this->package . '.list' . $this->listModel->getRenderContext() . '.searchallmode',
-			'search-mode-advanced',
-			$this->listModel->getParams()->get('search-mode-advanced-default', 'any')
-		);
+		$mode = $this->getAdvancedSearchMode();
 
 		if (trim($search) == '')
 		{
