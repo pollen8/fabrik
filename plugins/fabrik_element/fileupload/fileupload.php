@@ -1146,7 +1146,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$curr_f_ext = JString::strtolower(JFile::getExt($myFileName));
-		array_walk($aFileTypes, create_function('&$v', '$v = JString::strtolower($v);'));
+		array_walk($aFileTypes, function(&$v) {
+			$v = JString::strtolower($v);
+		});
 
 		return in_array($curr_f_ext, $aFileTypes);
 	}

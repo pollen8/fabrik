@@ -414,7 +414,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 			if (is_array($ids))
 			{
-				array_walk($ids, create_function('&$val', '$db = JFactory::getDbo();$val = $db->quote($val);'));
+				array_walk($ids, function(&$val) {
+					$db = JFactory::getDbo();
+					$val = $db->quote($val);
+				});
 				$this->autocomplete_where = empty($ids) ? '1 = -1' : $key . ' IN (' . implode(',', $ids) . ')';
 			}
 		}
