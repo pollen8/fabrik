@@ -434,7 +434,7 @@ class FabrikPlugin extends JPlugin
 
 				foreach ($form->getFieldset($fieldset->name) as $field)
 				{
-					if ($repeatDataMax < count($field->value))
+					if (is_array($field->value) && $repeatDataMax < count($field->value))
 					{
 						$repeatDataMax = count($field->value);
 					}
