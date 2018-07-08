@@ -112,33 +112,35 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 
 			if (this.options.useCheckout) {
-				this.handler = StripeCheckout.configure({
-					key   : this.options.publicKey,
-					image : 'https://stripe.com/img/documentation/checkout/marketplace.png',
-					locale: 'auto',
-					currency: this.options.currencyCode,
-					token : function (token, opts) {
-						Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-							'name' : 'stripe_token_id',
-							'value': token.id,
-							'type' : 'hidden'
-						}));
-						Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-							'name' : 'stripe_token_email',
-							'value': token.email,
-							'type' : 'hidden'
-						}));
-						Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-							'name' : 'stripe_token_opts',
-							'value': JSON.stringify(opts),
-							'type' : 'hidden'
-						}));
-						Fabrik.FabrikStripeForm.mockSubmit();
-					},
-					closed : function () {
-						Fabrik.FabrikStripeFormSubmitting = true;
-					}
-				});
+                requirejs(['https://checkout.stripe.com/checkout.js?'], function (StripeCheckout) {
+                    self.handler = StripeCheckout.configure({
+                        key: self.options.publicKey,
+                        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                        locale: 'auto',
+                        currency: self.options.currencyCode,
+                        token: function (token, opts) {
+                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                'name': 'stripe_token_id',
+                                'value': token.id,
+                                'type': 'hidden'
+                            }));
+                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                'name': 'stripe_token_email',
+                                'value': token.email,
+                                'type': 'hidden'
+                            }));
+                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                'name': 'stripe_token_opts',
+                                'value': JSON.stringify(opts),
+                                'type': 'hidden'
+                            }));
+                            Fabrik.FabrikStripeForm.mockSubmit();
+                        },
+                        closed: function () {
+                            Fabrik.FabrikStripeFormSubmitting = true;
+                        }
+                    });
+                });
 
 				Fabrik.addEvent('fabrik.form.submit.start', function (form, event, btn) {
 					if (!this.options.ccOnFree && this.options.amount == 0)
@@ -175,43 +177,45 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			{
 				var changeBtn = this.form.form.getElement('.fabrikStripeChange');
 				if (typeOf(changeBtn) !== 'null') {
-					this.handler = StripeCheckout.configure({
-						key   : this.options.publicKey,
-						image : 'https://stripe.com/img/documentation/checkout/marketplace.png',
-						locale: 'auto',
-						currency: this.options.currencyCode,
-						token : function (token, opts) {
-							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-								'name' : 'stripe_token_id',
-								'value': token.id,
-								'type' : 'hidden'
-							}));
-							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-								'name' : 'stripe_token_email',
-								'value': token.email,
-								'type' : 'hidden'
-							}));
-							Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-								'name' : 'stripe_token_opts',
-								'value': JSON.stringify(opts),
-								'type' : 'hidden'
-							}));
-							jQuery('.fabrikStripeLast4').text(Joomla.JText._('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED'));
-						}
-					});
-					changeBtn.addEvent('click', function (e) {
-						e.preventDefault();
-						Fabrik.FabrikStripeForm = this.form;
-						this.handler.open({
-							name           : this.options.name,
-							description    : this.options.item,
-							zipCode        : this.options.zipCode,
-							allowRememberMe: this.options.allowRememberMe,
-							email          : this.options.email,
-							panelLabel     : this.options.panelLabel,
-							billingAddress : this.options.billingAddress
-						});
-					}.bind(this));
+                    requirejs(['https://checkout.stripe.com/checkout.js?'], function (Stripe) {
+                        self.handler = StripeCheckout.configure({
+                            key: self.options.publicKey,
+                            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                            locale: 'auto',
+                            currency: self.options.currencyCode,
+                            token: function (token, opts) {
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_id',
+                                    'value': token.id,
+                                    'type': 'hidden'
+                                }));
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_email',
+                                    'value': token.email,
+                                    'type': 'hidden'
+                                }));
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_opts',
+                                    'value': JSON.stringify(opts),
+                                    'type': 'hidden'
+                                }));
+                                jQuery('.fabrikStripeLast4').text(Joomla.JText._('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED'));
+                            }
+                        });
+                        changeBtn.addEvent('click', function (e) {
+                            e.preventDefault();
+                            Fabrik.FabrikStripeForm = self.form;
+                            self.handler.open({
+                                name: self.options.name,
+                                description: self.options.item,
+                                zipCode: self.options.zipCode,
+                                allowRememberMe: self.options.allowRememberMe,
+                                email: self.options.email,
+                                panelLabel: self.options.panelLabel,
+                                billingAddress: self.options.billingAddress
+                            });
+                        }.bind(this));
+                    });
 				}
 			}
 		},
@@ -224,7 +228,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 self = this;
 
             jQuery.ajax({
-                url     : 'index.php',
+                url     : Fabrik.liveSite + 'index.php',
                 method  : 'post',
                 dataType: 'json',
                 'data'  : {
@@ -261,7 +265,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 
             jQuery.ajax({
                 dataType: 'json',
-                url     : 'index.php',
+                url     : Fabrik.liveSite + 'index.php',
                 method  : 'post',
                 'data'  : {
                     'option'               : 'com_fabrik',

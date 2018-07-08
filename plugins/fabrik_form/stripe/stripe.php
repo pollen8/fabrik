@@ -719,6 +719,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$logErrType = '';
 		$customerErrMsg = '';
 
+		$shim = array();
+
 		if (!empty($customerId))
 		{
 			$opts->useCheckout = false;
@@ -808,7 +810,12 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				$opts->panelLabel = FText::_(
 					$params->get('stripe_customers_update_button_name', "PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_BUTTON_NAME")
 				);
-				FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+				$dep       = new stdClass;
+				$dep->deps = array(
+					'stripe'
+				);
+				$shim['fabrik/form'] = $dep;
+				//FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
 				JText::script('PLG_FORM_STRIPE_CUSTOMERS_UPDATE_CC_UPDATED');
 			}
 			else
@@ -848,8 +855,15 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$layoutData->showCoupon = $this->useCoupon();
 			$layoutData->couponMsg = $this->couponMsg;
 			$this->html = $layout->render($layoutData);
-			FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+			$dep       = new stdClass;
+			$dep->deps = array(
+				'stripe'
+			);
+			$shim['fabrik/form'] = $dep;
+			//FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
 		}
+
+		//FabrikHelperHTML::iniRequireJS($shim, array('stripe' => 'https://checkout.stripe.com/checkout'));
 
 		$opts = json_encode($opts);
 
