@@ -61,6 +61,20 @@ class FabrikControllerList extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 		$view->setLayout($layout);
 
+		$extraQS = FabrikWorker::getMenuOrRequestVar('list_extra_query_string', '', false, 'menu');
+		$extraQS = ltrim($extraQS, '&?');
+		$extraQS = FabrikString::encodeqs($extraQS);
+
+		if (!empty($extraQS))
+		{
+			foreach (explode('&', $extraQS) as $qsStr)
+			{
+				$parts = explode('=', $qsStr);
+				$input->set($parts[0], $parts[1]);
+				$_GET[$parts[0]] = $parts[1];
+			}
+		}
+
 		// Push a model into the view
 		if (is_null($model) || $model == false)
 		{

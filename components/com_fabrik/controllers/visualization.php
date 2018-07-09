@@ -65,6 +65,20 @@ class FabrikControllerVisualization extends Controller
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
+		$extraQS = FabrikWorker::getMenuOrRequestVar('viz_extra_query_string', '', false, 'menu');
+		$extraQS = ltrim($extraQS, '&?');
+		$extraQS = FabrikString::encodeqs($extraQS);
+
+		if (!empty($extraQS))
+		{
+			foreach (explode('&', $extraQS) as $qsStr)
+			{
+				$parts = explode('=', $qsStr);
+				$input->set($parts[0], $parts[1]);
+				$_GET[$parts[0]] = $parts[1];
+			}
+		}
+
 		// Push a model into the view
 		if ($model = $this->getModel($viewName))
 		{
