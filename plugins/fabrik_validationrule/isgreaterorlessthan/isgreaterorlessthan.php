@@ -79,6 +79,7 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 
 		$otherElementModel = $this->getOtherElement();
 		$compare = $compareValue === '' ? $otherElementModel->getValue($formData, $repeatCounter) : $compareValue;
+		$compare = is_array($compare) ? array_pop($compare) : $compare;
 
 		if ($this->allowEmpty() && ($data === '' || $compare === ''))
 		{
