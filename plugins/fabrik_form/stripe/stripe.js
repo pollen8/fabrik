@@ -112,7 +112,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 
 			if (this.options.useCheckout) {
-                requirejs(['https://checkout.stripe.com/checkout.js?'], function (StripeCheckout) {
+                requirejs(['https://checkout.stripe.com/checkout.js?'], function (Stripe) {
                     self.handler = StripeCheckout.configure({
                         key: self.options.publicKey,
                         image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
