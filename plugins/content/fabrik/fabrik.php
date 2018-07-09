@@ -57,7 +57,7 @@ class PlgContentFabrik extends JPlugin
 
 		// Simple performance check to determine whether bot should process further
 		$botRegex = $fParams->get('botRegex') != '' ? $fParams->get('botRegex') : 'fabrik';
-echo $row->text;
+
 		if (JString::strpos($row->text, '{' . $botRegex) === false)
 		{
 			return true;
@@ -320,12 +320,11 @@ echo $row->text;
 		}
 
 		$this->generalIncludes($viewName);
-		
-		// Allow plugin to reference the origin rowid in the URL
+
 		$origRowId = $input->get('rowid');
-		echo "set orgin id $origRowId";
+		// Allow plugin to reference the origin rowid in the URL
 		$input->set('origRowId', $origRowId);
-		
+
 		if ($element !== false)
 		{
 			// Special case for rendering element data
@@ -362,7 +361,7 @@ echo $row->text;
 			{
 				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list or has been unpublished');
 			}
-			
+
 			if ($rowId === '')
 			{
 				$rows  = $model->getData();
@@ -396,7 +395,11 @@ echo $row->text;
 				$activeEl->editable             = false;
 
 				// Set row id for things like user element
+				// $origRowId = $input->get('rowid');
 				$input->set('rowid', $rowId);
+				
+				// // Allow plugin to reference the origin rowid in the URL
+				// $input->set('origRowId', $origRowId);
 
 				// Set detail view for things like youtube element
 				$origView = $input->get('view');
