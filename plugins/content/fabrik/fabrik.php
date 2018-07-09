@@ -57,7 +57,7 @@ class PlgContentFabrik extends JPlugin
 
 		// Simple performance check to determine whether bot should process further
 		$botRegex = $fParams->get('botRegex') != '' ? $fParams->get('botRegex') : 'fabrik';
-
+echo $row->text;
 		if (JString::strpos($row->text, '{' . $botRegex) === false)
 		{
 			return true;
@@ -320,12 +320,10 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		$this->generalIncludes($viewName);
-
-		// Set row id for things like user element
-		$origRowId = $input->get('rowid');
-		$input->set('rowid', $rowId);
 		
 		// Allow plugin to reference the origin rowid in the URL
+		$origRowId = $input->get('rowid');
+		echo "set orgin id $origRowId";
 		$input->set('origRowId', $origRowId);
 		
 		if ($element !== false)
@@ -396,6 +394,9 @@ class PlgContentFabrik extends JPlugin
 				 */
 				$activeEl->getFormModel()->data = $defaultData;
 				$activeEl->editable             = false;
+
+				// Set row id for things like user element
+				$input->set('rowid', $rowId);
 
 				// Set detail view for things like youtube element
 				$origView = $input->get('view');
