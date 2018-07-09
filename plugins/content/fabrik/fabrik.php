@@ -321,6 +321,10 @@ class PlgContentFabrik extends JPlugin
 
 		$this->generalIncludes($viewName);
 
+		$origRowId = $input->get('rowid');
+		// Allow plugin to reference the origin rowid in the URL
+		$input->set('origRowId', $origRowId);
+
 		if ($element !== false)
 		{
 			// Special case for rendering element data
@@ -391,12 +395,8 @@ class PlgContentFabrik extends JPlugin
 				$activeEl->editable             = false;
 
 				// Set row id for things like user element
-				$origRowId = $input->get('rowid');
 				$input->set('rowid', $rowId);
 				
-				// Allow plugin to reference the origin rowid in the URL
-				$input->set('origRowId', $origRowId);
-
 				// Set detail view for things like youtube element
 				$origView = $input->get('view');
 				$input->set('view', 'details');
