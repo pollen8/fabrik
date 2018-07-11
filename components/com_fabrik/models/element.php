@@ -1029,6 +1029,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+		else if ($this->access->$key && $view == 'form')
+		{
+			$formModel = $this->getFormModel();
+			$pluginManager = FabrikWorker::getPluginManager();
+			if (in_array(false, $pluginManager->runPlugins('onElementCanView', $formModel, 'form', $this)))
+			{
+				$this->access->view = false;
+			}
+		}
 
 		return $this->access->$key;
 	}
