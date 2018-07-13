@@ -104,8 +104,11 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$geocode_zip_element = $geocode_zip_element_long ? FabrikString::shortColName($geocode_zip_element_long) : '';
 		$geocode_country_element_long = $params->get('geocode_country_element');
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
+		$geocode_normalize_street_element_long = $params->get('geocode_normalize_street_element');
+		$geocode_normalize_street_element = $geocode_normalize_street_element_long ? FabrikString::shortColName($geocode_normalize_street_element_long) : '';
 		$geocode_when = $params->get('geocode_when', '1');
 		$geocode_from = $params->get('geocode_from', '1');
+		$geocode_normalize_format = $params->get('geocode_normalize_format', 'long');
 
 		$config = JComponentHelper::getParams('com_fabrik');
 		$verifyPeer = (bool) $config->get('verify_peer', '1');
@@ -226,6 +229,30 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 
 								if ($res['status'] == 'OK')
 								{
+									if (!empty($geocode_normalize_street_element))
+									{
+										$types = array();
+
+										// pivot the address components by type
+										foreach ($res['components'] as $component)
+										{
+											foreach ($component->types as $type)
+											{
+												$types[$type]['short_name'] = $component->short_name;
+												$types[$type]['long_name']  = $component->long_name;
+											}
+										}
+
+										if (array_key_exists('street_number', $types))
+										{
+											$fields[$geocode_normalize_street_element] = $types['street_number'][$geocode_normalize_format] . ' ' . $types['route'][$geocode_normalize_format];
+										}
+										else
+										{
+											$fields[$geocode_normalize_street_element] = $types['route'][$geocode_normalize_format];
+										}
+									}
+
 									if (!empty($geocode_lat_element))
 									{
 										$fields[$geocode_lat_element] = $res['lat'];

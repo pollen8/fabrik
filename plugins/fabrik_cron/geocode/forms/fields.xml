@@ -75,6 +75,14 @@
 				description="PLG_CRON_GEOCODE_COUNTRY_DESC"
 				label="PLG_CRON_GEOCODE_COUNTRY_LABEL"
 				table="params_table"/>
+
+			<field name="geocode_normalize_street_element"
+				   type="element"
+				   connection="params_connection"
+				   connection_in_repeat="false"
+				   description="PLG_CRON_GEOCODE_NORMALIZE_STREET_DESC"
+				   label="PLG_CRON_GEOCODE_NORMALIZE_STREET_LABEL"
+				   table="params_table" />
 		
 		</fieldset>
 	
@@ -132,6 +140,15 @@
 				description="PLG_CRON_GEOCODE_DELAY_DESC"
 				label="PLG_CRON_GEOCODE_DELAY_LABEL"
 				size="4" />
+
+			<field name="geocode_normalize_format"
+				   type="list"
+				   default="long_name"
+				   description="PLG_CRON_GEOCODE_NORMALIZE_FORMAT_DESC"
+				   label="PLG_CRON_GEOCODE_NORMALIZE_FORMAT_LABEL">
+				<option value="long_name">PLG_CRON_GEOCODE_NORMALIZE_FORMAT_LONG</option>
+				<option value="short_name">PLG_CRON_GEOCODE_NORMALIZE_FORMAT_SHORT</option>
+			</field>
 		
 		</fieldset>
 	</fields>
