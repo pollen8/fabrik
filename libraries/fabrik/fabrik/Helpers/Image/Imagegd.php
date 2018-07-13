@@ -11,6 +11,8 @@ namespace Fabrik\Helpers\Image;
 defined('_JEXEC') or die('Restricted access');
 
 use \JHtml;
+use \JFactory;
+use \JFile;
 use \Error;
 use \Fabrik\Helpers\StringHelper;
 
@@ -148,7 +150,7 @@ class Imagegd extends Image
 		$image_p = ob_get_contents();
 		ob_end_clean();
 
-		return JFile::write($destCropFile, $image_p);
+		return $this->storage->write($destCropFile, $image_p);
 	}
 
 	/**
