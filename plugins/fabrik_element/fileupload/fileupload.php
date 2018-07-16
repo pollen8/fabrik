@@ -2227,7 +2227,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($isAjax)
 		{
-			if (isset($value->file))
+			if (is_array($value) && array_key_exists('file', $value))
+			{
+				$value = $value['file'];
+			}
+			else if (is_object($value) && isset($value->file))
 			{
 				$value = $value->file;
 			}
