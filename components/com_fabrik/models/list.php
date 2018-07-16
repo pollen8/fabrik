@@ -12124,7 +12124,7 @@ class FabrikFEModelList extends JModelForm
 
 			$row->id = 'list_tabs_' . $this->getId() . '_' . $i;
 			$row->js = false;
-			$row->class = ($thisUri == $row->href) ? 'active' : '';
+			$row->class = ($thisUri == $row->href || (strpos($thisUri, $tabsField) === false && $i == 0)) ? 'active' : '';
 			$this->tabs[] = $row;
 		}
 
