@@ -1143,6 +1143,19 @@ class Worker
 			}
 		}
 
+		if ($app->isClient('administrator'))
+		{
+			$replacements['{formview}'] = 'task=form.view';
+			$replacements['{listview}'] = 'task=list.view';
+			$replacements['{detailsview}'] = 'task=details.view';
+		}
+		else
+		{
+			$replacements['{formview}'] = 'view=form';
+			$replacements['{listview}'] = 'view=list';
+			$replacements['{detailsview}'] = 'view=details';
+		}
+
 		return array_merge($replacements, self::langReplacements());
 	}
 
