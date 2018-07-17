@@ -10280,6 +10280,8 @@ class FabrikFEModelList extends JModelForm
 
 		if (!empty($url))
 		{
+			// call replaceWithGlobals to handle any {formview} replacement before query string handling
+			$url = $w->replaceWithGlobals($url);
 			$addurl_parts = explode('?', $url);
 
 			if (count($addurl_parts) > 1)
