@@ -80,6 +80,13 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 
 		$fields = $this->upsertData($upsertRowExists);
+
+		// make sure we have at least one field to upsert
+		if (empty($fields))
+		{
+			return true;
+		}
+
 		$query->set($fields);
 
 		if ($rowId === '')
@@ -166,6 +173,13 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 			{
 				$res = FabrikHelperHTML::isDebug() ? eval($v) : @eval($v);
 				FabrikWorker::logEval($res, 'Eval exception : upsert : ' . $v . ' : %s');
+
+				// if the eval'ed code returned false, skip this
+				if ($res === false)
+				{
+					continue;
+				}
+
 				$v = $res;
 			}
 
