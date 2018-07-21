@@ -64,7 +64,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 		$displayData->colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
 		$displayData->href = $params->get('fbcomment_href', '');
 
-		if (empty($data->href))
+		if (!isset($data->href) || empty($data->href))
 		{
 			$rowId = $this->app->input->getString('rowid', '', 'string');
 
@@ -81,7 +81,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 		if (!empty($displayData->href))
 		{
 			$w = new FabrikWorker;
-			$displayData->href = $w->parseMessageForPlaceHolder($data->href, $data);
+			$displayData->href = $w->parseMessageForPlaceHolder($displayData->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 
 			if (empty($locale))
