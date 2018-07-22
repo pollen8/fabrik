@@ -12079,7 +12079,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  array  Tabs
 	 */
 	public function loadTabs()
-	{
+	{ 
 		$this->tabs = array();
 		$tabs = $this->getTabCategories();
 
@@ -12091,12 +12091,20 @@ class FabrikFEModelList extends JModelForm
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$listId = $this->getId();
 		$tabsField = $this->getTabField();
-		$item = $this->app->getMenu()->getActive();
+		if ($this->app->isSite()) {
+			$menu = "menu". $this->app->getMenu()->getActive()->id;
+		} else {
+			$menu = "admin".JFactory::getUser()->id;
+		}
+
 		$inputArray = $this->app->input->getArray();
 		$isPagination = array_key_exists($this->session->getFormToken(), $inputArray);
 
 		/* get the default rows per page, menu then table then system, whichever is first */
-		$defaultRowsPerPage = $item->params->get('rows_per_page');
+		$defaultRowsPerPage = "";
+		if ($this->app->isSite()) {
+			$defaultRowsPerPage = $this->app->getMenu()->getActive()->params->get('rows_per_page');
+		}
 		if (empty($defaultRowsPerPage)) {
 			$defaultRowsPerPage = $this->getTable()->rows_per_page;
 		}
@@ -12107,7 +12115,7 @@ class FabrikFEModelList extends JModelForm
 		/* get the various current uri parts */
 		$uri = JURI::getInstance();
 		$uriActiveTab = $uri->getVar($tabsField, null);
-		/* If the tabsField is an array then we are showing merged tabs, we need the merged tabs vales for the activeTabName */
+		/* If the tabsField is an array then we are showing merged tabs, we need the merged tabs names for the activeTabName */
 		if (is_array($uriActiveTab)) {
 			$uriActiveTab = implode('-', $uriActiveTab['value']);
 		}
@@ -12117,7 +12125,7 @@ class FabrikFEModelList extends JModelForm
 		$ActiveTabLimit = FArrayHelper::getValue($inputArray, 'limit'.$listId, $uri->getVar('limit' . $listId, null));
 
 		/* Get the cached tabs */
-		$context = 'com_'.$package.'menu'.$item->id.'list'.$listId;
+		$context = 'com_'.$package.$menu.$item->id.'list'.$listId;
 		$cachedTabs = unserialize($this->app->getUserState($context.'tabs'));
 
 		if (empty($cachedTabs)) {
@@ -12168,7 +12176,7 @@ class FabrikFEModelList extends JModelForm
 		$uri->setVar('limit'.$listId, is_null($ActiveTabLimit) ? $defaultRowsPerPage : $ActiveTabLimit);
 		$uri->setVar('limitstart'.$listId, is_null($ActiveTabLimitStart) ? 0 : $ActiveTabLimitStart);
 
-		/* Handle pagination, the pagination has already happened so we do not want this stuff left in the uri */
+		/* Handle pagination, the pagination has already happened so are just clearing this stuff from the uri */
 		if ($isPagination) {
 			$uri->setVar('resetfilters', null);
 			$uri->setVar('clearordering', null);
