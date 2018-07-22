@@ -12183,7 +12183,9 @@ class FabrikFEModelList extends JModelForm
 			$uri->setVar('clearfilters', null);
 			$uriActiveTab = $lastActiveTab;
 		}
-
+		/* Clear this if we just processed a delete */
+		$uri->setVar('fabrik_show_in_list', null);
+		
 		/* if we still do not have an active tab this must be the first call from the menu, default to the first tab */
 		if (is_null($uriActiveTab)) {
 			$uriActiveTab = FArrayHelper::firstKey($cachedTabs);
