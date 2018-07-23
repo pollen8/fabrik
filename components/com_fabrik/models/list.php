@@ -12178,11 +12178,13 @@ class FabrikFEModelList extends JModelForm
 
 		/* Handle pagination, the pagination has already happened so are just clearing this stuff from the uri */
 		if ($isPagination) {
-			$uri->setVar('resetfilters', null);
 			$uri->setVar('clearordering', null);
 			$uri->setVar('clearfilters', null);
 			$uriActiveTab = $lastActiveTab;
 		}
+		/* Force a filter reset */
+		$uri->setVar('resetfilters', 1);
+		
 		/* Clear this if we just processed a delete */
 		$uri->setVar('fabrik_show_in_list', null);
 		
