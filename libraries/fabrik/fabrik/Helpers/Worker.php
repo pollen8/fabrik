@@ -13,6 +13,7 @@ namespace Fabrik\Helpers;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\FCipher;
 use DateTime;
 use Exception;
 use FabTable;
@@ -698,26 +699,15 @@ class Worker
 	/**
 	 * Get the crypt object
 	 *
+	 * @param  string  type  type of encryption (aes, crypt or simple)
+	 *
 	 * @since  3.1
 	 *
-	 * @return  JCrypt
+	 * @return  Fabrik\Helpers\FCipher
 	 */
-	public static function getCrypt()
+	public static function getCrypt($type = 'simple')
 	{
-		jimport('joomla.crypt.crypt');
-		jimport('joomla.crypt.key');
-		$config = JFactory::getConfig();
-		$secret = $config->get('secret', '');
-
-		if (trim($secret) == '')
-		{
-			throw new RuntimeException('You must supply a secret code in your Joomla configuration.php file');
-		}
-
-		$key   = new JCryptKey('simple', $secret, $secret);
-		$crypt = new JCrypt(new JCryptCipherSimple, $key);
-
-		return $crypt;
+		return new FCipher($type);
 	}
 
 	/**
@@ -2122,12 +2112,12 @@ class Worker
 	 * See if data is JSON or not.
 	 *
 	 * @param   mixed $data Date to test
-	 *
+	 * @params  bool  $quotedString  should we treat a single quoted string as JSON
 	 * @since    3.0.6
 	 *
 	 * @return bool
 	 */
-	public static function isJSON($data)
+	public static function isJSON($data, $quotedString = true)
 	{
 		if (!is_string($data))
 		{
@@ -2137,6 +2127,11 @@ class Worker
 		if (is_numeric($data))
 		{
 			return false;
+		}
+
+		if (!$quotedString)
+		{
+			$data = trim($data, '"');
 		}
 
 		return json_decode($data) !== null;

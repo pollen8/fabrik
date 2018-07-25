@@ -101,6 +101,16 @@
 			   label="COM_FABRIK_TRUNCATE_LENGTH_LABEL"
 			   description="COM_FABRIK_TRUNCATE_LENGTH_DESC" />
 
+		<field name="fabrik_private_key"
+			   type="text"
+			   label="COM_FABRIK_PRIVATE_KEY_LABEL"
+			   description="COM_FABRIK_PRIVATE_KEY_DESC" />
+
+		<field name="fabrik_public_key"
+			   type="text"
+			   label="COM_FABRIK_PUBLIC_KEY_LABEL"
+			   description="COM_FABRIK_PUBLIC_KEY_DESC" />
+
 	</fieldset>
 	<fieldset label="COM_FABRIK_LISTS" name="lists">
 
