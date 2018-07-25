@@ -3695,7 +3695,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					}
 				}
 
-				if (FabrikWorker::isJSON($rows[$j]->value))
+				if (FabrikWorker::isJSON($rows[$j]->value, false))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
