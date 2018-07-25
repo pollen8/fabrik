@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-lockrow">
+
+			<field type="helplink"
+				url="PLG_LIST_LOCKROW_HELP_SERVER" />
+
+		</fieldset>
+	</fields>
+</form>
