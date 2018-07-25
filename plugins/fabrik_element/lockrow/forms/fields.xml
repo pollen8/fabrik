@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+    <fields>
+        <fieldset label="COM_FABRIK_DEFAULT" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-lockrow">
+
+            <field type="helplink"
+                   url="PLG_ELEMENT_LOCKROW_HELP_SERVER" />
+
+            <field name="default"
+                   type="textarea"
+                   cols="45"
+                   label="PLG_ELEMENT_LOCKROW_DEFAULT_LABEL"
+                   rows="6" />
+
+        </fieldset>
+    </fields>
+
+    <fields name="params">
+
+        <fieldset label="COM_FABRIK_OPTIONS" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-lockrow-extra">
+
+            <field name="lockrow_ttl"
+                   type="text"
+                   size="5"
+                   default="24"
+                   label="PLG_ELEMENT_LOCKROW_TTL_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_TTL_DESC"/>
+
+            <field name="lockrow_allow_user_unlock"
+                   type="radio"
+                   default="1"
+                   label="PLG_ELEMENT_LOCKROW_ALLOW_USER_UNLOCK_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_ALLOW_USER_UNLOCK_LABEL">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
+        </fieldset>
+
+    </fields>
+</form>
