@@ -2435,6 +2435,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage' && $params->get('upload_allow_folderselect') == '1')
 		{
 			$rDir    = JPATH_SITE . '/' . $params->get('ul_directory');
+			$w        = new FabrikWorker;
+			$rDir = $w->parseMessageForPlaceHolder($rDir);
 			$folders = JFolder::folders($rDir);
 			$str[]   = FabrikHelperHTML::folderAjaxSelect($folders);
 
