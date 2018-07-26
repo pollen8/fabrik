@@ -928,7 +928,7 @@
 			       type="listfields"
 			       valueformat="tableelement"
 			       nojoins="false"
-			       filter="field|calc|join"
+			       filter="field|calc|join|dropdown"
 			       label="COM_FABRIK_LIST_TABS_FIELD_LABEL"
 			       description="COM_FABRIK_LIST_TABS_FIELD_DESC"
 			/>

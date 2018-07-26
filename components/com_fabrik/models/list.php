@@ -11951,6 +11951,7 @@ class FabrikFEModelList extends JModelForm
 
 		$formModel = $this->getFormModel();
 		$elementModel = $formModel->getElement($tabsElName);
+		$isDropdown = (is_subclass_of($elementModel, 'PlgFabrik_ElementDropdown') || get_class($elementModel) == 'PlgFabrik_ElementDropdown');
 		$is_join = (is_subclass_of($elementModel, 'PlgFabrik_ElementDatabasejoin') || get_class($elementModel) == 'PlgFabrik_ElementDatabasejoin');
 		if (!$is_join)
 		{
@@ -11984,6 +11985,17 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('after fabrik list tabs query run') : null;
 		FabrikHelperHTML::debug($counts, 'list getTabCategories counts: ' . $table->label);
 
+		if ($isDropdown) {
+			/* Convert element values to names */
+			foreach ($counts as $key => $count) {
+				$counts[$key][0] = $elementModel->getLabelForValue($counts[$key][0]);
+			}
+			/* Now sort it by these labels */
+			usort($counts, function($a, $b) {
+				return strcmp($a[0], $b[0]);
+			});
+		}
+		
 		/**
 		 * We consolidate by finding the two consecutive rows with the smallest total and merging them.
 		 * To avoid excessive looping if user tabField is too fragmented, we should skip tabs if
@@ -12067,7 +12079,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  array  Tabs
 	 */
 	public function loadTabs()
-	{
+	{ 
 		$this->tabs = array();
 		$tabs = $this->getTabCategories();
 
@@ -12079,58 +12091,139 @@ class FabrikFEModelList extends JModelForm
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$listId = $this->getId();
 		$tabsField = $this->getTabField();
-		$itemId = FabrikWorker::itemId();
+		if ($this->app->isSite()) {
+			$menu = "menu". $this->app->getMenu()->getActive()->id;
+		} else {
+			$menu = "admin".JFactory::getUser()->id;
+		}
+
+		$inputArray = $this->app->input->getArray();
+		$isPagination = array_key_exists($this->session->getFormToken(), $inputArray);
+
+		/* get the default rows per page, menu then table then system, whichever is first */
+		$defaultRowsPerPage = "";
+		if ($this->app->isSite()) {
+			$defaultRowsPerPage = $this->app->getMenu()->getActive()->params->get('rows_per_page');
+		}
+		if (empty($defaultRowsPerPage)) {
+			$defaultRowsPerPage = $this->getTable()->rows_per_page;
+		}
+		if (empty($defaultRowsPerPage)) {
+			$defaultRowsPerPage = $this->app->get('list_limit', 10);
+		}
+
+		/* get the various current uri parts */
 		$uri = JURI::getInstance();
-		$urlBase = $uri->toString(array('path'));
-		$urlBase .= '?option=com_' . $package . '&';
-
-		if ($this->app->isAdmin())
-		{
-			$urlBase .= 'task=list.view&';
-		}
-		else
-		{
-			$urlBase .= 'view=list&';
+		$uriActiveTab = $uri->getVar($tabsField, null);
+		/* If the tabsField is an array then we are showing merged tabs, we need the merged tabs names for the activeTabName */
+		if (is_array($uriActiveTab)) {
+			$uriActiveTab = implode('-', $uriActiveTab['value']);
 		}
 
-		$urlBase .= 'listid=' . $listId . '&resetfilters=1';
-		$urlEquals = $urlBase . '&' . $tabsField . '=%s';
-		$urlRange = $urlBase . '&' . $tabsField . '[value][]=%s&' . $tabsField . '[value][]=%s&' . $tabsField . '[condition]=BETWEEN';
-		$uri = JURI::getInstance();
-		$thisUri = rawurldecode($uri->toString(array('path', 'query')));
+		/* Null to indicate that the limitstart is not set in the url due to direct menu access) */
+		$ActiveTabLimitStart = FArrayHelper::getValue($inputArray, 'limitstart'.$listId, $uri->getVar('limitstart' . $listId, null));	
+		$ActiveTabLimit = FArrayHelper::getValue($inputArray, 'limit'.$listId, $uri->getVar('limit' . $listId, null));
 
-		foreach ($tabs as $i => $tabArray)
-		{
-			$row = new stdClass;
-			list($label, $range) = $tabArray;
-			$row->label = $label;
+		/* Get the cached tabs */
+		$context = 'com_'.$package.$menu.$item->id.'list'.$listId;
+		$cachedTabs = unserialize($this->app->getUserState($context.'tabs'));
 
-			if (is_null($range))
+		if (empty($cachedTabs)) {
+			$originalUri = clone($uri);
+			/* Build the tabs array */
+			foreach ($tabs as $i => $tabArray)
 			{
-				$row->href = $urlBase;
+				$row = new stdClass;
+				list($label, $range) = $tabArray;
+				$row->label = $label;
+				$row->isAllTab = ($label == FText::_('COM_FABRIK_LIST_TABS_ALL'));
+				
+				if (is_null($range) || $row->isAllTab)
+				{
+					$originalUri->delVar($tabsField);
+				}
+				elseif (!is_array($range))
+				{
+					$originalUri->setVar($tabsField, urlencode($range));
+				}
+				else
+				{
+					list($low, $high) = $range;
+					$row->mergeArray = array('value'=>array(urlencode($low), urlencode($high)), 'condition' => 'BETWEEN');
+					$originalUri->setVar($tabsField, $row->mergeArray);
+				}
+			
+				$row->id = 'list_tabs_' . $this->getId() . '_' . $i;
+				$row->js = false;
+				$originalUri->setVar('limit'.$listId, is_null($ActiveTabLimit) ? $defaultRowsPerPage : $ActiveTabLimit);
+				$originalUri->setVar('limitstart'.$listId, is_null($ActiveTabLimitStart) ? 0 : $ActiveTabLimitStart);
+				$row->href = $originalUri->toString();
+				if ($i == 0) {
+					$row->class='active';
+				}
+				$cachedTabs[$label] = $row;
+			} 
+		}
+		/* Find which tab was last active */
+		foreach($cachedTabs as $key => $data) {
+			if (strpos($data->class, 'active') !== false) {
+				$lastActiveTab = $key;
+				break;
 			}
-			elseif (!is_array($range))
-			{
-				$row->href = sprintf($urlEquals, urlencode($range));
-			}
-			else
-			{
-				list($low, $high) = $range;
-				$row->href = sprintf($urlEquals, sprintf($urlRange, urlencode($low), urlencode($high)));
-			}
-
-			if ($itemId)
-			{
-				$row->href .= '&Itemid=' . $itemId;
-			}
-
-			$row->id = 'list_tabs_' . $this->getId() . '_' . $i;
-			$row->js = false;
-			$row->class = ($thisUri == $row->href || (strpos($thisUri, $tabsField) === false && $i == 0)) ? 'active' : '';
-			$this->tabs[] = $row;
 		}
 
-		return $this->tabs;
+		/* Set the latest limits */
+		$uri->setVar('limit'.$listId, is_null($ActiveTabLimit) ? $defaultRowsPerPage : $ActiveTabLimit);
+		$uri->setVar('limitstart'.$listId, is_null($ActiveTabLimitStart) ? 0 : $ActiveTabLimitStart);
+
+		/* Handle pagination, the pagination has already happened so are just clearing this stuff from the uri */
+		if ($isPagination) {
+			$uri->setVar('clearordering', null);
+			$uri->setVar('clearfilters', null);
+			$uriActiveTab = $lastActiveTab;
+		}
+		/* Force a filter reset */
+		$uri->setVar('resetfilters', 1);
+		
+		/* Clear this if we just processed a delete */
+		$uri->setVar('fabrik_show_in_list', null);
+		
+		/* if we still do not have an active tab this must be the first call from the menu, default to the first tab */
+		if (is_null($uriActiveTab)) {
+			$uriActiveTab = FArrayHelper::firstKey($cachedTabs);
+		}
+
+		/* If we have changed tabs, clear the last active tabs active class */
+		if ($lastActiveTab != $uriActiveTab) {
+				unset($cachedTabs[$lastActiveTab]->class); 
+		}
+
+		/* If the active tab is not the All tab, set the tabField to filter on */
+		if ($cachedTabs[$uriActiveTab]->isAllTab != 1) {
+			if (property_exists($cachedTabs[$uriActiveTab], 'mergeArray')) {
+				$uri->setVar($tabsField, $cachedTabs[$uriActiveTab]->mergeArray);
+			} else {
+				$uri->setVar($tabsField, $uriActiveTab);
+			}
+		}
+
+		/* Update the active tab href and set it active */
+		$cachedTabs[$uriActiveTab]->href = $uri->toString();
+		$cachedTabs[$uriActiveTab]->class = 'active';
+
+		/* When we first display the list the menu does not have the tabField filter set
+		 * so all the records are in the list. This is OK when there is an All tab as it
+		 * wants all the list data, but when no All tab we need to filter on the tab field
+		 * name of the first tab, so now that we have the href for the first tab all set
+		 * we will simply do a redirect to it and all should be well 
+		 */
+		if (is_null($ActiveTabLimitStart) && is_null($ActiveTabLimit)) {
+			$this->app->redirect($cachedTabs[$uriActiveTab]->href);
+		}
+		
+		$this->app->setUserState($context.'tabs', serialize($cachedTabs));
+
+		return $this->tabs = $cachedTabs;
 	}
 
 	/**
