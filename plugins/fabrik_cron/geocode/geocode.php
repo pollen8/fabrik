@@ -98,6 +98,10 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$geocode_addr2_element = $geocode_addr2_element_long ? FabrikString::shortColName($geocode_addr2_element_long) : '';
 		$geocode_city_element_long = $params->get('geocode_city_element');
 		$geocode_city_element = $geocode_city_element_long ? FabrikString::shortColName($geocode_city_element_long) : '';
+		$geocode_county_element_long = $params->get('geocode_county_element');
+		$geocode_county_element = $geocode_county_element_long ? FabrikString::shortColName($geocode_county_element_long) : '';
+		$geocode_municipality_element_long = $params->get('geocode_municipality_element');
+		$geocode_municipality_element = $geocode_municipality_element_long ? FabrikString::shortColName($geocode_municipality_element_long) : '';
 		$geocode_state_element_long = $params->get('geocode_state_element');
 		$geocode_state_element = $geocode_state_element_long ? FabrikString::shortColName($geocode_state_element_long) : '';
 		$geocode_zip_element_long = $params->get('geocode_zip_element');
@@ -385,6 +389,16 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 									if (!empty($geocode_city_element))
 									{
 										$fields[$geocode_city_element] = $types['locality']['long_name'];
+									}
+
+									if (!empty($geocode_county_element))
+									{
+										$fields[$geocode_city_element] = $types['administrative_area_level_2']['long_name'];
+									}
+
+									if (!empty($geocode_municipality_element))
+									{
+										$fields[$geocode_municipality_element] = $types['administrative_area_level_3']['long_name'];
 									}
 
 									if (!empty($geocode_state_element))
