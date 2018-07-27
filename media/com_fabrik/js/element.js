@@ -351,10 +351,10 @@ define(['jquery'], function (jQuery) {
         },
 
         reset: function () {
-            this.resetEvents();
             if (this.options.editable === true) {
                 this.update(this.options.defaultVal);
             }
+            this.resetEvents();
         },
 
         resetEvents: function () {
