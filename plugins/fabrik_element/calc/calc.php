@@ -245,16 +245,25 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 		else
 		{
-			if (!isset($data[$key]))
+			$group = $this->getGroup();
+
+			if ($group->canRepeat())
 			{
-				$data[$key] = array();
+				if (!isset($data[$key]))
+				{
+					$data[$key] = array();
+				}
+				else
+				{
+					$data[$key] = array($data[$key]);
+				}
+
+				$data[$key][$c] = $res;
 			}
 			else
 			{
-				$data[$key] = array($data[$key]);
+				$data[$key] = $res;
 			}
-
-			$data[$key][$c] = $res;
 		}
 
 		$form->updateFormData($key, $data[$key]);
