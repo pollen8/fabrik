@@ -146,7 +146,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 				return "";
 			}
 			$ttl = (int) $params->get('lockrow_ttl', '24');
-			$ttl_time = (int) $time + ($ttl * 60 * 60);
+			$ttl_time = (int) $time + ($ttl * 60);
 			if (time() < $ttl_time)
 			{
 				$app = JFactory::getApplication();
