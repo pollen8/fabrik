@@ -70,7 +70,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 			*/
 			$params = $this->getParams();
 			$ttl = (int) $params->get('lockrow_ttl', '24');
-			$ttl_time = (int) $time + ($ttl * 60 * 60);
+			$ttl_time = (int) $time + ($ttl * 60);
 			$time_now = time();
 			if ($time_now < $ttl_time)
 			{
