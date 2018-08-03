@@ -1647,6 +1647,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$timeZone  = new DateTimeZone($this->config->get('offset'));
 		$params    = $this->getParams();
 		$format    = $params->get('date_table_format', 'Y-m-d');
+		$storeAsLocal = $params->get('date_store_as_local', '0') == '1';
+
 		/**
 		 *  cant do the format in the MySQL query as its not the same formatting
 		 *  e.g. M in MySQL is month and J's date code its minute
@@ -1669,9 +1671,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			else
 			{
 				$d = new FabDate($o->text);
-				$d->setTimeZone($timeZone);
-				$o->value = $d->toSql(true);
-				$o->text  = $d->format($format, true);
+				if (!$storeAsLocal)
+				{
+					$d->setTimeZone($timeZone);
+					$o->value = $d->toSql(true);
+					$o->text  = $d->format($format, true);
+				}
+				else
+				{
+					$o->value = $d->toSql(false);
+					$o->text  = $d->format($format, false);
+
+				}
 			}
 
 			if (!array_key_exists($o->value, $ddData))
