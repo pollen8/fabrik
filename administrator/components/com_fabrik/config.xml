@@ -349,6 +349,8 @@
                 		<option value="2">COM_FABRIK_LABELS_UCWORDS</option>
                 		<option value="3">COM_FABRIK_LABELS_CAPFIRST</option>
                 		<option value="4">COM_FABRIK_LABELS_CAPS</option>
+						<option value="5">COM_FABRIK_LABELS_LANGUAGESTRING</option>
+						<option value="6">COM_FABRIK_LABELS_UNCHANGED</option>						
         	</field>
     	</fieldset>
 

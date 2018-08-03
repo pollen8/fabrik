@@ -1493,6 +1493,12 @@ class FabrikAdminModelList extends FabModelAdmin
 				case '4':
 					$element->label = strtoupper($element->label);
 					break;
+				case '5':
+					$element->label = strtoupper(str_replace(" ", "_", $element->label));
+					break;
+				case '6':
+					$element->label = FArrayHelper::getValue($elementLabels, $ordering, $label);
+					break;
 				default:
 					break;
 			}
