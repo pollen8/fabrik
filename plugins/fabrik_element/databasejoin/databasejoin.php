@@ -3433,7 +3433,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			$rows = $this->checkboxRows('id');
 
-			if (count($v) === 0)
+			if (is_array($v) && count($v) === 0)
 			{
 				$v = '';
 			}
