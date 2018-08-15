@@ -1033,7 +1033,24 @@ EOD;
 			if ($fbConfig->get('advanced_behavior', '0') !== '0')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
-				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
+				$chosenOptions = json_decode($chosenOptions);
+
+				if (is_object($chosenOptions) && !isset($chosenOptions->placeholder_text_multiple))
+                {
+                    $chosenOptions->placeholder_text_multiple = JText::_('JGLOBAL_TYPE_OR_SELECT_SOME_OPTIONS');
+                }
+
+				if (is_object($chosenOptions) && !isset($chosenOptions->placeholder_text_single))
+				{
+					$chosenOptions->placeholder_text_single = JText::_('JGLOBAL_SELECT_AN_OPTION');
+				}
+
+				if (is_object($chosenOptions) && !isset($chosenOptions->no_results_text))
+				{
+					$chosenOptions->no_results_text = JText::_('JGLOBAL_SELECT_NO_RESULTS_MATCH');
+				}
+
+				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject($chosenOptions);
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
 				JHtml::_('script', 'jui/ajax-chosen.min', false, true, false, false, self::isDebug());
