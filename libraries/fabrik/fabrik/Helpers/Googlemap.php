@@ -87,9 +87,9 @@ class Googlemap
 			if ( $bits[0] !== 'all')
 			{
 				$o->featureType = $bits[0];
-				$o->elementType = $bits[1];
 			}
-
+			
+			$o->elementType = $bits[1];
 			$o->stylers = $styler;
 			$return[] = $o;
 		}
