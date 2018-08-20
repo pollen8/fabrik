@@ -999,16 +999,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     id + '" does not exist.');
                 return;
             }
-            if (el.hasClass('fabrikSubElementContainer')) {
-                // check for things like radio buttons & checkboxes
-                el.find('.fabrikinput').on(triggerEvent, function (e) {
-                    self.doElementValidation(e, true);
-                });
-                return;
-            }
-            el.on(triggerEvent, function (e) {
-                self.doElementValidation(e, false);
-            });
+            el = this.formElements.get(id);
+            el.addAjaxValidation();
         },
 
         /**
@@ -1113,7 +1105,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             }
             var el = this.formElements.get(id);
             if ((typeOf(r.modified[origid]) !== 'null')) {
-                el.update(r.modified[origid]);
+                if (el.options.inRepeatGroup) {
+                    el.update(r.modified[origid][el.options.repeatCounter]);
+                }
+                else {
+                    el.update(r.modified[origid]);
+                }
             }
             if (typeOf(r.errors[origid]) !== 'null') {
                 this._showElementError(r.errors[origid][el.options.repeatCounter], id);

@@ -21,7 +21,8 @@ define(['jquery'], function (jQuery) {
 	        editable   : false,
 	        isJoin     : false,
 	        joinId     : 0,
-	        changeEvent: 'change'
+	        changeEvent: 'change',
+            hasAjaxValidation: false
         },
 
         /**
@@ -274,6 +275,42 @@ define(['jquery'], function (jQuery) {
         validate: function () {
         },
 
+        /**
+         * Add AJAX validation trigger, called from form model setup or when cloned
+         */
+        addAjaxValidationAux: function () {
+            var self = this;
+            // the hasAjaxValidation flag is only set during setup
+            if (this.element && this.options.hasAjaxValidation) {
+                var $el = jQuery(this.element);
+                if ($el.hasClass('fabrikSubElementContainer')) {
+                    // check for things like radio buttons & checkboxes
+                    $el.find('.fabrikinput').on(this.getChangeEvent(), function (e) {
+                        self.form.doElementValidation(e, true);
+                    });
+                    return;
+                }
+                $el.on(this.getChangeEvent(), function (e) {
+                    self.form.doElementValidation(e, false);
+                });
+            }
+        },
+
+        /**
+         * Add AJAX validation trigger, called from form model
+         */
+        addAjaxValidation: function () {
+            var self = this;
+            if (!this.element) {
+                this.element = document.id(this.strElement);
+            }
+            if (this.element) {
+                // set our hasAjaxValidation flag and do the actual event add
+                this.options.hasAjaxValidation = true;
+                this.addAjaxValidationAux();
+            }
+        },
+
         //store new options created by user in hidden field
         addNewOption: function (val, label) {
             var a;
@@ -379,7 +416,7 @@ define(['jquery'], function (jQuery) {
          */
         onsubmit: function (cb) {
             if (cb) {
-                cb(true);
+                cb(tarue);
             }
         },
 
@@ -397,13 +434,15 @@ define(['jquery'], function (jQuery) {
         cloned: function (c) {
             this.renewEvents();
             this.resetEvents();
+            this.addAjaxValidationAux();
+            var changeEvent = this.getChangeEvent();
             if (this.element.hasClass('chzn-done')) {
                 this.element.removeClass('chzn-done');
                 this.element.addClass('chzn-select');
                 this.element.getParent().getElement('.chzn-container').destroy();
                 jQuery('#' + this.element.id).chosen();
                 jQuery(this.element).addClass('chzn-done');
-                var changeEvent = this.getChangeEvent();
+
                 jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
                     document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent,
                         document.id(this.id)));
