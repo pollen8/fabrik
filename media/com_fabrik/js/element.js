@@ -416,7 +416,7 @@ define(['jquery'], function (jQuery) {
          */
         onsubmit: function (cb) {
             if (cb) {
-                cb(tarue);
+                cb(true);
             }
         },
 
