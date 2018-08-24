@@ -22,7 +22,8 @@
  *
  * 4) Set any of the OPTIONAL options below.
  *
- * 5) On your List plugin settings for the List CSV plugin, select the renamed file from step 2
+ * 5) On your List's listcsv plugin settings for the List CSV plugin, select the renamed file from step 2 as
+ * the "Import Row PHP File", no other settings or changes are needed.
  *
  * 6) Run your CSV import.  This plugin will run once for each row being imported, and
  * attempt to either create or modify a J! user accordingly. Modification occurs if username already exists
