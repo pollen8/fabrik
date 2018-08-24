@@ -38,7 +38,7 @@ $c = $_REQUEST['c'];
 echo <<<EOT
 /* BEGIN - Your CSS styling starts here */
 
-#listform_$c .fabrikForm {
+#listform_$c {
 	margin-top: 25px !important;
 }
 
