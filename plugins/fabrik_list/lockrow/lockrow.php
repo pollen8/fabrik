@@ -49,11 +49,11 @@ class PlgFabrik_ListLockrow extends PlgFabrik_List
 			$data = $row[0];
 		}
 
-		// @TODO - should probably cache this in a static so we don't need to search pn every row
 		$groupModels = $model->getFormGroupElementData();
 		static $lockElementModel = null;
 		static $lockElementName = null;
 		static $hasLock = null;
+
 		if ($hasLock === null) {
 			foreach ($groupModels as $groupModel) {
 				// not going to mess with having lockrow elements in joins for now
@@ -61,6 +61,7 @@ class PlgFabrik_ListLockrow extends PlgFabrik_List
 				{
 					continue;
 				}
+
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel) {
 					if (is_a($elementModel, 'PlgFabrik_ElementLockrow'))
@@ -73,20 +74,28 @@ class PlgFabrik_ListLockrow extends PlgFabrik_List
 					}
 				}
 			}
+
+			// set the static cache to false if we didn't find anything
 			if ($hasLock !== true)
 			{
 				$hasLock = false;
 			}
 		}
 
+
+		/**
+		 * If there's an active lock, set access to false, otherwise set to null, which means "no opinion",
+		 * so we don't override the standard ACLs (in other words, don't return true when no lock)
+		 */
+
 		if ($hasLock)
 		{
 			$value = ArrayHelper::getValue($data, $lockElementName . '_raw', '0');
-			$this->result = $lockElementModel->isLocked($value) === false;
+			$this->result = $lockElementModel->isLocked($value) === true ? false : null;
 		}
 		else
 		{
-			$this->result = true;
+			$this->result = null;
 		}
 
 		return $this->result;
