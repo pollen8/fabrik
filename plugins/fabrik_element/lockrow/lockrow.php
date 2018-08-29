@@ -23,17 +23,26 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 	 */
 	protected $fieldDesc = 'VARCHAR(32)';
 
-	public function isLocked($value)
+	public function isLocked($value, $this_user_id = null)
 	{
 		if (!empty($value)) {
+			if (!isset($this_user_id))
+			{
+				$this_user = JFactory::getUser();
+				$this_user_id = (int)$this_user->get('id');
+			}
+			else
+			{
+				$this_user_id = (int)$this_user_id;
+			}
+
 			list($time,$locking_user_id) = explode(';', $value);
-			$this_user = JFactory::getUser();
-			// $$$ decide what to do about guests
-			$this_user_id = $this_user->get('id');
+
 			if ((int)$this_user_id === (int)$locking_user_id)
 			{
 				return false;
 			}
+
 			$params = $this->getParams();
 			$ttl = (int) $params->get('lockrow_ttl', '24');
 			$ttl_time = (int) $time + ($ttl * 60);
@@ -43,6 +52,32 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	public function isLockOwner($value, $this_user_id = null)
+	{
+		if (!empty($value)) {
+			if (!isset($this_user_id))
+			{
+				$this_user = JFactory::getUser();
+				$this_user_id = (int)$this_user->get('id');
+			}
+			else
+			{
+				$this_user_id = (int)$this_user_id;
+			}
+
+			list($time,$locking_user_id) = explode(';', $value);
+			$this_user = JFactory::getUser();
+			$this_user_id = $this_user->get('id');
+
+			if ((int)$this_user_id === (int)$locking_user_id)
+			{
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -117,6 +152,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
+		$app        = JFactory::getApplication();
 		$name 		= $this->getHTMLName($repeatCounter);
 		$id			= $this->getHTMLId($repeatCounter);
 		$params 	= $this->getParams();
@@ -136,28 +172,31 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 		}
 
 		$ttl_unlock = false;
-		if ($value != 0) {
+		if (!empty($value)) {
 			list($time,$locking_user_id) = explode(';', $value);
+			$ttl = (int) $params->get('lockrow_ttl', '24');
+			$ttl_time = (int) $time + ($ttl * 60);
+
 			$this_user = JFactory::getUser();
 			// $$$ decide what to do about guests
 			$this_user_id = $this_user->get('id');
 			if ((int)$this_user_id === (int)$locking_user_id)
 			{
-				return "";
-			}
-			$ttl = (int) $params->get('lockrow_ttl', '24');
-			$ttl_time = (int) $time + ($ttl * 60);
-			if (time() < $ttl_time)
-			{
-				$app = JFactory::getApplication();
-				$app->enqueueMessage('ROW IS LOCKED!');
-				return "";
+				$app->enqueueMessage('ROW RE-LOCKED!');
 			}
 			else
 			{
-				$app = JFactory::getApplication();
-				$app->enqueueMessage('ROW UNLOCKED!');
-				$ttl_unlock = true;
+				if (time() < $ttl_time)
+				{
+					$app->enqueueMessage('ROW IS LOCKED!');
+
+					return "";
+				}
+				else
+				{
+					$app->enqueueMessage('ROW LOCK EXPIRED!');
+					$ttl_unlock = true;
+				}
 			}
 		}
 
@@ -211,25 +250,44 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 
 	function _renderListData($data, $thisRow, $opts)
 	{
-		$layout = $this->getLayout('list');
-		$layoutData = new StdClass();
-		$layoutData->tmpl = $this->tmpl;
-		$imagepath = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/lockrow/images/';
-		if ($this->showLocked($data))
+		$params = $this->getParams();
+		$showIcon = true;
+
+		if ($params->get('lockrow_show_icon_read_only', '1') === '0')
 		{
-			$layoutData->icon = 'lock';
-			$layoutData->alt = 'Locked';
-			$layoutData->class = 'fabrikElement_lockrow_locked';
-		}
-		else
-		{
-			$layoutData->icon = 'unlock';
-			$layoutData->alt = 'Not Locked';
-			$layoutData->class = 'fabrikElement_lockrow_unlocked';
+			$showIcon = $this->getListModel()->canEdit($data);
+
+			// show icon if we are the lock owner
+			if (!$showIcon)
+			{
+				$showIcon = $this->isLocked($data, false) && $this->isLockOwner($data);
+			}
 		}
 
-		//$str = "<img src='" . $imagepath . $icon . "' alt='" . $alt . "' class='fabrikElement_lockrow " . $class . "' />";
-		return $layout->render($layoutData);
+		if ($showIcon)
+		{
+			$layout           = $this->getLayout('list');
+			$layoutData       = new StdClass();
+			$layoutData->tmpl = $this->tmpl;
+			$imagepath        = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/lockrow/images/';
+			if ($this->showLocked($data))
+			{
+				$layoutData->icon  = 'lock';
+				$layoutData->alt   = 'Locked';
+				$layoutData->class = 'fabrikElement_lockrow_locked';
+			}
+			else
+			{
+				$layoutData->icon  = 'unlock';
+				$layoutData->alt   = 'Not Locked';
+				$layoutData->class = 'fabrikElement_lockrow_unlocked';
+			}
+
+			//$str = "<img src='" . $imagepath . $icon . "' alt='" . $alt . "' class='fabrikElement_lockrow " . $class . "' />";
+			return $layout->render($layoutData);
+		}
+
+		return '';
 	}
 
 	function storeDatabaseFormat($val, $data)

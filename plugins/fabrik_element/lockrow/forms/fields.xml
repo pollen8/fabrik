@@ -35,6 +35,29 @@
                 <option value="1">JYES</option>
             </field>
 
+            <field name="lockrow_show_icon_read_only"
+                   type="radio"
+                   default="1"
+                   label="PLG_ELEMENT_LOCKROW_SHOW_ICON_READ_ONLY_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_SHOW_ICON_READ_ONLY_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
+            <field name="lockrow_locked_icon"
+                   type="text"
+                   size="20"
+                   default=""
+                   label="PLG_ELEMENT_LOCKROW_LOCKED_ICON_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_LOCKED_ICON_DESC"/>
+
+            <field name="lockrow_unlocked_icon"
+                   type="text"
+                   size="20"
+                   default=""
+                   label="PLG_ELEMENT_LOCKROW_UNLOCKED_ICON_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_UNLOCKED_ICON_DESC"/>
+
         </fieldset>
 
     </fields>
