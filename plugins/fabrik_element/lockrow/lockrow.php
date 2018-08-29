@@ -272,13 +272,13 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 			$imagepath        = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/lockrow/images/';
 			if ($this->showLocked($data))
 			{
-				$layoutData->icon  = 'lock';
+				$layoutData->icon  = $params->get('lockrow_locked_icon', 'lock');
 				$layoutData->alt   = 'Locked';
 				$layoutData->class = 'fabrikElement_lockrow_locked';
 			}
 			else
 			{
-				$layoutData->icon  = 'unlock';
+				$layoutData->icon  = $params->get('lockrow_locked_icon', 'unlock');
 				$layoutData->alt   = 'Not Locked';
 				$layoutData->class = 'fabrikElement_lockrow_unlocked';
 			}
