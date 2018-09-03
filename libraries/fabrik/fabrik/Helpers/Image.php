@@ -138,18 +138,21 @@ class Image
 	 */
 	protected static function testImagemagick()
 	{
+		$im = array();
+
 		if (function_exists('NewMagickWand'))
 		{
 			$im['IM'] = 'Magick wand';
 		}
 		else
 		{
+			/*
 			$status = '';
 			$output = array();
 			@exec('convert -version', $output, $status);
 			$im = array();
 
-			if (!$status && class_exists('Imagick'))
+			if ($status && class_exists('Imagick'))
 			{
 				if (preg_match("/imagemagick[ \t]+([0-9\.]+)/i", $output[0], $matches))
 				{
@@ -158,6 +161,12 @@ class Image
 			}
 
 			unset($output, $status);
+			*/
+
+			if (class_exists('Imagick'))
+			{
+				$im['IM'] = 'Imagick';
+			}
 		}
 
 		return $im;
