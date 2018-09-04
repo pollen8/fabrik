@@ -71,7 +71,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->lang           = FabrikWorker::getMultiLangURLCode();
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
-		$rowId = $input->get('rowid', '', 'string');
+		$rowId = $this->getFormModel()->getRowId();
 		$fullName = $this->getFullName();
 		$watchName = $this->getWatchFullName();
 
