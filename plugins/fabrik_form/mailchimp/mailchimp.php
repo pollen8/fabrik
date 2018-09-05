@@ -328,7 +328,27 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 				{
 					foreach ($groupOpts as $interestId => $elementName)
 					{
-						$value = $w->parseMessageForPlaceHolder($elementName, $formModel->formData);
+						$value = false;
+						list($elementName, $elementValue) = $this->getNameValue($elementName);
+
+						if (array_key_exists($elementName, $formModel->formDataWithTableName))
+						{
+							$values = (array) $formModel->formDataWithTableName[$elementName];
+
+							foreach ($values as $v)
+							{
+								if ($v === $elementValue)
+								{
+									$value = true;
+									break;
+								}
+							}
+						}
+						else
+						{
+							$value = $w->parseMessageForPlaceHolder($elementName, $formModel->formData);
+						}
+
 						$interests[$interestId] = !empty($value);
 					}
 
@@ -438,5 +458,26 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 			return true;
 		}
+	}
+
+	private function getNameValue($elementName)
+	{
+		$name = $elementName;
+		$value = '';
+		$matches = array();
+
+		if (preg_match('/\{(.*)\}/', $elementName, $matches))
+		{
+			if (strstr($matches[1], '|'))
+			{
+				list($name,$value) = explode('|', $matches[1]);
+			}
+			else
+			{
+				$name = $matches[1];
+			}
+		}
+
+		return array($name, $value);
 	}
 }
