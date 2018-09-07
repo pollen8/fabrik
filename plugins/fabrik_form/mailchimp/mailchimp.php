@@ -30,6 +30,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	protected $html = null;
 	private $api = null;
 	private $groups = null;
+	private $mergeFields = null;
 	private $interests = null;
 
 	private function getApi()
@@ -193,6 +194,36 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	}
 
 	/**
+	 * Get Mailchimp merge fields
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return  array groups
+	 */
+
+	protected function getMergeFields()
+	{
+		if ($this->mergeFields === null)
+		{
+			$api       = $this->getApi();
+			$listId    = $this->getMailchimpListId();
+			$this->groups    = array();
+
+			$mergeFields = $api->get("lists/$listId/merge-fields");
+
+			if ($api->success())
+			{
+				foreach ($mergeFields['merge_fields'] as $mergeField)
+				{
+					$this->mergeFields[$mergeField['tag']] = $mergeField;
+				}
+			}
+		}
+
+		return $this->mergeFields;
+	}
+
+	/**
 	 * Inject custom html into the bottom of the form
 	 *
 	 * @param   int  $c  Plugin counter
@@ -318,6 +349,46 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 					$lname         = $formModel->formDataWithTableName[$lastNameKey];
 					$opts['LNAME'] = $lname;
 					$opts['NAME']  .= ' ' . $lname;
+				}
+
+				$ignoreTags = array(
+					'LNAME',
+					'FNAME',
+					'NAME'
+				);
+
+				$mergeFields = json_decode($params->get('mailchimp_mergefields', "[]"));
+				$allMergeFields = $this->getMergeFields();
+
+				$w = new FabrikWorker();
+
+				if (!empty($mergeFields))
+				{
+					foreach ($mergeFields as $tagName => $elementName)
+					{
+						$opts[$tagName] = $w->parseMessageForPlaceHolder($elementName, $formModel->formData);
+					}
+
+					foreach ($mergeFields as $mergeTag => $value)
+					{
+						if (!array_key_exists($mergeTag, $allMergeFields))
+						{
+							if (FabrikHelperHTML::isDebug(true))
+							{
+								$this->app->enqueueMessage('Mailchimp: no such merge tag: ' . $mergeTag, 'notice');
+							}
+
+							unset($opts[$mergeTag]);
+						}
+					}
+
+					foreach ($allMergeFields as $mergeTag => $mergeField)
+					{
+						if (!array_key_exists($mergeTag, $mergeFields) && !in_array($mergeTag, $ignoreTags))
+						{
+							$opts[$mergeTag] = $mergeField['default_value'];
+						}
+					}
 				}
 
 				$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
