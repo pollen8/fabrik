@@ -738,6 +738,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
 			}
+
+			$o->text = FText::_($o->text);
 		}
 
 		if (is_array($aDdObjs))
@@ -1374,6 +1376,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 				$defaultLabels[$i] = $this->getReadOnlyOutput($targetId, $tmpLabel);
 				$i++;
+			}
+
+			foreach ($defaultLabels as $k => $label)
+			{
+				$defaultLabels[$k] = FText::_($label);
 			}
 
 			$this->addReadOnlyLinks($defaultLabels, $targetIds);
@@ -2117,6 +2124,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$data = json_encode($labelData);
 		}
 
+		$data = FabrikWorker::JSONtoData($data, true);
+
+		foreach ($data as $k => $label)
+		{
+			$data[$k] = FText::_($label);
+		}
+
+		$data = json_encode($data);
+
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow, $opts);
 	}
@@ -2228,7 +2244,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			foreach ($rows as &$r)
 			{
-				$r->text = strip_tags($r->text);
+				$r->text = strip_tags(FText::_($r->text));
 			}
 
 			$this->getFilterDisplayValues($default, $rows);
