@@ -1766,6 +1766,7 @@ EOD;
 		$cacheIds[] = $id;
 		$session->set($key, array_values(array_unique($cacheIds)));
 	}
+
 	/**
 	 * Load the slimbox / media box css and js files
 	 *

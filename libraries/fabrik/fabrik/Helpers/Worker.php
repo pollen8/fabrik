@@ -143,7 +143,7 @@ class Worker
 
 		if (array_key_exists('extension', $path_parts))
 		{
-			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png|pdf';
+			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
 
 			return preg_match('/' . $image_extensions_eregi . '/i', $path_parts['extension']) > 0;
 		}
