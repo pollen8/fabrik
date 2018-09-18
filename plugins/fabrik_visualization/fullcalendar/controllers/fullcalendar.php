@@ -88,8 +88,9 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 		if (array_key_exists($listId, $model->events))
 		{
-			$startDateField = $model->events[$listId][0]['startdate'];
-			$endDateField   = $model->events[$listId][0]['enddate'];
+			$events = array_shift($model->events[$listId]);
+			$startDateField = $events['startdate'];
+			$endDateField   = $events['enddate'];
 		}
 		else
 		{
