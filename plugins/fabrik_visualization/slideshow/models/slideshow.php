@@ -245,6 +245,10 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					// Force it to a string for json_encode
 					$pic_opts['caption'] = $pic->$slideshow_viz_caption . ' ';
 				}
+				else
+				{
+					$pic_opts['caption'] = '';
+				}
 
 
 				/**
@@ -266,7 +270,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 			}
 		}
 
-		$this->totalPics = count($js_opts);
+		$this->totalPics = count((array)$js_opts);
 
 		return $js_opts;
 	}
@@ -348,7 +352,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$use_thumbs = $params->get('slideshow_viz_thumbnails', 0);
 		$use_captions = $params->get('slideshow_viz_caption', '') == '' ? false : true;
 		$opts = new stdClass;
-		$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
+		//$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
 		$opts->html_id = $html_id = 'slideshow_viz_' . $viz->id;
 		$opts->slideshow_type = (int) $params->get('slideshow_viz_type', 1);
