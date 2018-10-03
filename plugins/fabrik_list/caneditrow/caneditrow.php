@@ -64,7 +64,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		}
 
 		// if this is a form submission, check to see if they want us running or not
-		if ($this->app->input->get('task', '') === 'form.process')
+		if (FabrikWorker::inFormProcess())
 		{
 			if ($params->get('caneditrow_on_submit', '1') === '0')
 			{
