@@ -77,7 +77,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 				return true;
 			}
 
-			if ($allowReedit === '0')
+			if ($allowReedit === '0' || $allowReedit === '2')
 			{
 				// if allow reedit is 0 (no) or 2 (exclusive), locked if this != orig lock or timed out
 				if ($value !== $origValue)
@@ -267,6 +267,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 		$params 	= $this->getParams();
 		$element 	= $this->getElement();
 		$value 		= $this->getValue($data, $repeatCounter);
+		static $lockstr = null;
 
 		$element->hidden = true;
 
@@ -337,26 +338,30 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 			$app->enqueueMessage(FText::_('PLG_ELEMENT_LOCKROW_LOCK_LOCKING_MSG'));
 		}
 
-		$db_table_name = $this->getTableName();
-		$field_name = FabrikString::safeColName($this->getFullName(false, false));
-		$listModel = $this->getListModel();
-		$pk = $listModel->getTable()->db_primary_key;
-		$db = $listModel->getDb();
-		$query = $db->getQuery(true);
-		$user = JFactory::getUser();
-		$user_id = $user->get('id');
-		$lockstr = time() . ";" . $user_id;
-		//$query = "UPDATE $db_table_name SET $field_name = " . $db->quote($lockstr) . " WHERE $pk = " . $db->quote($rowid);
-		$query->update($db->quoteName($db_table_name))
-			->set($field_name . ' = ' . $db->quote($lockstr))
-			->where($pk . ' = ' . $db->quote($rowid));
+		if (!isset($lockstr))
+		{
+			$db_table_name = $this->getTableName();
+			$field_name = FabrikString::safeColName($this->getFullName(false, false));
+			$listModel = $this->getListModel();
+			$pk = $listModel->getTable()->db_primary_key;
+			$db = $listModel->getDb();
+			$query = $db->getQuery(true);
 
-		$db->setQuery($query);
-		$db->execute();
+			$user    = JFactory::getUser();
+			$user_id = $user->get('id');
+			$lockstr = time() . ";" . $user_id;
 
-		// $$$ @TODO - may need to clean com_content cache as well
-		$cache = JFactory::getCache('com_fabrik');
-		$cache->clean();
+			$query->update($db->quoteName($db_table_name))
+				->set($field_name . ' = ' . $db->quote($lockstr))
+				->where($pk . ' = ' . $db->quote($rowid));
+
+			$db->setQuery($query);
+			$db->execute();
+
+			// $$$ @TODO - may need to clean com_content cache as well
+			$cache = JFactory::getCache('com_fabrik');
+			$cache->clean();
+		}
 
 		$layoutData = new stdClass;
 		$layoutData->id = $id;
