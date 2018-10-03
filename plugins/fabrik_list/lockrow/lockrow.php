@@ -90,8 +90,17 @@ class PlgFabrik_ListLockrow extends PlgFabrik_List
 
 		if ($hasLock)
 		{
+
 			$value = ArrayHelper::getValue($data, $lockElementName . '_raw', '0');
-			$this->result = $lockElementModel->isLocked($value) === true ? false : null;
+
+			if (\Fabrik\Helpers\Worker::inFormProcess())
+			{
+				$this->result = $lockElementModel->isSubmitLocked($value) === true ? false : null;
+			}
+			else
+			{
+				$this->result = $lockElementModel->isLocked($value) === true ? false : null;
+			}
 		}
 		else
 		{
