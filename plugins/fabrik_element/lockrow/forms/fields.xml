@@ -19,10 +19,16 @@
 
         <fieldset label="COM_FABRIK_OPTIONS" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-lockrow-extra">
 
+            <field name="lockrow_note"
+                   type="note"
+                   class="alert alert-info"
+                   close="true"
+                   description="PLG_ELEMENT_LOCKROW_NOTE" />
+
             <field name="lockrow_ttl"
                    type="text"
                    size="5"
-                   default="24"
+                   default="60"
                    label="PLG_ELEMENT_LOCKROW_TTL_LABEL"
                    description="PLG_ELEMENT_LOCKROW_TTL_DESC"/>
 
@@ -30,9 +36,19 @@
                    type="radio"
                    default="1"
                    label="PLG_ELEMENT_LOCKROW_ALLOW_USER_UNLOCK_LABEL"
-                   description="PLG_ELEMENT_LOCKROW_ALLOW_USER_UNLOCK_LABEL">
+                   description="PLG_ELEMENT_LOCKROW_ALLOW_USER_UNLOCK_DESC">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
+            </field>
+
+            <field name="lockrow_allow_user_reedit"
+                   type="radio"
+                   default="1"
+                   label="PLG_ELEMENT_LOCKROW_ALLOW_USER_REEDIT_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_ALLOW_USER_REEDIT_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+                <option value="2">PLG_ELEMENT_LOCKROW_ALLOW_USER_REEDIT_EXCLUSIVE</option>
             </field>
 
             <field name="lockrow_show_icon_read_only"
