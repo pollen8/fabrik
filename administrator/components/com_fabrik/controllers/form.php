@@ -90,7 +90,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 			$cache->get($view, 'display', $cacheId);
 			$contents = ob_get_contents();
 			ob_end_clean();
-			Html::addToSessionCacheIds($this->cacheId);
+			Html::addToSessionCacheIds($cacheId);
 			$token       = JSession::getFormToken();
 			$search      = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
@@ -120,6 +120,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 			$view->setModel($model, true);
 		}
 
+		$listModel = $model->getListModel();
 		$model->setId($input->getInt('formid', 0));
 
 		$this->isMambot = $input->get('_isMambot', 0);
@@ -130,6 +131,50 @@ class FabrikAdminControllerForm extends FabControllerForm
 		if ($model->spoofCheck())
 		{
 			JSession::checkToken() or die('Invalid Token');
+		}
+
+		/**
+		 * Do some ACL sanity checks.  Without this check, if spoof checking is disabled, a form can be submitted
+		 * with no ACL checks being performed.  With spoof checking, we do the ACL checks on form load, so can't get the
+		 * token without having access.
+		 *
+		 * Don't bother checking if not recording to database, as no list or list ACLs.
+		 */
+		if ($model->recordInDatabase())
+		{
+			$aclOK    = false;
+
+			if ($model->isNewRecord() && $listModel->canAdd())
+			{
+				$aclOK = true;
+			}
+			else
+			{
+				/*
+				 * Need to set up form data here so we can pass it to canEdit(), remembering to
+				 * add encrypted vars, so things like user elements which have ACLs on them get
+				 * included in data for canUserDo() checks.  Nay also need to do copyToFromRaw(),
+				 * but leave that until we find a need for it.
+				 *
+				 * Note that canEdit() expects form data as an object, and $formData is an array,
+				 * but the actual canUserDo() helper func it calls with the data will accept either.
+				 */
+				$formData = $model->setFormData();
+				$model->addEncrytedVarsToArray($formData);
+
+				if (!$model->isNewRecord() && $listModel->canEdit($formData))
+				{
+					$aclOK = true;
+				}
+			}
+
+			if (!$aclOK)
+			{
+				$msg = $model->aclMessage(true);
+				$this->app->enqueueMessage($msg);
+
+				return;
+			}
 		}
 
 		$validated = $model->validate();
