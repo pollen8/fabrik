@@ -208,7 +208,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	private function _indStoreDBFormat($val)
 	{
-		if (is_array($val) && implode($val) != '')
+		if (is_array($val))
 		{
 			$h = FArrayHelper::getValue($val, 0, '00');
 			$m = FArrayHelper::getValue($val, 1, '00');
@@ -425,9 +425,12 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$params = $this->getParams();
-		$sep = $params->get('time_separatorlabel', ':');
-		$value = implode($sep, $value);
+		if (is_array($value))
+		{
+			$params = $this->getParams();
+			$sep    = $params->get('time_separatorlabel', ':');
+			$value  = implode($sep, $value);
+		}
 
 		return $value;
 	}
