@@ -186,6 +186,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		 */
 		//$slideshow_viz_file .= $slideElement->isJoin() ? '' : '_raw';
 		$slideshow_viz_file_raw = $slideshow_viz_file . '_raw';
+		$slideshow_viz_file_id = $slideshow_viz_file . '_id';
 
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
@@ -209,7 +210,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 				else
 				{
-					$picData = $pic->$slideshow_viz_file;
+					$picData = $pic->$slideshow_viz_file_id;
 				}
 
 				if (FabrikWorker::isJSON($picData))
@@ -232,12 +233,6 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 				$picData = str_replace("\\", "/", $picData);
 
-                // just in case ...
-                if (!$slideElement->getStorage()->exists($picData))
-                {
-                    continue;
-                }
-
 				$pic_opts = array();
 
 				if (!empty($slideshow_viz_caption) && isset($pic->$slideshow_viz_caption))
@@ -259,6 +254,13 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				{
 					$tmp = json_decode($path);
 					$k = $tmp == false ? $path : $tmp[0];
+
+					// just in case ...
+					if (!$slideElement->getStorage()->exists($k))
+					{
+						continue;
+					}
+
 					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
 					$this->addThumbOpts($pic_opts);
 
