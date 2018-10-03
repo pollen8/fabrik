@@ -1245,7 +1245,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$ar = array('id' => $id, 'triggerEvent' => 'blur');
+		$ar = array('id' => $id, 'triggerEvent' => $this->getChangeEvent());
 
 		return array($ar);
 	}
