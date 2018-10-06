@@ -427,7 +427,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 			}
 			else
 			{
-				$layoutData->icon  = $params->get('lockrow_locked_icon', 'unlock');
+				$layoutData->icon  = $params->get('lockrow_unlocked_icon', 'unlock');
 				$layoutData->alt   = 'Not Locked';
 				$layoutData->class = 'fabrikElement_lockrow_unlocked';
 			}
