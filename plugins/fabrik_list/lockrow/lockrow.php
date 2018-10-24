@@ -49,6 +49,13 @@ class PlgFabrik_ListLockrow extends PlgFabrik_List
 			$data = $row[0];
 		}
 
+		// Sometimes we might have been given a $row with a single empty object (like getEmailData on elements).
+		if (empty($data))
+		{
+			$this->result = true;
+			return true;
+		}
+
 		$groupModels = $model->getFormGroupElementData();
 		static $lockElementModel = null;
 		static $lockElementName = null;
