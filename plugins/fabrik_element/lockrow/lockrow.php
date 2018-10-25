@@ -404,7 +404,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 
 		if ($params->get('lockrow_show_icon_read_only', '1') === '0')
 		{
-			$showIcon = $this->getListModel()->canEdit($data);
+			$showIcon = $this->getListModel()->canEdit($thisRow);
 
 			// show icon if we are the lock owner
 			if (!$showIcon)
@@ -417,7 +417,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 		{
 			$layout           = $this->getLayout('list');
 			$layoutData       = new StdClass();
-			$layoutData->tmpl = $this->tmpl;
+			$layoutData->tmpl = isset($this->tmpl) ? $this->tmpl : '';
 			$imagepath        = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/lockrow/images/';
 			if ($this->showLocked($data))
 			{
