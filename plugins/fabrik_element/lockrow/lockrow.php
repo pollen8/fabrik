@@ -84,11 +84,11 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 				{
 					if ($expire_minutes < 0)
 					{
-						$this->app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_SUBMIT_WRONG_LOCK_EXPIRED_MSG', abs($expire_minutes)));
+						$this->app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_SUBMIT_WRONG_LOCK_EXPIPRED_MSG', abs($expire_minutes)));
 					}
 					else
 					{
-						$this->app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_SUBMIT_WRONG_LOCK_MSG', $expire_minutes));
+						$this->app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_SUBMIT_WRONG_LOCK_MSG', abs($expire_minutes)));
 					}
 
 					return true;
@@ -309,7 +309,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 					}
 					else
 					{
-						$app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_OWN_LOCKED_MSG', $expire_minutes));
+						$app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_OWN_LOCKED_MSG', abs($expire_minutes)));
 
 						return "";
 					}
@@ -335,7 +335,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 		}
 		else
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_LOCKROW_LOCK_LOCKING_MSG'));
+			$app->enqueueMessage(FText::_sprintf('PLG_ELEMENT_LOCKROW_LOCK_LOCKING_MSG', $ttl));
 		}
 
 		if (!isset($lockstr))
