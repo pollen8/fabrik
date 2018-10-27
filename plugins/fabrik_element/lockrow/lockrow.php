@@ -335,7 +335,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 		}
 		else
 		{
-			$app->enqueueMessage(FText::_sprintf('PLG_ELEMENT_LOCKROW_LOCK_LOCKING_MSG', $ttl));
+			$app->enqueueMessage(FText::sprintf('PLG_ELEMENT_LOCKROW_LOCK_LOCKING_MSG', $ttl));
 		}
 
 		if (!isset($lockstr))
