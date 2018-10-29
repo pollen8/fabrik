@@ -1948,8 +1948,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
             // Find which repeat group was deleted
             var delIndex = 0;
+
+            // if clicked exactly on icon, e.target will be icon, not surrounding link, so need find with addBack
+            var target = jQuery(e.target).find('[data-role=fabrik_delete_group]').addBack('[data-role=fabrik_delete_group]')[0];
+
             group.getElements('.deleteGroup').each(function (b, x) {
-                if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === e.target) {
+                if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === target) {
                     delIndex = x;
                 }
             }.bind(this));
