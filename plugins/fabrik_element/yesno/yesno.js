@@ -42,8 +42,15 @@ define(['jquery', 'element/radiobutton/radiobutton'], function (jQuery, FbRadio)
             var v = input.get('value');
 
             if (label) {
-                label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success')
-                    .removeClass('btn-danger').removeClass('btn-primary');
+                var parent = label.getParent('.btn-group');
+                // some templates (JoomlArt) remove the brn-group class!
+                if (!parent) {
+                    parent = label.getParent('.btn-radio');
+                }
+                if (parent) {
+                    parent.getElements('label').removeClass('active').removeClass('btn-success')
+                        .removeClass('btn-danger').removeClass('btn-primary');
+                }
                 if (v === '') {
                     label.addClass('active btn-primary');
                 } else if (v.toInt() === 0) {
