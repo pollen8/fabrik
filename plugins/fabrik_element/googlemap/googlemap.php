@@ -410,7 +410,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		}
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 		$opts->key = empty($apiKey) ? false : $apiKey;
 
 		return array('FbGoogleMap', $id, $opts);
@@ -728,7 +728,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$attribs[] = 'sensor=false';
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 		$client = $config->get('google_buisness_client_id', '');
 		$signature = $config->get('google_buisness_signature', '');
 
