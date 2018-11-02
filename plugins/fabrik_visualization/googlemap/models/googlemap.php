@@ -212,7 +212,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->radius_fill_colors   = (array) $params->get('fb_gm_radius_fill_color');
 		$opts->styles               = Googlemap::styleJs($params);
 		$config                     = JComponentHelper::getParams('com_fabrik');
-		$apiKey                     = $config->get('google_api_key', '');
+		$apiKey                     = trim($config->get('google_api_key', ''));
 		$opts->key                  = empty($apiKey) ? false : $apiKey;
 		$opts->showLocation         = $params->get('fb_gm_show_location', '0') === '1';
 		$opts                       = json_encode($opts);
@@ -840,7 +840,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$src = $uri->getScheme() . "://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconStr";
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 		$client = $config->get('google_buisness_client_id', '');
 		$signature = $config->get('google_buisness_signature', '');
 
