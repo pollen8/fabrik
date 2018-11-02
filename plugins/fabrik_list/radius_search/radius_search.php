@@ -573,7 +573,7 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		$opts->renderOrder = $this->renderOrder;
 		$opts->offset_y = (int)$params->get('window_offset_y', '0');
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 		$opts->key = empty($apiKey) ? false : $apiKey;
 		$opts->usePopup = $params->get('radius_use_popup', '1') === '1';
 		$opts = json_encode($opts);
