@@ -999,16 +999,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     id + '" does not exist.');
                 return;
             }
-            if (el.hasClass('fabrikSubElementContainer')) {
-                // check for things like radio buttons & checkboxes
-                el.find('.fabrikinput').on(triggerEvent, function (e) {
-                    self.doElementValidation(e, true);
-                });
-                return;
-            }
-            el.on(triggerEvent, function (e) {
-                self.doElementValidation(e, false);
-            });
+            el = this.formElements.get(id);
+            el.addAjaxValidation();
         },
 
         /**
@@ -1113,7 +1105,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             }
             var el = this.formElements.get(id);
             if ((typeOf(r.modified[origid]) !== 'null')) {
-                el.update(r.modified[origid]);
+                if (el.options.inRepeatGroup) {
+                    el.update(r.modified[origid][el.options.repeatCounter]);
+                }
+                else {
+                    el.update(r.modified[origid]);
+                }
             }
             if (typeOf(r.errors[origid]) !== 'null') {
                 this._showElementError(r.errors[origid][el.options.repeatCounter], id);
@@ -1864,6 +1861,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter'),
+                    repeat_added = this.form.getElement('#fabrik_repeat_group_' + groupId + '_added').value,
                     repeat_rows, repeat_real, add_btn, deleteButton, i, repeat_id_0, deleteEvent;
 
                 if (typeOf(repeat_counter) === 'null') {
@@ -1872,11 +1870,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                 repeat_rows = repeat_real = repeat_counter.value.toInt();
 
+                // figure out if the first group should be hidden (min repeat is 0)
                 if (repeat_rows === 1) {
                     repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
 
-                    // check rowid - if new form and failed validation
-                    if (this.options.rowid !== '' && typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
+                    // repeat_added means they added a first group, and we've failed validation, so show it
+                    if (repeat_added !== '1' && typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
                         repeat_real = 0;
                     }
                 }
@@ -1951,8 +1950,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
             // Find which repeat group was deleted
             var delIndex = 0;
+
+            // if clicked exactly on icon, e.target will be icon, not surrounding link, so need find with addBack
+            var target = jQuery(e.target).find('[data-role=fabrik_delete_group]').addBack('[data-role=fabrik_delete_group]')[0];
+
             group.getElements('.deleteGroup').each(function (b, x) {
-                if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === e.target) {
+                if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === target) {
                     delIndex = x;
                 }
             }.bind(this));
@@ -1978,6 +1981,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.subGroups.set(i, subGroup.clone());
             if (subgroups.length <= 1) {
                 this.hideLastGroup(i, subGroup);
+                document.id('fabrik_repeat_group_' + i + '_added').value = '0';
                 Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
             } else {
                 var toel = subGroup.getPrevious();
@@ -2164,6 +2168,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
+                document.id('fabrik_repeat_group_' + i + '_added').value = '1';
                 return;
             }
 

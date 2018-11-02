@@ -81,6 +81,7 @@ $input->set('layout', $layout);
 
 // Display the view
 $controller->isMambot = true;
+$controller->cacheId = $formId . '-' . $rowid;
 $input->set('formid', $formId);
 
 $input->set('ajax', $moduleAjax);

@@ -4238,6 +4238,7 @@ class FabrikFEModelForm extends FabModelForm
 			$remove = "/{" . $remove . ":\s*.*?}/is";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 			$text = preg_replace($remove, '', $text);
+			$text = preg_replace("/{details:({(?>[^{}]+|(?1))*})}/is", '', $text);
 			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 

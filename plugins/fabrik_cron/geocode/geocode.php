@@ -75,7 +75,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$primary_key_element_long = $table_name . '___' . $primary_key_element . '_raw';
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 
 		//$connection = (int) $params->get('connection');
 

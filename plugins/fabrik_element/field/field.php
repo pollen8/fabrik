@@ -346,7 +346,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$opts->geocomplete = $params->get('autocomplete', '0') === '3';
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		$apiKey = $config->get('google_api_key', '');
+		$apiKey = trim($config->get('google_api_key', ''));
 		$opts->mapKey = empty($apiKey) ? false : $apiKey;
 
 		if ($this->getParams()->get('autocomplete', '0') == '2')

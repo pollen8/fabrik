@@ -10,7 +10,8 @@ defined('JPATH_BASE') or die;
 
 $d = $displayData;
 
-$span = floor(12 / $d->columns);
+// avoid potential divide by 0 if something went wrong and $d->columns is 0 or empty
+$span = empty($d->columns) ? 12 : floor(12 / $d->columns);
 $i    = 0;
 $id   = is_null($d->spanId) ? '' : ' id="' . $d->spanId . '"';
 $grid = array();

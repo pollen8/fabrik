@@ -1227,6 +1227,12 @@ class FabrikViewFormBase extends FabrikView
 			// Used for validations
 			$fields[] = '<input type="hidden" name="fabrik_repeat_group[' . $group->id . ']" value="' . $c . '" id="fabrik_repeat_group_'
 				. $group->id . '_counter" />';
+
+			// Used for validations
+			$added = $input->get('fabrik_repeat_group_added', array(), 'array');
+			$added = ArrayHelper::getValue($added, $group->id, '0');
+			$fields[] = '<input type="hidden" name="fabrik_repeat_group_added[' . $group->id . ']" value="' . $added . '" id="fabrik_repeat_group_'
+				. $group->id . '_added" />';
 		}
 
 		// $$$ hugh - testing social_profile_hash stuff

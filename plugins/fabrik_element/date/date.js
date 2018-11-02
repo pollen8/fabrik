@@ -211,7 +211,9 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     return true;
                 }
                 else {
-                    return this.options.allowedClasses[i];
+                    if (this.options.allowedClasses[i] !== false) {
+                        return this.options.allowedClasses[i];
+                    }
                 }
             }
 

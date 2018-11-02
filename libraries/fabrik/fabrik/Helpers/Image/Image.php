@@ -74,7 +74,15 @@ class Image
 				return 'png';
 				break;
 			default:
+				$pathInfo = pathInfo($filename);
+
+				if (ArrayHelper::getValue($pathInfo, 'extension', '') === 'pdf')
+				{
+					return 'pdf';
+				};
+
 				return false;
+				break;
 		}
 	}
 

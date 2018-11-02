@@ -1190,75 +1190,164 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$filter = JFilterInput::getInstance();
 			$post   = $filter->clean($_POST, 'array');
-			$raw    = $this->getValue($post);
-
-			if ($raw == '')
-			{
-				return true;
-			}
-
-			if (empty($raw))
-			{
-				return true;
-			}
-			// $$$ hugh - for some reason, we're now getting $raw[] with a single, uninitialized entry back
-			// from getvalue() when no files are uploaded
-			if (count($raw) == 1 && array_key_exists(0, $raw) && empty($raw[0]))
-			{
-				return true;
-			}
-
-			$crop    = (array) FArrayHelper::getValue($raw, 'crop');
-			$id_keys = (array) FArrayHelper::getValue($raw, 'id');
-			$ids     = array_values($id_keys);
-
-			$saveParams = array();
-			if (!empty($crop))
-			{
-				$files = array_keys($crop);
-			}
-			else
-			{
-				$files = array_keys($id_keys);
-			}
-
 			$groupModel = $this->getGroup();
 			$formModel  = $this->getFormModel();
-			$isJoin     = ($groupModel->isJoin() || $this->isJoin());
 
-			if ($isJoin)
+			if ($groupModel->canRepeat())
 			{
-				if (!$groupModel->canRepeat() && !$this->isJoin())
+				$names = array();
+				$joinsIds = array();
+				$joinsParams = array();
+
+				foreach ($post[$name] as $repeatCount => $raw)
 				{
-					$files = $files[0];
+					if (empty($raw))
+					{
+						continue;
+					}
+
+					// $$$ hugh - for some reason, we're now getting $raw[] with a single, uninitialized entry back
+					// from getvalue() when no files are uploaded
+					if (count($raw) == 1 && array_key_exists(0, $raw) && empty($raw[0]))
+					{
+						return true;
+					}
+
+					$crop    = (array) FArrayHelper::getValue($raw, 'crop');
+					$id_keys = (array) FArrayHelper::getValue($raw, 'id');
+					$ids     = array_values($id_keys);
+
+					$saveParams = array();
+					if (!empty($crop))
+					{
+						$files = array_keys($crop);
+					}
+					else
+					{
+						$files = array_keys($id_keys);
+					}
+
+					if ($this->isJoin())
+					{
+						$j          = $this->getJoinModel()->getJoin()->table_join;
+						$joinsId    = $j . '___id';
+						$joinsParam = $j . '___params';
+
+						$name = $this->getFullName(true, false);
+
+						/*
+						$formModel->updateFormData($name, $files, true);
+						$formModel->updateFormData($joinsId, $ids, true);
+						$formModel->updateFormData($joinsParam, $saveParams, true);
+						*/
+						$names[$repeatCount] = $files;
+						$joinsIds[$repeatCount] = $ids;
+						$joinsParams[$repeatCount] = $saveParams;
+					}
+					else
+					{
+						// Only one file
+						$store = array();
+
+						for ($i = 0; $i < count($files); $i++)
+						{
+							$o         = new stdClass;
+							$o->file   = $files[$i];
+							$o->params = $crop[$files[$i]];
+							$store[]   = $o;
+						}
+
+						$store = json_encode($store);
+						/*
+						$formModel->updateFormData($name . '_raw', $store);
+						$formModel->updateFormData($name, $store);
+						*/
+						$names[$repeatCount] = $store;
+					}
 				}
 
-				$j          = $this->getJoinModel()->getJoin()->table_join;
-				$joinsId    = $j . '___id';
-				$joinsParam = $j . '___params';
-
-				$name = $this->getFullName(true, false);
-
-				$formModel->updateFormData($name, $files, true);
-				$formModel->updateFormData($joinsId, $ids, true);
-				$formModel->updateFormData($joinsParam, $saveParams, true);
+				if ($this->isJoin())
+				{
+					$formModel->updateFormData($name, $names, true);
+					$formModel->updateFormData($joinsId, $joinsIds, true);
+					$formModel->updateFormData($joinsParam, $joinsParams, true);
+				}
+				else
+				{
+					$formModel->updateFormData($name, $names, true);
+				}
 			}
 			else
 			{
-				// Only one file
-				$store = array();
+				$raw = $this->getValue($post);
 
-				for ($i = 0; $i < count($files); $i++)
+				if ($raw == '')
 				{
-					$o         = new stdClass;
-					$o->file   = $files[$i];
-					$o->params = $crop[$files[$i]];
-					$store[]   = $o;
+					return true;
 				}
 
-				$store = json_encode($store);
-				$formModel->updateFormData($name . '_raw', $store);
-				$formModel->updateFormData($name, $store);
+				if (empty($raw))
+				{
+					return true;
+				}
+				// $$$ hugh - for some reason, we're now getting $raw[] with a single, uninitialized entry back
+				// from getvalue() when no files are uploaded
+				if (count($raw) == 1 && array_key_exists(0, $raw) && empty($raw[0]))
+				{
+					return true;
+				}
+
+				$crop    = (array) FArrayHelper::getValue($raw, 'crop');
+				$id_keys = (array) FArrayHelper::getValue($raw, 'id');
+				$ids     = array_values($id_keys);
+
+				$saveParams = array();
+				if (!empty($crop))
+				{
+					$files = array_keys($crop);
+				}
+				else
+				{
+					$files = array_keys($id_keys);
+				}
+
+
+				$isJoin     = ($groupModel->isJoin() || $this->isJoin());
+
+				if ($isJoin)
+				{
+					if (!$groupModel->canRepeat() && !$this->isJoin())
+					{
+						$files = $files[0];
+					}
+
+					$j          = $this->getJoinModel()->getJoin()->table_join;
+					$joinsId    = $j . '___id';
+					$joinsParam = $j . '___params';
+
+					$name = $this->getFullName(true, false);
+
+					$formModel->updateFormData($name, $files, true);
+					$formModel->updateFormData($joinsId, $ids, true);
+					$formModel->updateFormData($joinsParam, $saveParams, true);
+				}
+				else
+				{
+					// Only one file
+					$store = array();
+
+					for ($i = 0; $i < count($files); $i++)
+					{
+						$o         = new stdClass;
+						$o->file   = $files[$i];
+						$o->params = $crop[$files[$i]];
+						$store[]   = $o;
+					}
+
+					$store = json_encode($store);
+					$formModel->updateFormData($name . '_raw', $store);
+					$formModel->updateFormData($name, $store);
+				}
 			}
 
 			return true;

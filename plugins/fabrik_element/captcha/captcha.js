@@ -38,7 +38,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
          * @return  void
          */
         onsubmit: function (cb) {
-            if (this.options.method = 'invisible')
+            if (this.options.method === 'invisible')
             {
                 if (!grecaptcha.getResponse()) {
                     window.fabrikCaptchaSubmitCallBack = cb;
