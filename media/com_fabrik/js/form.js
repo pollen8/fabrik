@@ -1861,6 +1861,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter'),
+                    repeat_added = this.form.getElement('#fabrik_repeat_group_' + groupId + '_added').value,
                     repeat_rows, repeat_real, add_btn, deleteButton, i, repeat_id_0, deleteEvent;
 
                 if (typeOf(repeat_counter) === 'null') {
@@ -1869,11 +1870,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                 repeat_rows = repeat_real = repeat_counter.value.toInt();
 
+                // figure out if the first group should be hidden (min repeat is 0)
                 if (repeat_rows === 1) {
                     repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
 
-                    // check rowid - if new form and failed validation
-                    if (this.options.rowid !== '' && typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
+                    // repeat_added means they added a first group, and we've failed validation, so show it
+                    if (repeat_added !== '1' && typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
                         repeat_real = 0;
                     }
                 }
@@ -1979,6 +1981,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.subGroups.set(i, subGroup.clone());
             if (subgroups.length <= 1) {
                 this.hideLastGroup(i, subGroup);
+                document.id('fabrik_repeat_group_' + i + '_added').value = '0';
                 Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
             } else {
                 var toel = subGroup.getPrevious();
@@ -2165,6 +2168,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
+                document.id('fabrik_repeat_group_' + i + '_added').value = '1';
                 return;
             }
 
