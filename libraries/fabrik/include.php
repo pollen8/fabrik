@@ -259,6 +259,11 @@ class FabrikAutoloader
 		if (file_exists($path))
 		{
 			require_once $path;
+
+			if (is_callable(array($class, '__initStatic')))
+			{
+				$class::__initStatic();
+			}
 		}
 	}
 }
