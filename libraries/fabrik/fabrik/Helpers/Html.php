@@ -1519,23 +1519,32 @@ EOD;
 	 */
 	public static function isDebug($enabled = false)
 	{
-		$app    = JFactory::getApplication();
-		$config = JComponentHelper::getParams('com_fabrik');
+	    static $debug = null;
 
-		if ($enabled && $config->get('use_fabrikdebug') == 0)
+	    if (!isset($debug))
 		{
-			return false;
+			$app    = JFactory::getApplication();
+			$config = JComponentHelper::getParams('com_fabrik');
+
+			if ($enabled && $config->get('use_fabrikdebug') == 0)
+			{
+			    $debug = false;
+
+				return false;
+			}
+
+			if ($config->get('use_fabrikdebug') == 2)
+			{
+			    $debug = true;
+
+				return true;
+			}
+
+			$config = JFactory::getConfig();
+			$debug  = (int) $config->get('debug') || $app->input->get('fabrikdebug', 0) == 1;
 		}
 
-		if ($config->get('use_fabrikdebug') == 2)
-		{
-			return true;
-		}
-
-		$config = JFactory::getConfig();
-		$debug  = (int) $config->get('debug');
-
-		return $debug === 1 || $app->input->get('fabrikdebug', 0) == 1;
+		return $debug;
 	}
 
 	/**
