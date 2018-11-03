@@ -17,9 +17,12 @@
 		<filename>captcha-min.js</filename>
 		<filename>monofont.ttf</filename>
 		<filename>image.php</filename>
+		<filename>composer.json</filename>
+		<filename>composer.lock</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>libs</folder>
 		<folder>layouts</folder>
+		<folder>vendor</folder>
 	</files>
 </extension>
