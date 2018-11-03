@@ -13,12 +13,12 @@
 
 	<files>
 		<filename plugin="mailchimp">mailchimp.php</filename>
-		<folder>examples</folder>
+		<filename>index.html</filename>
+		<filename>composer.json</filename>
+		<filename>composer.lock</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
-		<filename>index.html</filename>
-		<file>MCAPI.class.php</file>
-		<file>README</file>
+		<folder>vendor</folder>
 	</files>
 
 </extension>
