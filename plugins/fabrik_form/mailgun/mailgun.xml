@@ -13,8 +13,11 @@
 	<files>
 		<filename plugin="mailgun">mailgun.php</filename>
 		<filename>index.html</filename>
+		<filename>composer.json</filename>
+		<filename>composer.lock</filename>
 		<folder>forms</folder>
 		<folder>tmpl</folder>
 		<folder>language</folder>
+		<folder>vendor</folder>
 	</files>
 </extension>
