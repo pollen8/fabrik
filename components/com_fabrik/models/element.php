@@ -5519,13 +5519,13 @@ class PlgFabrik_Element extends FabrikPlugin
 					$ls[] = ($type != 'median') ? $plugin->getLabelForValue($label) : $plugin->getLabelForValue($key, $key);
 				}
 
-				if (count($labelParts > 1))
+				if (count($labelParts) > 1)
 				{
 					$val->label = $labelParts[0] . ' & ' . implode(',', $ls);
 				}
 				else
 				{
-					$val->label = impode(',', $ls);
+					$val->label = implode(',', $ls);
 				}
 			}
 			else
