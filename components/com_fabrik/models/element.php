@@ -305,6 +305,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		parent::__construct($subject, $config);
 		$this->validator = JModelLegacy::getInstance('ElementValidator', 'FabrikFEModel');
 		$this->validator->setElementModel($this);
+		//$foo = $this->getFormModel();
 		$this->access = new stdClass;
 	}
 
@@ -5519,7 +5520,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$ls[] = ($type != 'median') ? $plugin->getLabelForValue($label) : $plugin->getLabelForValue($key, $key);
 				}
 
-				if (count($labelParts > 1))
+				if (count($labelParts1) > 1)
 				{
 					$val->label = $labelParts[0] . ' & ' . implode(',', $ls);
 				}
