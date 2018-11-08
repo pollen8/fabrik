@@ -607,7 +607,6 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             //this.fireEvent('onOpen', [this]);
             this.options.onOpen.apply(this);
         }
-            this.options.onClose.apply(this);
     });
 
     Fabrik.Modal = new Class({
