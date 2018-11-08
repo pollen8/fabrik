@@ -589,7 +589,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.window.fadeOut({duration: 0});
             }
             Fabrik.tips.hideAll();
-            this.fireEvent('onClose', [this]);
+            //this.fireEvent('onClose', [this]);
+            this.options.onClose.apply(this);
             Fabrik.fireEvent('fabrik.window.close', [this]);
         },
 
@@ -603,9 +604,10 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             }
             //this.window.fadeIn({duration: 0});
             this.window.show();
-            this.fireEvent('onOpen', [this]);
+            //this.fireEvent('onOpen', [this]);
+            this.options.onOpen.apply(this);
         }
-
+            this.options.onClose.apply(this);
     });
 
     Fabrik.Modal = new Class({
