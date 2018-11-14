@@ -252,6 +252,7 @@ class FabrikAutoloader
 
 		$className = str_replace('Fabrik\\Helpers\\', '', $class);
 		$path  = JPATH_SITE . '/libraries/fabrik/fabrik/Helpers/' . $className . '.php';
+		$path = str_replace('\\', '/', $path);
 
 		if (file_exists($path))
 		{
