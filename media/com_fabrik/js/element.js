@@ -454,6 +454,7 @@ define(['jquery'], function (jQuery) {
          * Run when the element is de-cloned from the form as part of a deleted repeat group
          */
         decloned: function (groupid) {
+            this.form.removeMustValidate(this);
         },
 
         /**

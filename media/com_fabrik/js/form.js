@@ -1981,6 +1981,11 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.subGroups.set(i, subGroup.clone());
             if (subgroups.length <= 1) {
                 this.hideLastGroup(i, subGroup);
+                this.formElements.each(function (e, k) {
+                    if (e.groupid === i && typeOf(e.element) !== 'null') {
+                        this.removeMustValidate(e);
+                    }
+                }.bind(this));
                 document.id('fabrik_repeat_group_' + i + '_added').value = '0';
                 Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
             } else {
@@ -2169,6 +2174,13 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                 this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
                 document.id('fabrik_repeat_group_' + i + '_added').value = '1';
+
+                this.formElements.each(function (e, k) {
+                    if (e.groupid === i && typeOf(e.element) !== 'null') {
+                        this.addMustValidate(e);
+                    }
+                }.bind(this));
+
                 return;
             }
 
@@ -2557,6 +2569,17 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 if (el.options.mustValidate) {
                     this.options.mustValidate = true;
                     this.toggleSubmit(false);
+                }
+            }
+        },
+
+        removeMustValidate: function (el) {
+            if (this.options.ajaxValidation && this.options.toggleSubmit) {
+                delete this.mustValidateEls[el.element.id];
+                if (el.options.mustValidate) {
+                    if (!this.mustValidateEls.hasValue(true)) {
+                        this.toggleSubmit(true);
+                    }
                 }
             }
         },

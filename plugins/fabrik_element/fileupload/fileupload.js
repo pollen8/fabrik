@@ -238,6 +238,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
             if (i.length > 0) {
                 this.makeDeletedImageField(groupid, this.options.value).inject(this.form.form);
             }
+            this.parent(groupid);
         },
 
         decreaseName: function (delIndex) {
