@@ -12,6 +12,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Stripe;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -77,7 +80,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return true;
 		}
 
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$userId = $this->user->get('id');
 
 		if ($this->isTestMode())
@@ -91,9 +94,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$secretKey = trim($params->get('stripe_secret_key', ''));
 		}
 
-		$tokenId   = FArrayHelper::getValue($this->data, 'stripe_token_id', '');
-		$tokenEmail = FArrayHelper::getValue($this->data, 'stripe_token_email', '');
-		$tokenOpts = FArrayHelper::getValue($this->data, 'stripe_token_opts', '{}');
+		$tokenId   = ArrayHelper::getValue($this->data, 'stripe_token_id', '');
+		$tokenEmail = ArrayHelper::getValue($this->data, 'stripe_token_email', '');
+		$tokenOpts = ArrayHelper::getValue($this->data, 'stripe_token_opts', '{}');
 		$tokenOpts = json_decode($tokenOpts);
 
 		if ($this->getProductTableName())
@@ -116,9 +119,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($params->get('stripe_cost_eval_to_element', '0') === '1')
 			{
-				$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
-				$amount    = FArrayHelper::getValue($this->data, $amountKey);
-				$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+				$amountKey = StringHelper::safeColNameToArrayKey($params->get('stripe_cost_element'));
+				$amount    = ArrayHelper::getValue($this->data, $amountKey);
+				$amount    = ArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 				if (is_array($amount))
 				{
@@ -144,9 +147,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			if (trim($amount) == '')
 			{
 				// Priority to raw data.
-				$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
-				$amount    = FArrayHelper::getValue($this->data, $amountKey);
-				$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+				$amountKey = StringHelper::safeColNameToArrayKey($params->get('stripe_cost_element'));
+				$amount    = ArrayHelper::getValue($this->data, $amountKey);
+				$amount    = ArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 				if (is_array($amount))
 				{
@@ -167,9 +170,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($params->get('stripe_item_eval_to_element', '0') === '1')
 			{
-				$itemKey = FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'));
-				$item    = FArrayHelper::getValue($this->data, $itemKey);
-				$item    = FArrayHelper::getValue($this->data, $itemKey . '_raw', $item);
+				$itemKey = StringHelper::safeColNameToArrayKey($params->get('stripe_item_element'));
+				$item    = ArrayHelper::getValue($this->data, $itemKey);
+				$item    = ArrayHelper::getValue($this->data, $itemKey . '_raw', $item);
 
 				if (is_array($item))
 				{
@@ -196,8 +199,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if (trim($item) == '')
 			{
-				$itemRaw = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('stripe_item_element') . '_raw'));
-				$item    = $this->data[FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'))];
+				$itemRaw = ArrayHelper::getValue($this->data, StringHelper::safeColNameToArrayKey($params->get('stripe_item_element') . '_raw'));
+				$item    = $this->data[StringHelper::safeColNameToArrayKey($params->get('stripe_item_element'))];
 
 				if (is_array($item))
 				{
@@ -439,17 +442,17 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		$this->updateCustomerCustom($userId);
 
-
-
 		return true;
 	}
 
 	public function onAfterProcess()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
+		$listModel = $formModel->getListModel();
+
 		if (isset($this->charge))
 		{
-			$formModel = $this->getModel();
-			$listModel = $formModel->getListModel();
 			$userId    = JFactory::getUser()->get('id');
 			$opts            = new stdClass;
 			$opts->listid    = $this->getModel()->getListModel()->getId();
@@ -492,6 +495,16 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$msg             = json_encode($msg);
 			$this->doLog($msgType, $msg);
 		}
+
+		$w    = new Worker;
+		$code = $w->parseMessageForPlaceholder($params->get('stripe_after_process', ''), $this->data, false);
+
+		if (!empty($code))
+		{
+			$res = @eval($code);
+			Worker::logEval($res, 'Caught exception on eval in stripe after process : %s');
+		}
+
 	}
 
 	/**
@@ -527,7 +540,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		$opts->formid = $formModel->getId();
 
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$userId = $this->user->get('id');
 
 		if (!empty($userId))
@@ -550,7 +563,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts->panelLabel = FText::_($params->get('stripe_panel_label', 'PLG_FORM_STRIPE_PAY'));
 		$opts->allowRememberMe = false;
 		$opts->zipCode = $params->get('stripe_zipcode_check', '1') === '1';
-		$opts->couponElement = FabrikString::safeColNameToArrayKey($params->get('stripe_coupon_element'));
+		$opts->couponElement = StringHelper::safeColNameToArrayKey($params->get('stripe_coupon_element'));
 		$opts->productElement = '';
 		$opts->qtyElement = '';
 		$opts->totalElement = '';
@@ -578,9 +591,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$opts->item = $product->item;
 			$opts->amount     = $amountMultiplied;
 			$opts->origAmount = $amountMultiplied;
-			$opts->productElement = FabrikString::safeColNameToArrayKey($params->get('stripe_products_product_element'));
-			$opts->qtyElement = FabrikString::safeColNameToArrayKey($params->get('stripe_products_qty_element'));
-			$opts->totalElement = $totalKey = FabrikString::safeColNameToArrayKey($params->get('stripe_products_total_element'));
+			$opts->productElement = StringHelper::safeColNameToArrayKey($params->get('stripe_products_product_element'));
+			$opts->qtyElement = StringHelper::safeColNameToArrayKey($params->get('stripe_products_qty_element'));
+			$opts->totalElement = $totalKey = StringHelper::safeColNameToArrayKey($params->get('stripe_products_total_element'));
 
 			if (!empty($totalKey))
 			{
@@ -624,7 +637,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($params->get('stripe_cost_eval_to_element', '0') === '1')
 			{
-				$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
+				$amountKey = StringHelper::safeColNameToArrayKey($params->get('stripe_cost_element'));
 				if (!empty($amountKey))
 				{
 					if (class_exists('NumberFormatter'))
@@ -644,9 +657,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 				if (trim($amount) == '')
 				{
 					// Priority to raw data.
-					$amountKey = FabrikString::safeColNameToArrayKey($params->get('stripe_cost_element'));
-					$amount    = FArrayHelper::getValue($this->data, $amountKey);
-					$amount    = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+					$amountKey = StringHelper::safeColNameToArrayKey($params->get('stripe_cost_element'));
+					$amount    = ArrayHelper::getValue($this->data, $amountKey);
+					$amount    = ArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 					if (is_array($amount))
 					{
@@ -682,7 +695,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 			if ($params->get('stripe_item_eval_to_element', '0') === '1')
 			{
-				$itemKey = FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'));
+				$itemKey = StringHelper::safeColNameToArrayKey($params->get('stripe_item_element'));
 				if (!empty($itemKey))
 				{
 					$formModel->data[$itemKey]          = $item;
@@ -693,7 +706,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			{
 				if (trim($item) == '')
 				{
-					$item = $this->data[FabrikString::safeColNameToArrayKey($params->get('stripe_item_element'))];
+					$item = $this->data[StringHelper::safeColNameToArrayKey($params->get('stripe_item_element'))];
 
 					if (is_array($item))
 					{
@@ -906,7 +919,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return false;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $productTable);
 		$db->setQuery($query);
@@ -929,12 +942,12 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	private function getProduct($productId)
 	{
 		$params = $this->getParams();
-		$pDb = FabrikWorker::getDbo(false, $params->get('stripe_products_connection'));
+		$pDb = Worker::getDbo(false, $params->get('stripe_products_connection'));
 		$pQuery = $pDb->getQuery(true);
-		$productIdField = FabrikString::shortColName($params->get('stripe_products_pk'));
-		$productNameField = FabrikString::shortColName($params->get('stripe_products_name'));
-		$productDescField = FabrikString::shortColName($params->get('stripe_products_desc'));
-		$productCostField = FabrikString::shortColName($params->get('stripe_products_cost'));
+		$productIdField = StringHelper::shortColName($params->get('stripe_products_pk'));
+		$productNameField = StringHelper::shortColName($params->get('stripe_products_name'));
+		$productDescField = StringHelper::shortColName($params->get('stripe_products_desc'));
+		$productCostField = StringHelper::shortColName($params->get('stripe_products_cost'));
 
 		if (empty($productIdField) || empty($productNameField) || empty($productCostField))
 		{
@@ -966,7 +979,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts = new StdClass;
 		$formModel = $this->getModel();
 		$params = $this->getParams();
-		$productKey = FabrikString::safeColNameToArrayKey($params->get('stripe_products_product_element'));
+		$productKey = StringHelper::safeColNameToArrayKey($params->get('stripe_products_product_element'));
 
 		if ($getDefaults)
 		{
@@ -978,8 +991,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$default = '';
 		}
 
-		$productId = FArrayHelper::getValue($this->data, $productKey, $default);
-		$productId = FArrayHelper::getValue($this->data, $productKey . '_raw', $productId);
+		$productId = ArrayHelper::getValue($this->data, $productKey, $default);
+		$productId = ArrayHelper::getValue($this->data, $productKey . '_raw', $productId);
 		$productId = is_array($productId) ? $productId[0] : $productId;
 
 		if (!empty($productId))
@@ -987,7 +1000,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$product = $this->getProduct($productId);
 			$amount = $product->product_cost;
 
-			$productQtyKey = FabrikString::safeColNameToArrayKey($params->get('stripe_products_qty_element'));
+			$productQtyKey = StringHelper::safeColNameToArrayKey($params->get('stripe_products_qty_element'));
 
 			if (!empty($productQtyKey))
 			{
@@ -1001,8 +1014,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					$default = '';
 				}
 
-				$productQty = FArrayHelper::getValue($this->data, $productQtyKey, $default);
-				$productQty = FArrayHelper::getValue($this->data, $productQtyKey . '_raw', $productQty);
+				$productQty = ArrayHelper::getValue($this->data, $productQtyKey, $default);
+				$productQty = ArrayHelper::getValue($this->data, $productQtyKey . '_raw', $productQty);
 
 				$amount     = $amount * (int) $productQty;
 			}
@@ -1056,7 +1069,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return false;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('stripe_customers_table'));
 		$db->setQuery($query);
@@ -1077,22 +1090,22 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	private function getCustomerId($userId)
 	{
 		$params = $this->getParams();
-		$cDb = FabrikWorker::getDbo(false, $params->get('stripe_customers_connection'));
+		$cDb = Worker::getDbo(false, $params->get('stripe_customers_connection'));
 		$cQuery = $cDb->getQuery(true);
-		$cUserIdField = FabrikString::shortColName($params->get('stripe_customers_userid'));
+		$cUserIdField = StringHelper::shortColName($params->get('stripe_customers_userid'));
 
 		if ($this->isTestMode())
 		{
-			$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid_test'));
+			$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid_test'));
 
 			if (empty($cStripeIdField))
 			{
-				$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid'));
+				$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid'));
 			}
 		}
 		else
 		{
-			$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid'));
+			$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid'));
 		}
 
 		if (empty($cUserIdField) || empty($cStripeIdField))
@@ -1112,10 +1125,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	private function updateCustomerCustom($userId)
 	{
 		$params       = $this->getParams();
-		$cDb          = FabrikWorker::getDbo(false, $params->get('stripe_customers_connection'));
+		$cDb          = Worker::getDbo(false, $params->get('stripe_customers_connection'));
 		$cQuery       = $cDb->getQuery(true);
-		$cUserIdField = FabrikString::shortColName($params->get('stripe_customers_userid'));
-		$customField  = FabrikString::shortColName($params->get('stripe_customers_custom_field'));
+		$cUserIdField = StringHelper::shortColName($params->get('stripe_customers_userid'));
+		$customField  = StringHelper::shortColName($params->get('stripe_customers_custom_field'));
 		$customValue  = $params->get('stripe_customers_custom_value', '');
 
 		if (empty($cUserIdField) || empty($customField) || empty($customValue))
@@ -1123,7 +1136,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return;
 		}
 
-		$w           = new FabrikWorker;
+		$w           = new Worker;
 		$customValue = $w->parseMessageForPlaceHolder($customValue, $this->data);
 
 		$cQuery
@@ -1138,22 +1151,22 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	private function updateCustomerId($userId, $customerId, $opts)
 	{
 		$params = $this->getParams();
-		$cDb = FabrikWorker::getDbo(false, $params->get('stripe_customers_connection'));
+		$cDb = Worker::getDbo(false, $params->get('stripe_customers_connection'));
 		$cQuery = $cDb->getQuery(true);
-		$cUserIdField = FabrikString::shortColName($params->get('stripe_customers_userid'));
+		$cUserIdField = StringHelper::shortColName($params->get('stripe_customers_userid'));
 
 		if ($this->isTestMode())
 		{
-			$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid_test'));
+			$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid_test'));
 
 			if (empty($cStripeIdField))
 			{
-				$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid'));
+				$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid'));
 			}
 		}
 		else
 		{
-			$cStripeIdField = FabrikString::shortColName($params->get('stripe_customers_stripeid'));
+			$cStripeIdField = StringHelper::shortColName($params->get('stripe_customers_stripeid'));
 		}
 
 		$done = false;
@@ -1180,7 +1193,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			foreach ($stripeAddressFields as $field)
 			{
 				$paramName = 'stripe_customers_billing_' . $field;
-				$fieldName = FabrikString::shortColName($params->get($paramName));
+				$fieldName = StringHelper::shortColName($params->get($paramName));
 
 				if (!empty($fieldName))
 				{
@@ -1200,7 +1213,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			foreach ($stripeAddressFields as $field)
 			{
 				$paramName = 'stripe_customers_shipping_' . $field;
-				$fieldName = FabrikString::shortColName($params->get($paramName));
+				$fieldName = StringHelper::shortColName($params->get($paramName));
 
 				if (!empty($fieldName))
 				{
@@ -1295,7 +1308,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			return false;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('stripe_coupons_table'));
 		$db->setQuery($query);
@@ -1318,7 +1331,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$formModel = $this->getModel();
-		$couponKey  = FabrikString::safeColNameToArrayKey($params->get('stripe_coupon_element'));
+		$couponKey  = StringHelper::safeColNameToArrayKey($params->get('stripe_coupon_element'));
 
 		if (!empty($couponKey))
 		{
@@ -1329,8 +1342,8 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			}
 			else
 			{
-				$couponCode = FArrayHelper::getValue($this->data, $couponKey);
-				$couponCode = FArrayHelper::getValue($this->data, $couponKey . '_raw', $couponCode);
+				$couponCode = ArrayHelper::getValue($this->data, $couponKey);
+				$couponCode = ArrayHelper::getValue($this->data, $couponKey . '_raw', $couponCode);
 			}
 
 			if (!empty($couponCode))
@@ -1380,14 +1393,14 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		}
 		else if (!empty($couponTable))
 		{
-			$couponField    = FabrikString::shortColName($params->get('stripe_coupons_coupon_field'));
-			$discountField  = FabrikString::shortColName($params->get('stripe_coupons_discount_field'));
-			$typeField      = FabrikString::shortColName($params->get('stripe_coupons_type_field'));
-			$publishedField = FabrikString::shortColName($params->get('stripe_coupons_published_field'));
-			$limitField     = FabrikString::shortColName($params->get('stripe_coupons_limit_field'));
-			$useField       = FabrikString::shortColName($params->get('stripe_coupons_use_field'));
-			$startDateField = FabrikString::shortColName($params->get('stripe_coupons_start_date_field'));
-			$endDateField   = FabrikString::shortColName($params->get('stripe_coupons_end_date_field'));
+			$couponField    = StringHelper::shortColName($params->get('stripe_coupons_coupon_field'));
+			$discountField  = StringHelper::shortColName($params->get('stripe_coupons_discount_field'));
+			$typeField      = StringHelper::shortColName($params->get('stripe_coupons_type_field'));
+			$publishedField = StringHelper::shortColName($params->get('stripe_coupons_published_field'));
+			$limitField     = StringHelper::shortColName($params->get('stripe_coupons_limit_field'));
+			$useField       = StringHelper::shortColName($params->get('stripe_coupons_use_field'));
+			$startDateField = StringHelper::shortColName($params->get('stripe_coupons_start_date_field'));
+			$endDateField   = StringHelper::shortColName($params->get('stripe_coupons_end_date_field'));
 
 			$useLimit   = !empty($limitField) && !empty($useField);
 			$useUse     = !empty($useField);
@@ -1718,7 +1731,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 	private function useCoupon()
 	{
 		$params = $this->getParams();
-		$couponKey  = FabrikString::safeColNameToArrayKey($params->get('stripe_coupon_element'));
+		$couponKey  = StringHelper::safeColNameToArrayKey($params->get('stripe_coupon_element'));
 		return !empty($couponKey);
 	}
 }
