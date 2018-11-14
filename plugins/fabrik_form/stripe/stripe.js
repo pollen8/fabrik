@@ -143,6 +143,10 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 });
 
 				Fabrik.addEvent('fabrik.form.submit.start', function (form, event, btn) {
+				    if (!this.options.useCheckout) {
+				        return;
+                    }
+
 					if (!this.options.ccOnFree && this.options.amount == 0)
 					{
 						return;
