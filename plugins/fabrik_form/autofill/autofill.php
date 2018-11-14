@@ -205,9 +205,13 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 */
 	protected function fillField($data, &$newData, $from, $to)
 	{
-		$matched = false;
-		$toRaw   = $to . '_raw';
-		$fromRaw = $from . '_raw';
+		$w        = new FabrikWorker;
+		$origFrom = $from;
+		// allow for mapping fieldn ames like table___element_{shortlang}
+		$from     = $w->parseMessageForPlaceHolder($from, $data);
+		$matched  = false;
+		$toRaw    = $to . '_raw';
+		$fromRaw  = $from . '_raw';
 
 		if (array_key_exists($from, $data))
 		{
@@ -223,8 +227,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 
 		if (!$matched)
 		{
-			$w               = new FabrikWorker;
-			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($from, $data);
+			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($origFrom, $data);
 		}
 		else
 		{
