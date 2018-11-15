@@ -2242,6 +2242,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$myFileName = FArrayHelper::getValue($myFileName, $repeatCounter, '');
 		}
 
+		$myFileDir = '';
+
 		if (array_key_exists($elNameRaw, $aData))
 		{
 			if (is_array($aData[$elNameRaw]))
@@ -2251,7 +2253,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			if (is_array($aData[$elName]))
+			if (array_key_exists($elName, $aData) && is_array($aData[$elName]))
 			{
 				$myFileDir = ArrayHelper::getValue($aData[$elName], 'ul_end_dir', '');
 			}
