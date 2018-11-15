@@ -75,7 +75,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$this->data = $this->getProcessData();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 
-		if (!$this->shouldProcess('stripe_conditon', null, $params))
+		if (!$this->shouldProcess('stripe_condition', null, $params))
 		{
 			return true;
 		}
