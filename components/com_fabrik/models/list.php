@@ -11291,7 +11291,15 @@ class FabrikFEModelList extends JModelForm
 					/* $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item
 					 * options also being used for the form/details view template
 					*/
-					$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
+					$this->tmpl = FabrikWorker::getMenuOrRequestVar(
+						'listlayout',
+						$this->tmpl,
+						$this->isMambot,
+						'menu',
+						array(
+							'listid' => $this->getId()
+						)
+					);
 				}
 			}
 
@@ -11300,14 +11308,12 @@ class FabrikFEModelList extends JModelForm
 				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
 
+			/*
 			if ($this->app->scope !== 'mod_fabrik_list')
 			{
-				/* $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item
-				 * options also being used for the form/details view template
-				*/
-				// $this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 			}
+			*/
 
 			if ($document->getType() === 'pdf')
 			{
