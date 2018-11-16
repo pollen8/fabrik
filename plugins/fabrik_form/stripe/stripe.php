@@ -559,7 +559,12 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$secretKey = trim($params->get('stripe_secret_key', ''));
 		}
 
-		$opts->name = FText::_($params->get('stripe_dialog_name', ''));
+		$opts->name = FText::_(
+			$w->parseMessageForPlaceHolder(
+				$params->get('stripe_dialog_name', ''),
+				$this->data
+			)
+		);
 		$opts->panelLabel = FText::_($params->get('stripe_panel_label', 'PLG_FORM_STRIPE_PAY'));
 		$opts->allowRememberMe = false;
 		$opts->zipCode = $params->get('stripe_zipcode_check', '1') === '1';
