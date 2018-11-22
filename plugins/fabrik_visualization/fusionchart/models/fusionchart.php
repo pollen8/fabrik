@@ -11,9 +11,13 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use FusionExport\ExportManager;
+use FusionExport\ExportConfig;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
+require_once JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/vendor/autoload.php';
 
 /**
  * Fabrik Fusion Chart Plug-in Model
@@ -24,6 +28,8 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  */
 class FabrikModelFusionchart extends FabrikFEModelVisualization
 {
+	private $chartData = array();
+
 	/**
 	 * Get the chart parameters
 	 *
@@ -433,27 +439,16 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$worker = new FabrikWorker;
-		$fc_version = $params->get('fusionchart_version', 'free_old');
-		$free22 = $this->pathBase . 'fusionchart/libs/FusionChartsFree/Code/PHPClass/Includes/FusionCharts_Gen.php';
-		$pro30 = $this->pathBase . 'fusionchart/libs/FusionCharts/Code/PHPClass/Includes/FusionCharts_Gen.php';
+		$xt    = $this->pathBase . 'fusionchart/libs/fusioncharts-suite-xt/integrations/php/fusioncharts-wrapper/fusioncharts.php';
 
-		if ($fc_version == 'free_22' && JFile::exists($free22))
+		if (JFile::exists($xt))
 		{
-			require_once $free22;
-			$document->addScript($this->srcBase . "fusionchart/libs/FusionChartsFree/JSClass/FusionCharts.js");
-			$fc_swf_path = COM_FABRIK_LIVESITE . $this->srcBase . "fusionchart/libs/FusionChartsFree/Charts/";
-		}
-		elseif ($fc_version == 'pro_30' && JFile::exists($pro30))
-		{
-			require_once $pro30;
-			$document->addScript($this->srcBase . "fusionchart/libs/FusionCharts/Charts/FusionCharts.js");
-			$fc_swf_path = COM_FABRIK_LIVESITE . $this->srcBase . "fusionchart/libs/FusionCharts/Charts/";
+			require_once $xt;
+			$document->addScript($this->srcBase . "fusionchart/libs/fusioncharts-suite-xt/js/fusioncharts.js");
 		}
 		else
 		{
-			require_once $this->pathBase . 'fusionchart/libs/FCclass/FusionCharts_Gen.php';
-			$document->addScript($this->srcBase . "fusionchart/libs/FCcharts/FusionCharts.js");
-			$fc_swf_path = COM_FABRIK_LIVESITE . $this->srcBase . "fusionchart/libs/FCcharts/";
+			return false;
 		}
 
 		$calc_prefixes = array('sum___', 'avg___', 'med___', 'cnt___');
@@ -468,19 +463,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			throw new InvalidArgumentException('Not chart type selected');
 		}
 
-		// Create new chart
-		$this->FC = new FusionCharts($chartType, $w, $h);
-
-		// If we are pro lets use the new JavaScript Library
-		if ($fc_version === 'pro_30')
-		{
-			$this->FC->setRenderer('javascript');
-		}
-
-		// Define path to FC's SWF
-		$this->FC->setSWFPath($fc_swf_path);
-
-		$this->setChartMessages();
+		//$this->setChartMessages();
 
 		// Setting Param string
 		$strParam = $this->getChartParams();
@@ -709,12 +692,20 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 					foreach ($gsums as $gd)
 					{
+						$attrs = array('label' => $this->axisLabels[$i]);
+
+						if (!empty($gcolours[$i]))
+						{
+							$attrs['color'] = $gcolours[$i];
+						}
+
 						$arrData[$i][0] = $this->axisLabels[$i];
 						$arrData[$i][1] = $gd;
+						$this->addChartData($gd, $attrs);
 						$i++;
 					}
 
-					$this->FC->addChartDataFromArray($arrData, $arrCatNames);
+					//$this->FC->addChartDataFromArray($arrData, $arrCatNames);
 				}
 				else
 				{
@@ -744,12 +735,12 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 					if ($elTypes[0] == 'trendonly')
 					{
-						$str_params = '';
+						$str_params = array();
 						$min = min($gsums);
 						$max = max($gsums);
 						list($min, $max) = $this->getTrendMinMax($min, $max, 0);
-						$this->FC->addChartData($min, $str_params);
-						$this->FC->addChartData($max, $str_params);
+						$this->addChartData($min, $str_params);
+						$this->addChartData($max, $str_params);
 					}
 					else
 					{
@@ -765,17 +756,19 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 							}
 
 							$label = $labels[$key];
-							$str_params = 'name=' . $label;
+							$str_params = array(
+								'label' => $label
+							);
 
 							if ($labelStep)
 							{
 								if ($data_count != 1 && $data_count % $labelStep != 0)
 								{
-									$str_params .= ';showName=0';
+									$str_params['showName'] = false;
 								}
 							}
 
-							$this->FC->addChartData($value, $str_params);
+							$this->addChartData($value, $str_params);
 						}
 					}
 				}
@@ -839,17 +832,17 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					foreach ($labels as $catLabel)
 					{
 						$data_count++;
-						$catParams = '';
+						$catParams = array();
 
 						if ($labelStep)
 						{
 							if ($data_count == 1 || $data_count % $labelStep == 0)
 							{
-								$catParams = 'ShowLabel=1';
+								$catParams['ShowLabel'] = true;
 							}
 							else
 							{
-								$catParams = 'ShowLabel=0';
+								$catParams['ShowLabel'] = false;
 								$catLabel = '';
 							}
 						}
@@ -860,33 +853,35 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					foreach ($gdata as $key => $chartdata)
 					{
 						$cdata = FArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
-						$dataset = $this->axisLabels[$key];
-						$extras = 'parentYAxis=' . $dual_y_parents[$key];
+						$datasetLabel = $this->axisLabels[$key];
+						$extras = array(
+							'parentYAxis' => $dual_y_parents[$key]
+						);
 						$color = FArrayHelper::getValue($gcolours, $key, '');
 
 						if (!empty($color))
 						{
-							$extras .= ";color=" . $color;
+							$extras['color'] = $color;
 						}
 
-						$this->FC->addDataset($dataset, $extras);
+						$dataset = array();
 
 						if ($elTypes[$key] == 'trendonly')
 						{
-							$str_params = '';
+							$str_params = array();
 							$strParam .= ';connectNullData=1';
 							$min = min($cdata);
 							$max = max($cdata);
 							list($min, $max) = $this->getTrendMinMax($min, $max, $key);
 							$max_datapoints = $this->getMaxDatapoints($gdata);
-							$this->FC->addChartData($min, $str_params);
+							$dataset[] = $this->makeChartData($min, $str_params);
 
 							for ($x = 0; $x < $max_datapoints - 2; $x++)
 							{
-								$this->FC->addChartData('', $str_params);
+								$dataset[] = $this->makeChartData('', $str_params);
 							}
 
-							$this->FC->addChartData($max, $str_params);
+							$dataset[] = $this->makeChartData($max, $str_params);
 						}
 						else
 						{
@@ -901,9 +896,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 									$value = null;
 								}
 
-								$this->FC->addChartData($value);
+								$dataset[] = $this->makeChartData($value);
 							}
 						}
+
+						$this->addDataset($dataset, $datasetLabel, $extras);
 					}
 				}
 		}
@@ -918,35 +915,48 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 
 		$strParam = "$strParam";
-		$this->FC->setChartParams($strParam);
+		$this->setChartParams($strParam);
 
-		// Render Chart
-		if ($chartType == 'MULTIAXISLINE')
+		// test stuff for driving Fusion Export
+		if (false)
 		{
-			// Nasty, nasty hack for MULTIAXIS, as the FC class doesn't support it.  So need to get the chart XML,
-			// split out the <dataset>...</dataset> and wrap them in <axis>...</axis>
-			$axis_attrs = (array) $params->get('fusionchart_mx_attributes');
-			$dataXML = $this->FC->getXML();
-			$matches = array();
+			$exportJSON             = new StdClass;
+			$exportJSON->type       = strtolower($chartType);
+			$exportJSON->renderAt   = 'chart-container';
+			$exportJSON->width      = 600;
+			$exportJSON->height     = 450;
+			$exportJSON->dataFormat = "json";
+			$exportJSON->dataSource = $this->chartData;
+			$exportArray            = array(
+				$exportJSON
+			);
+			$exportJSON             = json_encode($exportArray);
 
-			if (preg_match_all('#(<\s*dataset[^>]*>.*?<\s*/dataset\s*>)#', $dataXML, $matches))
-			{
-				$index = 0;
+			// Instantiate the ExportConfig class and add the required configurations
+			$exportConfig = new ExportConfig();
+			// Provide path of the chart configuration which we have defined above.  // You can also pass the same object as serialized JSON.
+			$exportConfig->set('chartConfig', $exportJSON);
 
-				foreach ($gdata as $key => $chartdata)
-				{
-					$axis = "<axis " . $axis_attrs[$index] . ">" . $matches[0][$index] . "</axis>";
-					$dataXML = str_replace($matches[0][$index], $axis, $dataXML);
-					$index++;
-				}
-			}
+			// Instantiate the ExportManager class
+			$exportManager = new ExportManager();
 
-			return $this->FC->renderChartFromExtXML($dataXML);
+			// Call the export() method with the exportConfig and the respective callbacks
+			$exportManager->export($exportConfig, $outputDir = '.', $unzip = true);
 		}
-		else
-		{
-			return $this->FC->renderChart(false, false);
-		}
+
+		// Create new chart
+		$this->FC = new FusionCharts(
+			strtolower($chartType),
+			'FusionChart',
+			$w,
+			$h,
+			'chart-container',
+			'json',
+			$this->getChartData()
+		);
+
+		return $this->FC->render();
+
 	}
 
 	/**
@@ -1150,5 +1160,82 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 
 		return $max_datapoints;
+	}
+
+	private function addCategory($label, $params)
+	{
+		if (!isset($this->chartData['categories']))
+		{
+			$this->chartData['categories'] = array();
+			$this->chartData['categories'] = array('category' => array());
+		}
+
+		$this->chartData['categories'][0]['category'][] = array_merge(
+			array('label' => $label),
+			$params
+		);
+	}
+
+	private function addDataset($label, $dataset, $params = array())
+	{
+		if (!isset($this->chartData['dataset']))
+		{
+			$this->chartData['dataset'] = array();
+		}
+
+		array_push($this->chartData['dataset'],
+			array_merge(
+				array(
+					'seriesname' => $label,
+					'data' => $dataset
+				),
+				$params
+			)
+		);
+	}
+
+	private function makeChartData($value, $params = array())
+	{
+		return array_merge(
+			array(
+				'value' => $value
+			),
+			$params
+		);
+	}
+
+	private function addChartData($value, $params = array())
+	{
+		if (!isset($this->chartData['data']))
+		{
+			$this->chartData['data'] = array();
+		}
+
+		array_push($this->chartData['data'], $this->makeChartData($value, $params));
+	}
+
+	private function setChartParams($strParams = '')
+	{
+		$chartParams = array();
+
+		if (!is_array($strParams))
+		{
+			$chartStrParams = explode(';', $strParams);
+
+			foreach ($chartStrParams as $strParam)
+			{
+				list($key,$value) = explode('=', $strParam);
+				$chartParams[$key] = $value;
+			}
+		}
+
+		$this->chartData['chart'] = $chartParams;
+	}
+
+	private function getChartData()
+	{
+		$chartData = json_encode($this->chartData);
+
+		return $chartData;
 	}
 }
