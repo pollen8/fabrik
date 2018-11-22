@@ -560,7 +560,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$url = 'index.php';
 		$this->lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
 
-		if (!$this->getListModel()->canView() || !$this->canView())
+		if (!$this->getListModel()->canViewDetails() || !$this->canView())
 		{
 			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'));
 			$this->app->redirect($url);
@@ -683,9 +683,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 */
 
 		$elementId = $this->getId();
-		$src = COM_FABRIK_LIVESITE
-		. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
-				. 'format=raw&amp;element_id=' . $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0';
+
+		// set format to 'pdf' if rendering pdf, so onAjax_renderQRCode() will automagically use "allow_pdf_local"
+		$format = $this->app->input->get('format', 'html') === 'pdf' ? 'pdf' : 'raw';
+		$src = COM_FABRIK_LIVESITE .
+			'index.php?option=com_' . $this->package .
+			'&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode' .
+			'&amp;format=' . $format . '&amp;element_id=' . $elementId . '&amp;formid=' . $formId .
+			'&amp;rowid=' . $rowId . '&amp;repeatcount=0';
 
 		$layout = $this->getLayout('qr');
 		$displayData = new stdClass;
