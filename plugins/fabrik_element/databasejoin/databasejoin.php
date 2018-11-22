@@ -2372,6 +2372,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			return $rows;
 		}
+
 		/*
 		 * list of all tables that have been joined to -
 		* if duplicated then we need to join using a table alias
@@ -2804,9 +2805,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$db->setQuery($query, $offset, $limit);
 		$sql     = (string) $query;
+		FabrikHelperHTML::debug($sql, 'join checkboxRows:');
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows    = $db->loadObjectList($groupBy);
-		//ksort($rows);
 
 		return $rows;
 	}
