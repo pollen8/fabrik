@@ -39,7 +39,7 @@ $row = $this->row;
         margin: 0 auto; /* it centers any block level element */
     }
 </style>
-AAAAAAA
+
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization">
 	<?php if ($this->params->get('show-title', 1)) :?>
         <h1>
