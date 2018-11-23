@@ -13,6 +13,7 @@ namespace Fabrik\Helpers;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
 
 /**
 * Custom code
@@ -39,17 +40,6 @@ class Custom
 
 	private static $formModel = null;
 
-	public function __constructNOT($config = array())
-	{
-		$this->config  = ArrayHelper::getValue($config, 'config', \JFactory::getConfig());
-		$this->user    = ArrayHelper::getValue($config, 'user', \JFactory::getUser());
-		$this->app     = ArrayHelper::getValue($config, 'app', \JFactory::getApplication());
-		$this->lang    = ArrayHelper::getValue($config, 'lang', \JFactory::getLanguage());
-		$this->date    = ArrayHelper::getValue($config, 'date', \JFactory::getDate());
-		$this->session = ArrayHelper::getValue($config, 'session', \JFactory::getSession());
-		$this->formModel = ArrayHelper::getValue($config, 'formModel', null);
-	}
-
 	public static function __initStatic($config = array())
 	{
 		if (!isset(self::$init))
@@ -60,6 +50,7 @@ class Custom
 			self::$lang    = ArrayHelper::getValue($config, 'lang', \JFactory::getLanguage());
 			self::$date    = ArrayHelper::getValue($config, 'date', \JFactory::getDate());
 			self::$session = ArrayHelper::getValue($config, 'session', \JFactory::getSession());
+			self::$formModel = ArrayHelper::getValue($config, 'formModel', null);
 			self::$init    = true;
 		}
 	}
