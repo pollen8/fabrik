@@ -25,20 +25,34 @@ var FbSlideshowViz = new Class({
 			captions: this.options.slideshow_captions
 		};
 
+		var slickOptions = {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: this.options.slideshow_delay === 0 ? false : true,
+            autoplaySpeed: this.options.slideshow_delay,
+            //variableWidth: true,
+            arrows: true,
+            dots: false,
+            fade: true,
+            cssEase: 'linear',
+            infinite: true,
+            speed: this.options.slideshow_duration
+		};
+
+		var slickJSON = JSON.parse(this.options.slideshow_options);
+		jQuery.extend(slickOptions, slickJSON);
+
+        jQuery('#' + this.options.html_id).show();
+
 		if (this.options.slideshow_thumbnails)
 		{
-            jQuery('.slider').slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                //variableWidth: true,
-                arrows: false,
-                dots: false,
-                fade: true,
-                cssEase: 'linear',
-                infinite: true,
-                speed: 500,
-				asNavFor: '.slider-nav'
-            });
+		    var thumbOptions = {
+		        asNavFor: '.slider-nav'
+            };
+
+		    jQuery.extend(slickOptions, thumbOptions);
+
+            jQuery('.slider').slick(slickOptions);
 
             jQuery('.slider-nav').slick({
                 slidesToShow: 3,
@@ -53,17 +67,12 @@ var FbSlideshowViz = new Class({
 
 		}
 		else {
-            jQuery('.slider').slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                //variableWidth: true,
-                arrows: true,
-                dots: true,
-                fade: true,
-                cssEase: 'linear',
-                infinite: true,
-                speed: 500
-            });
+            var noThumbOptions = {
+            };
+
+            jQuery.extend(slickOptions, noThumbOptions);
+
+            jQuery('.slider').slick(slickOptions);
         }
 
 		this.mediaScan();

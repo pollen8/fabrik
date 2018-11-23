@@ -357,13 +357,11 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		//$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
 		$opts->html_id = $html_id = 'slideshow_viz_' . $viz->id;
-		$opts->slideshow_type = (int) $params->get('slideshow_viz_type', 1);
 		$opts->slideshow_width = (int) $params->get('slideshow_viz_width', 400);
 		$opts->slideshow_height = (int) $params->get('slideshow_viz_height', 300);
 		$opts->slideshow_delay = (int) $params->get('slideshow_viz_delay', 5000);
 		$opts->slideshow_duration = (int) $params->get('slideshow_viz_duration', 2000);
-		$opts->slideshow_zoom = (int) $params->get('slideshow_viz_zoom', 50);
-		$opts->slideshow_pan = (int) $params->get('slideshow_viz_pan', 20);
+		$opts->slideshow_options = $params->get('slideshow_viz_options', '{}');
 		$opts->slideshow_thumbnails = $use_thumbs ? true : false;
 		$opts->slideshow_captions = $use_captions ? true : false;
 		$opts->container = "slideshow_viz_" . $this->getVisualization()->id;

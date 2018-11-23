@@ -41,7 +41,7 @@ $row = $this->row;
 	<div>
 		<?php echo $row->intro_text;?>
 	</div>
-	<div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>">
+	<div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>" style="display:none">
 		<div class="slider" style="width:400px;margin:auto">
             <?php
             foreach ($this->slideData as $slide):
