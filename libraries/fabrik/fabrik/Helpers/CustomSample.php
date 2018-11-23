@@ -16,14 +16,19 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Utilities\ArrayHelper;
 
 /**
-* Custom code
+ * Custom code
  *
- * RENAME THIS CLASS TO MATCH THE FILENAME
-*
-* @package     Joomla
-* @subpackage  Fabrik.helpers
-* @since       3.8
-*/
+ * To use, copy this file to Custom.php and rename the class from CustomSample to Custom.
+ *
+ * Add your functions as 'public static' methods.
+ *
+ * Call them from anywhere you can run PHP code in Fabrik as \Fabrik\Helpers\Custom::doMyThing()
+ *
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @since       3.8
+ */
 class CustomSample
 {
 	private static $init = null;
