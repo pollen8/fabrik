@@ -14,12 +14,20 @@ defined('_JEXEC') or die('Restricted access');
 $row = $this->row;
 ?>
 <style>
+    figure.image {
+        text-align: center;
+        font-style: italic;
+        font-size: small;
+        text-indent: 0;
+        margin: 0.5em;
+        padding: 0.5em;
+    }
 
     .slick-slide
     {
-        width: 400px;
+        width: <?php echo $this->params->get('slideshow_viz_width', '400')?>px;
+        heigth: <?php echo $this->params->get('slideshow_viz_height', '400')?>px;
     }
-
 
     .slick-prev:before, .slick-next:before {
         color:red !important;
@@ -31,48 +39,49 @@ $row = $this->row;
         margin: 0 auto; /* it centers any block level element */
     }
 </style>
+AAAAAAA
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization">
 	<?php if ($this->params->get('show-title', 1)) :?>
-	<h1>
-		<?php echo $row->label;?>
-	</h1>
+        <h1>
+			<?php echo $row->label;?>
+        </h1>
 	<?php endif;?>
 	<?php echo $this->loadTemplate('filter'); ?>
-	<div>
+    <div>
 		<?php echo $row->intro_text;?>
-	</div>
-	<div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>" style="display:none">
-		<div class="slider" style="width:400px;margin:auto">
-            <?php
-            foreach ($this->slideData as $slide):
-                ?>
-            <div class="image">
-                <img src="<?php echo $slide['href']; ?>" />
-                <figcaption>
-                    <?php echo $slide['caption']; ?>
-                </figcaption>
-            </div>
-                <?php
-            endforeach;
-            ?>
-		</div>
-
-        <?php
-		if ($this->params->get('slideshow_viz_thumbnails', false)):
-            ?>
-        <div class="slider-nav">
-            <?php
-            foreach ($this->slideData as $slide):
-                ?>
-            <div class="image">
-                <img src="<?php echo $slide['thumbnail']; ?>" />
-            </div>
-            <?php
-            endforeach;
-            ?>
+    </div>
+    <div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>" style="display:none">
+        <div class="slider" style="width:<?php echo $this->params->get('slideshow_viz_width', '400')?>px;margin:auto">
+			<?php
+			foreach ($this->slideData as $slide):
+				?>
+                <figure class="image">
+                    <<img src="<?php echo $slide['href']; ?>" />
+                    <figcaption>
+						<?php echo $slide['caption']; ?>
+                    </figcaption>
+                </figure>
+			<?php
+			endforeach;
+			?>
         </div>
-        <?php
-        endif;
-        ?>
-	</div>
+
+		<?php
+		if ($this->params->get('slideshow_viz_thumbnails', false)):
+			?>
+            <div class="slider-nav">
+				<?php
+				foreach ($this->slideData as $slide):
+					?>
+                    <div class="image">
+                        <img src="<?php echo $slide['thumbnail']; ?>" />
+                    </div>
+				<?php
+				endforeach;
+				?>
+            </div>
+		<?php
+		endif;
+		?>
+    </div>
 </div>
