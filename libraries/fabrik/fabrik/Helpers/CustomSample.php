@@ -17,12 +17,14 @@ use Joomla\Utilities\ArrayHelper;
 
 /**
 * Custom code
+ *
+ * RENAME THIS CLASS TO MATCH THE FILENAME
 *
 * @package     Joomla
 * @subpackage  Fabrik.helpers
 * @since       3.8
 */
-class Custom
+class CustomSample
 {
 	private static $init = null;
 
