@@ -379,6 +379,7 @@ class FabrikViewFormBase extends FabrikView
 				$menuParams = is_a($menu->params, 'Registry') || is_a($menu->params, 'JRegistry') ? $menu->params : new Registry($menu->params);
 				$params->set('page_heading', FText::_($menuParams->get('page_heading', '')));
 				$params->set('show_page_heading', $menuParams->get('show_page_heading', 0));
+				$params->set('pageclass_sfx', $menuParams->get('pageclass_sfx'));
 				$browserTitle = $model->getPageTitle(FText::_($menuParams->get('page_title')));
 				$this->doc->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
