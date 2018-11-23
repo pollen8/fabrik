@@ -26,7 +26,7 @@ class TaskQueueList extends ListResource {
      * Construct the TaskQueueList
      * 
      * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The workspace_sid
+     * @param string $workspaceSid The ID of the Workspace that owns this TaskQueue
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueList 
      */
     public function __construct(Version $version, $workspaceSid) {
@@ -134,22 +134,21 @@ class TaskQueueList extends ListResource {
     /**
      * Create a new TaskQueueInstance
      * 
-     * @param string $friendlyName The friendly_name
-     * @param string $reservationActivitySid The reservation_activity_sid
-     * @param string $assignmentActivitySid The assignment_activity_sid
+     * @param string $friendlyName Human readable description of this TaskQueue
      * @param array|Options $options Optional Arguments
      * @return TaskQueueInstance Newly created TaskQueueInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
-    public function create($friendlyName, $reservationActivitySid, $assignmentActivitySid, $options = array()) {
+    public function create($friendlyName, $options = array()) {
         $options = new Values($options);
 
         $data = Values::of(array(
             'FriendlyName' => $friendlyName,
-            'ReservationActivitySid' => $reservationActivitySid,
-            'AssignmentActivitySid' => $assignmentActivitySid,
             'TargetWorkers' => $options['targetWorkers'],
             'MaxReservedWorkers' => $options['maxReservedWorkers'],
             'TaskOrder' => $options['taskOrder'],
+            'ReservationActivitySid' => $options['reservationActivitySid'],
+            'AssignmentActivitySid' => $options['assignmentActivitySid'],
         ));
 
         $payload = $this->version->create(

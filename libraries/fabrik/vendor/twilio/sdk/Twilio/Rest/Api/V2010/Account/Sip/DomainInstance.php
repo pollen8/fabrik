@@ -38,6 +38,7 @@ use Twilio\Version;
 class DomainInstance extends InstanceResource {
     protected $_ipAccessControlListMappings = null;
     protected $_credentialListMappings = null;
+    protected $_auth = null;
 
     /**
      * Initialize the DomainInstance
@@ -99,6 +100,7 @@ class DomainInstance extends InstanceResource {
      * Fetch a DomainInstance
      * 
      * @return DomainInstance Fetched DomainInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -109,6 +111,7 @@ class DomainInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return DomainInstance Updated DomainInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);
@@ -118,6 +121,7 @@ class DomainInstance extends InstanceResource {
      * Deletes the DomainInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -139,6 +143,15 @@ class DomainInstance extends InstanceResource {
      */
     protected function getCredentialListMappings() {
         return $this->proxy()->credentialListMappings;
+    }
+
+    /**
+     * Access the auth
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypesList 
+     */
+    protected function getAuth() {
+        return $this->proxy()->auth;
     }
 
     /**

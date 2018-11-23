@@ -126,6 +126,7 @@ class ServiceList extends ListResource {
      *                           this Service.
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Newly created ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function create($uniqueName, $options = array()) {
         $options = new Values($options);
@@ -138,6 +139,7 @@ class ServiceList extends ListResource {
             'NumberSelectionBehavior' => $options['numberSelectionBehavior'],
             'InterceptCallbackUrl' => $options['interceptCallbackUrl'],
             'OutOfSessionCallbackUrl' => $options['outOfSessionCallbackUrl'],
+            'ChatInstanceSid' => $options['chatInstanceSid'],
         ));
 
         $payload = $this->version->create(

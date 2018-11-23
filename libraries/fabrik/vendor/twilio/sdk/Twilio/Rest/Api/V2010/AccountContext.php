@@ -16,6 +16,7 @@ use Twilio\Rest\Api\V2010\Account\AddressList;
 use Twilio\Rest\Api\V2010\Account\ApplicationList;
 use Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList;
 use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList;
+use Twilio\Rest\Api\V2010\Account\BalanceList;
 use Twilio\Rest\Api\V2010\Account\CallList;
 use Twilio\Rest\Api\V2010\Account\ConferenceList;
 use Twilio\Rest\Api\V2010\Account\ConnectAppList;
@@ -43,6 +44,7 @@ use Twilio\Version;
  * @property \Twilio\Rest\Api\V2010\Account\ApplicationList applications
  * @property \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList authorizedConnectApps
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList availablePhoneNumbers
+ * @property \Twilio\Rest\Api\V2010\Account\BalanceList balance
  * @property \Twilio\Rest\Api\V2010\Account\CallList calls
  * @property \Twilio\Rest\Api\V2010\Account\ConferenceList conferences
  * @property \Twilio\Rest\Api\V2010\Account\ConnectAppList connectApps
@@ -85,6 +87,7 @@ class AccountContext extends InstanceContext {
     protected $_applications = null;
     protected $_authorizedConnectApps = null;
     protected $_availablePhoneNumbers = null;
+    protected $_balance = null;
     protected $_calls = null;
     protected $_conferences = null;
     protected $_connectApps = null;
@@ -125,6 +128,7 @@ class AccountContext extends InstanceContext {
      * Fetch a AccountInstance
      * 
      * @return AccountInstance Fetched AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -143,6 +147,7 @@ class AccountContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return AccountInstance Updated AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -195,7 +200,10 @@ class AccountContext extends InstanceContext {
      */
     protected function getAuthorizedConnectApps() {
         if (!$this->_authorizedConnectApps) {
-            $this->_authorizedConnectApps = new AuthorizedConnectAppList($this->version, $this->solution['sid']);
+            $this->_authorizedConnectApps = new AuthorizedConnectAppList(
+                $this->version,
+                $this->solution['sid']
+            );
         }
 
         return $this->_authorizedConnectApps;
@@ -215,6 +223,19 @@ class AccountContext extends InstanceContext {
         }
 
         return $this->_availablePhoneNumbers;
+    }
+
+    /**
+     * Access the balance
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\BalanceList 
+     */
+    protected function getBalance() {
+        if (!$this->_balance) {
+            $this->_balance = new BalanceList($this->version, $this->solution['sid']);
+        }
+
+        return $this->_balance;
     }
 
     /**

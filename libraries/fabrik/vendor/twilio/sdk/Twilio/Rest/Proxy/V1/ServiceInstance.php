@@ -22,6 +22,7 @@ use Twilio\Version;
  * @property string sid
  * @property string uniqueName
  * @property string accountSid
+ * @property string chatInstanceSid
  * @property string callbackUrl
  * @property integer defaultTtl
  * @property string numberSelectionBehavior
@@ -54,6 +55,7 @@ class ServiceInstance extends InstanceResource {
             'sid' => Values::array_get($payload, 'sid'),
             'uniqueName' => Values::array_get($payload, 'unique_name'),
             'accountSid' => Values::array_get($payload, 'account_sid'),
+            'chatInstanceSid' => Values::array_get($payload, 'chat_instance_sid'),
             'callbackUrl' => Values::array_get($payload, 'callback_url'),
             'defaultTtl' => Values::array_get($payload, 'default_ttl'),
             'numberSelectionBehavior' => Values::array_get($payload, 'number_selection_behavior'),
@@ -87,6 +89,7 @@ class ServiceInstance extends InstanceResource {
      * Fetch a ServiceInstance
      * 
      * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -96,6 +99,7 @@ class ServiceInstance extends InstanceResource {
      * Deletes the ServiceInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -106,6 +110,7 @@ class ServiceInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);

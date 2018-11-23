@@ -31,7 +31,7 @@ class RecordingContext extends InstanceContext {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param string $accountSid The account_sid
-     * @param string $sid Fetch by unique recording Sid
+     * @param string $sid Fetch by unique recording SID
      * @return \Twilio\Rest\Api\V2010\Account\RecordingContext 
      */
     public function __construct(Version $version, $accountSid, $sid) {
@@ -47,6 +47,7 @@ class RecordingContext extends InstanceContext {
      * Fetch a RecordingInstance
      * 
      * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -69,6 +70,7 @@ class RecordingContext extends InstanceContext {
      * Deletes the RecordingInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);

@@ -12,7 +12,7 @@ abstract class ApiResource extends StripeObject
     use ApiOperations\Request;
 
     /**
-     * @return Stripe\Util\Set A list of fields that can be their own type of
+     * @return \Stripe\Util\Set A list of fields that can be their own type of
      * API resource (say a nested card under an account for example), and if
      * that resource is set, it should be transmitted to the API on a create or
      * update. Doing so is not the default behavior because API resources
@@ -26,14 +26,6 @@ abstract class ApiResource extends StripeObject
         }
         return $savedNestedResources;
     }
-
-    /**
-     * @var array A list of headers that should be persisted across requests.
-     */
-    private static $HEADERS_TO_PERSIST = [
-        'Stripe-Account' => true,
-        'Stripe-Version' => true
-    ];
 
     /**
      * @var boolean A flag that can be set a behavior that will cause this
@@ -75,30 +67,6 @@ abstract class ApiResource extends StripeObject
     }
 
     /**
-     * @return string The name of the class, with namespacing and underscores
-     *    stripped.
-     */
-    public static function className()
-    {
-        $class = get_called_class();
-        // Useful for namespaces: Foo\Charge
-        if ($postfixNamespaces = strrchr($class, '\\')) {
-            $class = substr($postfixNamespaces, 1);
-        }
-        // Useful for underscored 'namespaces': Foo_Charge
-        if ($postfixFakeNamespaces = strrchr($class, '')) {
-            $class = $postfixFakeNamespaces;
-        }
-        if (substr($class, 0, strlen('Stripe')) == 'Stripe') {
-            $class = substr($class, strlen('Stripe'));
-        }
-        $class = str_replace('_', '', $class);
-        $name = urlencode($class);
-        $name = strtolower($name);
-        return $name;
-    }
-
-    /**
      * @return string The base URL for the given class.
      */
     public static function baseUrl()
@@ -111,7 +79,9 @@ abstract class ApiResource extends StripeObject
      */
     public static function classUrl()
     {
-        $base = static::className();
+        // Replace dots with slashes for namespaced resources, e.g. if the object's name is
+        // "foo.bar", then its URL will be "/v1/foo/bars".
+        $base = str_replace('.', '/', static::OBJECT_NAME);
         return "/v1/${base}s";
     }
 

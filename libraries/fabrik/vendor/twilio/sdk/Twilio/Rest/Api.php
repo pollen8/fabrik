@@ -21,6 +21,7 @@ use Twilio\Rest\Api\V2010;
  * @property \Twilio\Rest\Api\V2010\Account\ApplicationList applications
  * @property \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList authorizedConnectApps
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList availablePhoneNumbers
+ * @property \Twilio\Rest\Api\V2010\Account\BalanceList balance
  * @property \Twilio\Rest\Api\V2010\Account\CallList calls
  * @property \Twilio\Rest\Api\V2010\Account\ConferenceList conferences
  * @property \Twilio\Rest\Api\V2010\Account\ConnectAppList connectApps
@@ -202,6 +203,13 @@ class Api extends Domain {
     }
 
     /**
+     * @return \Twilio\Rest\Api\V2010\Account\BalanceList 
+     */
+    protected function getBalance() {
+        return $this->v2010->account->balance;
+    }
+
+    /**
      * @return \Twilio\Rest\Api\V2010\Account\CallList 
      */
     protected function getCalls() {
@@ -358,7 +366,7 @@ class Api extends Domain {
     }
 
     /**
-     * @param string $sid Fetch by unique recording Sid
+     * @param string $sid Fetch by unique recording SID
      * @return \Twilio\Rest\Api\V2010\Account\RecordingContext 
      */
     protected function contextRecordings($sid) {
@@ -417,7 +425,7 @@ class Api extends Domain {
     }
 
     /**
-     * @param string $sid Fetch by unique transcription Sid
+     * @param string $sid Fetch by unique transcription SID
      * @return \Twilio\Rest\Api\V2010\Account\TranscriptionContext 
      */
     protected function contextTranscriptions($sid) {

@@ -95,8 +95,8 @@ class EventList extends ListResource {
             'EventType' => $options['eventType'],
             'ResourceSid' => $options['resourceSid'],
             'SourceIpAddress' => $options['sourceIpAddress'],
-            'StartDate' => Serialize::iso8601Date($options['startDate']),
-            'EndDate' => Serialize::iso8601Date($options['endDate']),
+            'StartDate' => Serialize::iso8601DateTime($options['startDate']),
+            'EndDate' => Serialize::iso8601DateTime($options['endDate']),
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
@@ -130,7 +130,7 @@ class EventList extends ListResource {
     /**
      * Constructs a EventContext
      * 
-     * @param string $sid The sid
+     * @param string $sid A 34 character string that uniquely identifies this event.
      * @return \Twilio\Rest\Monitor\V1\EventContext 
      */
     public function getContext($sid) {

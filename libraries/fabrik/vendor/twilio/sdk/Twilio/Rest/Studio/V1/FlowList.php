@@ -13,9 +13,6 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-/**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- */
 class FlowList extends ListResource {
     /**
      * Construct the FlowList
@@ -121,7 +118,7 @@ class FlowList extends ListResource {
     /**
      * Constructs a FlowContext
      * 
-     * @param string $sid The sid
+     * @param string $sid A string that uniquely identifies this Flow.
      * @return \Twilio\Rest\Studio\V1\FlowContext 
      */
     public function getContext($sid) {

@@ -12,7 +12,7 @@ trait Request
     /**
      * @param array|null|mixed $params The list of parameters to validate
      *
-     * @throws Stripe\Error\Api if $params exists and is not an array
+     * @throws \Stripe\Error\Api if $params exists and is not an array
      */
     protected static function _validateParams($params = null)
     {
@@ -21,7 +21,7 @@ trait Request
                . "method calls.  (HINT: an example call to create a charge "
                . "would be: \"Stripe\\Charge::create(['amount' => 100, "
                . "'currency' => 'usd', 'source' => 'tok_1234'])\")";
-            throw new Error\Api($message);
+            throw new \Stripe\Error\Api($message);
         }
     }
 
@@ -52,13 +52,10 @@ trait Request
     protected static function _staticRequest($method, $url, $params, $options)
     {
         $opts = \Stripe\Util\RequestOptions::parse($options);
-        $requestor = new \Stripe\ApiRequestor($opts->apiKey, static::baseUrl());
+        $baseUrl = isset($opts->apiBase) ? $opts->apiBase : static::baseUrl();
+        $requestor = new \Stripe\ApiRequestor($opts->apiKey, $baseUrl);
         list($response, $opts->apiKey) = $requestor->request($method, $url, $params, $opts->headers);
-        foreach ($opts->headers as $k => $v) {
-            if (!array_key_exists($k, self::$HEADERS_TO_PERSIST)) {
-                unset($opts->headers[$k]);
-            }
-        }
+        $opts->discardNonPersistentHeaders();
         return [$response, $opts];
     }
 }

@@ -20,6 +20,8 @@ use Twilio\VersionInfo;
  * 
  * @property \Twilio\Rest\Accounts accounts
  * @property \Twilio\Rest\Api api
+ * @property \Twilio\Rest\Authy authy
+ * @property \Twilio\Rest\Autopilot autopilot
  * @property \Twilio\Rest\Chat chat
  * @property \Twilio\Rest\Fax fax
  * @property \Twilio\Rest\IpMessaging ipMessaging
@@ -36,11 +38,14 @@ use Twilio\VersionInfo;
  * @property \Twilio\Rest\Wireless wireless
  * @property \Twilio\Rest\Sync sync
  * @property \Twilio\Rest\Studio studio
+ * @property \Twilio\Rest\Verify verify
+ * @property \Twilio\Rest\Voice voice
  * @property \Twilio\Rest\Api\V2010\AccountInstance account
  * @property \Twilio\Rest\Api\V2010\Account\AddressList addresses
  * @property \Twilio\Rest\Api\V2010\Account\ApplicationList applications
  * @property \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList authorizedConnectApps
  * @property \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList availablePhoneNumbers
+ * @property \Twilio\Rest\Api\V2010\Account\BalanceList balance
  * @property \Twilio\Rest\Api\V2010\Account\CallList calls
  * @property \Twilio\Rest\Api\V2010\Account\ConferenceList conferences
  * @property \Twilio\Rest\Api\V2010\Account\ConnectAppList connectApps
@@ -91,6 +96,8 @@ class Client {
     protected $_account;
     protected $_accounts = null;
     protected $_api = null;
+    protected $_authy = null;
+    protected $_autopilot = null;
     protected $_chat = null;
     protected $_fax = null;
     protected $_ipMessaging = null;
@@ -107,6 +114,8 @@ class Client {
     protected $_wireless = null;
     protected $_sync = null;
     protected $_studio = null;
+    protected $_verify = null;
+    protected $_voice = null;
 
     /**
      * Initializes the Twilio Client
@@ -355,6 +364,13 @@ class Client {
     }
 
     /**
+     * @return \Twilio\Rest\Api\V2010\Account\BalanceList 
+     */
+    protected function getBalance() {
+        return $this->api->v2010->account->balance;
+    }
+
+    /**
      * @return \Twilio\Rest\Api\V2010\Account\CallList 
      */
     protected function getCalls() {
@@ -511,7 +527,7 @@ class Client {
     }
 
     /**
-     * @param string $sid Fetch by unique recording Sid
+     * @param string $sid Fetch by unique recording SID
      * @return \Twilio\Rest\Api\V2010\Account\RecordingContext 
      */
     protected function contextRecordings($sid) {
@@ -570,7 +586,7 @@ class Client {
     }
 
     /**
-     * @param string $sid Fetch by unique transcription Sid
+     * @param string $sid Fetch by unique transcription SID
      * @return \Twilio\Rest\Api\V2010\Account\TranscriptionContext 
      */
     protected function contextTranscriptions($sid) {
@@ -589,6 +605,30 @@ class Client {
      */
     protected function getValidationRequests() {
         return $this->api->v2010->account->validationRequests;
+    }
+
+    /**
+     * Access the Authy Twilio Domain
+     * 
+     * @return \Twilio\Rest\Authy Authy Twilio Domain
+     */
+    protected function getAuthy() {
+        if (!$this->_authy) {
+            $this->_authy = new Authy($this);
+        }
+        return $this->_authy;
+    }
+
+    /**
+     * Access the Autopilot Twilio Domain
+     * 
+     * @return \Twilio\Rest\Autopilot Autopilot Twilio Domain
+     */
+    protected function getAutopilot() {
+        if (!$this->_autopilot) {
+            $this->_autopilot = new Autopilot($this);
+        }
+        return $this->_autopilot;
     }
 
     /**
@@ -784,6 +824,30 @@ class Client {
     }
 
     /**
+     * Access the Verify Twilio Domain
+     * 
+     * @return \Twilio\Rest\Verify Verify Twilio Domain
+     */
+    protected function getVerify() {
+        if (!$this->_verify) {
+            $this->_verify = new Verify($this);
+        }
+        return $this->_verify;
+    }
+
+    /**
+     * Access the Voice Twilio Domain
+     * 
+     * @return \Twilio\Rest\Voice Voice Twilio Domain
+     */
+    protected function getVoice() {
+        if (!$this->_voice) {
+            $this->_voice = new Voice($this);
+        }
+        return $this->_voice;
+    }
+
+    /**
      * Magic getter to lazy load domains
      * 
      * @param string $name Domain to return
@@ -823,5 +887,19 @@ class Client {
      */
     public function __toString() {
         return '[Client ' . $this->getAccountSid() . ']';
+    }
+
+    /**
+     * Validates connection to new SSL certificate endpoint
+     * 
+     * @param CurlClient $client 
+     * @throws TwilioException if request fails
+     */
+    public function validateSslCertificate($client) {
+        $response = $client->request('GET', 'https://api.twilio.com:8443');
+
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() > 300) {
+            throw new TwilioException("Failed to validate SSL certificate");
+        }
     }
 }

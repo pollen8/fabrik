@@ -11,18 +11,16 @@ namespace Twilio\Rest\Studio\V1\Flow;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
-/**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- */
 class EngagementList extends ListResource {
     /**
      * Construct the EngagementList
      * 
      * @param Version $version Version that contains the resource
-     * @param string $flowSid The flow_sid
+     * @param string $flowSid Flow Sid.
      * @return \Twilio\Rest\Studio\V1\Flow\EngagementList 
      */
     public function __construct(Version $version, $flowSid) {
@@ -123,15 +121,21 @@ class EngagementList extends ListResource {
     /**
      * Create a new EngagementInstance
      * 
-     * @param string $to The to
-     * @param string $from The from
+     * @param string $to The Contact phone number to start a Studio Flow Engagement.
+     * @param string $from The Twilio phone number to send messages or initiate
+     *                     calls from during the Flow Engagement.
      * @param array|Options $options Optional Arguments
      * @return EngagementInstance Newly created EngagementInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function create($to, $from, $options = array()) {
         $options = new Values($options);
 
-        $data = Values::of(array('To' => $to, 'From' => $from, 'Parameters' => $options['parameters'], ));
+        $data = Values::of(array(
+            'To' => $to,
+            'From' => $from,
+            'Parameters' => Serialize::jsonObject($options['parameters']),
+        ));
 
         $payload = $this->version->create(
             'POST',
@@ -146,7 +150,7 @@ class EngagementList extends ListResource {
     /**
      * Constructs a EngagementContext
      * 
-     * @param string $sid The sid
+     * @param string $sid Engagement Sid.
      * @return \Twilio\Rest\Studio\V1\Flow\EngagementContext 
      */
     public function getContext($sid) {

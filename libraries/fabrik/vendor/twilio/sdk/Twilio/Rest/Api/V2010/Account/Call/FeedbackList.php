@@ -18,8 +18,8 @@ class FeedbackList extends ListResource {
      * 
      * @param Version $version Version that contains the resource
      * @param string $accountSid The account_sid
-     * @param string $callSid A 34 character string that uniquely identifies this
-     *                        resource.
+     * @param string $callSid A 34-character string that uniquely identifies the
+     *                        Call resource.
      * @return \Twilio\Rest\Api\V2010\Account\Call\FeedbackList 
      */
     public function __construct(Version $version, $accountSid, $callSid) {
@@ -35,7 +35,11 @@ class FeedbackList extends ListResource {
      * @return \Twilio\Rest\Api\V2010\Account\Call\FeedbackContext 
      */
     public function getContext() {
-        return new FeedbackContext($this->version, $this->solution['accountSid'], $this->solution['callSid']);
+        return new FeedbackContext(
+            $this->version,
+            $this->solution['accountSid'],
+            $this->solution['callSid']
+        );
     }
 
     /**

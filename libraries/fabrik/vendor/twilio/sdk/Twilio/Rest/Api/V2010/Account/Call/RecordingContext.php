@@ -10,6 +10,7 @@
 namespace Twilio\Rest\Api\V2010\Account\Call;
 
 use Twilio\InstanceContext;
+use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -19,8 +20,8 @@ class RecordingContext extends InstanceContext {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param string $accountSid The account_sid
-     * @param string $callSid The call_sid
-     * @param string $sid The sid
+     * @param string $callSid Fetch by unique call Sid for the recording
+     * @param string $sid Fetch by unique recording Sid
      * @return \Twilio\Rest\Api\V2010\Account\Call\RecordingContext 
      */
     public function __construct(Version $version, $accountSid, $callSid, $sid) {
@@ -33,9 +34,39 @@ class RecordingContext extends InstanceContext {
     }
 
     /**
+     * Update the RecordingInstance
+     * 
+     * @param string $status The status to change the recording to.
+     * @param array|Options $options Optional Arguments
+     * @return RecordingInstance Updated RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update($status, $options = array()) {
+        $options = new Values($options);
+
+        $data = Values::of(array('Status' => $status, 'PauseBehavior' => $options['pauseBehavior'], ));
+
+        $payload = $this->version->update(
+            'POST',
+            $this->uri,
+            array(),
+            $data
+        );
+
+        return new RecordingInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['callSid'],
+            $this->solution['sid']
+        );
+    }
+
+    /**
      * Fetch a RecordingInstance
      * 
      * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -59,6 +90,7 @@ class RecordingContext extends InstanceContext {
      * Deletes the RecordingInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);

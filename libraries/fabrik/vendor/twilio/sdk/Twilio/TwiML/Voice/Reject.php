@@ -18,14 +18,14 @@ class Reject extends TwiML {
      * @param array $attributes Optional attributes
      */
     public function __construct($attributes = array()) {
-        parent::__construct('Reject', $attributes);
+        parent::__construct('Reject', null, $attributes);
     }
 
     /**
      * Add Reason attribute.
      * 
      * @param reject:Enum:Reason $reason Rejection reason
-     * @return TwiML $this.
+     * @return $this
      */
     public function setReason($reason) {
         return $this->setAttribute('reason', $reason);

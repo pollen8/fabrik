@@ -24,13 +24,15 @@ use Twilio\Version;
  * @property string dateCompleted
  * @property string dateDeleted
  * @property string sid
+ * @property string roomSid
  * @property string audioSources
- * @property string videoSources
- * @property string videoLayout
+ * @property string audioSourcesExcluded
+ * @property array videoLayout
  * @property string resolution
+ * @property boolean trim
  * @property string format
  * @property integer bitrate
- * @property integer size
+ * @property string size
  * @property integer duration
  * @property string url
  * @property array links
@@ -41,7 +43,8 @@ class CompositionInstance extends InstanceResource {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid The sid
+     * @param string $sid The Composition Sid that uniquely identifies the
+     *                    Composition to fetch.
      * @return \Twilio\Rest\Video\V1\CompositionInstance 
      */
     public function __construct(Version $version, array $payload, $sid = null) {
@@ -55,10 +58,12 @@ class CompositionInstance extends InstanceResource {
             'dateCompleted' => Values::array_get($payload, 'date_completed'),
             'dateDeleted' => Values::array_get($payload, 'date_deleted'),
             'sid' => Values::array_get($payload, 'sid'),
+            'roomSid' => Values::array_get($payload, 'room_sid'),
             'audioSources' => Values::array_get($payload, 'audio_sources'),
-            'videoSources' => Values::array_get($payload, 'video_sources'),
+            'audioSourcesExcluded' => Values::array_get($payload, 'audio_sources_excluded'),
             'videoLayout' => Values::array_get($payload, 'video_layout'),
             'resolution' => Values::array_get($payload, 'resolution'),
+            'trim' => Values::array_get($payload, 'trim'),
             'format' => Values::array_get($payload, 'format'),
             'bitrate' => Values::array_get($payload, 'bitrate'),
             'size' => Values::array_get($payload, 'size'),
@@ -89,6 +94,7 @@ class CompositionInstance extends InstanceResource {
      * Fetch a CompositionInstance
      * 
      * @return CompositionInstance Fetched CompositionInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -98,6 +104,7 @@ class CompositionInstance extends InstanceResource {
      * Deletes the CompositionInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();

@@ -20,9 +20,10 @@ class MemberContext extends InstanceContext {
      * Initialize the MemberContext
      * 
      * @param \Twilio\Version $version Version that contains the resource
-     * @param string $serviceSid The service_sid
-     * @param string $channelSid The channel_sid
-     * @param string $sid The sid
+     * @param string $serviceSid Sid of the Service this member belongs to.
+     * @param string $channelSid Key that uniquely defines the channel this member
+     *                           belongs to.
+     * @param string $sid Key that uniquely defines the member to fetch.
      * @return \Twilio\Rest\IpMessaging\V2\Service\Channel\MemberContext 
      */
     public function __construct(Version $version, $serviceSid, $channelSid, $sid) {
@@ -38,6 +39,7 @@ class MemberContext extends InstanceContext {
      * Fetch a MemberInstance
      * 
      * @return MemberInstance Fetched MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -61,6 +63,7 @@ class MemberContext extends InstanceContext {
      * Deletes the MemberInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -71,6 +74,7 @@ class MemberContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return MemberInstance Updated MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);

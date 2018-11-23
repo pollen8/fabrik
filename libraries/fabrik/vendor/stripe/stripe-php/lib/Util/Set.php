@@ -2,8 +2,8 @@
 
 namespace Stripe\Util;
 
-use ArrayIterator;
 use IteratorAggregate;
+use ArrayIterator;
 
 class Set implements IteratorAggregate
 {

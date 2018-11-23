@@ -20,6 +20,7 @@ use Twilio\Version;
 /**
  * @property \Twilio\Rest\IpMessaging\V2\Service\User\UserChannelList userChannels
  * @property \Twilio\Rest\IpMessaging\V2\Service\User\UserBindingList userBindings
+ * @method \Twilio\Rest\IpMessaging\V2\Service\User\UserChannelContext userChannels(string $channelSid)
  * @method \Twilio\Rest\IpMessaging\V2\Service\User\UserBindingContext userBindings(string $sid)
  */
 class UserContext extends InstanceContext {
@@ -30,8 +31,8 @@ class UserContext extends InstanceContext {
      * Initialize the UserContext
      * 
      * @param \Twilio\Version $version Version that contains the resource
-     * @param string $serviceSid The service_sid
-     * @param string $sid The sid
+     * @param string $serviceSid Sid of the Service this user belongs to.
+     * @param string $sid Key that uniquely defines the user to fetch.
      * @return \Twilio\Rest\IpMessaging\V2\Service\UserContext 
      */
     public function __construct(Version $version, $serviceSid, $sid) {
@@ -47,6 +48,7 @@ class UserContext extends InstanceContext {
      * Fetch a UserInstance
      * 
      * @return UserInstance Fetched UserInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -69,6 +71,7 @@ class UserContext extends InstanceContext {
      * Deletes the UserInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -79,6 +82,7 @@ class UserContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return UserInstance Updated UserInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);

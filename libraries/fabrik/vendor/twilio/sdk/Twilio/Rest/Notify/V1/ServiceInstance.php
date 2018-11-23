@@ -41,8 +41,6 @@ use Twilio\Version;
 class ServiceInstance extends InstanceResource {
     protected $_bindings = null;
     protected $_notifications = null;
-    protected $_users = null;
-    protected $_segments = null;
 
     /**
      * Initialize the ServiceInstance
@@ -99,6 +97,7 @@ class ServiceInstance extends InstanceResource {
      * Deletes the ServiceInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -108,6 +107,7 @@ class ServiceInstance extends InstanceResource {
      * Fetch a ServiceInstance
      * 
      * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -118,6 +118,7 @@ class ServiceInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);
@@ -139,24 +140,6 @@ class ServiceInstance extends InstanceResource {
      */
     protected function getNotifications() {
         return $this->proxy()->notifications;
-    }
-
-    /**
-     * Access the users
-     * 
-     * @return \Twilio\Rest\Notify\V1\Service\UserList 
-     */
-    protected function getUsers() {
-        return $this->proxy()->users;
-    }
-
-    /**
-     * Access the segments
-     * 
-     * @return \Twilio\Rest\Notify\V1\Service\SegmentList 
-     */
-    protected function getSegments() {
-        return $this->proxy()->segments;
     }
 
     /**

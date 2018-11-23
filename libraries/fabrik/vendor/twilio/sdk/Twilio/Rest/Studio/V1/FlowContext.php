@@ -12,23 +12,25 @@ namespace Twilio\Rest\Studio\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Rest\Studio\V1\Flow\EngagementList;
+use Twilio\Rest\Studio\V1\Flow\ExecutionList;
 use Twilio\Values;
 use Twilio\Version;
 
 /**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- * 
  * @property \Twilio\Rest\Studio\V1\Flow\EngagementList engagements
+ * @property \Twilio\Rest\Studio\V1\Flow\ExecutionList executions
  * @method \Twilio\Rest\Studio\V1\Flow\EngagementContext engagements(string $sid)
+ * @method \Twilio\Rest\Studio\V1\Flow\ExecutionContext executions(string $sid)
  */
 class FlowContext extends InstanceContext {
     protected $_engagements = null;
+    protected $_executions = null;
 
     /**
      * Initialize the FlowContext
      * 
      * @param \Twilio\Version $version Version that contains the resource
-     * @param string $sid The sid
+     * @param string $sid A string that uniquely identifies this Flow.
      * @return \Twilio\Rest\Studio\V1\FlowContext 
      */
     public function __construct(Version $version, $sid) {
@@ -44,6 +46,7 @@ class FlowContext extends InstanceContext {
      * Fetch a FlowInstance
      * 
      * @return FlowInstance Fetched FlowInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -61,6 +64,7 @@ class FlowContext extends InstanceContext {
      * Deletes the FlowInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -77,6 +81,19 @@ class FlowContext extends InstanceContext {
         }
 
         return $this->_engagements;
+    }
+
+    /**
+     * Access the executions
+     * 
+     * @return \Twilio\Rest\Studio\V1\Flow\ExecutionList 
+     */
+    protected function getExecutions() {
+        if (!$this->_executions) {
+            $this->_executions = new ExecutionList($this->version, $this->solution['sid']);
+        }
+
+        return $this->_executions;
     }
 
     /**

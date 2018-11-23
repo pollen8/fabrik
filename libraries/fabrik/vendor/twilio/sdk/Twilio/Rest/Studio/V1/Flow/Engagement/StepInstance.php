@@ -16,8 +16,6 @@ use Twilio\Values;
 use Twilio\Version;
 
 /**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- * 
  * @property string sid
  * @property string accountSid
  * @property string flowSid
@@ -29,16 +27,19 @@ use Twilio\Version;
  * @property \DateTime dateCreated
  * @property \DateTime dateUpdated
  * @property string url
+ * @property array links
  */
 class StepInstance extends InstanceResource {
+    protected $_stepContext = null;
+
     /**
      * Initialize the StepInstance
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $flowSid The flow_sid
-     * @param string $engagementSid The engagement_sid
-     * @param string $sid The sid
+     * @param string $flowSid Flow Sid.
+     * @param string $engagementSid Engagement Sid.
+     * @param string $sid Step Sid.
      * @return \Twilio\Rest\Studio\V1\Flow\Engagement\StepInstance 
      */
     public function __construct(Version $version, array $payload, $flowSid, $engagementSid, $sid = null) {
@@ -57,6 +58,7 @@ class StepInstance extends InstanceResource {
             'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
             'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
             'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
         );
 
         $this->solution = array(
@@ -90,9 +92,19 @@ class StepInstance extends InstanceResource {
      * Fetch a StepInstance
      * 
      * @return StepInstance Fetched StepInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
+    }
+
+    /**
+     * Access the stepContext
+     * 
+     * @return \Twilio\Rest\Studio\V1\Flow\Engagement\Step\StepContextList 
+     */
+    protected function getStepContext() {
+        return $this->proxy()->stepContext;
     }
 
     /**

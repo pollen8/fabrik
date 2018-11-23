@@ -68,7 +68,11 @@ class KeyInstance extends InstanceResource {
      */
     protected function proxy() {
         if (!$this->context) {
-            $this->context = new KeyContext($this->version, $this->solution['fleetSid'], $this->solution['sid']);
+            $this->context = new KeyContext(
+                $this->version,
+                $this->solution['fleetSid'],
+                $this->solution['sid']
+            );
         }
 
         return $this->context;
@@ -78,6 +82,7 @@ class KeyInstance extends InstanceResource {
      * Fetch a KeyInstance
      * 
      * @return KeyInstance Fetched KeyInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -87,6 +92,7 @@ class KeyInstance extends InstanceResource {
      * Deletes the KeyInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -97,6 +103,7 @@ class KeyInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return KeyInstance Updated KeyInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);

@@ -2,15 +2,21 @@
 
 namespace Mpdf;
 
+use Mpdf\Strict;
+
 use Mpdf\Css\TextVars;
 use Mpdf\Fonts\FontCache;
+
 use Mpdf\Shaper\Indic;
 use Mpdf\Shaper\Myanmar;
 use Mpdf\Shaper\Sea;
+
 use Mpdf\Utils\UtfString;
 
 class Otl
 {
+
+	use Strict;
 
 	const _OTL_OLD_SPEC_COMPAT_1 = true;
 	const _DICT_NODE_TYPE_SPLIT = 0x01;
@@ -97,6 +103,8 @@ class Otl
 	var $GSUBLookups;
 
 	var $schOTLdata;
+
+	var $lastBidiStrongType;
 
 	var $debugOTL = false;
 
@@ -291,13 +299,12 @@ class Otl
 				}
 			}
 
-			////////////////////////////////////////////////////////////////
 			// This is just for the font_dump_OTL utility to set script and langsys override
-			if (isset($this->mpdf->overrideOTLsettings) && isset($this->mpdf->overrideOTLsettings[$this->fontkey])) {
+			// $mpdf->overrideOTLsettings does not exist, this is never called
+			/*if (isset($this->mpdf->overrideOTLsettings) && isset($this->mpdf->overrideOTLsettings[$this->fontkey])) {
 				$GSUBscriptTag = $GPOSscriptTag = $this->mpdf->overrideOTLsettings[$this->fontkey]['script'];
 				$GSUBlangsys = $GPOSlangsys = $this->mpdf->overrideOTLsettings[$this->fontkey]['lang'];
-			}
-			////////////////////////////////////////////////////////////////
+			}*/
 
 			if (!$GSUBscriptTag && !$GSUBlangsys && !$GPOSscriptTag && !$GPOSlangsys) {
 				// Remove ZWJ and ZWNJ
@@ -5614,7 +5621,6 @@ class Otl
 			}
 		}
 
-
 		// L2. From the highest level found in the text to the lowest odd level on each line, including intermediate levels not actually present in the text, reverse any contiguous sequence of characters that are at that level or higher.
 		for ($j = $maxlevel; $j > 0; $j--) {
 			$ordarray = [];
@@ -5649,8 +5655,6 @@ class Otl
 		$content = [];
 		$cOTLdata = [];
 		$chunkorder = [];
-
-
 
 		$nc = -1; // New chunk order ID
 		$chunkid = -1;
@@ -5783,7 +5787,7 @@ class Otl
 
 	public function trimOTLdata(&$cOTLdata, $Left = true, $Right = true)
 	{
-		$len = count($cOTLdata['char_data']);
+		$len = $cOTLdata['char_data'] === null ? 0 : count($cOTLdata['char_data']);
 		$nLeft = 0;
 		$nRight = 0;
 		for ($i = 0; $i < $len; $i++) {

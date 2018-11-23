@@ -44,7 +44,8 @@ class RoomInstance extends InstanceResource {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid The sid
+     * @param string $sid The Room Sid or name that uniquely identifies this
+     *                    resource.
      * @return \Twilio\Rest\Video\V1\RoomInstance 
      */
     public function __construct(Version $version, array $payload, $sid = null) {
@@ -93,6 +94,7 @@ class RoomInstance extends InstanceResource {
      * Fetch a RoomInstance
      * 
      * @return RoomInstance Fetched RoomInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -101,8 +103,9 @@ class RoomInstance extends InstanceResource {
     /**
      * Update the RoomInstance
      * 
-     * @param string $status The status
+     * @param string $status Set to completed to end the Room.
      * @return RoomInstance Updated RoomInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($status) {
         return $this->proxy()->update($status);

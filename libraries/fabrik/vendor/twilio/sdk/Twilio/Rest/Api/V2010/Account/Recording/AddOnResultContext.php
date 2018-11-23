@@ -35,7 +35,11 @@ class AddOnResultContext extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = array('accountSid' => $accountSid, 'referenceSid' => $referenceSid, 'sid' => $sid, );
+        $this->solution = array(
+            'accountSid' => $accountSid,
+            'referenceSid' => $referenceSid,
+            'sid' => $sid,
+        );
 
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Recordings/' . rawurlencode($referenceSid) . '/AddOnResults/' . rawurlencode($sid) . '.json';
     }
@@ -44,6 +48,7 @@ class AddOnResultContext extends InstanceContext {
      * Fetch a AddOnResultInstance
      * 
      * @return AddOnResultInstance Fetched AddOnResultInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -67,6 +72,7 @@ class AddOnResultContext extends InstanceContext {
      * Deletes the AddOnResultInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);

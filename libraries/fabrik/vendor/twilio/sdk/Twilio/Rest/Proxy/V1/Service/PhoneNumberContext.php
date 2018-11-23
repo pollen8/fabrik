@@ -10,6 +10,8 @@
 namespace Twilio\Rest\Proxy\V1\Service;
 
 use Twilio\InstanceContext;
+use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -38,6 +40,7 @@ class PhoneNumberContext extends InstanceContext {
      * Deletes the PhoneNumberInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -47,6 +50,7 @@ class PhoneNumberContext extends InstanceContext {
      * Fetch a PhoneNumberInstance
      * 
      * @return PhoneNumberInstance Fetched PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -55,6 +59,33 @@ class PhoneNumberContext extends InstanceContext {
             'GET',
             $this->uri,
             $params
+        );
+
+        return new PhoneNumberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sid']
+        );
+    }
+
+    /**
+     * Update the PhoneNumberInstance
+     * 
+     * @param array|Options $options Optional Arguments
+     * @return PhoneNumberInstance Updated PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update($options = array()) {
+        $options = new Values($options);
+
+        $data = Values::of(array('IsReserved' => Serialize::booleanToString($options['isReserved']), ));
+
+        $payload = $this->version->update(
+            'POST',
+            $this->uri,
+            array(),
+            $data
         );
 
         return new PhoneNumberInstance(

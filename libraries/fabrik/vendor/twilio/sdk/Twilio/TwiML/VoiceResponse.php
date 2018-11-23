@@ -14,7 +14,17 @@ class VoiceResponse extends TwiML {
      * VoiceResponse constructor.
      */
     public function __construct() {
-        parent::__construct('Response');
+        parent::__construct('Response', null);
+    }
+
+    /**
+     * Add Connect child.
+     * 
+     * @param array $attributes Optional attributes
+     * @return TwiML Child element.
+     */
+    public function connect($attributes = array()) {
+        return $this->nest(new Voice\Connect($attributes));
     }
 
     /**
@@ -159,5 +169,25 @@ class VoiceResponse extends TwiML {
      */
     public function sms($message, $attributes = array()) {
         return $this->nest(new Voice\Sms($message, $attributes));
+    }
+
+    /**
+     * Add Pay child.
+     * 
+     * @param array $attributes Optional attributes
+     * @return TwiML Child element.
+     */
+    public function pay($attributes = array()) {
+        return $this->nest(new Voice\Pay($attributes));
+    }
+
+    /**
+     * Add Prompt child.
+     * 
+     * @param array $attributes Optional attributes
+     * @return TwiML Child element.
+     */
+    public function prompt($attributes = array()) {
+        return $this->nest(new Voice\Prompt($attributes));
     }
 }

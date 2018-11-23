@@ -33,6 +33,7 @@ class AccountInstance extends InstanceResource {
     protected $_applications = null;
     protected $_authorizedConnectApps = null;
     protected $_availablePhoneNumbers = null;
+    protected $_balance = null;
     protected $_calls = null;
     protected $_conferences = null;
     protected $_connectApps = null;
@@ -100,6 +101,7 @@ class AccountInstance extends InstanceResource {
      * Fetch a AccountInstance
      * 
      * @return AccountInstance Fetched AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -110,6 +112,7 @@ class AccountInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return AccountInstance Updated AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);
@@ -149,6 +152,15 @@ class AccountInstance extends InstanceResource {
      */
     protected function getAvailablePhoneNumbers() {
         return $this->proxy()->availablePhoneNumbers;
+    }
+
+    /**
+     * Access the balance
+     * 
+     * @return \Twilio\Rest\Api\V2010\Account\BalanceList 
+     */
+    protected function getBalance() {
+        return $this->proxy()->balance;
     }
 
     /**

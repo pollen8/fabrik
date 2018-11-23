@@ -39,6 +39,7 @@ class KeyContext extends InstanceContext {
      * Fetch a KeyInstance
      * 
      * @return KeyInstance Fetched KeyInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -49,13 +50,19 @@ class KeyContext extends InstanceContext {
             $params
         );
 
-        return new KeyInstance($this->version, $payload, $this->solution['fleetSid'], $this->solution['sid']);
+        return new KeyInstance(
+            $this->version,
+            $payload,
+            $this->solution['fleetSid'],
+            $this->solution['sid']
+        );
     }
 
     /**
      * Deletes the KeyInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -66,6 +73,7 @@ class KeyContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return KeyInstance Updated KeyInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -82,7 +90,12 @@ class KeyContext extends InstanceContext {
             $data
         );
 
-        return new KeyInstance($this->version, $payload, $this->solution['fleetSid'], $this->solution['sid']);
+        return new KeyInstance(
+            $this->version,
+            $payload,
+            $this->solution['fleetSid'],
+            $this->solution['sid']
+        );
     }
 
     /**

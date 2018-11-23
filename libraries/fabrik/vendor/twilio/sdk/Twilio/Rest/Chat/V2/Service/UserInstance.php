@@ -41,8 +41,8 @@ class UserInstance extends InstanceResource {
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $serviceSid The service_sid
-     * @param string $sid The sid
+     * @param string $serviceSid The unique id of the Service this user belongs to.
+     * @param string $sid Key that uniquely defines the user to fetch.
      * @return \Twilio\Rest\Chat\V2\Service\UserInstance 
      */
     public function __construct(Version $version, array $payload, $serviceSid, $sid = null) {
@@ -92,6 +92,7 @@ class UserInstance extends InstanceResource {
      * Fetch a UserInstance
      * 
      * @return UserInstance Fetched UserInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -101,6 +102,7 @@ class UserInstance extends InstanceResource {
      * Deletes the UserInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -111,6 +113,7 @@ class UserInstance extends InstanceResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return UserInstance Updated UserInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         return $this->proxy()->update($options);

@@ -11,6 +11,7 @@ namespace Twilio\Rest\Proxy\V1\Service;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -39,11 +40,16 @@ class PhoneNumberList extends ListResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return PhoneNumberInstance Newly created PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function create($options = array()) {
         $options = new Values($options);
 
-        $data = Values::of(array('Sid' => $options['sid'], 'PhoneNumber' => $options['phoneNumber'], ));
+        $data = Values::of(array(
+            'Sid' => $options['sid'],
+            'PhoneNumber' => $options['phoneNumber'],
+            'IsReserved' => Serialize::booleanToString($options['isReserved']),
+        ));
 
         $payload = $this->version->create(
             'POST',

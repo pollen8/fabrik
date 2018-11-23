@@ -20,9 +20,10 @@ class MessageContext extends InstanceContext {
      * Initialize the MessageContext
      * 
      * @param \Twilio\Version $version Version that contains the resource
-     * @param string $serviceSid The service_sid
-     * @param string $channelSid The channel_sid
-     * @param string $sid The sid
+     * @param string $serviceSid Sid of the Service this message belongs to.
+     * @param string $channelSid Key that uniquely defines the channel this message
+     *                           belongs to.
+     * @param string $sid Key that uniquely defines the message to fetch.
      * @return \Twilio\Rest\IpMessaging\V2\Service\Channel\MessageContext 
      */
     public function __construct(Version $version, $serviceSid, $channelSid, $sid) {
@@ -38,6 +39,7 @@ class MessageContext extends InstanceContext {
      * Fetch a MessageInstance
      * 
      * @return MessageInstance Fetched MessageInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -61,6 +63,7 @@ class MessageContext extends InstanceContext {
      * Deletes the MessageInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -71,6 +74,7 @@ class MessageContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return MessageInstance Updated MessageInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -81,6 +85,7 @@ class MessageContext extends InstanceContext {
             'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
             'DateUpdated' => Serialize::iso8601DateTime($options['dateUpdated']),
             'LastUpdatedBy' => $options['lastUpdatedBy'],
+            'From' => $options['from'],
         ));
 
         $payload = $this->version->update(

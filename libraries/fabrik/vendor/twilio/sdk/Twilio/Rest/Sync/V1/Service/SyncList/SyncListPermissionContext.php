@@ -22,7 +22,7 @@ class SyncListPermissionContext extends InstanceContext {
      * Initialize the SyncListPermissionContext
      * 
      * @param \Twilio\Version $version Version that contains the resource
-     * @param string $serviceSid The service_sid
+     * @param string $serviceSid Sync Service Instance SID or unique name.
      * @param string $listSid Sync List SID or unique name.
      * @param string $identity Identity of the user to whom the Sync List
      *                         Permission applies.
@@ -32,7 +32,11 @@ class SyncListPermissionContext extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = array('serviceSid' => $serviceSid, 'listSid' => $listSid, 'identity' => $identity, );
+        $this->solution = array(
+            'serviceSid' => $serviceSid,
+            'listSid' => $listSid,
+            'identity' => $identity,
+        );
 
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Lists/' . rawurlencode($listSid) . '/Permissions/' . rawurlencode($identity) . '';
     }
@@ -41,6 +45,7 @@ class SyncListPermissionContext extends InstanceContext {
      * Fetch a SyncListPermissionInstance
      * 
      * @return SyncListPermissionInstance Fetched SyncListPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -64,6 +69,7 @@ class SyncListPermissionContext extends InstanceContext {
      * Deletes the SyncListPermissionInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -76,6 +82,7 @@ class SyncListPermissionContext extends InstanceContext {
      * @param boolean $write Write access.
      * @param boolean $manage Manage access.
      * @return SyncListPermissionInstance Updated SyncListPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($read, $write, $manage) {
         $data = Values::of(array(

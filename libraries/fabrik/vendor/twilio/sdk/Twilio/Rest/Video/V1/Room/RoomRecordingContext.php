@@ -35,6 +35,7 @@ class RoomRecordingContext extends InstanceContext {
      * Fetch a RoomRecordingInstance
      * 
      * @return RoomRecordingInstance Fetched RoomRecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -51,6 +52,16 @@ class RoomRecordingContext extends InstanceContext {
             $this->solution['roomSid'],
             $this->solution['sid']
         );
+    }
+
+    /**
+     * Deletes the RoomRecordingInstance
+     * 
+     * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete() {
+        return $this->version->delete('delete', $this->uri);
     }
 
     /**

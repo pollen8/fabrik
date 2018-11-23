@@ -14,9 +14,9 @@ use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\ReservationList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerChannelList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersCumulativeStatisticsList;
 use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersRealTimeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -60,6 +60,7 @@ class WorkerContext extends InstanceContext {
      * Fetch a WorkerInstance
      * 
      * @return WorkerInstance Fetched WorkerInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -83,6 +84,7 @@ class WorkerContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return WorkerInstance Updated WorkerInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -112,6 +114,7 @@ class WorkerContext extends InstanceContext {
      * Deletes the WorkerInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);

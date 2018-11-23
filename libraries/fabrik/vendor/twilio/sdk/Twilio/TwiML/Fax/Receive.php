@@ -18,14 +18,14 @@ class Receive extends TwiML {
      * @param array $attributes Optional attributes
      */
     public function __construct($attributes = array()) {
-        parent::__construct('Receive', $attributes);
+        parent::__construct('Receive', null, $attributes);
     }
 
     /**
      * Add Action attribute.
      * 
      * @param url $action Receive action URL
-     * @return TwiML $this.
+     * @return $this
      */
     public function setAction($action) {
         return $this->setAttribute('action', $action);
@@ -35,7 +35,7 @@ class Receive extends TwiML {
      * Add Method attribute.
      * 
      * @param httpMethod $method Receive action URL method
-     * @return TwiML $this.
+     * @return $this
      */
     public function setMethod($method) {
         return $this->setAttribute('method', $method);

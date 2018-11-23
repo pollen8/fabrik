@@ -14,8 +14,6 @@ use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Rest\Notify\V1\Service\BindingList;
 use Twilio\Rest\Notify\V1\Service\NotificationList;
-use Twilio\Rest\Notify\V1\Service\SegmentList;
-use Twilio\Rest\Notify\V1\Service\UserList;
 use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
@@ -25,16 +23,11 @@ use Twilio\Version;
  * 
  * @property \Twilio\Rest\Notify\V1\Service\BindingList bindings
  * @property \Twilio\Rest\Notify\V1\Service\NotificationList notifications
- * @property \Twilio\Rest\Notify\V1\Service\UserList users
- * @property \Twilio\Rest\Notify\V1\Service\SegmentList segments
  * @method \Twilio\Rest\Notify\V1\Service\BindingContext bindings(string $sid)
- * @method \Twilio\Rest\Notify\V1\Service\UserContext users(string $identity)
  */
 class ServiceContext extends InstanceContext {
     protected $_bindings = null;
     protected $_notifications = null;
-    protected $_users = null;
-    protected $_segments = null;
 
     /**
      * Initialize the ServiceContext
@@ -56,6 +49,7 @@ class ServiceContext extends InstanceContext {
      * Deletes the ServiceInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->version->delete('delete', $this->uri);
@@ -65,6 +59,7 @@ class ServiceContext extends InstanceContext {
      * Fetch a ServiceInstance
      * 
      * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -83,6 +78,7 @@ class ServiceContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -136,32 +132,6 @@ class ServiceContext extends InstanceContext {
         }
 
         return $this->_notifications;
-    }
-
-    /**
-     * Access the users
-     * 
-     * @return \Twilio\Rest\Notify\V1\Service\UserList 
-     */
-    protected function getUsers() {
-        if (!$this->_users) {
-            $this->_users = new UserList($this->version, $this->solution['sid']);
-        }
-
-        return $this->_users;
-    }
-
-    /**
-     * Access the segments
-     * 
-     * @return \Twilio\Rest\Notify\V1\Service\SegmentList 
-     */
-    protected function getSegments() {
-        if (!$this->_segments) {
-            $this->_segments = new SegmentList($this->version, $this->solution['sid']);
-        }
-
-        return $this->_segments;
     }
 
     /**

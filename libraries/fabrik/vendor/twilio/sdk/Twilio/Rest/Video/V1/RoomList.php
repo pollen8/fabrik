@@ -36,6 +36,7 @@ class RoomList extends ListResource {
      * 
      * @param array|Options $options Optional Arguments
      * @return RoomInstance Newly created RoomInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function create($options = array()) {
         $options = new Values($options);
@@ -159,7 +160,8 @@ class RoomList extends ListResource {
     /**
      * Constructs a RoomContext
      * 
-     * @param string $sid The sid
+     * @param string $sid The Room Sid or name that uniquely identifies this
+     *                    resource.
      * @return \Twilio\Rest\Video\V1\RoomContext 
      */
     public function getContext($sid) {

@@ -16,8 +16,6 @@ use Twilio\Values;
 use Twilio\Version;
 
 /**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- * 
  * @property string sid
  * @property string accountSid
  * @property string friendlyName
@@ -30,13 +28,14 @@ use Twilio\Version;
  */
 class FlowInstance extends InstanceResource {
     protected $_engagements = null;
+    protected $_executions = null;
 
     /**
      * Initialize the FlowInstance
      * 
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid The sid
+     * @param string $sid A string that uniquely identifies this Flow.
      * @return \Twilio\Rest\Studio\V1\FlowInstance 
      */
     public function __construct(Version $version, array $payload, $sid = null) {
@@ -76,6 +75,7 @@ class FlowInstance extends InstanceResource {
      * Fetch a FlowInstance
      * 
      * @return FlowInstance Fetched FlowInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         return $this->proxy()->fetch();
@@ -85,6 +85,7 @@ class FlowInstance extends InstanceResource {
      * Deletes the FlowInstance
      * 
      * @return boolean True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function delete() {
         return $this->proxy()->delete();
@@ -97,6 +98,15 @@ class FlowInstance extends InstanceResource {
      */
     protected function getEngagements() {
         return $this->proxy()->engagements;
+    }
+
+    /**
+     * Access the executions
+     * 
+     * @return \Twilio\Rest\Studio\V1\Flow\ExecutionList 
+     */
+    protected function getExecutions() {
+        return $this->proxy()->executions;
     }
 
     /**

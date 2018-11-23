@@ -38,6 +38,7 @@ class ReservationContext extends InstanceContext {
      * Fetch a ReservationInstance
      * 
      * @return ReservationInstance Fetched ReservationInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch() {
         $params = Values::of(array());
@@ -62,6 +63,7 @@ class ReservationContext extends InstanceContext {
      * 
      * @param array|Options $options Optional Arguments
      * @return ReservationInstance Updated ReservationInstance
+     * @throws TwilioException When an HTTP error occurs.
      */
     public function update($options = array()) {
         $options = new Values($options);
@@ -116,6 +118,8 @@ class ReservationContext extends InstanceContext {
             'SipAuthPassword' => $options['sipAuthPassword'],
             'DequeueStatusCallbackEvent' => Serialize::map($options['dequeueStatusCallbackEvent'], function($e) { return $e; }),
             'PostWorkActivitySid' => $options['postWorkActivitySid'],
+            'SupervisorMode' => $options['supervisorMode'],
+            'Supervisor' => $options['supervisor'],
         ));
 
         $payload = $this->version->update(

@@ -12,49 +12,57 @@ namespace Twilio\Rest\Wireless\V1;
 use Twilio\Options;
 use Twilio\Values;
 
-/**
- * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- */
 abstract class CommandOptions {
     /**
-     * @param string $sim The sim
-     * @param string $status The status
-     * @param string $direction The direction
+     * @param string $sim Only return Commands to or from this SIM.
+     * @param string $status Only return Commands with this status value.
+     * @param string $direction Only return Commands with this direction value.
+     * @param string $transport The transport
      * @return ReadCommandOptions Options builder
      */
-    public static function read($sim = Values::NONE, $status = Values::NONE, $direction = Values::NONE) {
-        return new ReadCommandOptions($sim, $status, $direction);
+    public static function read($sim = Values::NONE, $status = Values::NONE, $direction = Values::NONE, $transport = Values::NONE) {
+        return new ReadCommandOptions($sim, $status, $direction, $transport);
     }
 
     /**
-     * @param string $sim The sim
-     * @param string $callbackMethod The callback_method
-     * @param string $callbackUrl The callback_url
-     * @param string $commandMode The command_mode
-     * @param string $includeSid The include_sid
+     * @param string $sim The Sid or UniqueName of the SIM to send the Command to.
+     * @param string $callbackMethod The HTTP method Twilio will use when making a
+     *                               request to the callback URL.
+     * @param string $callbackUrl Twilio will make a request to this URL when the
+     *                            Command has finished sending.
+     * @param string $commandMode A string representing which mode to send the SMS
+     *                            message using.
+     * @param string $includeSid When sending a Command to a SIM in text mode,
+     *                           Twilio can automatically include the Sid of the
+     *                           Command in the message body, which could be used
+     *                           to ensure that the device does not process the
+     *                           same Command more than once.
+     * @param boolean $deliveryReceiptRequested The delivery_receipt_requested
      * @return CreateCommandOptions Options builder
      */
-    public static function create($sim = Values::NONE, $callbackMethod = Values::NONE, $callbackUrl = Values::NONE, $commandMode = Values::NONE, $includeSid = Values::NONE) {
-        return new CreateCommandOptions($sim, $callbackMethod, $callbackUrl, $commandMode, $includeSid);
+    public static function create($sim = Values::NONE, $callbackMethod = Values::NONE, $callbackUrl = Values::NONE, $commandMode = Values::NONE, $includeSid = Values::NONE, $deliveryReceiptRequested = Values::NONE) {
+        return new CreateCommandOptions($sim, $callbackMethod, $callbackUrl, $commandMode, $includeSid, $deliveryReceiptRequested);
     }
 }
 
 class ReadCommandOptions extends Options {
     /**
-     * @param string $sim The sim
-     * @param string $status The status
-     * @param string $direction The direction
+     * @param string $sim Only return Commands to or from this SIM.
+     * @param string $status Only return Commands with this status value.
+     * @param string $direction Only return Commands with this direction value.
+     * @param string $transport The transport
      */
-    public function __construct($sim = Values::NONE, $status = Values::NONE, $direction = Values::NONE) {
+    public function __construct($sim = Values::NONE, $status = Values::NONE, $direction = Values::NONE, $transport = Values::NONE) {
         $this->options['sim'] = $sim;
         $this->options['status'] = $status;
         $this->options['direction'] = $direction;
+        $this->options['transport'] = $transport;
     }
 
     /**
-     * The sim
+     * Only return Commands to or from this SIM.
      * 
-     * @param string $sim The sim
+     * @param string $sim Only return Commands to or from this SIM.
      * @return $this Fluent Builder
      */
     public function setSim($sim) {
@@ -63,9 +71,9 @@ class ReadCommandOptions extends Options {
     }
 
     /**
-     * The status
+     * Only return Commands with this status value.
      * 
-     * @param string $status The status
+     * @param string $status Only return Commands with this status value.
      * @return $this Fluent Builder
      */
     public function setStatus($status) {
@@ -74,13 +82,24 @@ class ReadCommandOptions extends Options {
     }
 
     /**
-     * The direction
+     * Only return Commands with this direction value.
      * 
-     * @param string $direction The direction
+     * @param string $direction Only return Commands with this direction value.
      * @return $this Fluent Builder
      */
     public function setDirection($direction) {
         $this->options['direction'] = $direction;
+        return $this;
+    }
+
+    /**
+     * The transport
+     * 
+     * @param string $transport The transport
+     * @return $this Fluent Builder
+     */
+    public function setTransport($transport) {
+        $this->options['transport'] = $transport;
         return $this;
     }
 
@@ -102,24 +121,33 @@ class ReadCommandOptions extends Options {
 
 class CreateCommandOptions extends Options {
     /**
-     * @param string $sim The sim
-     * @param string $callbackMethod The callback_method
-     * @param string $callbackUrl The callback_url
-     * @param string $commandMode The command_mode
-     * @param string $includeSid The include_sid
+     * @param string $sim The Sid or UniqueName of the SIM to send the Command to.
+     * @param string $callbackMethod The HTTP method Twilio will use when making a
+     *                               request to the callback URL.
+     * @param string $callbackUrl Twilio will make a request to this URL when the
+     *                            Command has finished sending.
+     * @param string $commandMode A string representing which mode to send the SMS
+     *                            message using.
+     * @param string $includeSid When sending a Command to a SIM in text mode,
+     *                           Twilio can automatically include the Sid of the
+     *                           Command in the message body, which could be used
+     *                           to ensure that the device does not process the
+     *                           same Command more than once.
+     * @param boolean $deliveryReceiptRequested The delivery_receipt_requested
      */
-    public function __construct($sim = Values::NONE, $callbackMethod = Values::NONE, $callbackUrl = Values::NONE, $commandMode = Values::NONE, $includeSid = Values::NONE) {
+    public function __construct($sim = Values::NONE, $callbackMethod = Values::NONE, $callbackUrl = Values::NONE, $commandMode = Values::NONE, $includeSid = Values::NONE, $deliveryReceiptRequested = Values::NONE) {
         $this->options['sim'] = $sim;
         $this->options['callbackMethod'] = $callbackMethod;
         $this->options['callbackUrl'] = $callbackUrl;
         $this->options['commandMode'] = $commandMode;
         $this->options['includeSid'] = $includeSid;
+        $this->options['deliveryReceiptRequested'] = $deliveryReceiptRequested;
     }
 
     /**
-     * The sim
+     * The Sid or UniqueName of the [SIM](https://www.twilio.com/docs/api/wireless/rest-api/sim) to send the Command to.
      * 
-     * @param string $sim The sim
+     * @param string $sim The Sid or UniqueName of the SIM to send the Command to.
      * @return $this Fluent Builder
      */
     public function setSim($sim) {
@@ -128,9 +156,10 @@ class CreateCommandOptions extends Options {
     }
 
     /**
-     * The callback_method
+     * The HTTP method Twilio will use when making a request to the callback URL (valid options are GET or POST). Defaults to POST.
      * 
-     * @param string $callbackMethod The callback_method
+     * @param string $callbackMethod The HTTP method Twilio will use when making a
+     *                               request to the callback URL.
      * @return $this Fluent Builder
      */
     public function setCallbackMethod($callbackMethod) {
@@ -139,9 +168,10 @@ class CreateCommandOptions extends Options {
     }
 
     /**
-     * The callback_url
+     * Twilio will make a request to this URL when the Command has finished sending (delivered or failed).
      * 
-     * @param string $callbackUrl The callback_url
+     * @param string $callbackUrl Twilio will make a request to this URL when the
+     *                            Command has finished sending.
      * @return $this Fluent Builder
      */
     public function setCallbackUrl($callbackUrl) {
@@ -150,9 +180,10 @@ class CreateCommandOptions extends Options {
     }
 
     /**
-     * The command_mode
+     * A string representing which mode to send the SMS message using. May be `text` or `binary`. If omitted, the default SMS mode is `text`.
      * 
-     * @param string $commandMode The command_mode
+     * @param string $commandMode A string representing which mode to send the SMS
+     *                            message using.
      * @return $this Fluent Builder
      */
     public function setCommandMode($commandMode) {
@@ -161,13 +192,28 @@ class CreateCommandOptions extends Options {
     }
 
     /**
-     * The include_sid
+     * When sending a Command to a SIM in text mode, Twilio can automatically include the Sid of the Command in the message body, which could be used to ensure that the device does not process the same Command more than once. The options for inclusion are `none`, `start` and `end`. The default behavior is `none`. When using `start` or `end`, the CommandSid will be prepended or appended to the message body, with a space character separating the CommandSid and the message body. The length of the CommandSid contributes toward the 160 character limit, i.e. the SMS body must be 128 characters or less before the Command Sid is included.
      * 
-     * @param string $includeSid The include_sid
+     * @param string $includeSid When sending a Command to a SIM in text mode,
+     *                           Twilio can automatically include the Sid of the
+     *                           Command in the message body, which could be used
+     *                           to ensure that the device does not process the
+     *                           same Command more than once.
      * @return $this Fluent Builder
      */
     public function setIncludeSid($includeSid) {
         $this->options['includeSid'] = $includeSid;
+        return $this;
+    }
+
+    /**
+     * The delivery_receipt_requested
+     * 
+     * @param boolean $deliveryReceiptRequested The delivery_receipt_requested
+     * @return $this Fluent Builder
+     */
+    public function setDeliveryReceiptRequested($deliveryReceiptRequested) {
+        $this->options['deliveryReceiptRequested'] = $deliveryReceiptRequested;
         return $this;
     }
 

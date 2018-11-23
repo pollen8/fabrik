@@ -20,7 +20,7 @@ You can install the bindings via [Composer](http://getcomposer.org/). Run the fo
 composer require stripe/stripe-php
 ```
 
-To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/00-intro.md#autoloading):
+To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading):
 
 ```php
 require_once('vendor/autoload.php');
@@ -62,7 +62,7 @@ Please see https://stripe.com/docs/api for up-to-date documentation.
 
 ### PHP 5.3
 
-If you are using PHP 5.3, you can download v5.8.0 ([zip](https://github.com/stripe/stripe-php/archive/v5.8.0.zip), [tar.gz](https://github.com/stripe/stripe-php/archive/v5.8.0.tar.gz)) from our [releases page](https://github.com/stripe/stripe-php/releases). This version will continue to work with new versions of the Stripe API for all common uses.
+If you are using PHP 5.3, you can download v5.9.2 ([zip](https://github.com/stripe/stripe-php/archive/v5.9.2.zip), [tar.gz](https://github.com/stripe/stripe-php/archive/v5.9.2.tar.gz)) from our [releases page](https://github.com/stripe/stripe-php/releases). This version will continue to work with new versions of the Stripe API for all common uses.
 
 ### PHP 5.2
 
@@ -140,6 +140,24 @@ $curl = new \Stripe\HttpClient\CurlClient([CURLOPT_SSLVERSION => CURL_SSLVERSION
 \Stripe\ApiRequestor::setHttpClient($curl);
 ```
 
+### Per-request Configuration
+
+For apps that need to use multiple keys during the lifetime of a process, like
+one that uses [Stripe Connect][connect], it's also possible to set a
+per-request key and/or account:
+
+```php
+\Stripe\Charge::all([], [
+    'api_key' => 'sk_test_...',
+    'stripe_account' => 'acct_...'
+]);
+
+\Stripe\Charge::retrieve("ch_18atAXCdGbJFKhCuBAa4532Z", [
+    'api_key' => 'sk_test_...',
+    'stripe_account' => 'acct_...'
+]);
+```
+
 ### Configuring CA Bundles
 
 By default, the library will use its own internal bundle of known CA
@@ -149,11 +167,29 @@ certificates, but it's possible to configure your own:
 \Stripe\Stripe::setCABundlePath("path/to/ca/bundle");
 ```
 
+### Configuring Automatic Retries
+
+The library can be configured to automatically retry requests that fail due to
+an intermittent network problem:
+
+```php
+\Stripe\Stripe::setMaxNetworkRetries(2);
+```
+
+[Idempotency keys][idempotency-keys] are added to requests to guarantee that
+retries are safe.
+
 ## Development
+
+Get [Composer][composer]. For example, on Mac OS:
+
+```bash
+brew install composer
+```
 
 Install dependencies:
 
-``` bash
+```bash
 composer install
 ```
 
@@ -161,8 +197,10 @@ The test suite depends on [stripe-mock], so make sure to fetch and run it from a
 background terminal ([stripe-mock's README][stripe-mock] also contains
 instructions for installing via Homebrew and other methods):
 
-    go get -u github.com/stripe/stripe-mock
-    stripe-mock
+```bash
+go get -u github.com/stripe/stripe-mock
+stripe-mock
+```
 
 Install dependencies as mentioned above (which will resolve [PHPUnit](http://packagist.org/packages/phpunit/phpunit)), then you can run the test suite:
 
@@ -196,6 +234,9 @@ The method should be called once, before any request is sent to the API. The sec
 
 See the "SSL / TLS compatibility issues" paragraph above for full context. If you want to ensure that your plugin can be used on all systems, you should add a configuration option to let your users choose between different values for `CURLOPT_SSLVERSION`: none (default), `CURL_SSLVERSION_TLSv1` and `CURL_SSLVERSION_TLSv1_2`.
 
+[composer]: https://getcomposer.org/
+[connect]: https://stripe.com/connect
 [curl]: http://curl.haxx.se/docs/caextract.html
 [psr3]: http://www.php-fig.org/psr/psr-3/
+[idempotency-keys]: https://stripe.com/docs/api/php#idempotent_requests
 [stripe-mock]: https://github.com/stripe/stripe-mock

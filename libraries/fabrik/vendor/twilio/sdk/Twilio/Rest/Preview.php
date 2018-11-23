@@ -11,60 +11,57 @@ namespace Twilio\Rest;
 
 use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
-use Twilio\Rest\Preview\AccSecurity;
-use Twilio\Rest\Preview\BulkExports;
-use Twilio\Rest\Preview\DeployedDevices;
-use Twilio\Rest\Preview\HostedNumbers;
-use Twilio\Rest\Preview\Marketplace;
-use Twilio\Rest\Preview\Proxy;
-use Twilio\Rest\Preview\Studio;
-use Twilio\Rest\Preview\Sync;
-use Twilio\Rest\Preview\Understand;
-use Twilio\Rest\Preview\Wireless;
+use Twilio\Rest\Preview\AccSecurity as PreviewAccSecurity;
+use Twilio\Rest\Preview\Authy as PreviewAuthy;
+use Twilio\Rest\Preview\BulkExports as PreviewBulkExports;
+use Twilio\Rest\Preview\DeployedDevices as PreviewDeployedDevices;
+use Twilio\Rest\Preview\HostedNumbers as PreviewHostedNumbers;
+use Twilio\Rest\Preview\Marketplace as PreviewMarketplace;
+use Twilio\Rest\Preview\Sync as PreviewSync;
+use Twilio\Rest\Preview\Understand as PreviewUnderstand;
+use Twilio\Rest\Preview\Wireless as PreviewWireless;
 
 /**
+ * @property \Twilio\Rest\Preview\Authy authy
  * @property \Twilio\Rest\Preview\BulkExports bulkExports
  * @property \Twilio\Rest\Preview\DeployedDevices deployedDevices
  * @property \Twilio\Rest\Preview\HostedNumbers hostedNumbers
  * @property \Twilio\Rest\Preview\Marketplace marketplace
- * @property \Twilio\Rest\Preview\Proxy proxy
- * @property \Twilio\Rest\Preview\Studio studio
  * @property \Twilio\Rest\Preview\AccSecurity accSecurity
  * @property \Twilio\Rest\Preview\Sync sync
  * @property \Twilio\Rest\Preview\Understand understand
  * @property \Twilio\Rest\Preview\Wireless wireless
+ * @property \Twilio\Rest\Preview\Sync\ServiceList services
  * @property \Twilio\Rest\Preview\BulkExports\ExportList exports
  * @property \Twilio\Rest\Preview\BulkExports\ExportConfigurationList exportConfiguration
  * @property \Twilio\Rest\Preview\DeployedDevices\FleetList fleets
  * @property \Twilio\Rest\Preview\HostedNumbers\AuthorizationDocumentList authorizationDocuments
  * @property \Twilio\Rest\Preview\HostedNumbers\HostedNumberOrderList hostedNumberOrders
- * @property \Twilio\Rest\Preview\Marketplace\AvailableAddOnList availableAddOns
  * @property \Twilio\Rest\Preview\Marketplace\InstalledAddOnList installedAddOns
- * @property \Twilio\Rest\Preview\Understand\ServiceList services
- * @property \Twilio\Rest\Preview\Studio\FlowList flows
+ * @property \Twilio\Rest\Preview\Marketplace\AvailableAddOnList availableAddOns
+ * @property \Twilio\Rest\Preview\Understand\AssistantList assistants
  * @property \Twilio\Rest\Preview\Wireless\CommandList commands
  * @property \Twilio\Rest\Preview\Wireless\RatePlanList ratePlans
  * @property \Twilio\Rest\Preview\Wireless\SimList sims
+ * @method \Twilio\Rest\Preview\Sync\ServiceContext services(string $sid)
  * @method \Twilio\Rest\Preview\BulkExports\ExportContext exports(string $resourceType)
  * @method \Twilio\Rest\Preview\BulkExports\ExportConfigurationContext exportConfiguration(string $resourceType)
  * @method \Twilio\Rest\Preview\DeployedDevices\FleetContext fleets(string $sid)
  * @method \Twilio\Rest\Preview\HostedNumbers\AuthorizationDocumentContext authorizationDocuments(string $sid)
  * @method \Twilio\Rest\Preview\HostedNumbers\HostedNumberOrderContext hostedNumberOrders(string $sid)
- * @method \Twilio\Rest\Preview\Marketplace\AvailableAddOnContext availableAddOns(string $sid)
  * @method \Twilio\Rest\Preview\Marketplace\InstalledAddOnContext installedAddOns(string $sid)
- * @method \Twilio\Rest\Preview\Understand\ServiceContext services(string $sid)
- * @method \Twilio\Rest\Preview\Studio\FlowContext flows(string $sid)
+ * @method \Twilio\Rest\Preview\Marketplace\AvailableAddOnContext availableAddOns(string $sid)
+ * @method \Twilio\Rest\Preview\Understand\AssistantContext assistants(string $sid)
  * @method \Twilio\Rest\Preview\Wireless\CommandContext commands(string $sid)
  * @method \Twilio\Rest\Preview\Wireless\RatePlanContext ratePlans(string $sid)
  * @method \Twilio\Rest\Preview\Wireless\SimContext sims(string $sid)
  */
 class Preview extends Domain {
+    protected $_authy = null;
     protected $_bulkExports = null;
     protected $_deployedDevices = null;
     protected $_hostedNumbers = null;
     protected $_marketplace = null;
-    protected $_proxy = null;
-    protected $_studio = null;
     protected $_accSecurity = null;
     protected $_sync = null;
     protected $_understand = null;
@@ -84,11 +81,21 @@ class Preview extends Domain {
     }
 
     /**
+     * @return \Twilio\Rest\Preview\Authy Version authy of preview
+     */
+    protected function getAuthy() {
+        if (!$this->_authy) {
+            $this->_authy = new PreviewAuthy($this);
+        }
+        return $this->_authy;
+    }
+
+    /**
      * @return \Twilio\Rest\Preview\BulkExports Version bulkExports of preview
      */
     protected function getBulkExports() {
         if (!$this->_bulkExports) {
-            $this->_bulkExports = new BulkExports($this);
+            $this->_bulkExports = new PreviewBulkExports($this);
         }
         return $this->_bulkExports;
     }
@@ -99,7 +106,7 @@ class Preview extends Domain {
      */
     protected function getDeployedDevices() {
         if (!$this->_deployedDevices) {
-            $this->_deployedDevices = new DeployedDevices($this);
+            $this->_deployedDevices = new PreviewDeployedDevices($this);
         }
         return $this->_deployedDevices;
     }
@@ -109,7 +116,7 @@ class Preview extends Domain {
      */
     protected function getHostedNumbers() {
         if (!$this->_hostedNumbers) {
-            $this->_hostedNumbers = new HostedNumbers($this);
+            $this->_hostedNumbers = new PreviewHostedNumbers($this);
         }
         return $this->_hostedNumbers;
     }
@@ -119,29 +126,9 @@ class Preview extends Domain {
      */
     protected function getMarketplace() {
         if (!$this->_marketplace) {
-            $this->_marketplace = new Marketplace($this);
+            $this->_marketplace = new PreviewMarketplace($this);
         }
         return $this->_marketplace;
-    }
-
-    /**
-     * @return \Twilio\Rest\Preview\Proxy Version proxy of preview
-     */
-    protected function getProxy() {
-        if (!$this->_proxy) {
-            $this->_proxy = new Proxy($this);
-        }
-        return $this->_proxy;
-    }
-
-    /**
-     * @return \Twilio\Rest\Preview\Studio Version studio of preview
-     */
-    protected function getStudio() {
-        if (!$this->_studio) {
-            $this->_studio = new Studio($this);
-        }
-        return $this->_studio;
     }
 
     /**
@@ -149,7 +136,7 @@ class Preview extends Domain {
      */
     protected function getAccSecurity() {
         if (!$this->_accSecurity) {
-            $this->_accSecurity = new AccSecurity($this);
+            $this->_accSecurity = new PreviewAccSecurity($this);
         }
         return $this->_accSecurity;
     }
@@ -159,7 +146,7 @@ class Preview extends Domain {
      */
     protected function getSync() {
         if (!$this->_sync) {
-            $this->_sync = new Sync($this);
+            $this->_sync = new PreviewSync($this);
         }
         return $this->_sync;
     }
@@ -169,7 +156,7 @@ class Preview extends Domain {
      */
     protected function getUnderstand() {
         if (!$this->_understand) {
-            $this->_understand = new Understand($this);
+            $this->_understand = new PreviewUnderstand($this);
         }
         return $this->_understand;
     }
@@ -179,7 +166,7 @@ class Preview extends Domain {
      */
     protected function getWireless() {
         if (!$this->_wireless) {
-            $this->_wireless = new Wireless($this);
+            $this->_wireless = new PreviewWireless($this);
         }
         return $this->_wireless;
     }
@@ -215,6 +202,21 @@ class Preview extends Domain {
         }
 
         throw new TwilioException('Unknown context ' . $name);
+    }
+
+    /**
+     * @return \Twilio\Rest\Preview\Sync\ServiceList 
+     */
+    protected function getServices() {
+        return $this->sync->services;
+    }
+
+    /**
+     * @param string $sid The sid
+     * @return \Twilio\Rest\Preview\Sync\ServiceContext 
+     */
+    protected function contextServices($sid) {
+        return $this->sync->services($sid);
     }
 
     /**
@@ -293,21 +295,6 @@ class Preview extends Domain {
     }
 
     /**
-     * @return \Twilio\Rest\Preview\Marketplace\AvailableAddOnList 
-     */
-    protected function getAvailableAddOns() {
-        return $this->marketplace->availableAddOns;
-    }
-
-    /**
-     * @param string $sid The unique Available Add-on Sid
-     * @return \Twilio\Rest\Preview\Marketplace\AvailableAddOnContext 
-     */
-    protected function contextAvailableAddOns($sid) {
-        return $this->marketplace->availableAddOns($sid);
-    }
-
-    /**
      * @return \Twilio\Rest\Preview\Marketplace\InstalledAddOnList 
      */
     protected function getInstalledAddOns() {
@@ -323,33 +310,34 @@ class Preview extends Domain {
     }
 
     /**
-     * @return \Twilio\Rest\Preview\Understand\ServiceList 
+     * @return \Twilio\Rest\Preview\Marketplace\AvailableAddOnList 
      */
-    protected function getServices() {
-        return $this->understand->services;
+    protected function getAvailableAddOns() {
+        return $this->marketplace->availableAddOns;
     }
 
     /**
-     * @param string $sid The sid
-     * @return \Twilio\Rest\Preview\Understand\ServiceContext 
+     * @param string $sid The unique Available Add-on Sid
+     * @return \Twilio\Rest\Preview\Marketplace\AvailableAddOnContext 
      */
-    protected function contextServices($sid) {
-        return $this->understand->services($sid);
+    protected function contextAvailableAddOns($sid) {
+        return $this->marketplace->availableAddOns($sid);
     }
 
     /**
-     * @return \Twilio\Rest\Preview\Studio\FlowList 
+     * @return \Twilio\Rest\Preview\Understand\AssistantList 
      */
-    protected function getFlows() {
-        return $this->studio->flows;
+    protected function getAssistants() {
+        return $this->understand->assistants;
     }
 
     /**
-     * @param string $sid The sid
-     * @return \Twilio\Rest\Preview\Studio\FlowContext 
+     * @param string $sid A 34 character string that uniquely identifies this
+     *                    resource.
+     * @return \Twilio\Rest\Preview\Understand\AssistantContext 
      */
-    protected function contextFlows($sid) {
-        return $this->studio->flows($sid);
+    protected function contextAssistants($sid) {
+        return $this->understand->assistants($sid);
     }
 
     /**
