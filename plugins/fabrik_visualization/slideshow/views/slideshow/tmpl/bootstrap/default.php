@@ -16,11 +16,11 @@ $row = $this->row;
 if($this->params->get('slideshow_viz_width', '400') === '0')
 {
 	$width = 'width:auto;';
-	$height = 'max-height:'. $this->params->get('slideshow_viz_height', '400').'px;';
+	$height = 'max-height:'. $this->params->get('slideshow_viz_height', '300').'px;';
 }
 else if($this->params->get('slideshow_viz_height', '300') === '0')
 {
-	$width = 'max-width:'. $this->params->get('slideshow_viz_width', '300').'px;';
+	$width = 'max-width:'. $this->params->get('slideshow_viz_width', '400').'px;';
 	$height = 'height:auto;';
 }
 else
@@ -31,35 +31,9 @@ else
 ?>
 
 <style>
-    figure.image {
-        text-align: center;
-        font-style: italic;
-        font-size: small;
-        text-indent: 0;
-        margin: 0em;
-        padding: 0em;
-    }
-
-    figcaption {
-        width: 100%;
-        display: inline-block;
-        margin:auto;
-    }
-
-    .slick-slide
-    {
-        width:auto;
-        height:auto;
-    }
-
-    .slick-prev:before, .slick-next:before {
-        /*color:red !important;*/
-    }
-
     .slider img {
-        <?php echo $height; ?>
-        <?php echo $width; ?>
-        margin: 0 auto; /* it centers any block level element */
+    <?php echo $height; ?>
+    <?php echo $width; ?>
     }
 </style>
 
@@ -74,7 +48,7 @@ else
 		<?php echo $row->intro_text;?>
     </div>
     <div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>" style="display:none">
-        <div class="slider" style="width:<?php echo $this->params->get('slideshow_viz_width', '400')?>px;margin:auto">
+        <div class="slider" style="margin:auto">
 			<?php
 			foreach ($this->slideData as $slide):
 				?>
