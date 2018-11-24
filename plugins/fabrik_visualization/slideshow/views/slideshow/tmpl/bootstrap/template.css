@@ -1,0 +1,36 @@
+/**
+ * Default CSS for the Slick slideshow viz.  Can be extended / overridden by adding a custom.css in this folder
+ */
+
+figure.image {
+    text-align: center;
+    font-style: italic;
+    font-size: small;
+    text-indent: 0;
+    margin: 0em;
+    padding: 0em;
+}
+
+figcaption {
+    width: 100%;
+    display: inline-block;
+    margin:auto;
+}
+
+.slick-slide
+{
+    width:auto;
+    height:auto;
+}
+
+.slick-prev:before, .slick-next:before {
+    /*color:red !important;*/
+}
+
+/**
+ * NOTE that the width and height for the img is set in the default.php, as it needs to be dynamically calculated.  You
+ * can override width and height in a custom.css, by using !important.
+ */
+.slider img {
+    margin: 0 auto; /* it centers any block level element */
+}

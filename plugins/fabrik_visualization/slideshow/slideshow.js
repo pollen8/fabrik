@@ -13,17 +13,6 @@ var FbSlideshowViz = new Class({
 	
 	initialize: function (element, options) {
 		this.setOptions(options);
-		var opts = {
-			controller: true,
-			delay: parseInt(this.options.slideshow_delay, 10),
-			duration: parseInt(this.options.slideshow_duration, 10),
-			height: parseInt(this.options.slideshow_height, 10),
-			width: parseInt(this.options.slideshow_width, 10),
-			//hu: Fabrik.liveSite,
-			hu: this.options.liveSite,
-			thumbnails: this.options.slideshow_thumbnails,
-			captions: this.options.slideshow_captions
-		};
 
 		var slickOptions = {
             slidesToShow: 1,
@@ -33,7 +22,6 @@ var FbSlideshowViz = new Class({
             //variableWidth: true,
             arrows: true,
             dots: false,
-            fade: true,
             cssEase: 'linear',
             infinite: true,
             speed: this.options.slideshow_duration
@@ -42,7 +30,7 @@ var FbSlideshowViz = new Class({
 		var slickJSON = JSON.parse(this.options.slideshow_options);
 		jQuery.extend(slickOptions, slickJSON);
 
-        jQuery('#' + this.options.html_id).show();
+        var $slider = jQuery('.slider');
 
 		if (this.options.slideshow_thumbnails)
 		{
@@ -52,7 +40,7 @@ var FbSlideshowViz = new Class({
 
 		    jQuery.extend(slickOptions, thumbOptions);
 
-            jQuery('.slider').slick(slickOptions);
+            $slider.slick(slickOptions);
 
             jQuery('.slider-nav').slick({
                 slidesToShow: 3,
@@ -72,10 +60,22 @@ var FbSlideshowViz = new Class({
 
             jQuery.extend(slickOptions, noThumbOptions);
 
-            jQuery('.slider').slick(slickOptions);
+            $slider.slick(slickOptions);
         }
 
-		this.mediaScan();
+        $slider.on('wheel', function(e) {
+            e.preventDefault();
+
+            if (e.originalEvent.deltaY < 0) {
+                jQuery(this).slick('slickNext');
+            } else {
+                jQuery(this).slick('slickPrev');
+            }
+        });
+
+        jQuery('#' + this.options.html_id).show();
+
+        this.mediaScan();
 	},
 
 	mediaScan: function () {

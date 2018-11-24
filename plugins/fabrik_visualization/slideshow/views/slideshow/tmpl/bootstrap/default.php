@@ -12,30 +12,53 @@
 defined('_JEXEC') or die('Restricted access');
 
 $row = $this->row;
+
+if($this->params->get('slideshow_viz_width', '400') === '0')
+{
+	$width = 'width:auto;';
+	$height = 'max-height:'. $this->params->get('slideshow_viz_height', '400').'px;';
+}
+else if($this->params->get('slideshow_viz_height', '300') === '0')
+{
+	$width = 'max-width:'. $this->params->get('slideshow_viz_width', '300').'px;';
+	$height = 'height:auto;';
+}
+else
+{
+	$width = 'width:'.$this->params->get('slideshow_viz_width', '400').'px;';
+	$height = 'height:'. $this->params->get('slideshow_viz_height', '300').'px;';
+}
 ?>
+
 <style>
     figure.image {
         text-align: center;
         font-style: italic;
         font-size: small;
         text-indent: 0;
-        margin: 0.5em;
-        padding: 0.5em;
+        margin: 0em;
+        padding: 0em;
+    }
+
+    figcaption {
+        width: 100%;
+        display: inline-block;
+        margin:auto;
     }
 
     .slick-slide
     {
-        width: <?php echo $this->params->get('slideshow_viz_width', '400')?>px;
-        heigth: <?php echo $this->params->get('slideshow_viz_height', '400')?>px;
+        width:auto;
+        height:auto;
     }
 
     .slick-prev:before, .slick-next:before {
-        color:red !important;
+        /*color:red !important;*/
     }
 
     .slider img {
-        height: calc(50vh - 100px);
-        width: auto;
+        <?php echo $height; ?>
+        <?php echo $width; ?>
         margin: 0 auto; /* it centers any block level element */
     }
 </style>
@@ -56,7 +79,7 @@ $row = $this->row;
 			foreach ($this->slideData as $slide):
 				?>
                 <figure class="image">
-                    <<img src="<?php echo $slide['href']; ?>" />
+                    <img src="<?php echo $slide['href']; ?>" />
                     <figcaption>
 						<?php echo $slide['caption']; ?>
                     </figcaption>
