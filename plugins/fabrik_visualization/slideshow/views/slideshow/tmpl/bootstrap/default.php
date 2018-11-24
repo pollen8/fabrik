@@ -56,7 +56,7 @@ $row = $this->row;
 			foreach ($this->slideData as $slide):
 				?>
                 <figure class="image">
-                    <<img src="<?php echo $slide['href']; ?>" />
+                    <img src="<?php echo $slide['href']; ?>" />
                     <figcaption>
 						<?php echo $slide['caption']; ?>
                     </figcaption>
