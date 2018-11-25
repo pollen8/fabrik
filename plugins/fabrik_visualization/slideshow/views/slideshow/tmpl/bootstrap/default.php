@@ -25,15 +25,38 @@ else if($this->params->get('slideshow_viz_height', '300') === '0')
 }
 else
 {
-	$width = 'width:'.$this->params->get('slideshow_viz_width', '400').'px;';
-	$height = 'height:'. $this->params->get('slideshow_viz_height', '300').'px;';
+	$width  = 'width:' . $this->params->get('slideshow_viz_width', '400') . 'px;';
+	$height = 'height:' . $this->params->get('slideshow_viz_height', '300') . 'px;';
 }
+
 ?>
 
 <style>
     .slider img {
-    <?php echo $height; ?>
-    <?php echo $width; ?>
+        <?php echo $height; ?>
+        <?php echo $width; ?>
+    }
+
+    .slider_loading {
+        width: <?php echo $this->params->get('slideshow_viz_loader_width', '400');?>px;
+        height: <?php echo $this->params->get('slideshow_viz_loader_height', '300');?>px;
+        position: relative;
+    }
+
+    .slider_loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .slider {
+        display: none;
+    }
+
+    .slider.slick-initialized {
+        display: block;
     }
 </style>
 
@@ -47,13 +70,41 @@ else
     <div>
 		<?php echo $row->intro_text;?>
     </div>
-    <div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>" style="display:none">
-        <div class="slider" style="margin:auto">
+
+
+    <div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>">
+        <div class="slider_loading">
+            <div class="slider_loader">
+                <?php
+                echo FabrikHelperHTML::image(
+                    'ajax-loader.gif',
+                    'form',
+                    '',
+                    array(
+                        'alt' => FText::_('PLG_VISUALIZATION_SLIDESHOW_LOADING_MSG'),
+                        'class' => 'slider_gif'
+                    )
+                );
+                ?>
+                <p />
+                <?php echo FText::_('PLG_VISUALIZATION_SLIDESHOW_LOADING_MSG'); ?>
+            </div>
+        </div>
+
+        <div class="slider" style="margin:auto;">
 			<?php
 			foreach ($this->slideData as $slide):
 				?>
                 <figure class="image">
+                    <?php if ($this->params->get('slideshow_viz_links', '0') === '1'):
+                        echo '<a target="_blank" href="' . $slide['fabrik_edit_url'] . '"/>';
+                    elseif ($this->params->get('slideshow_viz_links', '0') === '2'):
+                        echo '<a target="_blank" href="' . $slide['fabrik_view_url'] . '"/>';
+                    endif; ?>
                     <img src="<?php echo $slide['href']; ?>" />
+                    <?php if ($this->params->get('slideshow_viz_links', '0') !== '0'):
+                        echo '</a>';
+                    endif; ?>
                     <figcaption>
 						<?php echo $slide['caption']; ?>
                     </figcaption>

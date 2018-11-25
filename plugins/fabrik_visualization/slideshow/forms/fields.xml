@@ -72,6 +72,22 @@
 				   size="4"
 				   type="text"/>
 
+			<field default="400"
+				   description="PLG_VISUALIZATION_SLIDESHOW_LOADER_WIDTH_DESC"
+				   label="PLG_VISUALIZATION_SLIDESHOW_LOADER_WIDTH_LABEL"
+				   class="input-mini"
+				   name="slideshow_viz_loader_width"
+				   size="4"
+				   type="text"/>
+
+			<field default="300"
+				   description="PLG_VISUALIZATION_SLIDESHOW_LOADER_HEIGHT_DESC"
+				   label="PLG_VISUALIZATION_SLIDESHOW_LOADER_HEIGHT_LABEL"
+				   class="input-mini"
+				   name="slideshow_viz_loader_height"
+				   size="4"
+				   type="text"/>
+
 			<field default="5000"
 				   description="PLG_VISUALIZATION_SLIDESHOW_DELAY_DESC"
 				   label="PLG_VISUALIZATION_SLIDESHOW_DELAY_LABEL"
@@ -87,6 +103,16 @@
 				   name="slideshow_viz_duration"
 				   size="6"
 				   type="text"/>
+
+			<field type="list"
+				   default="0"
+				   description="PLG_VISUALIZATION_SLIDESHOW_LINKS_DESC"
+				   label="PLG_VISUALIZATION_SLIDESHOW_LINKS_LABEL"
+				   name="slideshow_viz_links">
+				<option value="0">JNO</option>
+				<option value="1">PLG_VISUALIZATION_SLIDESHOW_LINKS_FORM</option>
+				<option value="2">PLG_VISUALIZATION_SLIDESHOW_LINKS_DETAILS</option>
+			</field>
 
 			<field name="slideshow_viz_options"
 				   type="fabrikeditor"

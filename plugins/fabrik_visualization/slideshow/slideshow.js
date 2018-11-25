@@ -73,7 +73,13 @@ var FbSlideshowViz = new Class({
             }
         });
 
-        jQuery('#' + this.options.html_id).show();
+        /**
+         * Hide the loading div, and fire a setPosition to have Slick recalculate sizing (it can't get image sizes
+         * when inside a hidden element.  Could probably do this by positioning slider offscreen rather than
+         * display none.
+         */
+        jQuery('.slider_loading').hide();
+        $slider.slick('setPosition');
 
         this.mediaScan();
 	},
