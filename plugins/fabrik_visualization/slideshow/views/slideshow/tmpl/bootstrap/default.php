@@ -32,6 +32,10 @@ else
 ?>
 
 <style>
+    /**
+     * These widths are set in the template default.php, as they need to derive values dynamically
+     * from the plugin params.  All other CSS is in the viz's template.css, which can be overridden with a custom.css
+     */
     .slider img {
         <?php echo $height; ?>
         <?php echo $width; ?>
@@ -40,23 +44,6 @@ else
     .slider_loading {
         width: <?php echo $this->params->get('slideshow_viz_loader_width', '400');?>px;
         height: <?php echo $this->params->get('slideshow_viz_loader_height', '300');?>px;
-        position: relative;
-    }
-
-    .slider_loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .slider {
-        display: none;
-    }
-
-    .slider.slick-initialized {
-        display: block;
     }
 </style>
 
