@@ -369,7 +369,7 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 	 * @return  bool  returns false if error
 	 */
 
-	public function stream($filepath, $chunkSize = 1024 * 1024)
+	public function stream($filepath, $chunkSize = 1048576)
 	{
 		/**
 		 * Use the S3 stream wrapper, so we can treat the file "normally", through the s3:// protocol

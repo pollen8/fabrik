@@ -300,7 +300,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * @return  bool
 	 */
 
-	public function stream($filepath, $chunkSize = 1024 * 1024)
+	public function stream($filepath, $chunkSize = 1048576)
 	{
 		$buffer = '';
 		$handle = fopen($filepath, 'rb');

@@ -113,7 +113,7 @@ abstract class FabrikStorageAdaptor
 	 *
 	 * @return  bool  returns false if error
 	 */
-	public abstract function stream($filepath, $chunkSize = 1024 * 1024);
+	public abstract function stream($filepath, $chunkSize = 1048576);
 
 	/**
 	 * Clean the file path
