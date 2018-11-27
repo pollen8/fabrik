@@ -66,6 +66,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 var self = this;
                 jQuery(this.getInputElement()).bind('keyup', debounce(this.options.debounceDelay, function (e) {
                     self.search(e);
+                    //console.log('heyup');
+                }));
+
+                jQuery(this.getInputElement()).bind('input', debounce(this.options.debounceDelay, function (e) {
+                    self.search(e);
+                    //console.log('input');
                 }));
 
                 this.getInputElement().addEvent('blur', function (e) {
@@ -90,7 +96,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             if (!this.isMinTriggerlength()) {
                 return;
             }
-            if (e.keyCode === 'tab' || e.keyCode === 'enter') {
+
+
+            if (e.which === 9 || e.which === 13) {
                 e.preventDefault();
                 this.closeMenu();
                 if (this.ajax) {
@@ -152,6 +160,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         }.bind(this)
                     }).send();
                 }
+            }
+            else {
+                //console.log('same same or empty');
             }
             this.searchText = v;
         },
