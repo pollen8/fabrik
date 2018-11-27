@@ -43,9 +43,11 @@ class PlgContentFabrik extends JPlugin
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
+		// Don't throw an exception, just don't do nuthin' if system plugin hasn't run
 		if (!defined('COM_FABRIK_FRONTEND'))
 		{
-			throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+			//throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+			return true;
 		}
 
 		// Get plugin info
