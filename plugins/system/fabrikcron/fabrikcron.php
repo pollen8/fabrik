@@ -295,6 +295,12 @@ class PlgSystemFabrikcron extends JPlugin
 
 	public function onAfterRender()
 	{
+		// If system plugin hasn't run, just exit gracefully
+		if (!defined('COM_FABRIK_FRONTEND'))
+		{
+			return;
+		}
+
 		$this->doCron();
 	}
 
