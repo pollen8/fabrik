@@ -86,7 +86,7 @@ class PlgFabrik_FormConsent extends PlgFabrik_Form
 		$opts = json_encode($opts);
 
 		$this->formJavascriptClass($params, $formModel);
-		$formModel->formPluginJS['Consent' . $this->renderOrder] = 'var consent = new Consent(' . $opts . ');';
+		$formModel->formPluginJS['Consent' . $this->renderOrder] = 'new Consent(' . $opts . ')';
 
 	}
 

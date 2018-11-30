@@ -886,7 +886,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts = json_encode($opts);
 
 		$this->formJavascriptClass($params, $formModel);
-		$formModel->formPluginJS['Stripe' . $this->renderOrder] = 'var stripe = new Stripe(' . $opts . ');';
+		$formModel->formPluginJS['Stripe' . $this->renderOrder] = 'new Stripe(' . $opts . ')';
 
 	}
 

@@ -226,7 +226,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$opts = json_encode($opts);
 		$container = $formModel->jsKey();
 		$this->formJavascriptClass();
-		$formModel->formPluginJS['Paginate'] = "var " . $container . "_paginate = new Paginate($container, $opts);";
+		$formModel->formPluginJS['Paginate'] = "new Paginate($container, $opts)";
 	}
 
 	/**

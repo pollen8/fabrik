@@ -25,7 +25,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             'ajaxValidation': false,
             'showLoader'    : false,
             'customJsAction': '',
-            'plugins'       : [],
+            'plugins'       : {},
             'ajaxmethod'    : 'post',
             'inlineMessage' : true,
             'print'         : false,
@@ -49,7 +49,6 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.id = id;
             this.result = true; //set this to false in window.fireEvents to stop current action (e.g. stop form submission)
             this.setOptions(options);
-            this.plugins = this.options.plugins;
             this.options.pages = $H(this.options.pages);
             this.subGroups = $H({});
             this.currentPage = this.options.start_page;
@@ -2609,6 +2608,14 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
                 Fabrik.fireEvent('fabrik.form.togglesubmit', [this, on]);
             }
+        },
+
+        addPlugins: function (a) {
+            var self = this;
+            jQuery.each(a, function (k, p) {
+                p.form = self;
+            });
+            this.plugins = a;
         }
     });
 
