@@ -170,6 +170,8 @@
 				<option value="SCROLLLINE2D">Scroll Line 2D</option>
 				<option value="SCROLLSTACKEDCOLUMN2D">Scroll Stacked Column 2D</option>
 				<option value="SCATTER">Scatter</option>
+				<option value="SPLINE">Spline</option>
+				<option value="SPLINEAREA">Spline Area</option>
 			</field>
 
 			<field default="1"
@@ -275,6 +277,16 @@
 			       label="PLG_VISUALIZATION_FUSIONCHART_TREND_ISZONE_LABEL"
 			       name="fusionchart_trendiszone"
 			       type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field default="0"
+				   class="btn-group"
+				   description="PLG_VISUALIZATION_FUSIONCHART_TREND_MERGE_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_TREND_MERGE_LABEL"
+				   name="fusionchart_trendmerge"
+				   type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
@@ -783,6 +795,36 @@
 			       name="fusionchart_chart_bottommargin"
 			       size="3"
 			       type="text"/>
+
+		</fieldset>
+
+		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_EXPORT"
+				  name="export">
+
+			<field default="0"
+				   class="btn-group"
+				   description="PLG_VISUALIZATION_FUSIONCHART_EXPORT_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_EXPORT_LABEL"
+				   name="fusionchart_export"
+				   type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field class="input-large"
+				   description="PLG_VISUALIZATION_FUSIONCHART_EXPORT_PATH_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_EXPORT_PATH_LABEL"
+				   name="fusionchart_export_path"
+				   size="3"
+				   type="text"/>
+
+			<field class="input-large"
+				   description="PLG_VISUALIZATION_FUSIONCHART_EXPORT_FILENAME_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_EXPORT_FILENAME_LABEL"
+				   name="fusionchart_export_filename"
+				   size="3"
+				   type="text"/>
+
 
 		</fieldset>
 
