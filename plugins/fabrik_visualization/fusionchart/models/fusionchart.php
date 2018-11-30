@@ -1335,4 +1335,14 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 		return $chartData;
 	}
+
+	/**
+	 * Ajax call to get the json encoded string of map markers
+	 *
+	 * @return  string
+	 */
+	public function onAjax_getFusionchart()
+	{
+		echo json_encode($this->getFusionchart());
+	}
 }

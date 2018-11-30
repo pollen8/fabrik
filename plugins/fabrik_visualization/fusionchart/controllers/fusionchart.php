@@ -23,4 +23,19 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerVisualizationfusionchart extends FabrikControllerVisualization
 {
+	/**
+	 * Ajax chart update
+	 *
+	 * @param   string $tmpl Template
+	 *
+	 * @return  void
+	 */
+	public function ajax_getFusionchart($tmpl = 'default')
+	{
+		$viewName = 'fusionchart';
+		$model    = $this->getModel($viewName);
+		$id       = $this->input->getInt('visualizationid', 0);
+		$model->setId($id);
+		$model->onAjax_getFusionchart();
+	}
 }

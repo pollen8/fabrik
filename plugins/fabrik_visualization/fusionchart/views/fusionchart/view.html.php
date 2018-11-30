@@ -93,6 +93,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		$model    = $this->getModel();
 		$params = $model->getParams();
 		$options = new stdClass;
+		$options->id = $model->getVisualization()->get('id');
 		$options->chartJSON = $model->getFusionChart();
 		$options->chartType = $params->get('fusionchart_type');
 		$options->chartWidth = $params->get('fusionchart_width', '100%');
