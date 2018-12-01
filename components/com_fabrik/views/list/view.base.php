@@ -49,6 +49,28 @@ class FabrikViewListBase extends FabrikView
 		$csvOpts->inccalcs     = (int) $params->get('csv_include_calculations');
 		$csvOpts->custom_qs    = $params->get('csv_custom_qs', '');
 
+		$filter = JFilterInput::getInstance();
+		$request = $filter->clean($_GET, 'array');
+		$model              = $this->getModel();
+		$formModel          = $model->getFormModel();
+
+		foreach ($request as $key => $val)
+		{
+			$elementModel = $formModel->getElement(FabrikString::rtrimword($key, '_raw'), false, false);
+
+			if (!is_a($elementModel, 'PlgFabrik_Element'))
+			{
+				continue;
+			}
+
+			if (!empty($csvOpts->custom_qs))
+			{
+				$csvOpts->custom_qs .= '&';
+			}
+
+			$csvOpts->custom_qs .= $key . '=' . $val;
+		}
+
 		$itemId = FabrikWorker::itemId();
 		$exportUrl = 'index.php?option=com_' . $this->package . '&view=list&listid=' . $this->getModel()->getId();
 

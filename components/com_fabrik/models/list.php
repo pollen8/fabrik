@@ -504,6 +504,13 @@ class FabrikFEModelList extends JModelForm
      */
 	protected $localPdf = false;
 
+
+	/**
+	 * Used to allow getData() to get the query from finesseDataI() for debug if an exception is thrown
+	 * @var string
+	 */
+	protected $queryDebug = '';
+
 	/**
 	 * Load form
 	 *
@@ -925,15 +932,19 @@ class FabrikFEModelList extends JModelForm
 		{
 			$item = $this->getTable();
 			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br />';
+
+			// If Fabrik debug, show msg
 			if (FabrikHelperHTML::isDebug(true))
 			{
 				$msg .= '<br /><pre>' . $e->getMessage() . '</pre>';
 			}
 
+			// Only show actual query if J! is in debug mode
 			if ($this->config->get('debug'))
             {
-
+				$msg .= '<br /><pre>' . (string)$this->queryDebug . '</pre><br />';
             }
+
 			throw new RuntimeException($msg, 500);
 		}
 
@@ -963,6 +974,7 @@ class FabrikFEModelList extends JModelForm
 		$fabrikDb = $this->getDb();
 		$this->setBigSelects();
 		$query = $this->buildQuery();
+		$this->queryDebug = $query;
 //echo $query;
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in buildQuery()
@@ -5307,7 +5319,8 @@ class FabrikFEModelList extends JModelForm
 		 * multiple list plugins, and one has related data to another, and they happen to use that element
 		 * in a plugin filter
 		 */
-		if (!$this->app->input->get('fabrik_incsessionfilters', true))
+		if (!$this->app->input->get('fabrik_incsessionfilters', true)
+			|| !$this->app->input->get('fabrik_storesessionfilters', true))
 		{
 			return;
 		}

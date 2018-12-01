@@ -32,6 +32,7 @@ class FabrikViewList extends FabrikViewListBase
 	public function display($tpl = null)
 	{
 		$input = $this->app->input;
+		$input->set('fabrik_storesessionfilters', false);
 
 		/** @var FabrikFEModelCSVExport $exporter */
 		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
