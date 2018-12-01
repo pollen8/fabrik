@@ -484,12 +484,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 opts.download = 0;
                 opts.setListRefFromRequest = 1;
 
-                this.options.csvOpts.custom_qs.split('&').each(function (qs) {
-                    var key = qs.split('=');
-                    opts[key[0]] = key[1];
-                });
-
                 var url = '?' + 'Itemid=' + this.options.Itemid;
+
+                this.options.csvOpts.custom_qs.split('&').each(function (qs) {
+                    //var key = qs.split('=');
+                    //opts[key[0]] = key[1];
+                    url += '&' + qs;
+                });
 
                 // Append the custom_qs to the URL to enable querystring filtering of the list data
                 var myAjax = new Request.JSON({
