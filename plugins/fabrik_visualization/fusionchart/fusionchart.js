@@ -21,24 +21,6 @@ define(['jquery', 'fab/fabrik', 'fusionchart'], function (jQuery, Fabrik, fc) {
 
         initialize: function (ref, options) {
             this.setOptions(options);
-
-            this.updater = new Request.JSON({
-                url      : '',
-                data     : {
-                    'option'         : 'com_fabrik',
-                    'format'         : 'raw',
-                    'task'           : 'ajax_getFusionchart',
-                    'view'           : 'visualization',
-                    'controller'     : 'visualization.fusionchart',
-                    'visualizationid': this.options.id
-                },
-                onSuccess: function (json) {
-                    Fabrik.fireEvent('fabrik.viz.fusionchart.ajax.refresh', [this]);
-                    Fabrik.loader.stop(this.options.chartContainer);
-                    this.chart.setJSONData(json);
-                }.bind(this)
-            });
-
             this.render();
         },
 
@@ -57,9 +39,10 @@ define(['jquery', 'fab/fabrik', 'fusionchart'], function (jQuery, Fabrik, fc) {
         },
 
         update: function () {
-            Fabrik.loader.start(this.options.chartContainer);
-            //this.updater.send();
             var self = this;
+
+            Fabrik.loader.start(self.options.chartContainer);
+
             jQuery.ajax({
                 url     : '',
                 method  : 'post',
@@ -78,7 +61,7 @@ define(['jquery', 'fab/fabrik', 'fusionchart'], function (jQuery, Fabrik, fc) {
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 window.alert(textStatus);
             }).done(function (json) {
-                Fabrik.fireEvent('fabrik.viz.fusionchart.ajax.refresh', [this]);
+                Fabrik.fireEvent('fabrik.viz.fusionchart.ajax.refresh', [self]);
                 self.chart.setJSONData(json);
             });
         }
