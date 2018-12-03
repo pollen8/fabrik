@@ -1309,7 +1309,14 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             var apply = this._getButton('apply');
 
             if (!submit && !apply) {
-                return;
+                // look for a button element set to submit
+                if (this.form.getElement('button[type=submit]'))
+                {
+                    submit = this.form.getElement('button[type=submit]');
+                }
+                else {
+                    return;
+                }
             }
             var del = this._getButton('delete'),
                 copy = this._getButton('Copy');
@@ -1655,6 +1662,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                                         }
                                         // Query the list to get the updated data
                                         Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
+
                                         if (btn.name !== 'apply') {
                                             if (clear_form) {
                                                 this.clearForm();
@@ -1664,6 +1672,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                                                 Fabrik.Windows[this.options.fabrik_window_id].close();
                                             }
                                         }
+
+                                        Fabrik.fireEvent('fabrik.form.submitted.end', [this, json]);
                                     } else {
                                         Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
                                         // Stop spinner
