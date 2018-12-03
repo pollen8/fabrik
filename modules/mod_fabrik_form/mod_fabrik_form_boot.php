@@ -27,6 +27,9 @@ $origLayout = $input->get('layout');
 $origView = $input->get('view');
 $origAjax = $input->get('ajax');
 $origFormid = $input->getInt('formid');
+$input->set('orig_formid', $origFormid);
+$origRowid = $input->getInt('rowid');
+$input->set('orig_rowid', $origRowid);
 
 FabrikHelperHTML::framework();
 
@@ -89,6 +92,7 @@ echo $controller->display();
 
 // Reset the layout and view etc for when the component needs them
 $input->set('formid', $origFormid);
+$input->set('rowid', $origRowid);
 $input->set('ajax', $origAjax);
 $input->set('layout', $origLayout);
 $input->set('view', $origView);
