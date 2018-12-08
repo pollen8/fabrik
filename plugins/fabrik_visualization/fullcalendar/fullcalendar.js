@@ -313,6 +313,8 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                         start     : e.startdate,
                         end       : e.enddate,
                         url       : e.link,
+                        viewURL   : e.details,
+                        editURL   : e.link,
                         customURL : e.customLink,
                         className : e.status,
                         allDay    : e.allday,
@@ -349,6 +351,8 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 	        url += '&rowid=' + o.rowid;
 	        url += '&fabrik_window_id=' + this.windowopts.id;
 	        url += '&task=addEvForm';
+	        url += '&editLink=' + encodeURI(o.editURL);
+	        url += '&viewLink-' + encodeURI(o.viewURL);
 
             if (o.nextView) {
                 url += '&nextview=' + o.nextView;

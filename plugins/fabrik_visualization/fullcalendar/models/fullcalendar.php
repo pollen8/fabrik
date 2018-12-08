@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -520,14 +521,20 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 								$row->enddate = $row->startdate;
 							}
 
-							$defaultURL    = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
-								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
+							//$defaultURL    = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
+							//	. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
+							$defaultURL = $listModel->editLink($row);
+							$defaultURL .= StringHelper::qsSepChar($defaultURL) . 'tmpl=component';
+							$viewURL = $listModel->viewDetailsLink($row);
+							$viewURL .= StringHelper::qsSepChar($viewURL) . 'tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
 							//$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
+
 							$row->link       = $defaultURL;
 							$row->customLink = $thisCustomUrl;
-							$row->details    = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=details&formid='
-								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
+							$row->details    = $viewURL;
+							//$row->details    = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=details&formid='
+							//	. $table->form_id . '&rowid=' . $row->id . '&tmpl=component'
 							$row->custom     = $customUrl != '';
 							$row->_listid    = $table->id;
 							$row->_formid    = $table->form_id;

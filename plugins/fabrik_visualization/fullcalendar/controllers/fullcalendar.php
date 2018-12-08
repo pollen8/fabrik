@@ -111,6 +111,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$input->set('tmpl', 'component');
 		$input->set('ajax', '1');
 		$nextView = $input->get('nextview', 'form');
+
 		$link     = 'index.php?option=com_' . $package . '&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowId . '&tmpl=component&ajax=1';
 		$link .= '&format=partial&fabrik_window_id=' . $input->get('fabrik_window_id');
 
