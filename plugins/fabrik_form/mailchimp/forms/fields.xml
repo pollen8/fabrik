@@ -75,6 +75,10 @@
                    label="PLG_FORM_MAILCHIMP_GROUP_OPTS_LABEL" name="mailchimp_groupopts" repeat="true" rows="6"
                    type="textarea"/>
 
+            <field cols="40" description="PLG_FORM_MAILCHIMP_MERGE_FIELDS_DESC"
+                   label="PLG_FORM_MAILCHIMP_MERGE_FIELDS_LABEL" name="mailchimp_mergefields" repeat="true" rows="6"
+                   type="textarea"/>
+
             <field default="1"
                    class="btn-group"
                    description="PLG_FORM_MAILCHIMP_FAIL_ON_ERROR_DESC" label="PLG_FORM_MAILCHIMP_FAIL_ON_ERROR_LABEL"
