@@ -474,6 +474,33 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         Fabrik.getWindow(winOpts);
     };
 
+    /**
+     * Open a single details/form view
+     * @param {string} view - details or form
+     * @param {event} e relayed click event
+     * @param {Node} target <a> link
+     */
+    Fabrik.calSelect = function () {
+        if (event.target.calendar) {
+            var form = jQuery(event.target.calendar.inputField).closest('form');
+
+            if (form.length > 0) {
+                form = Fabrik.getBlock(form[0].id);
+
+                if (form) {
+                    var el = jQuery(event.target.calendar.inputField).closest('.fabrikSubElementContainer');
+
+                    if (el.length > 0) {
+                        el = form.formElements.get(el[0].id);
+
+                        if (el) {
+                            el.calSelect(event.target.calendar);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     Fabrik.Array = {
         chunk: function (array, chunk) {
