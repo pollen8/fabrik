@@ -23,11 +23,13 @@
 			       description="PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_DESC">
 				<option value="0">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE</option>
 				<option value="1">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_IMAGE</option>
+				<option value="7">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_IMAGE_USER</option>
+				<option value="8">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_IMAGE_ENVIRONMENT</option>
 				<option value="2">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_IMAGE</option>
 				<option value="3">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_AUDIO</option>
 				<option value="4">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_AUDIO</option>
-				<option value="4">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_VIDEO</option>
-				<option value="7">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_VIDEO</option>
+				<option value="5">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_VIDEO</option>
+				<option value="6">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_VIDEO</option>
 			</field>
 
 			<field name="ul_file_types"
