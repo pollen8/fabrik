@@ -3468,7 +3468,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			header('Accept-Ranges: bytes');
 			header('Content-Length: ' . $thisFileInfo['filesize']);
 			header('Content-Type: ' . $thisFileInfo['mime_type']);
-			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
+			if ($params->get('fu_open_in_browser', '0') == '0' )
+                        {
+                            header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
+                        }
 
 			// Serve up the file
 			$storage->stream($filePath);
