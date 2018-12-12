@@ -561,6 +561,16 @@
 				<option value="3">Both</option>
 			</field>
 			
+			<field default="0"
+                   		class="btn-group"
+                   		description="PLG_ELEMENT_FILEUPLOAD_OPEN_IN_BROWSER_DESC"
+                   		label="PLG_ELEMENT_FILEUPLOAD_OPEN_IN_BROWSER_LABEL"
+                   		name="fu_open_in_browser"
+                   		type="radio">
+                		<option value="0">JNO</option>
+                		<option value="1">JYES</option>
+            		</field>
+			
            		<field default="0"
                    		class="btn-group"
                    		description="PLG_ELEMENT_FILEUPLOAD_FORCE_DOWNLOAD_SCRIPT_ON_EDIT_DESC"
