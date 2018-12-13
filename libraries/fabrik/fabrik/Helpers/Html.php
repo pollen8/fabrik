@@ -1011,7 +1011,11 @@ EOD;
 			// Require js test - list with no cal loading ajax form with cal
 			if (version_compare(JVERSION, '3.7', '>='))
 			{
-				self::calendar();
+				/**
+				 * don't do this in the framework any more, as the new jdate element means we can't include the old
+                 * date JS if a jdate is being used, so the old date element now calls calendar() when it needs it
+                 */
+				//self::calendar();
 			}
 			else
 			{

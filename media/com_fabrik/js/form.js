@@ -1046,6 +1046,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     return;
                 }
             }
+
+            if (!el.shouldAjaxValidate())
+            {
+                return;
+            }
+
             Fabrik.fireEvent('fabrik.form.element.validation.start', [this, el, e]);
             if (this.result === false) {
                 this.result = true;

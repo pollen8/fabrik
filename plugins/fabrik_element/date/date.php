@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 /**
  * Plugin element to render date picker
@@ -247,19 +248,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function render($data, $repeatCounter = 0)
 	{
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/wickedpicker/wickedpicker.css');
 		$this->offsetDate = '';
 		$name             = $this->getHTMLName($repeatCounter);
 		$id               = $this->getHTMLId($repeatCounter);
 		$params           = $this->getParams();
 		$element          = $this->getElement();
-		$format           = $params->get('date_form_format', $params->get('date_table_format', 'Y-m-d'));
+		$format           = $this->getFormFormat();
 
 		if (strstr($format, '%'))
 		{
 			$format = FabDate::strftimeFormatToDateFormat($format);
 		}
 
-		$timeFormat = $params->get('date_time_format', 'H:i');
+		$timeFormat = $this->getTimeFormat();
 
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
@@ -275,7 +277,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$localDate = $this->displayDate($gmt);
 
 			// Get the formatted time
-			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->format($timeFormat, true) : '';
+			$time = ($params->get('date_showtime', 0)) ? $localDate->format($timeFormat, true) : '';
 
 			// Formatted date
 			$date = $localDate->format($format, true);
@@ -283,7 +285,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if (!$this->isEditable())
 		{
-			return $date . $time;
+			return $date . ' ' . $time;
 		}
 
 		// Build HTML widget
@@ -336,7 +338,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$j3         = FabrikWorker::j3();
 		$params     = $this->getParams();
-		$timeFormat = $params->get('date_time_format', 'H:i');
+		$timeFormat = $this->getTimeFormat();
 		$class      = 'inputbox fabrikinput timeField input ' . $params->get('bootstrap_time_class', 'input-mini');
 		$readOnly   = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
 
@@ -346,16 +348,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		$timeLength = JString::strlen($timeFormat);
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
 		$str[] = '<input type="text" class="' . $class . '" ' . $readOnly . ' size="' . $timeLength . '" value="' . $time . '" name="'
 			. $timeElName . '" />';
 		$opts  = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file  = FabrikWorker::j3() ? 'clock' : 'time.png';
 
-		$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
+		$btnLayout  = Html::getLayout('fabrik-button');
 		$layoutData = (object) array(
 			'class' => 'timeButton',
-			'label' => FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts),
+			'label' => Html::image($file, 'form', @$this->tmpl, $opts),
 			'aria'	=> ' aria-label="' . FText::_('PLG_ELEMENT_DATE_ARIA_LABEL_TIME') . '"'
 		);
 
@@ -780,6 +782,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
+		Html::calendar();
 		$j3 = FabrikWorker::j3();
 
 		if (is_array($attribs))
@@ -787,14 +790,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$attribs = ArrayHelper::toString($attribs);
 		}
 
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
+		Html::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
 		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
-		$img  = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $opts);
+		$img  = Html::image('calendar', 'form', @$this->tmpl, $opts);
 		$html = array();
 
 		if ($j3)
 		{
-			$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
+			$btnLayout  = Html::getLayout('fabrik-button');
 			$layoutData = (object) array(
 				'class' => 'calendarbutton',
 				'id'    => $id . '_cal_img',
@@ -858,9 +861,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->defaultVal     = $this->getFrontDefaultValue();
 		$opts->showtime       = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel      = FText::_('PLG_ELEMENT_DATE_TIME_LABEL', true);
+		$opts->timePickerLabel = FText::_('PLG_ELEMENT_DATE_TIMEPICKER', true);
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
-		$opts->dateTimeFormat = $params->get('date_time_format', '');
+		$opts->dateTimeFormat = $this->getTimeFormat();
+		$opts->showSeconds    = $params->get('date_show_seconds', '0') === '1';
+		$opts->hour24         = $params->get('date_24hour', '1') === '1';
 		$opts->allowedDates   = $this->getAllowedPHPDates();
 		$opts->watchElement   = $this->getWatchId();
 		$opts->id             = $this->getId();
@@ -955,7 +961,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return $dates;
 		}
 
-		$dates = FabrikHelperHTML::isDebug() ? eval($php) : @eval($php);
+		$dates = Html::isDebug() ? eval($php) : @eval($php);
 		FabrikWorker::logEval($dates, 'Eval exception : ' . $this->getElement()->name . '::getAllowedPHPDates() : %s');
 
 		return (array) $dates;
@@ -1602,7 +1608,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$autoId = '.advanced-search-list .autocomplete-trigger';
 		}
 
-		FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
+		Html::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
 
 		return $layout->render($displayData);
 	}
@@ -1738,7 +1744,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt'   => 'calendar',
 		                                                                   'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
-		$from->img = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
+		$from->img = Html::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
 
@@ -1785,7 +1791,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$from->name          = $v . '[0]';
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
-		$from->img = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
+		$from->img = Html::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
 
@@ -1798,7 +1804,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$to->name  = $v . '[1]';
 
 		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $to->id . '_cal_img');
-		$to->img   = FabrikHelperHTML::image('calendar', 'form', @$this->tmpl, $imageOpts);
+		$to->img   = Html::image('calendar', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->to         = $to;
 		$displayData->filterType = $this->getFilterType();
@@ -1888,7 +1894,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		if ($csvFormat === '0' || $csvFormat === '3')
 		{
 			$paramName = $csvFormat === '0' ? 'date_form_format' : 'date_table_format';
-			$format = $params->get($paramName, 'Y-m-d H:i:s');
+
+			if ($paramName === 'date_form_format')
+			{
+				$format = $this->getFormFormat();
+				$format .= ' ' . $this->getTimeFormat();
+			}
+			else
+			{
+				$format = $params->get($paramName, 'Y-m-d H:i:s');
+			}
 
 			// Go through data and convert specified format to MySQL
 			for ($j = 0; $j < count($data); $j++)
@@ -2562,16 +2577,17 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->buttons = $type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
 		$opts          = json_encode($opts);
 		$script        = 'Fabrik.filter_' . $container . '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
+		Html::calendar();
 
 		if ($normal)
 		{
-			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js');
+			Html::script('plugins/fabrik_element/date/filter.js');
 
 			return $script;
 		}
 		else
 		{
-			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js', $script);
+			Html::script('plugins/fabrik_element/date/filter.js', $script);
 		}
 	}
 
@@ -2606,7 +2622,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key = FabrikHelperHTML::isDebug() ? 'element/date/date' : 'element/date/date-min';
+		$key = Html::isDebug() ? 'element/date/date' : 'element/date/date-min';
 		// Ensure that we keep advanced dependencies from previous date elements regardless of current elements settings.
 		$deps   = array_key_exists($key, $shim) ? $shim[$key]->deps : array();
 		$params = $this->getParams();
@@ -2618,6 +2634,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$deps[] = 'lib/datejs/parser';
 			$deps[] = 'lib/datejs/extras';
 		}
+
+		$deps[] = 'lib/wickedpicker/wickedpicker';
 
 		if (count($deps) > 0)
 		{
@@ -2717,6 +2735,60 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		return true;
 	}
 
+	/**
+	 * Get the date_form_format, attempt to strip any time formatting
+	 *
+	 * @return string
+	 */
+	private function getFormFormat()
+	{
+		$params = $this->getParams();
+		$format = $params->get('date_form_format', 'Y-m-d');
+
+		// attempt to strip a few of the more common time formats
+		$format = preg_replace('/\s+(H:i:s|H:i|g:i:s A|g:i A|g:i:s a|g:i a)$/', '', $format);
+
+		return $format;
+	}
+
+	/**
+	 * Get the time format according to time settings
+	 *
+	 * @return mixed|string
+	 */
+	private function getTimeFormat()
+	{
+		$params = $this->getParams();
+		$timeFormat = '';
+
+		if ($params->get('date_showtime', '0'))
+		{
+			if ($params->get('date_24hour', '1'))
+			{
+				if ($params->get('date_show_seconds'))
+				{
+					$timeFormat = 'H:i:s';
+				}
+				else
+				{
+					$timeFormat = 'H:i';
+				}
+			}
+			else
+			{
+				if ($params->get('date_show_seconds'))
+				{
+					$timeFormat = 'g:i:s A';
+				}
+				else
+				{
+					$timeFormat = 'g:i A';
+				}
+			}
+		}
+
+		return $timeFormat;
+	}
 }
 
 /**

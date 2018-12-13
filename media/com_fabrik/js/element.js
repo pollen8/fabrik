@@ -429,6 +429,14 @@ define(['jquery'], function (jQuery) {
         },
 
         /**
+         * Called before an AJAX validation is triggered, in case an element wants to abort it,
+         * for example date element with time picker
+         */
+        shouldAjaxValidate: function () {
+            return true;
+        },
+
+        /**
          * Run when the element is cloned in a repeat group
          */
         cloned: function (c) {
