@@ -1521,7 +1521,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				for ($i = 0; $i < count($defaultLabels); $i++)
 				{
-					$url               = $popUrl . FArrayHelper::getValue($defaultValues, $i, '');
+					$value = FArrayHelper::getValue($defaultValues, $i, '');
+
+					// joins in repeat groups
+					if (is_object($value))
+					{
+						$value = FArrayHelper::getValue($value, 0, '');
+					}
+
+					$url               = $popUrl . $value;
 					$defaultLabels[$i] = '<a href="' . JRoute::_($url) . '">' . FArrayHelper::getValue($defaultLabels, $i) . '</a>';
 				}
 			}
