@@ -2635,7 +2635,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$deps[] = 'lib/datejs/extras';
 		}
 
-		$deps[] = 'lib/wickedpicker/wickedpicker';
+		$pickerDep = Html::isDebug() ? 'lib/wickedpicker/wickedpicker' : 'lib/wickedpicker/wickedpicker.min';
+
+		if (!in_array($pickerDep, $deps))
+		{
+			$deps[] = $pickerDep;
+		}
 
 		if (count($deps) > 0)
 		{
