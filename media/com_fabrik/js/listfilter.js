@@ -121,12 +121,22 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
                     f.onSubmit();
                 });
             }
+            if (this.filters.jdate) {
+                jQuery.each(this.filters.jdate, function (key, f) {
+                    f.onSubmit();
+                });
+            }
             this.showFilterState();
         },
 
         onUpdateData: function () {
             if (this.filters.date) {
                 jQuery.each(this.filters.date, function (key, f) {
+                    f.onUpdateData();
+                });
+            }
+            if (this.filters.jdate) {
+                jQuery.each(this.filters.jdate, function (key, f) {
                     f.onUpdateData();
                 });
             }
