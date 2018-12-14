@@ -123,8 +123,7 @@
                 this.setTime(newTime);
             }
             this.timepicker.css({
-                /*'z-index': this.element.css('z-index') + 1,*/
-                'z-index': 10000,
+                'z-index': this.element.css('z-index') + 1,
                 position: 'absolute',
                 left: timepickerPos.left,
                 top: timepickerPos.top + $(element)[0].offsetHeight
@@ -236,7 +235,6 @@
                     //Clicking the X
                     if ($(event.target).is(self.close)) {
                       self.hideTimepicker(window.lastTimePickerControl);
-                        window.lastTimePickerControl = null;
                     } else if ($(event.target).closest(self.timepicker).length || $(event.target).closest($('.hasWickedpicker')).length) { //Clicking the Wickedpicker or one of it's inputs
                       event.stopPropagation();
                     } else {   //Everything else
@@ -251,12 +249,11 @@
                         return;
                       }
                       self.hideTimepicker(window.lastTimePickerControl);
-                      window.lastTimePickerControl = null;
                     }
+                    window.lastTimePickerControl = null;
                 }
             };
-            //$(document).off('click', clickHandler).on('click', clickHandler);
-            $(self.timepicker).off('click', clickHandler).on('click', clickHandler);
+            $(document).off('click', clickHandler).on('click', clickHandler);
         },
 
         /**
@@ -464,7 +461,7 @@
         handleTimeAdjustments: function (element) {
             var timeOut = 0;
             //Click and click and hold timepicker incrementer and decrementer
-            $(this.up).add(this.down).off('mousedown click touchstart').on('mousedown click', {
+            $(this.up).add(this.down).off('mousedown mouseleave click touchstart').on('mousedown click mouseleave', {
                 'Wickedpicker': this,
                 'input': element
             }, function (event) {
@@ -478,9 +475,10 @@
                 } else {
                     passedData.Wickedpicker.changeValue(operator, passedData.input, this);
                 }
-            }).bind('mouseup touchend', function () {
+            }).bind('mouseup mouseleave touchend', function () {
                 clearInterval(timeOut);
             });
+
         },
 
         /*
