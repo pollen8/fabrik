@@ -53,6 +53,16 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="date_which_time_picker"
+				   type="radio"
+				   default="wicked"
+				   class="btn-group"
+				   description="PLG_ELEMENT_DATE_WHICH_TIME_PICKER_DESC"
+				   label="PLG_ELEMENT_DATE_WHICH_TIME_PICKER_LABEL" >
+				<option value="wicked">PLG_ELEMENT_DATE_WHICH_TIME_PICKER_WICKED</option>
+				<option value="clock">PLG_ELEMENT_DATE_WHICH_TIME_PICKER_CLOCK</option>
+			</field>
+
 			<!--
 			<field name="date_time_format"
 				type="text"

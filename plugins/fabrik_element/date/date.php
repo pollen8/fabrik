@@ -248,13 +248,21 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function render($data, $repeatCounter = 0)
 	{
-		Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/wickedpicker/wickedpicker.css');
 		$this->offsetDate = '';
 		$name             = $this->getHTMLName($repeatCounter);
 		$id               = $this->getHTMLId($repeatCounter);
 		$params           = $this->getParams();
 		$element          = $this->getElement();
 		$format           = $this->getFormFormat();
+
+		if ($params->get('date_which_time_picker', 'wicked') === 'clock')
+		{
+			Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/clockpicker/bootstrap-clockpicker.css');
+		}
+		else
+		{
+			Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/wickedpicker/wickedpicker.css');
+		}
 
 		if (strstr($format, '%'))
 		{
@@ -860,12 +868,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// Used uniquely in reset();
 		$opts->defaultVal     = $this->getFrontDefaultValue();
 		$opts->showtime       = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
+		$opts->whichTimePicker = $params->get('date_which_time_picker', 'wicked');
 		$opts->timelabel      = FText::_('PLG_ELEMENT_DATE_TIME_LABEL', true);
 		$opts->timePickerLabel = FText::_('PLG_ELEMENT_DATE_TIMEPICKER', true);
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
 		$opts->dateTimeFormat = $this->getTimeFormat();
-		$opts->showSeconds    = $params->get('date_show_seconds', '0') === '1';
+		$opts->showSeconds    = $opts->whichTimePicker === 'clock' ? false : $params->get('date_show_seconds', '0') === '1';
 		$opts->hour24         = $params->get('date_24hour', '1') === '1';
 		$opts->allowedDates   = $this->getAllowedPHPDates();
 		$opts->watchElement   = $this->getWatchId();
@@ -875,6 +884,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// For reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts->advanced      = $params->get('date_advanced', '0') == '1';
+
+		JText::script('JLIB_HTML_BEHAVIOR_CLOSE');
 
 		return array('FbDateTime', $id, $opts);
 	}
@@ -2635,7 +2646,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$deps[] = 'lib/datejs/extras';
 		}
 
-		$pickerDep = Html::isDebug() ? 'lib/wickedpicker/wickedpicker' : 'lib/wickedpicker/wickedpicker.min';
+		if ($params->get('date_which_time_picker', 'wicked') === 'clock')
+		{
+			$pickerDep = Html::isDebug() ? 'lib/clockpicker/bootstrap-clockpicker' : 'lib/clockpicker/bootstrap-clockpicker.min';
+		}
+		else
+		{
+			$pickerDep = Html::isDebug() ? 'lib/wickedpicker/wickedpicker' : 'lib/wickedpicker/wickedpicker.min';
+		}
 
 		if (!in_array($pickerDep, $deps))
 		{
@@ -2770,7 +2788,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		{
 			if ($params->get('date_24hour', '1'))
 			{
-				if ($params->get('date_show_seconds'))
+				if ($params->get('date_which_time_picker', 'nunbers') !== 'clock'
+					&& $params->get('date_show_seconds'))
 				{
 					$timeFormat = 'H:i:s';
 				}
@@ -2781,7 +2800,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			}
 			else
 			{
-				if ($params->get('date_show_seconds'))
+				if ($params->get('date_which_time_picker', 'wicked') !== 'clock'
+					&& $params->get('date_show_seconds'))
 				{
 					$timeFormat = 'g:i:s A';
 				}

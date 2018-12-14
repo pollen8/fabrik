@@ -566,16 +566,26 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                         if (!this.setUpDone) {
                             if (this.timeElement) {
                                 var self = this;
-                                this.timePicker = jQuery('#' + this.element.id + ' .timeField').wickedpicker({
-                                    'now': this.getTimeFromField(),
-                                    'timeSeparator': ':',
-                                    'twentyFour': this.options.hour24,
-                                    'showSeconds': this.options.showSeconds,
-                                    //'afterShow': jQuery.proxy(this.hideTime, this),
-                                    'afterShow': Fabrik.timePickerClose,
-                                    //'clearable': true,
-                                    'title': this.options.timePickerLabel
-                                });
+                                if (this.options.whichTimePicker === 'clock') {
+                                    this.timePicker = jQuery('#' + this.element.id + ' .timeField').clockpicker({
+                                        'default': this.getTimeFromField(),
+                                        'twelvehour': !this.options.hour24,
+                                        'padhours': this.options.hour24,
+                                        'meridiemsep': ' ',
+                                        'donetext': Joomla.JText._('JLIB_HTML_BEHAVIOR_CLOSE'),
+                                    });
+                                }
+                                else {
+                                    this.timePicker = jQuery('#' + this.element.id + ' .timeField').wickedpicker({
+                                        'now': this.getTimeFromField(),
+                                        'timeSeparator': ':',
+                                        'twentyFour': this.options.hour24,
+                                        'showSeconds': this.options.showSeconds,
+                                        //'afterShow': jQuery.proxy(this.hideTime, this),
+                                        'afterShow': Fabrik.timePickerClose,
+                                        'title': this.options.timePickerLabel
+                                    });
+                                }
                                 this.setUpDone = true;
                             }
                         }
