@@ -717,6 +717,15 @@
 				<option value="remove">COM_FABRIK_REMOVE_HTML</option>
 			</field>
 
+			<field name="csv_multi_join_split"
+				   type="text"
+				   class="input-small"
+				   size="5"
+				   default=","
+				   label="COM_FABRIK_FIELD_CSV_MULTI_JOIN_SPLIT_LABEL"
+				   description="COM_FABRIK_FIELD_CSV_MULTI_JOIN_SPLIT_DESC"
+			/>
+
 			<field name="csv_custom_qs"
 			       type="text"
 			       class="input-xxlarge"

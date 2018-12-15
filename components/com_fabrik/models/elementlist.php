@@ -741,7 +741,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function renderListData_csv($data, &$thisRow)
 	{
 		$this->renderWithHTML = false;
-		$d = $this->renderListData($data, $thisRow, array('sepChar' => ","));
+		$d = $this->renderListData(
+			$data,
+			$thisRow,
+			array(
+				'sepChar' => $this->getlistModel()->getParams()->get('csv_multi_join_split', ',')
+			)
+		);
 
 		if ($this->isJoin())
 		{
