@@ -874,7 +874,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
 		$opts->dateTimeFormat = $this->getTimeFormat();
-		$opts->showSeconds    = $opts->whichTimePicker === 'clock' ? false : $params->get('date_show_seconds', '0') === '1';
+		$opts->showSeconds    = $opts->whichTimePicker === 'clock' ? false : $params->get('date_show_seconds', '1') === '1';
 		$opts->hour24         = $params->get('date_24hour', '1') === '1';
 		$opts->allowedDates   = $this->getAllowedPHPDates();
 		$opts->watchElement   = $this->getWatchId();
@@ -2789,7 +2789,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			if ($params->get('date_24hour', '1'))
 			{
 				if ($params->get('date_which_time_picker', 'nunbers') !== 'clock'
-					&& $params->get('date_show_seconds'))
+					&& $params->get('date_show_seconds', '1'))
 				{
 					$timeFormat = 'H:i:s';
 				}
@@ -2801,7 +2801,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			else
 			{
 				if ($params->get('date_which_time_picker', 'wicked') !== 'clock'
-					&& $params->get('date_show_seconds'))
+					&& $params->get('date_show_seconds', '1'))
 				{
 					$timeFormat = 'g:i:s A';
 				}

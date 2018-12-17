@@ -573,6 +573,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                                         'padhours': this.options.hour24,
                                         'meridiemsep': ' ',
                                         'donetext': Joomla.JText._('JLIB_HTML_BEHAVIOR_CLOSE'),
+                                        'afterDone': jQuery.proxy(this.hideTime, this),
                                     });
                                 }
                                 else {
