@@ -151,8 +151,8 @@
                    type="radio"
                    default="0"
                    class="btn-group"
-                   description="PLG_ELEMENT_JDATE_ALLOW_TYPING_IN_FIELD_DESC"
-                   label="PLG_ELEMENT_JDATE_ALLOW_TYPING_IN_FIELD_LABEL">
+                   description="PLG_ELEMENT_JDATE_SHOW_WEEK_NUMBERS_DESC"
+                   label="PLG_ELEMENT_JDATE_SHOW_WEEK_NUMBERS_LABEL">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
