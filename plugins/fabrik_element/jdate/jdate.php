@@ -315,6 +315,8 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 			$format .= ' ' . $timeFormat;
 		}
 
+		$calOpts['weekNumbers'] = $params->get('jdate_show_week_numbers', '0') === '1';
+
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$str[] = $this->calendar($gmt, $name, $id . '_cal', $format, $calOpts, $repeatCounter);
 
@@ -2737,6 +2739,7 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 				}
 				else
 				{
+					// NOTE - 't usedon 'g' (hours without leading 0) as it translates to %l, which won't work on Windows
 					$timeFormat = 'h:i A';
 				}
 			}

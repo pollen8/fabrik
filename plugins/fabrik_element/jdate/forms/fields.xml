@@ -55,19 +55,19 @@
 
 			<field name="jdate_time_format"
 				type="text"
-				default="H:i"
+				default=""
 				class="input-mini"
 				description="PLG_ELEMENT_JDATE_TIME_FORMAT_DESC"
 				label="PLG_ELEMENT_JDATE_TIME_FORMAT_LABEL"
 				length="20"/>
 
 
-			<field name="date_time_24"
+			<field name="jdate_time_24"
 				   type="radio"
 				   default="1"
 				   class="btn-group"
-				   description="PLG_ELEMENT_DATE_TIME_24_DESC"
-				   label="PLG_ELEMENT_DATE_TIME_24_LABEL" >
+				   description="PLG_ELEMENT_JDATE_TIME_24_DESC"
+				   label="PLG_ELEMENT_JDATE_TIME_24_LABEL" >
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
@@ -85,8 +85,8 @@
 				class="input-small"
 				description="PLG_ELEMENT_JDATE_STORE_AS_DESC"
 				label="PLG_ELEMENT_JDATE_STORE_AS_LABEL">
-					<option value="0">PLG_ELEMENT_DATE_UTC</option>
-					<option value="1">PLG_ELEMENT_DATE_LOCAL_TIME</option>
+					<option value="0">PLG_ELEMENT_JDATE_UTC</option>
+					<option value="1">PLG_ELEMENT_JDATE_LOCAL_TIME</option>
 			</field>
 
 			<field name="jdate_table_format"
@@ -125,6 +125,7 @@
 					<option value="1">JYES</option>
 			</field>
 
+            <!--
 			<field name="jdate_firstday"
 				type="list"
 				default="0"
@@ -134,6 +135,7 @@
 					<option value="0">SUNDAY</option>
 					<option value="1">MONDAY</option>
 			</field>
+            -->
 
 			<field name="jdate_allow_typing_in_field"
 				type="radio"
@@ -145,15 +147,25 @@
 					<option value="1">JYES</option>
 			</field>
 
+            <field name="jdate_show_week_numbers"
+                   type="radio"
+                   default="0"
+                   class="btn-group"
+                   description="PLG_ELEMENT_JDATE_ALLOW_TYPING_IN_FIELD_DESC"
+                   label="PLG_ELEMENT_JDATE_ALLOW_TYPING_IN_FIELD_LABEL">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
 			<field name="jdate_csv_offset_tz"
 				type="list"
 				default="0"
 				description="PLG_ELEMENT_JDATE_CSV_OFFSET_TZ_DESC"
 				label="PLG_ELEMENT_JDATE_CSV_OFFSET_TZ_LABEL">
-					<option value="0">PLG_ELEMENT_DATE_CSV_FORMAT_NORMAL</option>
-					<option value="3">PLG_ELEMENT_DATE_CSV_FORMAT_NORMAL_LIST</option>
-					<option value="1">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_GMT</option>
-					<option value="2">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_LOCAL</option>
+					<option value="0">PLG_ELEMENT_JDATE_CSV_FORMAT_NORMAL</option>
+					<option value="3">PLG_ELEMENT_JDATE_CSV_FORMAT_NORMAL_LIST</option>
+					<option value="1">PLG_ELEMENT_JDATE_CSV_FORMAT_MYSQL_GMT</option>
+					<option value="2">PLG_ELEMENT_JDATE_CSV_FORMAT_MYSQL_LOCAL</option>
 			</field>
 		</fieldset>
 
