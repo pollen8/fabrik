@@ -34,29 +34,17 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			Fabrik.FabrikStripeForm = null;
 			Fabrik.FabrikStripeFormSubmitting = false;
 
-			if (this.options.couponElement !== '')
-			{
-                this.couponElement = self.form.formElements.get(this.options.couponElement);
-                var couponElEvnt = this.couponElement.getBlurEvent();
-
-				self.form.dispatchEvent(
-					'',
-					this.options.couponElement,
-                    couponElEvnt,
-					function (e) {
-						self.getCoupon(e);
-					}
-				);
-			}
-			else
-			{
-				this.couponElement = false;
-			}
-
             if (this.options.productElement !== '')
             {
                 this.productElement = self.form.formElements.get(this.options.productElement);
-                var productElEvnt = this.productElement.getBlurEvent();
+                var productElEvnt;
+
+                if (this.productElement.hasSubElements()) {
+                    productElEvnt = this.productElement.getChangeEvent();
+                }
+                else {
+                    productElEvnt = this.productElement.getBlurEvent();
+                }
 
                 self.form.dispatchEvent(
                     '',
@@ -66,42 +54,74 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                         self.getCost(e);
                     }
                 );
-            }
-            else
-			{
-				this.productElement = false;
-			}
 
-            if (this.options.qtyElement !== '')
-            {
-                this.qtyElement = self.form.formElements.get(this.options.qtyElement);
-                var qtyElEvnt = this.qtyElement.getBlurEvent();
+                if (this.options.qtyElement !== '')
+                {
+                    this.qtyElement = self.form.formElements.get(this.options.qtyElement);
+                    var qtyElEvnt;
 
-                self.form.dispatchEvent(
-                    '',
-                    this.options.qtyElement,
-                    qtyElEvnt,
-                    function (e) {
-                        self.getCost(e);
+                    if (this.productElement.hasSubElements()) {
+                        qtyElEvnt = this.productElement.getChangeEvent();
                     }
-                );
+                    else {
+                        qtyElEvnt = this.productElement.getBlurEvent();
+                    }
 
-                // if it's a field, watch for input events, like HTML 5 'number' controls, etc
-                if (this.qtyElement.plugin === 'fabrikfield') {
                     self.form.dispatchEvent(
                         '',
                         this.options.qtyElement,
-                        'input',
+                        qtyElEvnt,
                         function (e) {
                             self.getCost(e);
                         }
                     );
+
+                    // if it's a field, watch for input events, like HTML 5 'number' controls, etc
+                    if (this.qtyElement.plugin === 'fabrikfield') {
+                        self.form.dispatchEvent(
+                            '',
+                            this.options.qtyElement,
+                            'input',
+                            function (e) {
+                                self.getCost(e);
+                            }
+                        );
+                    }
+                }
+                else
+                {
+                    this.qtyElement = false;
                 }
             }
             else
 			{
-				this.qtyElement = false;
+				this.productElement = false;
+                this.qtyElement = false;
 			}
+
+            if (this.options.couponElement !== '')
+            {
+                this.couponElement = self.form.formElements.get(this.options.couponElement);
+                var couponElEvnt = this.couponElement.getBlurEvent();
+
+                self.form.dispatchEvent(
+                    '',
+                    this.options.couponElement,
+                    couponElEvnt,
+                    function (e) {
+                        if (self.options.productElement !== '') {
+                            self.getCost(e);
+                        }
+                        else {
+                            self.getCoupon(e);
+                        }
+                    }
+                );
+            }
+            else
+            {
+                this.couponElement = false;
+            }
 
             if (this.options.totalElement !== '')
             {
