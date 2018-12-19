@@ -320,6 +320,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		updateForm: function (json) {
 			this.options.amount = json.stripe_amount;
 			jQuery('.fabrikStripePrice').html(json.display_amount);
+            jQuery('.fabrikStripeItem').html(json.product_name);
 			jQuery('.fabrikStripeCouponText').html(json.msg);
 
 			if (this.totalElement) {

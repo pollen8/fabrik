@@ -220,9 +220,9 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 
 		$customerId = false;
 		$customerTableName = $this->getCustomerTableName();
-		$doCustomer = $customerTableName !== false && !empty($userId);
+		$doCustomer = $customerTableName !== false;
 
-		if ($doCustomer)
+		if ($doCustomer && !empty($userId))
 		{
 			$customerId = $this->getCustomerId($userId);
 		}
@@ -249,8 +249,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 						));
 
 						$customerId = $this->customer->id;
-
-						$this->updateCustomerId($userId, $customerId, $tokenOpts);
 					}
 					else
 					{
@@ -262,8 +260,6 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 								$this->customer         = \Stripe\Customer::retrieve($customerId); // stored in your application
 								$this->customer->source = $tokenId;
 								$this->customer->save();
-
-								$this->updateCustomerId($userId, $customerId, $tokenOpts);
 							}
 						}
 					}
@@ -450,10 +446,10 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
+		$userId    = JFactory::getUser()->get('id');
 
 		if (isset($this->charge))
 		{
-			$userId    = JFactory::getUser()->get('id');
 			$opts            = new stdClass;
 			$opts->listid    = $this->getModel()->getListModel()->getId();
 			$opts->formid    = (string) $this->getModel()->getId();
@@ -494,6 +490,16 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			$msg->opts       = $opts;
 			$msg             = json_encode($msg);
 			$this->doLog($msgType, $msg);
+		}
+
+		if (!empty($this->customer))
+		{
+			if ($this->getCustomerTableName() !== false && !empty($userId))
+			{
+				$tokenOpts = ArrayHelper::getValue($this->data, 'stripe_token_opts', '{}');
+				$tokenOpts = json_decode($tokenOpts);
+				$this->updateCustomerId($userId, $this->customer->id, $tokenOpts);
+			}
 		}
 
 		$w    = new Worker;
@@ -886,7 +892,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$opts = json_encode($opts);
 
 		$this->formJavascriptClass($params, $formModel);
-		$formModel->formPluginJS['Stripe' . $this->renderOrder] = 'new Stripe(' . $opts . ')';
+		$formModel->formPluginJS['Stripe' . $this->renderOrder] = 'var stripe = new Stripe(' . $opts . ');';
 
 	}
 
@@ -1621,6 +1627,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		$costMultiplier = $params->get('stripe_currency_multiplier', '100');
 		$response = new StdClass;
 		$response->stripe_amount = $product->product_cost * $costMultiplier;
+		$response->product_name = $product->product_name;
 
 		if (!empty($qty))
 		{
