@@ -25,5 +25,6 @@ $row = $this->row;
 	</p>
 	<?php echo $this->loadTemplate( 'filter'); ?>
 	<br />
-	<?php echo $this->chart; ?>
+	<?php /* echo $this->chart; */ ?>
+    <div id="chart-container"></div>
 </div>
