@@ -13,10 +13,6 @@
 				   close="true"
 				   description="PLG_VISUALIZATION_FUSIONCHART_DESCRIPTION" />
 
-			<field name="deprecated"
-			       type="spacer"
-			       label="COM_FABRIK_DEPRECATED_PLUGIN"/>
-
 			<field description="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL_DESC"
 			       label="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL"
 			       name="fusionchart_connection"
@@ -134,15 +130,7 @@
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_GRAPH_ATTRIBUTES"
 		          name="graph_attributes">
-			<field default="free_old"
-			       description="PLG_VISUALIZATION_FUSIONCHART_VERSION_DESC"
-			       label="PLG_VISUALIZATION_FUSIONCHART_VERSION_LABEL"
-			       name="fusionchart_version"
-			       type="list">
-				<option value="free_old">Default</option>
-				<option value="free_22">Free 2.2</option>
-				<option value="pro_30">Pro 3.0</option>
-			</field>
+
 			<field label="PLG_VISUALIZATION_FUSIONCHART_CHART_TYPE_LABEL"
 			       name="fusionchart_type"
 			       type="list">
