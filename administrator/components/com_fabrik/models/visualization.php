@@ -142,7 +142,13 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 */
 	public function validate($form, $data, $group = null)
 	{
-		parent::validate($form, $data);
+		$data = parent::validate($form, $data);
+
+		// Standard jForm validation failed so we shouldn't test further as we can't be sure of the data
+		if (!$data)
+		{
+			return false;
+		}
 
 		return $data;
 	}
