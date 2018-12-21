@@ -14,6 +14,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
         Implements: [Options, Events],
 
+        Binds: [],
+
         options: {
             menuclass              : 'auto-complete-container dropdown',
             classes                : {

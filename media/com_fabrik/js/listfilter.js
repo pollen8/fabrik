@@ -10,6 +10,8 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
 
         Implements: [Events],
 
+        Binds: [],
+
         options: {
             'container'     : '',
             'filters'       : [],
