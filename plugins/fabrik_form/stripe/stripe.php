@@ -866,25 +866,44 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 		}
 		else
 		{
-			$opts->useCheckout = true;
-			$layout     = $this->getLayout('checkout');
-			$layoutData = new stdClass();
-			$layoutData->testMode = $this->isTestMode();
-			$layoutData->amount = $amount;
+			$opts->useCheckout        = true;
+			$layout                   = $this->getLayout('checkout');
+			$layoutData               = new stdClass();
+			$layoutData->testMode     = $this->isTestMode();
+			$layoutData->amount       = $amount;
 			$layoutData->currencyCode = $currencyCode;
-			$layoutData->langTag = JFactory::getLanguage()->getTag();
-			$layoutData->bottomText = FText::_($params->get('stripe_charge_bottom_text_new', 'PLG_FORM_STRIPE_CHARGE_BOTTOM_TEXT_NEW'));
-			$layoutData->bottomText = $w->parseMessageForPlaceHolder($layoutData->bottomText, $this->data);
-			$layoutData->item = $item;
-			$layoutData->showCoupon = $this->useCoupon();
-			$layoutData->couponMsg = $this->couponMsg;
-			$this->html = $layout->render($layoutData);
-			$dep       = new stdClass;
-			$dep->deps = array(
+			$layoutData->langTag      = JFactory::getLanguage()->getTag();
+			$layoutData->bottomText   = FText::_($params->get('stripe_charge_bottom_text_new', 'PLG_FORM_STRIPE_CHARGE_BOTTOM_TEXT_NEW'));
+			$layoutData->bottomText   = $w->parseMessageForPlaceHolder($layoutData->bottomText, $this->data);
+			$layoutData->item         = $item;
+			$layoutData->showCoupon   = $this->useCoupon();
+			$layoutData->couponMsg    = $this->couponMsg;
+
+			if ($formModel->failedValidation())
+			{
+				$opts->failedValidation = true;
+				$layoutData->failedValidation = true;
+				$layoutData->failedValidationMsg = FText::_($params->get('stripe_charge_failed_validation_text', 'PLG_FORM_STRIPE_CHARGE_FAILED_VALIDATION_TEXT'));
+				$opts->stripeTokenId   = ArrayHelper::getValue($this->data, 'stripe_token_id', '');
+				$opts->stripeTokenEmail = ArrayHelper::getValue($this->data, 'stripe_token_email', '');
+				$opts->stripeTokenOpts = ArrayHelper::getValue($this->data, 'stripe_token_opts', '{}');
+			}
+			else
+            {
+                $opts->failedValidation = false;
+                $layoutData->faiedValidation = false;
+            }
+
+			$this->html               = $layout->render($layoutData);
+			/*
+			$dep                      = new stdClass;
+			$dep->deps                = array(
 				'stripe'
 			);
-			$shim['fabrik/form'] = $dep;
-			//FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+			$shim['fabrik/form']      = $dep;
+
+			FabrikHelperHTML::script('https://checkout.stripe.com/checkout.js');
+			*/
 		}
 
 		//FabrikHelperHTML::iniRequireJS($shim, array('stripe' => 'https://checkout.stripe.com/checkout'));

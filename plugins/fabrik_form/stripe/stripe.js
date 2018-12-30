@@ -17,6 +17,10 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			'name': '',
 			'panelLabel': '',
 			'useCheckout': true,
+            'failedValidation': false,
+            'stripeTokenId': '',
+            'stripeTokenEmail': '',
+            'stripeTokenOpts': '',
 			'billingAddress': false,
 			'couponElement': '',
 			'renderOrder': ''
@@ -132,35 +136,37 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			}
 
 			if (this.options.useCheckout) {
-                requirejs(['https://checkout.stripe.com/checkout.js?'], function (Stripe) {
-                    self.handler = StripeCheckout.configure({
-                        key: self.options.publicKey,
-                        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-                        locale: 'auto',
-                        currency: self.options.currencyCode,
-                        token: function (token, opts) {
-                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-                                'name': 'stripe_token_id',
-                                'value': token.id,
-                                'type': 'hidden'
-                            }));
-                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-                                'name': 'stripe_token_email',
-                                'value': token.email,
-                                'type': 'hidden'
-                            }));
-                            Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
-                                'name': 'stripe_token_opts',
-                                'value': JSON.stringify(opts),
-                                'type': 'hidden'
-                            }));
-                            Fabrik.FabrikStripeForm.mockSubmit();
-                        },
-                        closed: function () {
-                            Fabrik.FabrikStripeFormSubmitting = true;
-                        }
+			    if (!this.options.failedValidation) {
+                    requirejs(['https://checkout.stripe.com/checkout.js?'], function (Stripe) {
+                        self.handler = StripeCheckout.configure({
+                            key: self.options.publicKey,
+                            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                            locale: 'auto',
+                            currency: self.options.currencyCode,
+                            token: function (token, opts) {
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_id',
+                                    'value': token.id,
+                                    'type': 'hidden'
+                                }));
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_email',
+                                    'value': token.email,
+                                    'type': 'hidden'
+                                }));
+                                Fabrik.FabrikStripeForm.form.adopt(new Element('input', {
+                                    'name': 'stripe_token_opts',
+                                    'value': JSON.stringify(opts),
+                                    'type': 'hidden'
+                                }));
+                                Fabrik.FabrikStripeForm.mockSubmit();
+                            },
+                            closed: function () {
+                                Fabrik.FabrikStripeFormSubmitting = true;
+                            }
+                        });
                     });
-                });
+                }
 
 				Fabrik.addEvent('fabrik.form.submit.start', function (form, event, btn) {
 				    if (!this.options.useCheckout) {
@@ -172,25 +178,45 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 						return;
 					}
 
-					if (
-						typeof Fabrik.FabrikStripeForm === 'undefined' ||
-						Fabrik.FabrikStripeFormSubmitting !== true ||
-						jQuery('input[name=stripe_token_id]').length === 0
-					) {
-						Fabrik.FabrikStripeForm = form;
-						this.handler.open({
-							name           : this.options.name,
-							description    : this.options.item,
-							amount         : this.options.amount,
-							zipCode        : this.options.zipCode,
-							allowRememberMe: this.options.allowRememberMe,
-							email          : this.options.email,
-							panelLabel     : this.options.panelLabel,
-							billingAddress : this.options.billingAddress
-						});
-						event.preventDefault();
-						form.result = false;
-					}
+					if (!this.options.failedValidation) {
+                        if (
+                            typeof Fabrik.FabrikStripeForm === 'undefined' ||
+                            Fabrik.FabrikStripeFormSubmitting !== true ||
+                            jQuery('input[name=stripe_token_id]').length === 0
+                        ) {
+                            Fabrik.FabrikStripeForm = form;
+                            this.handler.open({
+                                name: this.options.name,
+                                description: this.options.item,
+                                amount: this.options.amount,
+                                zipCode: this.options.zipCode,
+                                allowRememberMe: this.options.allowRememberMe,
+                                email: this.options.email,
+                                panelLabel: this.options.panelLabel,
+                                billingAddress: this.options.billingAddress
+                            });
+                            event.preventDefault();
+                            form.result = false;
+                        }
+                    }
+					else {
+                        this.form.form.adopt(new Element('input', {
+                            'name': 'stripe_token_id',
+                            'value': this.options.stripeTokenId,
+                            'type': 'hidden'
+                        }));
+                        this.form.form.adopt(new Element('input', {
+                            'name': 'stripe_token_email',
+                            'value': this.options.stripeTokenEmail,
+                            'type': 'hidden'
+                        }));
+                        this.form.form.adopt(new Element('input', {
+                            'name': 'stripe_token_opts',
+                            'value': this.options.stripeTokenOpts,
+                            'type': 'hidden'
+                        }));
+                        form.result = true;
+                    }
 				}.bind(this));
 
 				window.addEventListener('popstate', function () {
