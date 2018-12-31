@@ -364,6 +364,17 @@
 			       description="COM_FABRIK_FIELD_DROP_RECORDS_DESC"
 			/>
 
+			<field name="menu_access_only"
+				   type="radio"
+				   class="btn-group"
+				   default="0"
+				   label="COM_FABRIK_FIELD_MENU_ACCESS_ONLY_LABEL"
+				   description="COM_FABRIK_FIELD_MENU_ACCESS_ONLY_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset name="filters">
