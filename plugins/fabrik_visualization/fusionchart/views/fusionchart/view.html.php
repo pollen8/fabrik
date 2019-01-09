@@ -75,6 +75,11 @@ class FabrikViewFusionchart extends JViewLegacy
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl);
 
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/template.css');
+		// Adding custom.css, just for the heck of it
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/custom.css');
+		FabrikHelperHTML::stylesheetFromPath(
+			'plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/custom_css.php?c=' . $this->containerId . '&id=' . $model->getVisualization()->get('id')
+		);
 
 		$this->iniJs();
 		$text = $this->loadTemplate();
@@ -95,7 +100,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		$options = new stdClass;
 		$options->id = $model->getVisualization()->get('id');
 		$options->chartJSON = $model->getFusionChart();
-		$options->chartType = $params->get('fusionchart_type');
+		$options->chartType = $model->getRealChartType($params->get('fusionchart_type'));
 		$options->chartWidth = $params->get('fusionchart_width', '100%');
 		$options->chartHeight = $params->get('fusionchart_height', '100%');
 		$options->chartID = 'FusionChart_' . $model->getJSRenderContext();
@@ -111,6 +116,7 @@ class FabrikViewFusionchart extends JViewLegacy
 	private function iniJs()
 	{
 		$model = $this->getModel();
+		$params = $model->getParams();
 		$ref   = $model->getJSRenderContext();
 		$json  = json_encode($this->jsOptions());
 		$js    = array();
@@ -126,7 +132,8 @@ class FabrikViewFusionchart extends JViewLegacy
 		$srcs['fabrikFusionchart'] = 'plugins/fabrik_visualization/fusionchart/fusionchart.js';
 
 		$shim = $model->getShim();
-		$paths = array('fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/fusioncharts-suite-xt/js/fusioncharts');
+        $xtLibPath = $params->get('fusionchart_library', 'fusioncharts-suite-xt');
+        $paths = array('fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath . '/js/fusioncharts');
 
 		$shim['fusionchart'] = (object) array(
 			'deps' => array()

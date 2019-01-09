@@ -447,7 +447,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$worker = new FabrikWorker;
-		$xt    = $this->pathBase . 'fusionchart/libs/fusioncharts-suite-xt/integrations/php/fusioncharts-wrapper/fusioncharts.php';
+		$xtLibPath = $params->get('fusionchart_library', 'fusioncharts-suite-xt');
+		$xt    = $this->pathBase . 'fusionchart/libs/' . $xtLibPath . '/integrations/php/fusioncharts-wrapper/fusioncharts.php';
 
 		if (JFile::exists($xt))
 		{
@@ -670,23 +671,32 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			case 'COLUMN3D':
 			case 'DOUGHNUT2D':
 			case 'DOUGHNUT3D':
-			case 'LINE': /* $$$ tom - for now I'm enabling Pie charts here so that it displays
-				* something until we do it properly as you said hugh
-				* Well maybe there's something I don't get but in fact FC already draw
-				* the pies by "percenting" the values of each data... if you know what I mean Hugh;)
-				*/
+			case 'LINE':
+            case 'FUNNEL2D':
+            case 'FUNNEL3D':
 			case 'PIE2D':
 			case 'PIE3D':
 			case 'SCATTER':
 			case 'SPLINE':
 			case 'SPLINEAREA':
-				// Adding specific params for Pie charts
+				// Adding specific params for some chart types
 				if ($chartType == 'PIE2D' || $chartType == 'PIE3D')
 				{
 					$strParam .= ';pieBorderThickness=' . $params->get('fusionchart_borderthick', '');
 					$strParam .= ';pieBorderAlpha=' . $params->get('fusionchart_cnvalpha', '');
 					$strParam .= ';pieFillAlpha=' . FArrayHelper::getValue($params->get('fusionchart_elalpha', array()), 0);
 				}
+
+				if ($chartType == 'FUNNEL2D')
+                {
+                    $strParam .= ';is2D=1';
+                    $chartType = 'FUNNEL';
+                }
+				else if ($chartType == 'FUNNEL3D') {
+                    $strParam .= ';is2D=0';
+                    $chartType = 'FUNNEL';
+                }
+
 
 				$datasets = 0;
 				$datasetKey = 0;
@@ -840,38 +850,41 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						$labelStep = (int) (count(explode(',', $gdata[0])) / $label_step_ratio);
 						$strParam .= ';labelStep=' . $labelStep;
 					}
-					// Start tom's changes
-					$labels = explode('|', $glabels[0]);
-					$data_count = 0;
 
-					foreach ($labels as $catLabel)
-					{
-						$data_count++;
-						$catParams = array();
+					$labels = $glabels[0];
+                    $data_count = 0;
 
-						if ($labelStep)
-						{
-							if ($data_count == 1 || $data_count % $labelStep == 0)
-							{
-								$catParams['ShowLabel'] = true;
-							}
-							else
-							{
-								$catParams['ShowLabel'] = false;
-								$catLabel = '';
-							}
-						}
+                    foreach ($labels as $catLabel) {
+                        $data_count++;
+                        $catParams = array();
 
-						$this->addCategory($catLabel, $catParams);
-					}
+                        if ($labelStep) {
+                            if ($data_count == 1 || $data_count % $labelStep == 0) {
+                                $catParams['ShowLabel'] = true;
+                            } else {
+                                $catParams['ShowLabel'] = false;
+                                $catLabel = '';
+                            }
+                        }
+
+                        $this->addCategory($catLabel, $catParams);
+                    }
 
 					foreach ($gdata as $key => $chartdata)
 					{
-						$cdata = FArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
+						$cdata = FArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? $gdata[$key] : $this->gcumulatives[$key];
 						$datasetLabel = $this->axisLabels[$key];
-						$extras = array(
-							'parentYAxis' => $dual_y_parents[$key]
-						);
+
+                        if ($chartType == 'MSCOMBIDY2D' || $chartType == 'MULTIAXISLINE') {
+                            $extras = array(
+                                'parentYAxis' => $dual_y_parents[$key]
+                            );
+                        }
+                        else
+                        {
+                            $extras = array();
+                        }
+
 						$color = FArrayHelper::getValue($gcolours, $key, '');
 
 						if (!empty($color))
@@ -1293,12 +1306,19 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 	private function makeChartData($value, $params = array())
 	{
-		return array_merge(
-			array(
-				'value' => $value
-			),
-			$params
-		);
+		if ($value === null)
+		{
+			return $params;
+		}
+		else
+		{
+			return array_merge(
+				array(
+					'value' => $value
+				),
+				$params
+			);
+		}
 	}
 
 	private function addChartData($value, $params = array())
@@ -1345,4 +1365,25 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 	{
 		echo json_encode($this->getFusionchart());
 	}
+
+    /**
+     * Converts our chart type the the one FC expects
+     *
+     * @param $chartType
+     * @return string
+     */
+    public function getRealChartType($chartType)
+    {
+        switch ($chartType)
+        {
+            case 'FUNNEL2D':
+            case 'FUNNEL3D':
+                $chartType = 'FUNNEL';
+                break;
+            default:
+                break;
+        }
+
+        return $chartType;
+    }
 }
