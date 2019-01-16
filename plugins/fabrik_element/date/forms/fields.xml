@@ -51,7 +51,7 @@
 
 			<field name="date_showtime"
 				type="radio"
-				default="0"
+				default="1"
 				class="btn-group"
 				description="PLG_ELEMENT_DATE_SHOW_TIME_DESC"
 				label="PLG_ELEMENT_DATE_SHOW_TIME_LABEL" >
@@ -129,7 +129,7 @@
 
 			<field name="date_table_format"
 				type="text"
-				default="Y-m-d"
+				default="Y-m-d H:i:s"
 				class="input-mini"
 				description="PLG_ELEMENT_DATE_TABLE_FORMAT_DESC"
 				label="PLG_ELEMENT_DATE_TABLE_DATE_FORMAT_LABEL"
