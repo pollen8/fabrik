@@ -6558,7 +6558,7 @@ class FabrikFEModelList extends JModelForm
 				reset($filters['key']);
 				$found = false;
 
-				while (list($key, $val) = each($filters['key']))
+                foreach ($filters['key'] as $key => $val)
 				{
 					if ($val == $name)
 					{
