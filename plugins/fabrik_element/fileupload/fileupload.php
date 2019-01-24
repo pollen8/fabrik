@@ -1438,11 +1438,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$imgData      = base64_decode($imgData);
 				$saveParams[] = $json;
 
-				// @todo allow uploading into front end designated folders?
-				$myFileDir = '';
-				$cropPath  = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir') . '/' . $myFileDir . '/', false);
+                $destCropFile = $storage->_getCropped($filePath);
+                $destCropFile = $storage->getFullPath($destCropFile);
 				$w         = new FabrikWorker;
-				$cropPath  = $w->parseMessageForPlaceHolder($cropPath);
+                $destCropFile  = $w->parseMessageForPlaceHolder($destCropFile);
+                $cropPath = dirname($destCropFile);
 
 				if ($cropPath != '')
 				{
@@ -1456,6 +1456,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 				}
 
+
+				/*
 				$filePath     = $storage->clean(JPATH_SITE . '/' . $filePath);
 				$fileURL      = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $filePath));
 				$destCropFile = $storage->_getCropped($fileURL);
@@ -1468,6 +1470,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$fileCounter++;
 					continue;
 				}
+				*/
 
 				$fileCounter++;
 

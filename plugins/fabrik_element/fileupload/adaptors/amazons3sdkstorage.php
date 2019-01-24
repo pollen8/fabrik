@@ -327,6 +327,8 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 			}
 			return false;
 		}
+
+		return true;
 	}
 
 	/**
@@ -643,6 +645,7 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 
 	public function _getCropped($file)
 	{
+	    /*
 		$params = $this->getParams();
 		$origFile = $file;
 
@@ -673,7 +676,56 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		}
 
 		return $file;
-	}
+*/
+        $params = $this->getParams();
+        $origFile = $file;
+
+        if ($params->get('fileupload_crop', '0') === '0')
+        {
+            return '';
+        }
+
+        $w = new FabrikWorker;
+
+        $ulDir = '/' . ltrim($params->get('ul_directory'), '/\\');
+
+        if ($this->appendServerPath())
+        {
+            $ulDir = rtrim(COM_FABRIK_BASE. '/\\') . $ulDir;
+        }
+
+        $ulDir = $this->clean($ulDir);
+        $ulDir = $w->parseMessageForPlaceHolder($ulDir);
+
+        $thumbdir = '/' . ltrim($params->get('fileupload_crop_dir'), '/\\');
+
+        if ($this->appendServerPath())
+        {
+            $thumbdir = rtrim(COM_FABRIK_BASE, '/\\') . $thumbdir;
+        }
+
+        $thumbdir = $this->clean($thumbdir);
+        $thumbdir = $w->parseMessageForPlaceHolder($thumbdir);
+
+        $ulDir = rtrim($ulDir, '/\\') . '/';
+        $thumbdir = rtrim($thumbdir, '/\\') . '/';
+
+        $file = $w->parseMessageForPlaceHolder($file);
+
+        $f = basename($file);
+        $dir = dirname($file) . '/';
+        $dir = str_replace($ulDir, $thumbdir, $dir);
+        $file = rtrim($dir, '/') . '/' . $f;
+
+        if ($origFile === $file)
+        {
+            // if they set same folder and no prefex, it can wind up being same file, which blows up
+            return '';
+        }
+
+        return $file;
+
+    }
 
 	/**
 	 * Convert a full server path into a full url
@@ -752,6 +804,12 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		$filepath = $this->urlToPath($filepath);
 		$filepath = str_replace("%20", " ", $filepath);
 		$filepath = str_replace("\\", '/', $filepath);
+        $filepath = $this->removePrependedURL($filepath);
+
+        if ($this->appendServerPath())
+        {
+            $filepath = rtrim(COM_FABRIK_BASE. '/\\') . $filepath;
+        }
 
 		return $filepath;
 	}
