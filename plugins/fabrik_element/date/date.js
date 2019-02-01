@@ -295,9 +295,32 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
          * for example date element with time picker
          */
         shouldAjaxValidate: function () {
+            /*
+             * we need to run the basic 'blur' handling (usually run from the blur event handling in
+             * setup()), to get the field value into the cal, for the case where blurring out of a date
+             * field triggers an AJAX validation, and the validation blur event handling is running
+             * before the setup code.
+             */
+            var date_str = this.getDateField().value;
+
+            if (date_str !== '') {
+                var d;
+                if (this.options.advanced) {
+                    d = Date.parseExact(date_str, Date.normalizeFormat(this.options.calendarSetup.ifFormat));
+                } else {
+                    d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+                }
+                this.setTimeFromField(d);
+
+                // pass empty 'events' array so update() doesn't trigger any more event handling
+                this.update(d, []);
+            }
+
             if (this.timePicker && this.timePicker.length > 0) {
                 return this.getTimeField() === this.timePicker[0] && !this.timeActive;
             }
+
+            return true;
         },
 
         makeCalendar: function () {
