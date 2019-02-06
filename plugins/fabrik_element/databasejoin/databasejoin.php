@@ -3118,6 +3118,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 				$m = str_replace(array('{', '}'), '', $m);
 
+				// remove any ||default
+                $bits = explode('||', $m);
+
+                if (count($bits) > 1)
+                {
+                    $m = $bits[0];
+                }
+
 				// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
 				$m = preg_replace('#_raw$#', '', $m);
 			}
