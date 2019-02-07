@@ -15,10 +15,10 @@ use Fabrik\Helpers\Image;
 use Fabrik\Helpers\Uploader;
 use Joomla\Utilities\ArrayHelper;
 
-define("FU_DOWNLOAD_SCRIPT_NONE", '0');
-define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
-define("FU_DOWNLOAD_SCRIPT_DETAIL", '2');
-define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
+if (!defined('FU_DOWNLOAD_SCRIPT_NONE')) define("FU_DOWNLOAD_SCRIPT_NONE", '0');
+if (!defined('FU_DOWNLOAD_SCRIPT_TABLE')) define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
+if (!defined('FU_DOWNLOAD_SCRIPT_DETAIL')) define("FU_DOWNLOAD_SCRIPT_DETAIL", '2');
+if (!defined('FU_DOWNLOAD_SCRIPT_BOTH')) define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
 
 $logLvl = JLog::ERROR + JLog::EMERGENCY + JLog::WARNING;
 JLog::addLogger(array('text_file' => 'fabrik.element.fileupload.log.php'), $logLvl, array('com_fabrik.element.fileupload'));
