@@ -827,7 +827,7 @@ class Worker
 				$msg = preg_replace("/{}/", "", $msg);
 
 				// Replace {element name} with form data
-				$msg = preg_replace_callback("/{([^}\s]+(\|\|[\w|\s]+)*)}/i", array($this, 'replaceWithFormData'), $msg);
+				$msg = preg_replace_callback("/{([^}\s]+(\|\|[\w|\s]+|<\?php.*\?>)*)}/i", array($this, 'replaceWithFormData'), $msg);
 
 				if (!$keepPlaceholders)
 				{
@@ -1224,6 +1224,13 @@ class Worker
 
 			if (in_array($match, array('', '<ul></ul>', '<ul><li></li></ul>')))
 			{
+			    // experiment with eval'ed code in defaults
+                if (strstr($bits[1], '<?php'))
+                {
+                    $code = preg_replace('/^<\?php(.*)(\?>)$/s', '$1', $bits[1]);
+                    $bits[1] = @eval($code);
+                }
+
 				return $bits[1] !== '' ? $bits[1] : $orig;
 			}
 			else
