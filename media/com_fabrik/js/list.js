@@ -1007,7 +1007,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                                 Fabrik['filter_listform_' + self.options.listRef].updateFilterCSS(json);
                                 jQuery('#searchall_' + self.options.listRef).val(json.searchallvalue);
                                 Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [self, json]);
-                                if (json.msg) {
+                                if (json.msg && json.showmsg) {
                                     window.alert(json.msg);
                                 }
                             }
