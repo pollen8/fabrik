@@ -14,7 +14,19 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field name="yesno_icon_yes"
+				   type="field"
+				   default=""
+				   description="PLG_ELEMENT_YESNO_YES_ICON_DESC"
+				   label="PLG_ELEMENT_YESNO_YES_ICON_LABEL" />
+
+			<field name="yesno_icon_no"
+				   type="field"
+				   default=""
+				   description="PLG_ELEMENT_YESNO_NO_ICON_DESC"
+				   label="PLG_ELEMENT_YESNO_NO_ICON_LABEL" />
+
 			<field name="options_per_row"
 				type="field"
 				default="4"
