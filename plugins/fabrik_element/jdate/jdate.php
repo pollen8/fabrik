@@ -318,7 +318,7 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 		$calOpts['weekNumbers'] = $params->get('jdate_show_week_numbers', '0') === '1';
 
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		$str[] = $this->calendar($gmt, $name, $id . '_cal', $format, $calOpts, $repeatCounter);
+		$str[] = $this->calendar($this->offsetDate, $name, $id . '_cal', $format, $calOpts, $repeatCounter);
 
 		$str[] = '</div>';
 
