@@ -232,6 +232,10 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         },
 
         watchButtons: function () {
+            var instance = JoomlaCalendar.getCalObject(this.getDateField())._joomlaCalendar;
+            if (!instance) {
+                JoomlaCalendar.init(JoomlaCalendar.getCalObject(this.getDateField()));
+            }
         },
 
         addNewEventAux: function (action, js) {
