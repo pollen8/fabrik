@@ -47,7 +47,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 options.rowid = '';
             }
             this.id = id;
-            this.result = true; //set this to false in window.fireEvents to stop current action (e.g. stop form submission)
+            //set this to false in window.fireEvents to stop current action (e.g. stop form submission)
+            this.result = true;
             this.setOptions(options);
             this.options.pages = $H(this.options.pages);
             this.subGroups = $H({});
