@@ -10,6 +10,7 @@
   width: 270px;
   height: 130px;
   font-size: 14px;
+  z-index: 9999;
   display: none; }
   .wickedpicker__title {
     background-image: -webkit-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
