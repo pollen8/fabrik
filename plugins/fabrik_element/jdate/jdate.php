@@ -2748,6 +2748,30 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 		return $timeFormat;
 	}
 
+	public function beforeSave(&$row)
+    {
+        $groups = $this->getFormModel()->getGroupsHiarachy();
+        $found = false;
+
+        foreach ($groups as $groupModel)
+        {
+            $elementModels = $groupModel->getPublishedElements();
+
+            foreach ($elementModels as $elementModel)
+            {
+                if ($elementModel->element->plugin === 'date') {
+                    $found = true;
+                    break 2;
+                }
+            }
+        }
+
+        if ($found)
+        {
+            $this->app->enqueueMessage(JText::_('PLG_ELEMENT_JDATE_DATE_WARNING'));
+        }
+    }
+
 }
 
 /**
