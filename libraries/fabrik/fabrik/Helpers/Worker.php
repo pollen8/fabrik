@@ -2366,7 +2366,13 @@ class Worker
 			return false;
 		}
 
-		return $ret;
+        // if ACY mailing is installed, it returns an exception (!) rather than false
+        if (get_parent_class($ret) === 'Exception')
+        {
+            $ret = false;
+        }
+
+        return $ret;
 	}
 
 	/**
