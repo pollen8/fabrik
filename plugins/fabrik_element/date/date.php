@@ -297,7 +297,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		// Build HTML widget
-		if ($params->get('date_showtime', 0) && !$element->hidden)
+		if ($params->get('date_showtime', 0))
 		{
 			// Can't have names as simply [] as json only picks up the last one
 			$timeElName = $name . '[time]';
@@ -321,7 +321,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$str[] = $this->calendar($date, $name, $id . '_cal', $format, $calOpts, $repeatCounter);
 
-		if ($params->get('date_showtime', 0) && !$element->hidden)
+		if ($params->get('date_showtime', 0))
 		{
 			$this->timeButton($timeElName, $time, $str);
 		}
@@ -504,7 +504,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val))
 		{
-			$val = FArrayHelper::getValue($val, 'date', '');
+		    if (array_key_exists('time', $val))
+            {
+                $date = FArrayHelper::getValue($val, 'date', '');
+                $bits = explode(' ', $date);
+                $date = $bits[0];
+                $time = FArrayHelper::getValue($val, 'time', '');
+                $val = $date . ' ' . $time;
+            }
+		    else if (array_key_exists('date', $val))
+		    {
+                $val = FArrayHelper::getValue($val, 'date', '');
+            }
+		    else
+            {
+                $val = array_shift($val);
+            }
 		}
 		else
 		{
