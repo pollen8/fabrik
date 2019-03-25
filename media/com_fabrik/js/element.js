@@ -904,7 +904,7 @@ define(['jquery'], function (jQuery) {
             var c = this.getContainer();
             if (c) {
                 jQuery(c).hide();
-                jQuery(c).addClass('.fabrikHide');
+                jQuery(c).addClass('fabrikHide');
 
             }
         },
@@ -913,7 +913,7 @@ define(['jquery'], function (jQuery) {
             var c = this.getContainer();
             if (c) {
                 jQuery(c).show();
-                jQuery(c).removeClass('.fabrikHide');
+                jQuery(c).removeClass('fabrikHide');
             }
         },
 
