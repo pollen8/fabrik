@@ -882,7 +882,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Used uniquely in reset();
 		$opts->defaultVal     = $this->getFrontDefaultValue();
-		$opts->showtime       = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
+		$opts->showtime       = $params->get('date_showtime', 0) ? true : false;
 		$opts->whichTimePicker = $params->get('date_which_time_picker', 'wicked');
 		$opts->timelabel      = FText::_('PLG_ELEMENT_DATE_TIME_LABEL', true);
 		$opts->timePickerLabel = FText::_('PLG_ELEMENT_DATE_TIMEPICKER', true);
@@ -1233,7 +1233,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$this->resetToGMT = false;
 		}
 
-		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
+		$exactTime = $params->get('date_showtime', 0) && $this->formatContainsTime($params->get('date_table_format'));
 
 		// $$$ rob if filtering in querystring and ranged value set then force filter type to range
 
@@ -1346,7 +1346,17 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 						// $$$ rob turn into a ranged filter to search the entire day  values should be in sql format
 						$value     = (array) $value;
 						$condition = 'BETWEEN';
-						$value[1]  = $next->toSql();
+
+						if ($storeAsLocal)
+                        {
+                            $value[1]  = $next->toSql();
+                        }
+						else
+                        {
+                            $this->resetToGMT = true;
+                            $value[1]            = $this->toMySQLGMT($next);
+                            $this->resetToGMT = false;
+                        }
 
 						// Set a flat to stop getRangedFilterValue from adding an additional day to end value
 						$this->rangeFilterSet = true;
