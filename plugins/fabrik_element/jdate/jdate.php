@@ -994,25 +994,50 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 	 */
 	public function setValuesFromEncryt(&$post, $key, $data)
 	{
-		$date = $data[0];
+        $group     = $this->getGroup();
 
-		if (FabrikWorker::isDate($date))
-		{
-			// Only apply date logic to actual date data, if blank for example we should leave blank
-			$date = JFactory::getDate($date);
-			$date = $date->toSql();
+        if ($group->canRepeat())
+        {
+            foreach ($data as &$d)
+            {
+                if (FabrikWorker::isDate($d)) {
+                    // Only apply date logic to actual date data, if blank for example we should leave blank
+                    $date = JFactory::getDate($d);
+                    $date = $date->toSql();
 
-			// Put in the correct format
-			list($dateOnly, $time) = explode(' ', $date);
-		}
-		else
-		{
-			$date = '';
-			$time = '';
-		}
+                    // Put in the correct format
+                    list($dateOnly, $time) = explode(' ', $date);
+                }
+                else {
+                    $date = '';
+                    $time = '';
+                }
 
-		$data = array('date' => $date, 'time' => $time);
-		parent::setValuesFromEncryt($post, $key, $data);
+                $d = array('date' => $date, 'time' => $time);
+            }
+        }
+        else
+        {
+            $d = $data[0];
+
+            if (FabrikWorker::isDate($d)) {
+                // Only apply date logic to actual date data, if blank for example we should leave blank
+                $date = JFactory::getDate($d);
+                $date = $date->toSql();
+
+                // Put in the correct format
+                list($dateOnly, $time) = explode(' ', $date);
+            }
+            else {
+                $date = '';
+                $time = '';
+            }
+
+            $data = array('date' => $date, 'time' => $time);
+        }
+
+        parent::setValuesFromEncryt($post, $key, $data);
+
 	}
 
 	/**
