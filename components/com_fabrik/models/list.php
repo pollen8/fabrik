@@ -2428,7 +2428,9 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$v2 = json_decode($v, true);
+				    // use JSONtoData() so //..*..// separated data gets exploded into array
+					//$v2 = json_decode($v, true);
+					$v2 = \Fabrik\Helpers\Worker::JSONtoData($v);
 
 					if ($v2 !== null)
 					{
@@ -5525,7 +5527,7 @@ class FabrikFEModelList extends JModelForm
 				 */
 				$fieldsByTable = array();
 				$matches = array();
-				preg_match('/MATCH\((.*)\)/', $key, $matches);
+				preg_match('/MATCH\((.*)\)/s', $key, $matches);
 
 				// if we parsed out the fields, process them
 				if (count($matches) > 1)
