@@ -614,6 +614,7 @@ class FabrikViewFormBase extends FabrikView
 		if (!FabrikHelperHTML::inAjaxLoadedPage())
 		{
 			JText::script('COM_FABRIK_VALIDATING');
+            JText::script('COM_FABRIK_MUST_VALIDATE');
 			JText::script('COM_FABRIK_SUCCESS');
 			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
 			JText::script('COM_FABRIK_VALIDATION_ERROR');
