@@ -379,7 +379,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 * @param   array     $opts      Rendering options
 	 */
-	function renderListData($data, &$thisRow, $opts = array())
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		if (!isset($data))
 		{
