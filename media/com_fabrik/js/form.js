@@ -2201,6 +2201,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     }
                 }.bind(this));
 
+                Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
+
                 return;
             }
 
