@@ -25,5 +25,5 @@ $row = $this->row;
     </p>
 	<?php echo $this->loadTemplate( 'filter'); ?>
     <br />
-    <div id="chart-container"></div>
+    <div id="chart-container-<?php echo $this->getModel()->getJSRenderContext();?>"></div>
 </div>
