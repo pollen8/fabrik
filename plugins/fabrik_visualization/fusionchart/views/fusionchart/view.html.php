@@ -133,7 +133,9 @@ class FabrikViewFusionchart extends JViewLegacy
 
 		$shim = $model->getShim();
         $xtLibPath = $params->get('fusionchart_library', 'fusioncharts-suite-xt');
-        $paths = array('fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath . '/js/fusioncharts');
+        $paths = array(
+        	'fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath . '/js/fusioncharts'
+        );
 
 		$shim['fusionchart'] = (object) array(
 			'deps' => array()
@@ -148,6 +150,22 @@ class FabrikViewFusionchart extends JViewLegacy
 		$shim[$vizShim] = (object) array(
 			'deps' => array('fusionchart', 'jquery')
 		);
+
+		$theme = $params->get('fusionchart_theme', '');
+
+		if (!empty($theme))
+		{
+			$paths['fusioncharttheme'] = 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath .
+				'/js/themes/fusioncharts.theme.' . $theme;
+
+			$shim['fusioncharttheme'] = (object) array(
+				'deps' => array('fusionchart')
+			);
+
+			$shim[$vizShim]->deps[] = 'fusioncharttheme';
+
+			//$shim['fusionchart']->deps[] = 'fusioncharttheme';
+		}
 
 		$model->getCustomJsAction($srcs);
 

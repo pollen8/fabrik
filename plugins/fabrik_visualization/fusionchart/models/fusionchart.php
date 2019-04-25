@@ -43,16 +43,24 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$strParam = 'caption=' . $caption;
 
 		// Graph attributes
-		$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
+
+		if ($params->get('fusionchart_theme'))
+		{
+			$strParam .= ';theme=' . $params->get('fusionchart_theme', '');
+		}
+		else
+		{
+			$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
+
+			if ($params->get('fusionchart_palette_colors'))
+			{
+				$strParam .= ';paletteColors=' . $params->get('fusionchart_palette_colors', '');
+			}
+		}
 
 		if ($params->get('fusionchart_bgcolor'))
 		{
 			$strParam .= ';bgcolor=' . $params->get('fusionchart_bgcolor', '');
-		}
-
-		if ($params->get('fusionchart_palette_colors'))
-		{
-			$strParam .= ';paletteColors=' . $params->get('fusionchart_palette_colors', '');
 		}
 
 		if ($params->get('fusionchart_bgalpha'))
