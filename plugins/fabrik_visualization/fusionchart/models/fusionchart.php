@@ -43,16 +43,24 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$strParam = 'caption=' . $caption;
 
 		// Graph attributes
-		$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
+
+		if ($params->get('fusionchart_theme'))
+		{
+			$strParam .= ';theme=' . $params->get('fusionchart_theme', '');
+		}
+		else
+		{
+			$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
+
+			if ($params->get('fusionchart_palette_colors'))
+			{
+				$strParam .= ';paletteColors=' . $params->get('fusionchart_palette_colors', '');
+			}
+		}
 
 		if ($params->get('fusionchart_bgcolor'))
 		{
 			$strParam .= ';bgcolor=' . $params->get('fusionchart_bgcolor', '');
-		}
-
-		if ($params->get('fusionchart_palette_colors'))
-		{
-			$strParam .= ';paletteColors=' . $params->get('fusionchart_palette_colors', '');
 		}
 
 		if ($params->get('fusionchart_bgalpha'))
@@ -539,6 +547,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$x_axis_label = (array) $params->get('fusion_x_axis_label');
 		$chartElements = (array) $params->get('fusionchart_elementList');
 		$chartColours = (array) $params->get('fusionchart_elcolour');
+        $chartMSGroupBy = (array) $params->get('fusionchart_ms_group_by');
 		$listid = (array) $params->get('fusionchart_table');
 		$chartCumulatives = (array) $params->get('fusionchart_cumulative');
 		$elTypes = (array) $params->get('fusionchart_element_type');
@@ -550,6 +559,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$this->c = 0;
 		$gdata = array();
 		$glabels = array();
+		$gmsgroupby = array();
 		$gaxislabels = array();
 		$gcolours = array();
 		$gfills = array();
@@ -606,12 +616,15 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			$alldata = $listModel->getData();
 			$cals = $listModel->getCalculations();
 			$column = $chartElements[$this->c];
+            $msGroupBy = FArrayHelper::getValue($chartMSGroupBy, $this->c, '');
 			$pref = substr($column, 0, 6);
 
 			$label = FArrayHelper::getValue($x_axis_label, $this->c, '');
 
 			$tmpgdata = array();
 			$tmpglabels = array();
+			$tmpgmsgroupby = array();
+            $tmpaxislabels = array();
 			$colour = array_key_exists($this->c, $chartColours) ? str_replace("#", '', $chartColours[$this->c]) : '';
 
 			$gcolours[] = $colour;
@@ -661,57 +674,97 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 				// _raw fields are most likely to contain the value
 				$column = $column . '_raw';
 
-				foreach ($alldata as $group)
-				{
-					foreach ($group as $row)
-					{
-					    $this->setAxisLabel($row, $this->c);
+				foreach ($alldata as $group) {
+                    foreach ($group as $row) {
+                        $this->setAxisLabel($row, $this->c);
 
-						if (!array_key_exists($column, $row))
-						{
-							// Didn't find a _raw column - revert to orig
-							$column = $origColumn;
+                        if (!array_key_exists($column, $row)) {
+                            // Didn't find a _raw column - revert to orig
+                            $column = $origColumn;
 
-							if (!array_key_exists($column, $row))
-							{
-								JError::raiseWarning(E_NOTICE, $column . ': NOT FOUND - PLEASE CHECK IT IS PUBLISHED');
-								continue;
-							}
-						}
+                            if (!array_key_exists($column, $row)) {
+                                JError::raiseWarning(E_NOTICE, $column . ': NOT FOUND - PLEASE CHECK IT IS PUBLISHED');
+                                continue;
+                            }
+                        }
 
-						$tmpgdata[] = (trim($row->$column) == '') ? null : (float) $row->$column;
-						$tmpglabels[] = !empty($label) ? html_entity_decode(strip_tags($row->$label)) : '';
-						$tmpaxislabels[] = $this->getAxisLabel($this->c);
-					}
+                        $tmpgdata[] = (trim($row->$column) == '') ? null : (float)$row->$column;
+                        $tmpgmsgroupby[] = empty($msGroupBy) || (trim($row->$msGroupBy) == '') ? null : $row->$msGroupBy;
+                        $tmpglabels[] = !empty($label) ? html_entity_decode(strip_tags($row->$label)) : '';
+                        $tmpaxislabels[] = $this->getAxisLabel($this->c);
+                    }
+                }
 
-					if (!empty($tmpgdata))
-					{
-						$this->max[$this->c] = max($tmpgdata);
-						$this->min[$this->c] = min($tmpgdata);
-					}
+                if (!empty($tmpgdata))
+                {
+                    $this->max[$this->c] = max($tmpgdata);
+                    $this->min[$this->c] = min($tmpgdata);
+                }
 
-					$gdata[$this->c] = $tmpgdata;
-					$glabels[$this->c] = $tmpglabels;
-					$gaxislabels[$this->c] = $tmpaxislabels;
+                $gdata[$this->c] = $tmpgdata;
+                $glabels[$this->c] = $tmpglabels;
+                $gaxislabels[$this->c] = $tmpaxislabels;
+                $gmsgroupby[$this->c] = $tmpgmsgroupby;
 
-					// $$$ hugh - playing around with pie charts
-					$gsums[$this->c] = array_sum($tmpgdata);
+                // $$$ hugh - playing around with pie charts
+                $gsums[$this->c] = array_sum($tmpgdata);
 
-					// $$$ hugh - playing with 'cumulative' option
-					$this->gcumulatives[$this->c] = array();
+                // $$$ hugh - playing with 'cumulative' option
+                $this->gcumulatives[$this->c] = array();
 
-					while (!empty($tmpgdata))
-					{
-						$this->gcumulatives[$this->c][] = array_sum($tmpgdata);
-						array_pop($tmpgdata);
-					}
+                while (!empty($tmpgdata))
+                {
+                    $this->gcumulatives[$this->c][] = array_sum($tmpgdata);
+                    array_pop($tmpgdata);
+                }
 
-					$this->gcumulatives[$this->c] = array_reverse($this->gcumulatives[$this->c]);
-				}
+                $this->gcumulatives[$this->c] = array_reverse($this->gcumulatives[$this->c]);
+
 			}
 
 			$this->c++;
 		}
+
+		if (!empty($msGroupBy))
+        {
+            $tmps = array();
+            $tmpaxislabels = array();
+
+            foreach ($gmsgroupby[0] as $key => $groupby)
+            {
+                if (!array_key_exists($groupby, $tmps))
+                {
+                    $tmps[$groupby] = array(
+                        'data' => array(),
+                        'labels' => array(),
+                        'axislabels' => array()
+                    );
+                }
+
+                $tmps[$groupby]['data'][] = $gdata[0][$key];
+                $tmps[$groupby]['labels'][] = $glabels[0][$key];
+                $tmps[$groupby]['axislabels'][] = $gaxislabels[0][$key];
+            }
+
+            unset($gdata);
+            unset($glabels);
+            unset($gaxislabels);
+
+            $key = 0;
+            foreach ($tmps as $tmp)
+            {
+                $gdata[] = $tmp['data'];
+                $glabels[] = $tmp['labels'];
+                $gaxislabels[] = $tmp['axislabels'];
+                $elTypes[$key] = $elTypes[0];
+                $key++;
+            }
+
+            $params->set('fusionchart_element_type', $elTypes);
+            $params->set('fusionchart_axis_labels', array_keys($tmps));
+            $this->setAxisLabels();
+            $this->c = count($tmps);
+        }
 
 		if ($calcfound)
 		{

@@ -734,12 +734,14 @@ class FabrikViewFormBase extends FabrikView
 		// 3.1 call form js plugin code within main require method
 		$srcs = array_merge($srcs, $model->formPluginShim);
 		$str .= "\n$bKey.addPlugins({";
+		$plugins = array();
 
 		foreach ($model->formPluginJS as $pluginName => $pluginStr)
 		{
-			$str .= "'$pluginName': $pluginStr,";
+			$plugins[] = "'$pluginName': $pluginStr,";
 		}
-		$str .= "});\n";
+
+		$str .= implode(',', $plugins) . "});\n";
 
 		FabrikHelperHTML::script($srcs, $str);
 	}

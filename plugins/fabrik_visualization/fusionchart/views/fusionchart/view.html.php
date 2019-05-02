@@ -71,7 +71,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$tpl = $j3 ? 'bootstrap' : 'default';
-		$tpl = $params->get('fusionchart_layout', $tpl);
+		$tpl = $input->get('layout', $params->get('fusionchart_layout', $tpl));
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl);
 
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/template.css');
@@ -104,7 +104,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		$options->chartWidth = $params->get('fusionchart_width', '100%');
 		$options->chartHeight = $params->get('fusionchart_height', '100%');
 		$options->chartID = 'FusionChart_' . $model->getJSRenderContext();
-		$options->chartContainer = 'chart-container';
+		$options->chartContainer = 'chart-container-' . $model->getJSRenderContext();
 		return $options;
 	}
 
@@ -133,7 +133,9 @@ class FabrikViewFusionchart extends JViewLegacy
 
 		$shim = $model->getShim();
         $xtLibPath = $params->get('fusionchart_library', 'fusioncharts-suite-xt');
-        $paths = array('fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath . '/js/fusioncharts');
+        $paths = array(
+        	'fusionchart' => 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath . '/js/fusioncharts'
+        );
 
 		$shim['fusionchart'] = (object) array(
 			'deps' => array()
@@ -148,6 +150,22 @@ class FabrikViewFusionchart extends JViewLegacy
 		$shim[$vizShim] = (object) array(
 			'deps' => array('fusionchart', 'jquery')
 		);
+
+		$theme = $params->get('fusionchart_theme', '');
+
+		if (!empty($theme))
+		{
+			$paths['fusioncharttheme'] = 'plugins/fabrik_visualization/fusionchart/libs/' . $xtLibPath .
+				'/js/themes/fusioncharts.theme.' . $theme;
+
+			$shim['fusioncharttheme'] = (object) array(
+				'deps' => array('fusionchart')
+			);
+
+			$shim[$vizShim]->deps[] = 'fusioncharttheme';
+
+			//$shim['fusionchart']->deps[] = 'fusioncharttheme';
+		}
 
 		$model->getCustomJsAction($srcs);
 

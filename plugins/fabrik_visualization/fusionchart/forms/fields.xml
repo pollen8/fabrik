@@ -127,6 +127,14 @@
 			       size="10"
 			       type="text"/>
 
+			<field connection="params_fusionchart_connection"
+				   connection_in_repeat="false"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MS_GROUP_BY_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MS_GROUP_BY_LABEL"
+				   name="fusionchart_ms_group_by"
+				   table="params_fusionchart_table"
+				   type="element"/>
+
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_GRAPH_ATTRIBUTES"
@@ -199,6 +207,12 @@
 			       name="fusionchart_palette_colors"
 			       size="50"
 			       type="text"/>
+
+			<field description="PLG_VISUALIZATION_FUSIONCHART_THEME_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_THEME_LABEL"
+				   name="fusionchart_theme"
+				   default="carbon"
+				   type="fusionchartsthemes"/>
 
 			<field default="300"
 			       description="PLG_VISUALIZATION_FUSIONCHART_WIDTH_DESC"
