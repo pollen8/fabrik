@@ -1551,7 +1551,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			return false;
 		}
 
-		$db    = $this->getDb();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupFormId);
 		$db->setQuery($query);
