@@ -111,6 +111,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected $orderBy = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $_rawFilter = false;
+
+	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
 	 *
 	 * @param   array &$aFields   array of element names
