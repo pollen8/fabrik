@@ -113,7 +113,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * @var bool
 	 */
-	protected $_rawFilter = false;
+	public $_rawFilter = false;
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
