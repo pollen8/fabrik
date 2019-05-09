@@ -891,7 +891,7 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 			else
             {
                 $opts->failedValidation = false;
-                $layoutData->faiedValidation = false;
+                $layoutData->failedValidation = false;
             }
 
 			$this->html               = $layout->render($layoutData);
