@@ -1062,8 +1062,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params         = $this->getParams();
 		$element        = $this->getElement();
+		$filterWhere    = trim($params->get('database_join_filter_where_sql', ''));
 		$whereAccess    = $params->get('database_join_where_access', 26);
-		$where          = ($this->mustApplyWhere($whereAccess, $element->id) && $incWhere) ? $params->get('database_join_where_sql') : '';
+		$where          = '';
+
+		// $$$ hugh - 5/13/2019 - filter where now overrides form where, if present
+		if (FArrayHelper::getValue($opts, 'mode', '') !== 'filter' || empty($filterWhere))
+		{
+			$where = ($this->mustApplyWhere($whereAccess, $element->id) && $incWhere) ? $params->get('database_join_where_sql') : '';
+		}
+
 		$join           = $this->getJoin();
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 		$repeatCounter  = FArrayHelper::getValue($opts, 'repeatCounter', 0);
@@ -1096,7 +1104,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		 * but first cut it's safer to put it here (don't ask).
 		 */
 
-		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
 			if (preg_match('/(ORDER\s+BY)(.*)/is', $filterWhere, $matches))
