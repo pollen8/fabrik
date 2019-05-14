@@ -297,7 +297,17 @@ class FabrikViewListBase extends FabrikView
 		$this->_row        = new stdClass;
 		$this->_row->id    = '';
 		$this->_row->class = 'fabrik_row';
-		echo $this->loadTemplate('row');
+
+		// nasty hack for div templates
+		if (JFile::exists('components/com_fabrik/views/list/tmpl/' . $tmpl . '/default_empty_row.php'))
+		{
+			echo $this->loadTemplate('empty_row');
+		}
+		else
+		{
+			echo $this->loadTemplate('row');
+		}
+
 		$opts->itemTemplate = ob_get_contents();
 		ob_end_clean();
 

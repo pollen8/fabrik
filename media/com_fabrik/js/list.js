@@ -67,6 +67,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 this.result = true; //used with plugins to determine if list actions should be performed
                 this.plugins = [];
                 this.list = document.id('list_' + this.options.listRef);
+                this.rowTemplate = false;
 
                 if (this.options.toggleCols) {
                     this.toggleCols = new FbListToggle(this.form);
@@ -125,6 +126,14 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         this.options.itemTemplate = r;
                     }
                 }
+            },
+
+            setRowTemplate: function (parent) {
+                if (!this.rowTemplate) {
+                    this.rowTemplate = parent.clone().empty();
+                }
+
+                return this.rowTemplate;
             },
 
             /**
@@ -513,7 +522,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             } else {
                                 var finalurl;
                                 if (self.options.admin) {
-                                    finalurl = Fabrik.liveSite + '/administrator/index.php' +
+                                    finalurl = Fabrik.liveSite + 'administrator/index.php' +
                                         '?option=com_fabrik' +
                                         '&task=list.view' +
                                         '&format=csv' +
@@ -1275,7 +1284,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
 
                 columnCount = columnCount === undefined ? 1 : columnCount;
-                rowTemplate = parent.clone().empty();
+                rowTemplate = this.setRowTemplate(parent);
                 itemTemplate = cell.clone();
 
                 this.clearRows();
