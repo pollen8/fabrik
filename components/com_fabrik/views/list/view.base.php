@@ -299,7 +299,7 @@ class FabrikViewListBase extends FabrikView
 		$this->_row->class = 'fabrik_row';
 
 		// nasty hack for div templates
-		if (JFile::exists('components/com_fabrik/views/list/tmpl/' . $tmpl . '/default_empty_row.php'))
+		if (JFile::exists(JPATH_ROOT . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/default_empty_row.php'))
 		{
 			echo $this->loadTemplate('empty_row');
 		}
