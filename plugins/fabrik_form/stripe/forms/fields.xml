@@ -294,6 +294,14 @@
 			       type="listfields"
 			       valueformat="tableelement"/>
 
+			<field description="PLG_FORM_STRIPE_CHARGE_RECEIPT_URL_ELEMENT_DESC"
+				   label="PLG_FORM_STRIPE_CHARGE_RECEIPT_URL_ELEMENT_LABEL"
+				   name="stripe_charge_receipt_url_element"
+				   onlytablefields="0"
+				   repeat="true"
+				   type="listfields"
+				   valueformat="tableelement"/>
+
 			<field name="stripe_charge_bottom_text_new"
 			       type="fabrikeditor"
 			       mode="php"

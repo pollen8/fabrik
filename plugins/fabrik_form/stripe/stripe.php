@@ -380,6 +380,13 @@ class PlgFabrik_FormStripe extends PlgFabrik_Form
 					$formModel->updateFormData($chargeIdField, $this->charge->id, true, true);
 				}
 
+				$chargeReceiptURLField = $this->getFieldName('stripe_charge_receipt_url_element', '');
+
+				if (!empty($chargeReceiptURLField))
+				{
+					$formModel->updateFormData($chargeReceiptURLField, $this->charge->receipt_url, true, true);
+				}
+
 				$chargeEmailField = $this->getFieldName('stripe_charge_email_element', '');
 
 				if (!empty($chargeEmailField))
