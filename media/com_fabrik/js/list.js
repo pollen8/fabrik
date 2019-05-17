@@ -80,7 +80,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         this.tbody = this.list.getElement('tbody');
                     }
                     if (typeOf(this.tbody) === 'null') {
-                        this.tbody = this.list;
+                        this.tbody = this.list.getElement('.fabrik_groupdata');
                     }
                     // $$$ rob mootools 1.2 has bug where we cant set('html') on table
                     // means that there is an issue if table contains no data
@@ -131,6 +131,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             setRowTemplate: function (parent) {
                 if (!this.rowTemplate) {
                     this.rowTemplate = parent.clone().empty();
+
+                    // Hail Mary, probably an empty div template
+                    if (this.rowTemplate.length === 0) {
+                        this.rowTemplate = jQuery(this.tbody).children().not('.groupDataMsg').first();
+                    }
                 }
 
                 return this.rowTemplate;
