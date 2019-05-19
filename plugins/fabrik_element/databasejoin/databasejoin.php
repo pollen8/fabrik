@@ -2717,11 +2717,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		else
 		{
 			$group = $this->getGroup();
+			$exactMatch = $this->getElement()->get('filter_exact_match');
 
 			if (!$group->isJoin() && $group->canRepeat())
 			{
 				// Deprecated I think - repeat groups are always joins.
-				$fval = $this->getElement()->get('filter_exact_match') ? $originalValue : $value;
+				$fval = $exactMatch ? $originalValue : $value;
 				$str  = " ($key = $fval OR $key LIKE \"$originalValue',%\"" . " OR $key LIKE \"%:'$originalValue',%\""
 					. " OR $key LIKE \"%:'$originalValue'\"" . " )";
 			}
@@ -2741,11 +2742,40 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$where = $this->_db->qn($dbName . '.' . $this->getJoinValueFieldName());
 					}
 
-					$groupBy = $this->_db->qn($dbName . '.parent_id');
-					$rows    = $this->checkboxRows($groupBy, $condition, $value, $where);
-					$joinIds = array_keys($rows);
+					if (($fType === 'multiselect' || $fType === 'checkbox') && $exactMatch)
+					{
+						$rows    = $this->checkboxRows('id', $condition, $value, $where);
+						$joinIds = array();
+						$matches = array();
 
-					if (!empty($rows))
+						foreach ($rows as $row)
+						{
+							if (!array_key_exists($row->parent_id, $matches))
+							{
+								$matches[$row->parent_id] = array();
+							}
+
+							$matches[$row->parent_id][] = $row->value;
+						}
+
+						foreach ($matches as $joinId => $match)
+						{
+							$diff = array_diff($originalValue, $match);
+
+							if (empty($diff))
+							{
+								$joinIds[] = $joinId;
+							}
+						}
+					}
+					else
+					{
+						$groupBy = $this->_db->qn($dbName . '.parent_id');
+						$rows    = $this->checkboxRows($groupBy, $condition, $value, $where);
+						$joinIds = array_keys($rows);
+					}
+
+					if (!empty($joinIds))
 					{
 						// Either look for the ids in the main fabrik list or the group's list.
 						$groupJoinModel = $group->getJoinModel();
