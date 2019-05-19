@@ -619,12 +619,13 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 
 		$f = basename($file);
 		$dir = dirname($file);
+		$dir = rtrim($dir, '/\\') . '/';
 		$dir = str_replace($ulDir, $thumbdir, $dir);
 
 		// Jaanus added: create also thumb suffix as for filesystemstorage
 		$ext = JFile::getExt($f);
 		$fclean = JFile::stripExt($f);
-		$file = $dir . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext;
+		$file = rtrim($dir, '/') . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext;
 
 		if ($origFile === $file)
 		{
