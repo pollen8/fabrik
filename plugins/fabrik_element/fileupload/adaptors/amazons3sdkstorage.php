@@ -231,11 +231,15 @@ class Amazons3sdkstorage extends FabrikStorageAdaptor
 		// $$$ rob avoid urls like http://bucket.s3.amazonaws.com//home/users/path/to/file/Chrysanthemum.jpg
 		$filepath = JString::ltrim($filepath, '/');
 
+		// $$$ hugh - read content and use 'Body' instead of 'SourceFile', otherwise SDK locks file and we can't delete it
+		$fileContent = file_get_contents($tmpFile);
+
 		// Move the file
 		try
 		{
 			$s3Params = [
-				'SourceFile' => $tmpFile,
+				//'SourceFile' => $tmpFile,
+				'Body'       => $fileContent,
 				'Bucket' => $this->getBucketName(),
 				'Key' => $this->urlToKey($filepath),
 				'ACL' => $this->getAcl(),
