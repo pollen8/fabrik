@@ -495,7 +495,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
             this.clickdate = y + '-' + m + '-' + day + ' ' + hour + ':' + min + ':00';
 
-            if (e.type === 'dblclick' && !this.dateInLimits(this.clickdate)) {
+            if ((e.type === 'dblclick' || e.type ==='touchend') && !this.dateInLimits(this.clickdate)) {
                 return;
             }
 
