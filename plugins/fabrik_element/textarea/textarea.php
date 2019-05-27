@@ -160,6 +160,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			}
 		}
 
+
+		$opts['json'] = FabrikWorker::isJSON($data);
+
 		return parent::renderListData($data, $thisRow, $opts);
 	}
 

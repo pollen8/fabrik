@@ -3911,7 +3911,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($pop !== '')
 		{
 			$w    = new FabrikWorker;
-			$data = empty($data) ? $this->getFormModel()->getData() : $data;
+			//$data = empty($data) ? $this->getFormModel()->getData() : $data;
 			$pop  = $w->parseMessageForPlaceHolder($pop, $data, false);
 
 			$key = md5($pop) . '-' . md5(serialize($data));
@@ -6188,7 +6188,15 @@ class PlgFabrik_Element extends FabrikPlugin
 
         $params    = $this->getParams();
 		$listModel = $this->getListModel();
-		$data      = FabrikWorker::JSONtoData($data, true);
+
+		if (!ArrayHelper::getValue($opts, 'json', false))
+		{
+			$data = FabrikWorker::JSONtoData($data, true);
+		}
+		else
+		{
+			$data = (array) $data;
+		}
 
 		foreach ($data as $i => &$d)
 		{
