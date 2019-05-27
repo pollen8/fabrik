@@ -270,6 +270,17 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$cols = $params->get('width', $element->width);
 		$rows = $params->get('height', $element->height);
 		$value = $this->getValue($data, $repeatCounter);
+
+		/**
+		 * edge case where they are storing JSON in a repeat group, and setJoinData() in form model will have
+		 * run the value through JSONtoData().  So if the value is an object or array, JSON encode it.
+		 */
+
+		if (is_array($value) || is_object($value))
+		{
+			$value = json_encode($value);
+		}
+
 		$bits = array();
 		$bits['class'] = "fabrikinput inputbox " . $params->get('bootstrap_class');
 		$wysiwyg = $this->useWysiwyg();
