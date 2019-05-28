@@ -6200,6 +6200,15 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		foreach ($data as $i => &$d)
 		{
+			/**
+			 * At this point we should have scalar data, but if something (like a textarea) had JSON as its value,
+			 * it will have gotten decoded by the JSONtoData, so if not scalar, re-encode it.
+			 */
+			if (!is_scalar($d))
+			{
+				$d = json_encode($d);
+			}
+
 			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
