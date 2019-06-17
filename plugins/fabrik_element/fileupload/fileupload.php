@@ -855,65 +855,74 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$storage             = $this->getStorage();
 		$use_download_script = $params->get('fu_use_download_script', '0');
+		$downloadHTML = '';
 
 		if ($use_download_script == FU_DOWNLOAD_SCRIPT_TABLE || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH)
 		{
 			if (empty($data) || !$storage->exists(COM_FABRIK_BASE . $data))
 			{
-				return '';
-			}
-
-			$canDownload = true;
-			$aclEl       = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
-
-			if (!empty($aclEl))
-			{
-				$aclEl       = $aclEl->getFullName();
-				$aclElRaw    = $aclEl . '_raw';
-				$groups      = $this->user->getAuthorisedViewLevels();
-				$canDownload = in_array($thisRow->$aclElRaw, $groups);
-			}
-
-			$formModel = $this->getFormModel();
-			$formId    = $formModel->getId();
-			$rowId     = $thisRow->__pk_val;
-			$elementId = $this->getId();
-			$title     = '';
-
-			if ($params->get('fu_title_element') == '')
-			{
-				$title_name = $this->getFullName(true, false) . '__title';
+				$downloadHTML = '';
 			}
 			else
 			{
-				$title_name = str_replace('.', '___', $params->get('fu_title_element'));
-			}
 
-			if (array_key_exists($title_name, $thisRow))
-			{
-				if (!empty($thisRow->$title_name))
+				$canDownload = true;
+				$aclEl       = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+
+				if (!empty($aclEl))
 				{
-					$title = $thisRow->$title_name;
-					$title = FabrikWorker::JSONtoData($title, true);
-					$title = $title[$i];
+					$aclEl       = $aclEl->getFullName();
+					$aclElRaw    = $aclEl . '_raw';
+					$groups      = $this->user->getAuthorisedViewLevels();
+					$canDownload = in_array($thisRow->$aclElRaw, $groups);
 				}
+
+				$formModel = $this->getFormModel();
+				$formId    = $formModel->getId();
+				$rowId     = $thisRow->__pk_val;
+				$elementId = $this->getId();
+				$title     = '';
+
+				if ($params->get('fu_title_element') == '')
+				{
+					$title_name = $this->getFullName(true, false) . '__title';
+				}
+				else
+				{
+					$title_name = str_replace('.', '___', $params->get('fu_title_element'));
+				}
+
+				if (array_key_exists($title_name, $thisRow))
+				{
+					if (!empty($thisRow->$title_name))
+					{
+						$title = $thisRow->$title_name;
+						$title = FabrikWorker::JSONtoData($title, true);
+						$title = $title[$i];
+					}
+				}
+
+				$downloadImg = $params->get('fu_download_access_image');
+
+				$layout                     = $this->getLayout('downloadlink');
+				$displayData                = new stdClass;
+				$displayData->canDownload   = $canDownload;
+				$displayData->title         = $title;
+				$displayData->file          = $data;
+				$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
+				$displayData->noAccessURL   = $params->get('fu_download_noaccess_url', '');
+				$displayData->downloadImg   = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
+				$displayData->href          = COM_FABRIK_LIVESITE
+					. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
+					. $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0&ajaxIndex=' . $i;
+
+				$downloadHTML = $layout->render($displayData);
 			}
 
-			$downloadImg = $params->get('fu_download_access_image');
-
-			$layout                     = $this->getLayout('downloadlink');
-			$displayData                = new stdClass;
-			$displayData->canDownload   = $canDownload;
-			$displayData->title         = $title;
-			$displayData->file          = $data;
-			$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
-			$displayData->noAccessURL   = $params->get('fu_download_noaccess_url', '');
-			$displayData->downloadImg   = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
-			$displayData->href          = COM_FABRIK_LIVESITE
-				. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
-				. $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0&ajaxIndex=' . $i;
-
-			return $layout->render($displayData);
+			if ($params->get('fu_download_append', '0') === '0')
+			{
+				return $downloadHTML;
+			}
 		}
 
 		if ($params->get('fu_show_image_in_table') == '0')
@@ -952,7 +961,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		return $render->output;
+		if ($params->get('fu_download_append', '0') === '1')
+		{
+			return $render->output . '<div>' . $downloadHTML . '</div>';;
+		}
+		else
+		{
+			return $render->output;
+		}
 	}
 
 	/**
