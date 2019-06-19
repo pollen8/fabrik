@@ -92,6 +92,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 
 		$subForm->model = $feModel;
+		$subForm->rawData = $this->form->rawData;
 
 		// Hack for order by elements which we now want to store as ids
 		$v = json_decode($this->value);
