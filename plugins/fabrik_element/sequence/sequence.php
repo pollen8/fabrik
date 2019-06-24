@@ -135,7 +135,7 @@ class PlgFabrik_ElementSequence extends PlgFabrik_Element
 		if ($method !== 'pk')
 		{
             $db    = JFactory::getDbo();
-            $sequenceQuery = $params->get('sequence_query', 'load');
+            $sequenceQuery = $params->get('sequence_query', '');
 
             if (!empty($sequenceQuery))
             {
