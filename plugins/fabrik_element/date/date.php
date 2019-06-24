@@ -888,7 +888,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->timePickerLabel = FText::_('PLG_ELEMENT_DATE_TIMEPICKER', true);
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
-		$opts->dateTimeFormat = $this->getTimeFormat();
+		$opts->dateTimeFormat = FabDate::dateFormatToStrftimeFormat($this->getTimeFormat());
 		$opts->showSeconds    = $opts->whichTimePicker === 'clock' ? false : $params->get('date_show_seconds', '1') === '1';
 		$opts->hour24         = $params->get('date_24hour', '1') === '1';
 		$opts->allowedDates   = $this->getAllowedPHPDates();
