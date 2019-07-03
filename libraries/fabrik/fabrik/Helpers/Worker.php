@@ -2840,6 +2840,21 @@ class Worker
 	}
 
 	/**
+	 * Are we in an AJAX validation process task
+	 *
+	 * @since 3.9.2
+	 *
+	 * @return bool
+	 */
+	public static function inAJAXValidation()
+	{
+		$app = JFactory::getApplication();
+
+		return $app->input->get('task', '') === 'form.ajax_validate';
+	}
+
+
+	/**
 	 * Remove messages from JApplicationCMS
 	 *
 	 * @param   CMSApplication $app  Application to kill messages from

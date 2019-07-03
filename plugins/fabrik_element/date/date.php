@@ -421,6 +421,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return false;
 		}
 
+		// if AJAX validating, TZ is set
+		if (FabrikWorker::inAJAXValidation())
+		{
+			return false;
+		}
+
 		$formModel    = $this->getFormModel();
 		$params       = $this->getParams();
 		$storeAsLocal = (bool) $params->get('date_store_as_local', 0);
@@ -1109,8 +1115,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// in some corner cases, date will be db name quoted, like in CSV export after an advanced search!
 		$value = trim($value, "'");
 
-		//if ($input->get('task') == 'form.process' || ($app->isAdmin() && $input->get('task') == 'process'))
-		if (FabrikWorker::inFormProcess())
+		if (FabrikWorker::inFormProcess() || FabrikWorker::inAJAXValidation())
 		{
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;
