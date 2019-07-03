@@ -248,7 +248,17 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 
 		if (!empty($dateCol))
 		{
-			$this->_process($model, $dateCol, $this->date->toSql(), false);
+			$formModel    = $model->getFormModel();
+			$dateEl = $formModel->getElement($dateCol);
+			$local   = (bool) $dateEl->getParams()->get('date_store_as_local', false);
+
+			if ($local)
+			{
+				$tz       = new DateTimeZone($this->config->get('offset'));
+				$this->date->setTimezone($tz);
+			}
+
+			$this->_process($model, $dateCol, $this->date->toSql($local), false);
 		}
 
 		if (!empty($userCol))
