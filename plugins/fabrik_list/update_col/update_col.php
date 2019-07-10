@@ -135,8 +135,42 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 		// get the pre-set updates
 		$update = json_decode($params->get('update_col_updates'));
 
+		$prompt = $params->get('update_col_prompt', false);
+
 		// if we allow user selected updates ...
-		if ($params->get('update_user_select', 0))
+		if ($prompt)
+		{
+			$formModel = $model->getFormModel();
+			$value = $this->app->input->get('fabrik_update_col', '', 'string');
+			$elementModel = $formModel->getElement($prompt, true);
+			$elementName = $elementModel->getFullName(false, false);
+
+			// Was this element already pre-set?  Use array_search() rather than in_array() as we'll need the index if it exists.
+			if (isset($update) && isset($update->coltoupdate) && is_array($update->coltoupdate))
+			{
+				$index = array_search($elementName, $update->coltoupdate);
+			}
+			else
+			{
+				$index = false;
+			}
+
+			if ($index === false)
+			{
+				// nope, wasn't preset, so just add it to the updates
+				$update->coltoupdate[] = $elementName;
+				$update->update_value[] = $value;
+				$update->update_eval[] = '0';
+			}
+			else
+			{
+				// yes it was preset, so use the $index to modify the existing value
+				$update->update_value[$index] = $value;
+				$update->update_eval[$index] = '0';
+			}
+
+		}
+		else if ($params->get('update_user_select', 0))
 		{
 			// get the values from the form inputs
 			$formModel = $model->getFormModel();
@@ -578,6 +612,8 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 		parent::onLoadJavascriptInstance($args);
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions();
+		$opts->prompt = $params->get('update_col_prompt', false) !== false;
+		$opts->promptMsg = $params->get('update_user_select_message', '');
 		$opts->userSelect = (bool) $params->get('update_user_select', 0);
 		$opts->form = $this->userSelectForm();
 		$opts->renderOrder = $this->renderOrder;
