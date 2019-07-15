@@ -96,6 +96,7 @@
             </field>
 
             <field name="prefilters"
+                   filter="raw"
                    type="fabrikmodalrepeat"
                    class="prefilters-modal"
                    label="COM_FABRIK_LIST_PREFILTERS_LABEL"
