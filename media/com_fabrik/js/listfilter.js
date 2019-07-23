@@ -195,6 +195,10 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
                         f.val('');
                     }
                 }
+                if (f.hasClass('advancedSelect'))
+                {
+                    f.trigger('liszt:updated');
+                }
             }
         },
 
