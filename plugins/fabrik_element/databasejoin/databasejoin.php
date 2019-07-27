@@ -3675,7 +3675,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	private function _autocompleteWhere($how, $field, $search)
 	{
 		$db     = FabrikWorker::getDbo();
-		$search = strtolower($search);
+		$search = mb_strtolower($search);
 		$field  = 'LOWER(' . $field . ')';
 
 		switch ($how)
