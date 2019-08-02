@@ -243,8 +243,8 @@
 			       type="text"/>
 
 			<field name="fusionchart_layout"
-			       type="fabriktemplate"
-			       directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/"
+			       type="fabrikfolderlist"
+			       directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl"
 			       label="PLG_VISUALIZATION_FUSIONCHART_TEMPLATE_LABEL"/>
 
 			<field default="Please Wait.The chart is loading..."
