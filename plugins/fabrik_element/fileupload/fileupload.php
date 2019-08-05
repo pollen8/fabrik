@@ -1857,8 +1857,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			return;
 		}
 
+		$params = $this->getParams();
+		$default = $params->get('default_image', '');
 		$storage = $this->getStorage();
+		$default = $storage->clean($default);
 		$file    = $storage->clean($filename);
+
+		if ($default === $file)
+		{
+			return;
+		}
+
 		$thumb   = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 
