@@ -557,11 +557,15 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$rows = $elementModel->filterValueList(true, '', $label);
 		$v = $app->input->get('value', '', 'string');
 
-		// Search for every word separately in the result rather than the single string (of multiple words)
+		/**
+		 * Search for every word separately in the result rather than the single string (of multiple words)
+		 *
+		 * Added u switch, for UTF8
+		 */
 		$regex  = "/(?=.*" .
 			implode(")(?=.*",
 				array_filter(explode(" ", preg_quote($v, '/')))
-			) . ").*/i";
+			) . ").*/ui";
 		$start = count($rows) - 1;
 
 		for ($i = $start; $i >= 0; $i--)

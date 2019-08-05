@@ -135,6 +135,18 @@
 				   table="params_fusionchart_table"
 				   type="element"/>
 
+			<field name="fusionchart_query"
+				   type="fabrikeditor"
+				   mode="mysql"
+				   description="PLG_VISUALIZATION_FUSIONCHART_QUERY_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_QUERY_LABEL"/>
+
+			<field name="fusionchart_php"
+				   type="fabrikeditor"
+				   mode="php"
+				   description="PLG_VISUALIZATION_FUSIONCHART_PHP_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_PHP_LABEL"/>
+
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_GRAPH_ATTRIBUTES"
@@ -231,8 +243,8 @@
 			       type="text"/>
 
 			<field name="fusionchart_layout"
-			       type="fabriktemplate"
-			       directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/"
+			       type="fabrikfolderlist"
+			       directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl"
 			       label="PLG_VISUALIZATION_FUSIONCHART_TEMPLATE_LABEL"/>
 
 			<field default="Please Wait.The chart is loading..."

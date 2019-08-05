@@ -64,6 +64,7 @@
 
             <field name="prefilters"
                    type="fabrikmodalrepeat"
+                   filter="raw"
                    label="COM_FABRIK_LIST_PREFILTERS_LABEL"
                    description="COM_FABRIK_LIST_PREFILTERS_DESC">
 

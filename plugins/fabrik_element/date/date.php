@@ -421,6 +421,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return false;
 		}
 
+		// if AJAX validating, TZ is set
+		if (FabrikWorker::inAJAXValidation())
+		{
+			return false;
+		}
+
 		$formModel    = $this->getFormModel();
 		$params       = $this->getParams();
 		$storeAsLocal = (bool) $params->get('date_store_as_local', 0);
@@ -888,7 +894,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->timePickerLabel = FText::_('PLG_ELEMENT_DATE_TIMEPICKER', true);
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
-		$opts->dateTimeFormat = $this->getTimeFormat();
+		$opts->dateTimeFormat = FabDate::dateFormatToStrftimeFormat($this->getTimeFormat());
 		$opts->showSeconds    = $opts->whichTimePicker === 'clock' ? false : $params->get('date_show_seconds', '1') === '1';
 		$opts->hour24         = $params->get('date_24hour', '1') === '1';
 		$opts->allowedDates   = $this->getAllowedPHPDates();
@@ -1109,8 +1115,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// in some corner cases, date will be db name quoted, like in CSV export after an advanced search!
 		$value = trim($value, "'");
 
-		//if ($input->get('task') == 'form.process' || ($app->isAdmin() && $input->get('task') == 'process'))
-		if (FabrikWorker::inFormProcess())
+		if (FabrikWorker::inFormProcess() || FabrikWorker::inAJAXValidation())
 		{
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;

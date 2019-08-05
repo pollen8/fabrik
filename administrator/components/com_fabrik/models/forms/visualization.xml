@@ -32,6 +32,7 @@
 		       hide="readmore,pagebreak"
 		       description="COM_FABRIK_FIELD_INTRODUCTION_DESC"
 		       label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
+			   filter="FabrikAdminHelper::filterText"
 		       rows="3"/>
 
 		<field name="plugin"

@@ -609,12 +609,21 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			* object if we call getPagination after render().  So call it first, then render() will
 			* get our cached pagination, rather than vice versa.
 			*/
-			$limit = (int) FArrayHelper::getValue($limits, $this->c, 0);
-			$listModel->setLimits(0, $limit);
-			$nav = $listModel->getPagination(0, 0, $limit);
-			$listModel->render();
-			$alldata = $listModel->getData();
-			$cals = $listModel->getCalculations();
+
+			$cals = array();
+
+			$alldata = $this->getQueryData();
+
+			if (!$alldata)
+			{
+				$limit = (int) FArrayHelper::getValue($limits, $this->c, 0);
+				$listModel->setLimits(0, $limit);
+				$nav = $listModel->getPagination(0, 0, $limit);
+				$listModel->render();
+				$alldata = $listModel->getData();
+				$cals = $listModel->getCalculations();
+			}
+
 			$column = $chartElements[$this->c];
             $msGroupBy = FArrayHelper::getValue($chartMSGroupBy, $this->c, '');
 			$pref = substr($column, 0, 6);
@@ -1022,6 +1031,33 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						$strParam .= ';labelStep=' . $labelStep;
 					}
 
+					$allLabels = array();
+
+					foreach ($glabels as $glabel)
+					{
+						$allLabels = array_unique(array_merge($allLabels, $glabel));
+					}
+
+					sort($allLabels);
+					$data_count = 0;
+
+					foreach ($allLabels as $catLabel) {
+						$data_count++;
+						$catParams = array();
+
+						if ($labelStep) {
+							if ($data_count == 1 || $data_count % $labelStep == 0) {
+								$catParams['ShowLabel'] = true;
+							} else {
+								$catParams['ShowLabel'] = false;
+								$catLabel = '';
+							}
+						}
+
+						$this->addCategory($catLabel, $catParams);
+					}
+
+					/*
 					$labels = $glabels[0];
                     $data_count = 0;
 
@@ -1040,6 +1076,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
                         $this->addCategory($catLabel, $catParams);
                     }
+					*/
 
 					foreach ($gdata as $key => $chartdata)
 					{
@@ -1085,13 +1122,32 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						else
 						{
 							$data_count = 0;
+							$chartlabels = $glabels[$key];
 
+							foreach ($cdata as $ckey => $value)
+							{
+								$allLabelsKey = array_search($chartlabels[$ckey], $allLabels);
+								$dataset[$allLabelsKey] = $this->makeChartData($value);
+							}
+
+							foreach ($allLabels as $allLabelsKey => $label)
+							{
+								if (!array_key_exists($allLabelsKey, $dataset))
+								{
+									$dataset[$allLabelsKey] = null;
+								}
+							}
+
+							ksort($dataset);
+
+							/*
 							foreach ($cdata as $value)
 							{
 								$data_count++;
 
 								$dataset[] = $this->makeChartData($value);
 							}
+							*/
 						}
 
 						$this->addDataset($dataset, $datasetLabel, $extras);
@@ -1556,5 +1612,51 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
         }
 
         return $chartType;
+    }
+
+    private function getQueryData()
+    {
+    	$params = $this->getParams();
+    	$query = $params->get('fusionchart_query', '');
+    	$query = \Joomla\Utilities\ArrayHelper::getValue($query, $this->c);
+		$data = array();
+
+    	if (empty($query))
+	    {
+	    	return $this->getPHPData();
+	    }
+
+	    $connection = $params->get('fusionchart_connection');
+	    $connection = \Joomla\Utilities\ArrayHelper::getValue($connection, $this->c);
+	    $db = FabrikWorker::getDbo(false, $connection);
+		$db->setQuery($query);
+
+		try {
+			$data = $db->loadObjectList();
+		}
+		catch (Exception $e)
+		{
+			// meh
+		}
+
+		return array($data);
+    }
+
+    private function getPHPData()
+    {
+	    $params = $this->getParams();
+	    $code = $params->get('fusionchart_php', '');
+	    $code = \Joomla\Utilities\ArrayHelper::getValue($code, $this->c);
+
+	    if (empty($code))
+	    {
+	    	return false;
+	    }
+
+	    @trigger_error('');
+	    $data = FabrikHelperHTML::isDebug() ? eval($code) : @eval($code);
+	    FabrikWorker::logEval(false, 'Eval exception : fusionchart plugin : %s');
+
+	    return $data;
     }
 }

@@ -2440,7 +2440,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			if (!preg_match('/^WHERE\s+/i', $where))
+			if (!preg_match('/^\s*WHERE\s+/i', $where))
 			{
 				$where = 'WHERE ' . $where;
 			}
@@ -3675,7 +3675,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	private function _autocompleteWhere($how, $field, $search)
 	{
 		$db     = FabrikWorker::getDbo();
-		$search = strtolower($search);
+		$search = mb_strtolower($search);
 		$field  = 'LOWER(' . $field . ')';
 
 		switch ($how)
@@ -4125,9 +4125,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$key = $db->q($key);
 		});
 
-		$query = $db->getQuery(true);
-		$query->delete($db->qn($join->table_join))->where('id IN (' . implode(',', $keys) .')');
+		if (!empty($keys))
+		{
+			$query = $db->getQuery(true);
+			$query->delete($db->qn($join->table_join))->where('id IN (' . implode(',', $keys) . ')');
 
-		return $db->setQuery($query)->execute();
+			try
+			{
+				$db->setQuery($query)->execute();
+			}
+			catch (Exception $e)
+			{
+				// meh
+			}
+		}
+
+		return true;
 	}
 }
