@@ -472,8 +472,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
         foreach ($this->axisLabels as $axis_key => $axis_val)
         {
-            $this->axisLabels[$axis_key] = $worker->parseMessageForPlaceholder(
-                $axis_val,
+            $this->axisLabels[$axis_key] = (string)$worker->parseMessageForPlaceholder(
+	            (string)$axis_val,
                 null,
                 true
             );
@@ -741,6 +741,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
             foreach ($gmsgroupby[0] as $key => $groupby)
             {
+            	$groupby = (string)$groupby;
+
                 if (!array_key_exists($groupby, $tmps))
                 {
                     $tmps[$groupby] = array(
@@ -793,6 +795,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		switch ($chartType)
 		{
 			// Single Series Charts
+			case 'MAPS':
 			case 'AREA2D':
 			case 'BAR2D':
 			case 'COLUMN2D':
@@ -824,6 +827,10 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
                     $strParam .= ';is2D=0';
                     $chartType = 'FUNNEL';
                 }
+				else if ($chartType === 'MAPS')
+				{
+					$this->setChartColorRange();
+				}
 
 
 				$datasets = 0;
@@ -909,8 +916,9 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 							$data_count++;
 
 							$label = $labels[$key];
+							$keyName = $chartType === 'MAPS' ? 'id' : 'label';
 							$str_params = array(
-								'label' => $label
+								$keyName => $label
 							);
 
 							if ($labelStep)
@@ -987,6 +995,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			case 'MSCOLUMN2D':
 			case 'MSCOLUMN3D':
 			case 'MSLINE':
+			case 'MSSPLINE':
 			case 'MSAREA2D':
 			case 'MSCOMBIDY2D':
 			case 'MULTIAXISLINE':
@@ -1541,7 +1550,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		{
 			return array_merge(
 				array(
-					'value' => $value
+					'value' => (string)$value
 				),
 				$params
 			);
@@ -1576,6 +1585,21 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$this->chartData['chart'] = $chartParams;
 	}
 
+	private function setChartColorRange()
+	{
+		$params = $this->getParams();
+
+		$colorrange = [
+			'minvalue' => $params->get('fusionchart_map_color_minvalue', "0"),
+			"startlabel" => $params->get('fusionchart_map_color_startlabel', "Low"),
+	        "endlabel" => $params->get('fusionchart_map_color_endlabel', "High"),
+	        "code" => $params->get('fusionchart_map_color_code', "#34baeb"),
+	        "gradient" => $params->get('fusionchart_map_color_gradient', "1")
+		];
+
+		$this->chartData['colorrange'] = $colorrange;
+	}
+
 	private function getChartData()
 	{
 		$chartData = json_encode($this->chartData);
@@ -1601,12 +1625,17 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
      */
     public function getRealChartType($chartType)
     {
+    	$params = $this->getParams();
+
         switch ($chartType)
         {
             case 'FUNNEL2D':
             case 'FUNNEL3D':
                 $chartType = 'FUNNEL';
                 break;
+	        case 'MAPS':
+	        	$chartType = strtolower($chartType . '/' . $params->get('fusionchart_map', 'world'));
+	        	break;
             default:
                 break;
         }

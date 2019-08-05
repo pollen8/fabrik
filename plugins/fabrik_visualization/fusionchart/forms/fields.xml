@@ -187,6 +187,7 @@
 				<option value="MSCOLUMN3D">MS Column 3D</option>
 				<option value="MSCOLUMN3DLINEDY">MS Column 3D Line DY</option>
 				<option value="MSLINE">MS Line</option>
+				<option value="MSSPLINE">MS Spline</option>
 				<option value="MULTIAXISLINE">Multi Axis Line</option>
 				<option value="CANDLESTICK">Candlestick</option>
 				<option value="STACKEDAREA2D">Stacked Area 2D</option>
@@ -200,6 +201,7 @@
 				<option value="SCATTER">Scatter</option>
 				<option value="SPLINE">Spline</option>
 				<option value="SPLINEAREA">Spline Area</option>
+				<option value="MAPS">Maps - see Map section</option>
 			</field>
 
 			<field default="1"
@@ -832,6 +834,7 @@
 
 		</fieldset>
 
+		<!--
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_EXPORT"
 				  name="export">
 
@@ -859,6 +862,58 @@
 				   size="3"
 				   type="text"/>
 
+
+		</fieldset>
+		-->
+
+		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_MAP"
+				  name="map">
+
+			<field description="PLG_VISUALIZATION_FUSIONCHART_MAP_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_LABEL"
+				   name="fusionchart_map"
+				   default="world"
+				   type="fusionchartsmaps"/>
+
+			<field class="input-small"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_MINVALUE_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_MINVALUE_LABEL"
+				   name="fusionchart_map_color_minvalue"
+				   size="5"
+				   type="text"
+				   default="0"/>
+
+			<field class="input-medium"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_STARTLABEL_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_STARTLABEL_LABEL"
+				   name="fusionchart_map_color_startlabel"
+				   size="10"
+				   default="Low"
+				   type="text"/>
+
+			<field class="input-medium"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_ENDLABEL_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_ENDLABEL_LABEL"
+				   name="fusionchart_map_color_endlabel"
+				   size="10"
+				   default="High"
+				   type="text"/>
+
+			<field class="input-medium"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_CODE_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_CODE_LABEL"
+				   name="fusionchart_map_color_code"
+				   size="10"
+				   default="#afeeee"
+				   type="text"/>
+
+			<field class="input-small"
+				   description="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_GRADIENT_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_MAP_COLOR_GRADIENT_LABEL"
+				   name="fusionchart_map_color_gradient"
+				   size="5"
+				   default="1"
+				   type="text"/>
 
 		</fieldset>
 
