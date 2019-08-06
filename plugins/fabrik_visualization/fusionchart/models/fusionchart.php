@@ -1654,8 +1654,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
     private function getQueryData()
     {
     	$params = $this->getParams();
-    	$query = $params->get('fusionchart_query', '');
-    	$query = \Joomla\Utilities\ArrayHelper::getValue($query, $this->c);
+    	$query = $params->get('fusionchart_query', array());
+    	$query = \Joomla\Utilities\ArrayHelper::getValue((array)$query, $this->c, '');
 		$data = array();
 
     	if (empty($query))
@@ -1682,8 +1682,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
     private function getPHPData()
     {
 	    $params = $this->getParams();
-	    $code = $params->get('fusionchart_php', '');
-	    $code = \Joomla\Utilities\ArrayHelper::getValue($code, $this->c);
+	    $code = $params->get('fusionchart_php', array());
+	    $code = \Joomla\Utilities\ArrayHelper::getValue((array)$code, $this->c);
 
 	    if (empty($code))
 	    {
