@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -1535,7 +1536,14 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 	{
 		if ($value === null)
 		{
-			return $params;
+			if (empty($params))
+			{
+				return null;
+			}
+			else
+			{
+				return $params;
+			}
 		}
 		else
 		{
