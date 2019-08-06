@@ -42,20 +42,29 @@ class JFormFieldFusionchartsthemes extends JFormFieldFileList
 	protected function getOptions()
 	{
 		$params = $this->form->getData()->get('params');
-		$fcLib = $params->fusionchart_library;
+		$opts = array();
 
-		$this->directory = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/libs/' . $fcLib . '/js/themes';
-		$this->hideDefault = true;
-
-		$opts = parent::getOptions();
-
-		foreach ($opts as &$opt)
+		if ($params)
 		{
-			$matches = array();
-			if (preg_match('/fusioncharts\.theme\.(\w+)\.js/', $opt->value, $matches))
+			$fcLib = $params->fusionchart_library;
+
+			if (!empty($fcLib))
 			{
-				$opt->value = $matches[1];
-				$opt->text = $matches[1];
+
+				$this->directory   = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/libs/' . $fcLib . '/js/themes';
+				$this->hideDefault = true;
+
+				$opts = parent::getOptions();
+
+				foreach ($opts as &$opt)
+				{
+					$matches = array();
+					if (preg_match('/fusioncharts\.theme\.(\w+)\.js/', $opt->value, $matches))
+					{
+						$opt->value = $matches[1];
+						$opt->text  = $matches[1];
+					}
+				}
 			}
 		}
 
