@@ -25,14 +25,14 @@ JFormHelper::loadFieldClass('filelist');
  * @subpackage  Form
  * @since       3.0
  */
-class JFormFieldFusionchartsthemes extends JFormFieldFileList
+class JFormFieldFusionchartsmaps extends JFormFieldFileList
 {
 	/**
 	 * Element name
 	 *
 	 * @var        string
 	 */
-	protected $name = 'Fusionchartsthemes';
+	protected $name = 'Fusionchartsmaps';
 
 	/**
 	 * Method to get the field options.
@@ -42,6 +42,7 @@ class JFormFieldFusionchartsthemes extends JFormFieldFileList
 	protected function getOptions()
 	{
 		$params = $this->form->getData()->get('params');
+
 		$opts = array();
 
 		if ($params)
@@ -50,8 +51,7 @@ class JFormFieldFusionchartsthemes extends JFormFieldFileList
 
 			if (!empty($fcLib))
 			{
-
-				$this->directory   = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/libs/' . $fcLib . '/js/themes';
+				$this->directory   = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/libs/' . $fcLib . '/js/maps';
 				$this->hideDefault = true;
 
 				$opts = parent::getOptions();
@@ -59,7 +59,7 @@ class JFormFieldFusionchartsthemes extends JFormFieldFileList
 				foreach ($opts as &$opt)
 				{
 					$matches = array();
-					if (preg_match('/fusioncharts\.theme\.(\w+)\.js/', $opt->value, $matches))
+					if (preg_match('/fusioncharts\.(\w+)\.js/', $opt->value, $matches))
 					{
 						$opt->value = $matches[1];
 						$opt->text  = $matches[1];
