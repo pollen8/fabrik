@@ -21,6 +21,7 @@ use JHtml;
 use JHtmlBootstrap;
 use JModelLegacy;
 use JRoute;
+use JSession;
 use JText;
 use JUri;
 use JVersion;
@@ -1530,6 +1531,15 @@ EOD;
 			$app    = JFactory::getApplication();
 			$config = JComponentHelper::getParams('com_fabrik');
 
+			/*
+			if ($app->input->get('format', 'html') === 'raw')
+            {
+                $debug = false;
+
+                return false;
+            }
+			*/
+
 			if ($enabled && $config->get('use_fabrikdebug') == 0)
 			{
 			    $debug = false;
@@ -2093,8 +2103,10 @@ EOD;
 
 		$app       = JFactory::getApplication();
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
-		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw';
+		//$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw';
+		$json->url = 'index.php?option=com_' . $package . '&format=raw';
 		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
+		$json->url .= '&' . JSession::getFormToken() . '=1';
 		$json->url .= '&g=element&element_id=' . $elementId
 			. '&formid=' . $formId . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = ArrayHelper::getValue($opts, 'onSelection');

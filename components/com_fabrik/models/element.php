@@ -6811,8 +6811,27 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
 		$input = $this->app->input;
+		$o         = new stdClass;
+		$formModel = $this->getFormModel();
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
+
+		// Check for request forgeries
+		if ($formModel->spoofCheck() && !JSession::checkToken('request'))
+		{
+			$o->error = FText::_('JERROR_ALERTNOAUTHOR');
+			echo json_encode($o);
+
+			return;
+		}
+
+		if (!$this->canUse()) {
+			$o->error = FText::_('JERROR_ALERTNOAUTHOR');
+			echo json_encode($o);
+
+			return;
+		}
+
 		$cache  = FabrikWorker::getCache();
 		$search = $input->get('value', '', 'string');
 		// uh oh, can't serialize PDO db objects so no can cache, as J! serializes the args
