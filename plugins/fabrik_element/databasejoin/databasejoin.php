@@ -3095,7 +3095,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$modalId                  = 'dbjoin_popupform';
 		$opts                     = $this->_getOptionVals();
 		$data                     = $this->getFormModel()->data;
-		$arSelected               = $this->getValue($data, $repeatCounter);
+		$arSelected               = $this->getValue($data, $repeatCounter, array('raw' => true));
 		$table                    = $params->get('join_db_name');
 		$opts                     = $this->getElementJSOptions($repeatCounter);
 		$forms                    = $this->getLinkedForms();
