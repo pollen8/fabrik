@@ -738,7 +738,7 @@ class FabrikViewFormBase extends FabrikView
 
 		foreach ($model->formPluginJS as $pluginName => $pluginStr)
 		{
-			$plugins[] = "'$pluginName': $pluginStr,";
+			$plugins[] = "'$pluginName': $pluginStr";
 		}
 
 		$str .= implode(',', $plugins) . "});\n";
