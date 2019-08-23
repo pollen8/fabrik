@@ -137,7 +137,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		// Get all list where statements - which are then included in the ajax call to ensure we get the correct data set loaded
 		$urlFilters        = new stdClass;
-		$urlFilters->where = $model->buildQueryWhere();
+		//$urlFilters->where = $model->buildQueryWhere();
 
 		// Don't JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_' . $package
