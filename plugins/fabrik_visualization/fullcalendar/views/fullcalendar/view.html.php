@@ -158,6 +158,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		}
 
 		$options                  = new stdClass;
+		$options->id              = $model->getVisualization()->get('id');
 		$options->url             = $urls;
 		$options->dateLimits      = $model->getDateLimits();
 		$options->deleteables     = $model->getDeleteAccess();
