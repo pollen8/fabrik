@@ -6414,6 +6414,13 @@ class FabrikFEModelList extends JModelForm
 		return '';
 	}
 
+	private function requireFilterMsg($default = '')
+	{
+		$params = $this->getParams();
+		$msg = $params->get('require-filter-msg', $default);
+
+		return FText::_($msg);
+	}
 	/**
 	 * Do we have all required filters, by both list level and element level settings.
 	 *
@@ -6423,14 +6430,14 @@ class FabrikFEModelList extends JModelForm
 	{
 		if ($this->listRequiresFiltering() && !$this->gotOptionalFilters())
 		{
-			$this->emptyMsg = FText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
+			$this->emptyMsg = $this->requireFilterMsg('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 
 			return false;
 		}
 
 		if ($this->hasRequiredElementFilters() && !$this->getRequiredFiltersFound())
 		{
-			$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			$this->emptyMsg = $this->requireFilterMsg('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 			return false;
 		}
@@ -6547,7 +6554,7 @@ class FabrikFEModelList extends JModelForm
 		// If no filter keys, by definition we don't have required ones
 		if (!array_key_exists('key', $filters) || !is_array($filters['key']))
 		{
-			$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			$this->emptyMsg = $this->requireFilterMsg('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 			return false;
 		}
@@ -6571,7 +6578,7 @@ class FabrikFEModelList extends JModelForm
 
 				if (!$found || $filters['origvalue'][$key] == '')
 				{
-					$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+					$this->emptyMsg = $this->requireFilterMsg('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 					return false;
 				}
