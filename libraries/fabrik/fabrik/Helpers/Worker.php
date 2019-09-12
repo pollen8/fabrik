@@ -1999,7 +1999,7 @@ class Worker
 	 */
 	public static function isNullDate($d)
 	{
-		$db         = self::getDbo();
+		$db         = self::getDbo(true);
 		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 
 		return in_array($d, $aNullDates);
