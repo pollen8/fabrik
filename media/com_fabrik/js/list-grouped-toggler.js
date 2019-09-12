@@ -11,7 +11,7 @@ define(['jquery'], function (jQuery) {
     var FbGroupedToggler = new Class({
         Binds: [],
 
-        Implements: Options,
+        Implements: [Options],
 
         options: {
             collapseOthers: false,

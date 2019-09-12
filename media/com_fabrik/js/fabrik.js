@@ -211,7 +211,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         if (!events || !events[type]) {
             return this;
         }
-        args = Array.from(args);
+        args = Array.mfrom(args);
         events[type].each(function (fn) {
             if (delay) {
                 this.eventResults.push(fn.delay(delay, this, args));
@@ -244,7 +244,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         }
 
         // Have we previously started to load the Googlemaps script?
-        var gmapScripts = Array.from(document.scripts).filter(function (f) {
+        var gmapScripts = Array.mfrom(document.scripts).filter(function (f) {
             return f.src === src;
         });
 

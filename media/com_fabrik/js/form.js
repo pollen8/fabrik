@@ -1165,7 +1165,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
         _showGroupError: function (r, d) {
             var tmperr;
-            var gids = Array.from(this.options.pages.get(this.currentPage.toInt()));
+            var gids = Array.mfrom(this.options.pages.get(this.currentPage.toInt()));
             var err = false;
             $H(d).each(function (v, k) {
                 k = k.replace(/\[(.*)\]/, '').replace(/%5B(.*)%5D/, '');// for dropdown validations
@@ -2263,7 +2263,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 
                             // Update the element id use el.element.id rather than input.id as
                             // that may contain _1 at end of id
-                            var bits = Array.from(el.element.id.split('_'));
+                            var bits = Array.mfrom(el.element.id.split('_'));
                             bits.splice(bits.length - 1, 1, c);
                             input.id = bits.join('_');
 
@@ -2287,7 +2287,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                         // events are cloned
 
                         // $$$ rob fix for date element
-                        var bits = Array.from(el.options.element.split('_'));
+                        var bits = Array.mfrom(el.options.element.split('_'));
                         bits.splice(bits.length - 1, 1, c);
                         subElementContainer.id = bits.join('_');
                     }
