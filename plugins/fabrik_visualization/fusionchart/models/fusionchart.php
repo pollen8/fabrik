@@ -881,6 +881,17 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					$labels = $glabels[$datasetKey];
 					$gsums = FArrayHelper::getValue($chartCumulatives, $datasetKey, '0') == '0' ? $gdata[$datasetKey] : $this->gcumulatives[$datasetKey];
 
+					$sums = array();
+					foreach ($labels as $lkey => $label)
+					{
+						if (!array_key_exists($label, $sums))
+						{
+							$sums[$label] = 0;
+						}
+
+						$sums[$label] += $gsums[$lkey];
+					}
+
 					// Scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
@@ -889,7 +900,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 					if ($label_step_ratio > 1)
 					{
-						$labelStep = (int) (count($gsums) / $label_step_ratio);
+						$labelStep = (int) (count($sums) / $label_step_ratio);
 						$strParam .= ';labelStep=' . $labelStep;
 					}
 					/* $$$tom: inverting array_combine as identical values in gsums will be
@@ -902,8 +913,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					if ($elTypes[$datasetKey] == 'trendonly')
 					{
 						$str_params = array();
-						$min = min($gsums);
-						$max = max($gsums);
+						$min = min($sums);
+						$max = max($sums);
 						list($min, $max) = $this->getTrendMinMax($min, $max, 0);
 						$this->addChartData($min, $str_params);
 						$this->addChartData($max, $str_params);
@@ -912,11 +923,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					{
 						$data_count = 0;
 
-						foreach ($gsums as $key => $value)
+						foreach ($sums as $label => $value)
 						{
 							$data_count++;
 
-							$label = $labels[$key];
+							//$label = $labels[$key];
 							$keyName = $chartType === 'MAPS' ? 'id' : 'label';
 							$str_params = array(
 								$keyName => $label
