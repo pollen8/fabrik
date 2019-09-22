@@ -462,7 +462,7 @@ class PlgFabrik_ElementLockrow extends PlgFabrik_Element {
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		return array('fbLockrow', $id, $opts);
+		return array('FbLockrow', $id, $opts);
 	}
 
 	function isHidden()
