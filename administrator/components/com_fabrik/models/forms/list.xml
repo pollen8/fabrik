@@ -496,6 +496,15 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="require-filter-msg"
+				   type="text"
+				   default=""
+				   class="input-xlarge"
+				   size="20"
+				   label="COM_FABRIK_FIELD_REQUIRE_FILTER_MSG_LABEL"
+				   description="COM_FABRIK_FIELD_REQUIRE_FILTER_MSG_DESC"
+			/>
+
 			<field name="filter-dropdown-method"
 			       type="list"
 			       default="0"

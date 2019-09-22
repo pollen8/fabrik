@@ -120,6 +120,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 		// General Properties
 
+		if ($params->get('fusionchart_labelstep', '') !== '')
+		{
+			$strParam .= ';labelStep=' . $params->get('fusionchart_labelstep', '');
+		}
+
 		if ($params->get('fusionchart_shownames') == '0')
 		{
 			// Default = 1
@@ -544,8 +549,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		// Setting Param string
 		$strParam = $this->getChartParams();
 
-		$label_step_ratios = (array) $params->get('fusion_label_step_ratio');
 		$x_axis_label = (array) $params->get('fusion_x_axis_label');
+		$x_axis_sort = (array) $params->get('fusion_x_axis_sort');
 		$chartElements = (array) $params->get('fusionchart_elementList');
 		$chartColours = (array) $params->get('fusionchart_elcolour');
         $chartMSGroupBy = (array) $params->get('fusionchart_ms_group_by');
@@ -560,6 +565,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$this->c = 0;
 		$gdata = array();
 		$glabels = array();
+		$gsorts = array();
 		$gmsgroupby = array();
 		$gaxislabels = array();
 		$gcolours = array();
@@ -570,7 +576,6 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$calculationData = array();
 		$calcfound = false;
 		$tmodels = array();
-		$labelStep = 0;
 
 		foreach ($listid as $tid)
 		{
@@ -630,9 +635,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			$pref = substr($column, 0, 6);
 
 			$label = FArrayHelper::getValue($x_axis_label, $this->c, '');
+			$sort  = FArrayHelper::getValue($x_axis_sort, $this->c, $label);
 
 			$tmpgdata = array();
 			$tmpglabels = array();
+			$tmpgsorts = array();
 			$tmpgmsgroupby = array();
             $tmpaxislabels = array();
 			$colour = array_key_exists($this->c, $chartColours) ? str_replace("#", '', $chartColours[$this->c]) : '';
@@ -701,6 +708,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
                         $tmpgdata[] = (trim($row->$column) == '') ? null : (float)$row->$column;
                         $tmpgmsgroupby[] = empty($msGroupBy) || (trim($row->$msGroupBy) == '') ? null : $row->$msGroupBy;
                         $tmpglabels[] = !empty($label) ? html_entity_decode(strip_tags($row->$label)) : '';
+	                    $tmpgsorts[] = !empty($sort) ? html_entity_decode(strip_tags($row->$sort)) : '';
                         $tmpaxislabels[] = $this->getAxisLabel($this->c);
                     }
                 }
@@ -713,6 +721,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
                 $gdata[$this->c] = $tmpgdata;
                 $glabels[$this->c] = $tmpglabels;
+				$gsorts[$this->c] = $tmpgsorts;
                 $gaxislabels[$this->c] = $tmpaxislabels;
                 $gmsgroupby[$this->c] = $tmpgmsgroupby;
 
@@ -749,17 +758,20 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
                     $tmps[$groupby] = array(
                         'data' => array(),
                         'labels' => array(),
+                        'sorts' => array(),
                         'axislabels' => array()
                     );
                 }
 
                 $tmps[$groupby]['data'][] = $gdata[0][$key];
                 $tmps[$groupby]['labels'][] = $glabels[0][$key];
+                $mpts[$groupby]['sorts'][] = $gsorts[0][$key];
                 $tmps[$groupby]['axislabels'][] = $gaxislabels[0][$key];
             }
 
             unset($gdata);
             unset($glabels);
+            unset($gsorts);
             unset($gaxislabels);
 
             $key = 0;
@@ -767,6 +779,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
             {
                 $gdata[] = $tmp['data'];
                 $glabels[] = $tmp['labels'];
+                $gsorts[] = $tmp['sorts'];
                 $gaxislabels[] = $tmp['axislabels'];
                 $elTypes[$key] = $elTypes[0];
                 $key++;
@@ -881,29 +894,26 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					$labels = $glabels[$datasetKey];
 					$gsums = FArrayHelper::getValue($chartCumulatives, $datasetKey, '0') == '0' ? $gdata[$datasetKey] : $this->gcumulatives[$datasetKey];
 
+					$sums = array();
+					foreach ($labels as $lkey => $label)
+					{
+						if (!array_key_exists($label, $sums))
+						{
+							$sums[$label] = 0;
+						}
+
+						$sums[$label] += $gsums[$lkey];
+					}
+
 					// Scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
-					$labelStep = 0;
-					$label_step_ratio = (int) FArrayHelper::getValue($label_step_ratios, $datasetKey, 1);
-
-					if ($label_step_ratio > 1)
-					{
-						$labelStep = (int) (count($gsums) / $label_step_ratio);
-						$strParam .= ';labelStep=' . $labelStep;
-					}
-					/* $$$tom: inverting array_combine as identical values in gsums will be
-					 * dropped otherwise. Should I do that differently?
-					* $$$ hugh - can't use array_combine, as empty labels end up dropping values
-					* $arrComb = array_combine($labels, $gsums);
-					* foreach ($arrComb as $key => $value) {
-					*/
 
 					if ($elTypes[$datasetKey] == 'trendonly')
 					{
 						$str_params = array();
-						$min = min($gsums);
-						$max = max($gsums);
+						$min = min($sums);
+						$max = max($sums);
 						list($min, $max) = $this->getTrendMinMax($min, $max, 0);
 						$this->addChartData($min, $str_params);
 						$this->addChartData($max, $str_params);
@@ -912,23 +922,15 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					{
 						$data_count = 0;
 
-						foreach ($gsums as $key => $value)
+						foreach ($sums as $label => $value)
 						{
 							$data_count++;
 
-							$label = $labels[$key];
+							//$label = $labels[$key];
 							$keyName = $chartType === 'MAPS' ? 'id' : 'label';
 							$str_params = array(
 								$keyName => $label
 							);
-
-							if ($labelStep)
-							{
-								if ($data_count != 1 && $data_count % $labelStep != 0)
-								{
-									$str_params['showName'] = false;
-								}
-							}
 
 							$this->addChartData($value, $str_params);
 						}
@@ -1033,60 +1035,29 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						$strParam .= ';SYaxisName=' . implode(' ', $s_parents);
 					}
 
-					$label_step_ratio = (int) FArrayHelper::getValue($label_step_ratios, 0, 1);
-
-					if ($label_step_ratio > 1)
-					{
-						$labelStep = (int) (count(explode(',', $gdata[0])) / $label_step_ratio);
-						$strParam .= ';labelStep=' . $labelStep;
-					}
-
 					$allLabels = array();
+					$allSorts = array();
 
 					foreach ($glabels as $glabel)
 					{
 						$allLabels = array_unique(array_merge($allLabels, $glabel));
 					}
 
-					sort($allLabels);
+					foreach ($gsorts as $gsort)
+					{
+						$allSorts = array_unique(array_merge($allSorts, $gsort));
+					}
+
+					array_multisort($allSorts, SORT_ASC, $allLabels);
+					//sort($allLabels);
 					$data_count = 0;
 
 					foreach ($allLabels as $catLabel) {
 						$data_count++;
 						$catParams = array();
 
-						if ($labelStep) {
-							if ($data_count == 1 || $data_count % $labelStep == 0) {
-								$catParams['ShowLabel'] = true;
-							} else {
-								$catParams['ShowLabel'] = false;
-								$catLabel = '';
-							}
-						}
-
 						$this->addCategory($catLabel, $catParams);
 					}
-
-					/*
-					$labels = $glabels[0];
-                    $data_count = 0;
-
-                    foreach ($labels as $catLabel) {
-                        $data_count++;
-                        $catParams = array();
-
-                        if ($labelStep) {
-                            if ($data_count == 1 || $data_count % $labelStep == 0) {
-                                $catParams['ShowLabel'] = true;
-                            } else {
-                                $catParams['ShowLabel'] = false;
-                                $catLabel = '';
-                            }
-                        }
-
-                        $this->addCategory($catLabel, $catParams);
-                    }
-					*/
 
 					foreach ($gdata as $key => $chartdata)
 					{
@@ -1131,7 +1102,6 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						}
 						else
 						{
-							$data_count = 0;
 							$chartlabels = $glabels[$key];
 
 							foreach ($cdata as $ckey => $value)
@@ -1147,17 +1117,6 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 									$dataset[$allLabelsKey] = null;
 								}
 							}
-
-							ksort($dataset);
-
-							/*
-							foreach ($cdata as $value)
-							{
-								$data_count++;
-
-								$dataset[] = $this->makeChartData($value);
-							}
-							*/
 						}
 
 						$this->addDataset($dataset, $datasetLabel, $extras);

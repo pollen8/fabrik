@@ -1035,7 +1035,16 @@ class PlgFabrik_Element extends FabrikPlugin
 			$pluginManager = FabrikWorker::getPluginManager();
 			if (in_array(false, $pluginManager->runPlugins('onElementCanView', $formModel, 'form', $this)))
 			{
-				$this->access->view = false;
+				$this->access->$key = false;
+			}
+		}
+		else if ($this->access->$key && $view == 'list')
+		{
+			$listModel = $this->getListModel();
+			$pluginManager = FabrikWorker::getPluginManager();
+			if (in_array(false, $pluginManager->runPlugins('onElementCanViewList', $listModel, 'list', $this)))
+			{
+				$this->access->$key = false;
 			}
 		}
 

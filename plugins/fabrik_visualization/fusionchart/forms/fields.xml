@@ -85,13 +85,6 @@
 			       size="3"
 			       type="text"/>
 
-			<field class="input-mini"
-			       description="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_DESC"
-			       label="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_LABEL"
-			       name="fusion_label_step_ratio"
-			       size="3"
-			       type="text"/>
-
 			<field connection="params_fusionchart_connection"
 			       connection_in_repeat="false"
 			       description="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_DESC"
@@ -99,6 +92,14 @@
 			       name="fusion_x_axis_label"
 			       table="params_fusionchart_table"
 			       type="element"/>
+
+			<field connection="params_fusionchart_connection"
+				   connection_in_repeat="false"
+				   description="PLG_VISUALIZATION_FUSIONCHART_AXIS_SORT_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_AXIS_SORT_LABEL"
+				   name="fusion_x_axis_sort"
+				   table="params_fusionchart_table"
+				   type="element"/>
 
 			<field default="P"
 			       description="PLG_VISUALIZATION_FUSIONCHART_DUAL_Y_PARENT_DESC"
@@ -520,6 +521,11 @@
 			       label="PLG_VISUALIZATION_FUSIONCHART_SCROLL_NUMVISIBLE_LABEL"
 			       name="fusionchart_scroll_numvisible"
 			       type="text"/>
+
+			<field description="PLG_VISUALIZATION_FUSIONCHART_LABELSTEP_DESC"
+				   label="PLG_VISUALIZATION_FUSIONCHART_LABELSTEP_LABEL"
+				   name="fusionchart_labelstep"
+				   type="text"/>
 
 		</fieldset>
 

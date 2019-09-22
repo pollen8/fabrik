@@ -468,8 +468,20 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 				$endElement   = trim($data['enddate']) !== '' ? $formModel->getElement($data['enddate']) : $startElement;
 				$endField     = $endElement->getFullName(false, false);
 
-				$startLocal = $store_as_local = (bool) $startElement->getParams()->get('date_store_as_local', false);
-				$endLocal   = $store_as_local = (bool) $endElement->getParams()->get('date_store_as_local', false);
+				$startLocal = $store_as_local = (bool) $startElement->getParams()->get(
+					'date_store_as_local',
+					(bool) $startElement->getParams()->get(
+						'jdate_store_as_local',
+						false
+					)
+				);
+				$endLocal   = $store_as_local = (bool) $endElement->getParams()->get(
+					'date_store_as_local',
+					(bool) $endElement->getParams()->get(
+						'jdate_store_as_local',
+						false
+					)
+				);
 
 				$label     = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
