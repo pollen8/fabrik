@@ -1650,7 +1650,13 @@ class Worker
 		 * if there were any errors, but $error['message'] will be empty.  See comment in logEval()
 		 * below for details.
 		 */
-		@trigger_error("");
+		if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
+			error_clear_last();
+		}
+		else
+		{
+			@trigger_error("");
+		}
 	}
 
 	/**
@@ -1663,10 +1669,12 @@ class Worker
 	 */
 	public static function logEval($val, $msg)
 	{
+		/*
 		if ($val !== false)
 		{
 			return;
 		}
+		*/
 
 		$error = error_get_last();
 		/**
@@ -2026,14 +2034,20 @@ class Worker
 			return false;
 		}
 
+		$cerl = error_reporting ();
+		error_reporting (0);
+
 		try
 		{
 			$dt = new DateTime($d);
 		} catch (\Exception $e)
 		{
+			error_reporting ($cerl);
+			self::clearEval();
 			return false;
 		}
 
+		error_reporting ($cerl);
 		return true;
 	}
 
