@@ -637,6 +637,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			$label = FArrayHelper::getValue($x_axis_label, $this->c, '');
 			$sort  = FArrayHelper::getValue($x_axis_sort, $this->c, $label);
 
+			if (empty($sort))
+			{
+				$sort = $label;
+			}
+
 			$tmpgdata = array();
 			$tmpglabels = array();
 			$tmpgsorts = array();
@@ -765,7 +770,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
                 $tmps[$groupby]['data'][] = $gdata[0][$key];
                 $tmps[$groupby]['labels'][] = $glabels[0][$key];
-                $mpts[$groupby]['sorts'][] = $gsorts[0][$key];
+                $tmps[$groupby]['sorts'][] = $gsorts[0][$key];
                 $tmps[$groupby]['axislabels'][] = $gaxislabels[0][$key];
             }
 
