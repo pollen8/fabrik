@@ -100,9 +100,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
-
+			FabrikWorker::clearEval();
 			$res = FabrikHelperHTML::isDebug() ? eval($default) : @eval($default);
-			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . ' (id ' . $this->getId() . ')::_getV() : ' . $default . ' : %s');
 
 			return $res;
 		}
