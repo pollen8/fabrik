@@ -352,6 +352,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
                 this.redraw();
             }.bind(this));
+
+            Fabrik.fireEvent('fabrik.map.make.end', this);
         },
 
         calcRoute: function () {
