@@ -194,6 +194,7 @@
 				<option value="STACKEDAREA2D">Stacked Area 2D</option>
 				<option value="STACKEDBAR2D">Stacked Bar 2D</option>
 				<option value="STACKEDCOLUMN2D">Stacked Column 2D</option>
+				<option value="MSSTACKEDCOLUMN2D">MS Stacked Column 2D</option>
 				<option value="STACKEDCOLUMN3D">Stacked Column 3D</option>
 				<option value="SCROLLAREA2D">Scroll Area 2D</option>
 				<option value="SCROLLCOLUMN2D">Scroll Column 2D</option>
