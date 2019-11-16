@@ -1006,6 +1006,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			case 'MSLINE':
 			case 'MSSPLINE':
 			case 'MSAREA2D':
+			case 'MSSTACKEDCOLUMN2D':
 			case 'MSCOMBIDY2D':
 			case 'MULTIAXISLINE':
 			case 'SCROLLAREA2D':
