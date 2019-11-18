@@ -1388,6 +1388,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					FabrikHelperHTML::debug($default, 'element eval default:' . $element->label);
 					$default = stripslashes($default);
+					FabrikWorker::clearEval();
 					$default = @eval($default);
 					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
 
@@ -5608,6 +5609,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if (!empty($custom_calc_php))
 					{
+						FabrikWorker::clearEval();
 						$o->value = @eval((string) stripslashes($custom_calc_php));
 						FabrikWorker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
 					}

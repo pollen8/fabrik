@@ -5615,6 +5615,7 @@ class FabrikFEModelList extends JModelForm
 				// $$$ rob hehe if you set $i in the eval'd code all sorts of chaos ensues
 				$origi = $i;
 				$value = stripslashes(htmlspecialchars_decode($value, ENT_QUOTES));
+				FabrikWorker::clearEval();
 				$value = @eval($value);
 				FabrikWorker::logEval($value, 'Caught exception on eval of tableModel::getFilterArray() ' . $key . ': %s');
 				$i = $origi;

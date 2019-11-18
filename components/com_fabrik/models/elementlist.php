@@ -264,6 +264,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		if ($evalFilter && ($type === 'prefilter' || $type === 'menuprefilter'))
 		{
 			$originalValue = stripslashes(htmlspecialchars_decode($originalValue, ENT_QUOTES));
+			FabrikWorker::clearEval();
 			$originalValue = @eval($originalValue);
 			FabrikWorker::logEval($originalValue, 'Caught exception on eval of elementList::filterQueryMultiValues() ' . $key . ': %s');
 		}
