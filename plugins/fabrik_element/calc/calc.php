@@ -458,7 +458,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 					foreach ($elementModels as $elementModel)
 					{
-						if ($this !== $elementModel)
+						if ($elementModel->getElement()->plugin !== 'calc')
 						{
 							$obs[] = $elementModel->getFullName(true, false);
 						}
