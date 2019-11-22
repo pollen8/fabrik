@@ -416,31 +416,57 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$params = $this->getParams();
 		$calc = $params->get('calc_calculation');
-		$obs = preg_replace('#\s#', '', $params->get('calc_ajax_observe'));
-		$obs = explode(',', $obs);
-
-		if (preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0)
-		{
-			$matches = $matches[0];
-			$obs = array_merge($obs, $matches);
-		}
-
-		foreach ($obs as $key => &$m)
-		{
-
-			if (empty($m))
-			{
-				unset($obs[$key]);
-				continue;
-			}
-
-			$m = str_replace(array('{', '}'), '', $m);
-
-			// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
-			$m = preg_replace('#_raw$#', '', $m);
-		}
-
+		$obs = array();
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
+
+		if ($opts->ajax)
+		{
+			if ($params->get('calc_ajax_observe_all', '0') === '0')
+			{
+				$obs = preg_replace('#\s#', '', $params->get('calc_ajax_observe'));
+				$obs = explode(',', $obs);
+
+				if (preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0)
+				{
+					$matches = $matches[0];
+					$obs     = array_merge($obs, $matches);
+				}
+
+				foreach ($obs as $key => &$m)
+				{
+
+					if (empty($m))
+					{
+						unset($obs[$key]);
+						continue;
+					}
+
+					$m = str_replace(array('{', '}'), '', $m);
+
+					// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
+					$m = preg_replace('#_raw$#', '', $m);
+				}
+			}
+			else
+			{
+				$formModel = $this->getFormModel();
+				$groups    = $formModel->getGroupsHiarachy();
+
+				foreach ($groups as $groupModel)
+				{
+					$elementModels = $groupModel->getPublishedElements();
+
+					foreach ($elementModels as $elementModel)
+					{
+						if ($this !== $elementModel)
+						{
+							$obs[] = $elementModel->getFullName(true, false);
+						}
+					}
+				}
+			}
+		}
+
 		$opts->observe = array_values(array_unique($obs));
 		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
 		$opts->id = $this->id;
