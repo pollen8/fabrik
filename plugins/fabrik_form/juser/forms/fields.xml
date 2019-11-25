@@ -145,6 +145,17 @@
 			       description="PLG_FABRIK_FORM_JUSER_GROUP_WHITELIST_DESC"
 			       label="PLG_FABRIK_FORM_JUSER_GROUP_WHITELIST_LABEL" />
 
+			<field name="juser_group_preserve"
+				   type="radio"
+				   default="0"
+				   class="btn-group"
+				   description="PLG_FABRIK_FORM_JUSER_GROUP_PRESERVE_DESC"
+				   label="PLG_FABRIK_FORM_JUSER_GROUP_PRESERVE_LABEL"
+				   repeat="true">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="juser_conditon"
 				type="fabrikeditor"
 				mode="php"
