@@ -943,6 +943,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			else
 			{
 				$data = $this->filterGroupIds($data, $me, $groupIds);
+
+				if ($params->get('juser_group_preserve', '0') === '1')
+				{
+					// preserve membership in any groups outside the whitelist the user is already member of
+					$whitelist   = $params->get('juser_group_whitelist', array());
+					$keep = ArrayHelper::toInteger(array_diff($user->groups, $whitelist));
+					$data = array_merge($data, $keep);
+				}
 			}
 		}
 		else
