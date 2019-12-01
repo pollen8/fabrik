@@ -1131,7 +1131,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$where = $w->parseMessageForRepeats($where, $data, $this, $repeatCounter);
-		$where = $w->parseMessageForPlaceHolder($where, $data, false);
+		$where = $w->parseMessageForPlaceHolder($where, $data, false, false, null, false);
 
 		if (!$query)
 		{
