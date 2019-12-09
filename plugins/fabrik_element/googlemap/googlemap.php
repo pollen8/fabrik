@@ -313,7 +313,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
 		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');
-		$opts->drag = (bool) $formModel->isEditable();
+		$opts->drag = (bool) $formModel->isEditable() && (bool) $params->get('fb_gm_draggable', '1');
 		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_gm_maptype');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scroll_wheel');
@@ -333,7 +333,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					|| ($geocode_on_load == 2 && !$formModel->isNewRecord())
 					|| $geocode_on_load == 3
 				);
-		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false);
+		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false) && (bool) $params->get('fb_gm_draggable', '1');
 		$opts->styles = Googlemap::styleJs($params);
 
 		if ($opts->geocode == '2')

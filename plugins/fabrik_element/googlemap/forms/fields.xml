@@ -253,6 +253,16 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="fb_gm_draggable"
+				   type="radio"
+				   default="1"
+				   class="btn-group"
+				   description="PLG_ELEMENT_GOOGLE_MAP_DRAGGABLE_DESC"
+				   label="PLG_ELEMENT_GOOGLE_MAP_DRAGGABLE_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset label="Default location" name="plg-element-googlemap-default">
