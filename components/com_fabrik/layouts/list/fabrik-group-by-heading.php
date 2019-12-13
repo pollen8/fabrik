@@ -30,3 +30,8 @@ if ($d->group_by_show_count) : ?>
 <?php endif; ?>
 </span>
 </a>
+<?php if (!empty($d->extra)) : ?>
+<div class="groupExtra">
+    <?php echo $d->extra; ?>
+</div>
+<?php endif; ?>
