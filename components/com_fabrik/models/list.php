@@ -1290,6 +1290,7 @@ class FabrikFEModelList extends JModelForm
 
 		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
 		$this->groupTemplates = array();
+		$this->groupTemplatesExtra = array();
 
 		// Check if the data has a group by applied to it
 		$groupBy = $this->getGroupBy();
@@ -1316,6 +1317,8 @@ class FabrikFEModelList extends JModelForm
 			{
 				$groupTemplate = '{' . $requestGroupBy . '}';
 			}
+
+			$groupTemplateExtra = $tableParams->get('group_by_template_extra', '');
 
 			if ($tableParams->get('group_by_raw', '1') === '1')
 			{
@@ -1348,6 +1351,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$aGroupTitles[] = $sData;
 					$this->groupTemplates[$sData] = $w->parseMessageForPlaceHolder($groupTemplate, ArrayHelper::fromObject($data[$i]));
+					$this->groupTemplatesExtra[$sData] = $w->parseMessageForPlaceHolder($groupTemplateExtra, ArrayHelper::fromObject($data[$i]));
 					$groupedData[$sData] = array();
 				}
 
@@ -4483,6 +4487,24 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('add', $this->access))
 		{
+			$pluginCanAdd = FabrikWorker::getPluginManager()->runPlugins('onCanAdd', $this, 'list');
+
+			// At least one plugin run, so plugin results take precedence over anything else.
+			if (!empty($pluginCanAdd))
+			{
+				// check 'false' first, so if any plugin denies, result is false
+				if (in_array(false, $pluginCanAdd, true))
+				{
+					return false;
+				}
+
+				if (in_array(true, $pluginCanAdd, true))
+				{
+					return true;
+				}
+
+			}
+
 			$input = $this->app->input;
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->add = in_array($this->getParams()->get('allow_add'), $groups);
