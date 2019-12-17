@@ -1845,14 +1845,11 @@ EOD;
 	 */
 	public static function slideshow()
 	{
-		/*
-		 * switched from cycle2, to bootstrap, so for now don't need anything
-		 */
-		/*
-		$folder = 'components/com_fabrik/libs/cycle2/';
+		$folder = 'media/com_fabrik/js/lib/slick/';
 		$ext = self::isDebug() ? '.js' : '.min.js';
-		self::script($folder . 'jquery.cycle2' . $ext);
-		*/
+		self::script($folder . 'slick' . $ext);
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/slick/slick.css');
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/slick/slick-theme.css');
 	}
 
 	/**

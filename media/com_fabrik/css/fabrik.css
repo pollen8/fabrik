@@ -193,6 +193,11 @@ div.popover {
 	cursor: move;
 }
 
+
+.slick-list.draggable {
+	cursor: auto;
+}
+
 .handle {
 	border-radius: 7px 7px 0px 0px;
 	-moz-border-radius: 7px 7px 0px 0px;
@@ -208,10 +213,6 @@ div.popover {
 	background-image: -ms-linear-gradient(top, #eee, #ccc);
 	padding: 4px 11px;
 	height: 15px;
-}
-
-.draggable {
-	cursor: move;
 }
 
 .expand {
