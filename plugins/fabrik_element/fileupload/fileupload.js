@@ -12,7 +12,8 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
         options : {
             folderSelect: false,
             ajax_upload: false,
-            ajax_show_widget: true
+            ajax_show_widget: true,
+            isCarousel: false
         },
         initialize: function (element, options) {
             var self = this;
@@ -54,6 +55,12 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
             this.doDeleteEvent = null;
             this.watchDeleteButton();
             this.watchTab();
+
+            if (this.options.isCarousel)
+            {
+                jQuery('.slickCarousel').slick();
+                jQuery('.slickCarouselImage').css('opacity', '1');
+            }
         },
 
         /**

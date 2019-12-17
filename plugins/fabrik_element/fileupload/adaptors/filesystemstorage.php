@@ -404,7 +404,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		$file = $w->parseMessageForPlaceHolder($file);
 		$f = basename($file);
 		$dir = dirname($file);
-		$dir = str_replace($ulDir, $thumbdir, $dir);
+		$dir = str_replace($ulDir, ltrim($thumbdir, '/'), $dir);
 		$ext = JFile::getExt($f);
 
 		// Remove extension

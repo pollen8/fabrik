@@ -68,10 +68,11 @@ class AudioRenderModel extends FabModel
 	 * @param   object  $model    Element model
 	 * @param   object  $params   Element params
 	 * @param   object  $thisRow  All rows data
+	 * @param   bool    $nav      Render a navbar on carousel
 	 *
 	 * @return  string  HTML
 	 */
-	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null, $nav = true)
 	{
 		$rendered = '';
 		$id .= '_audio_carousel';

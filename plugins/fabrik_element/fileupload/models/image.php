@@ -208,19 +208,23 @@ class ImageRenderModel
 	 *
 	 * @param   string $id      Widget HTML id
 	 * @param   array  $data    Images to add to the carousel
-	 * @param   object $model   Element model
+	 * @param   \PlgFabrik_ElementFileupload $model   Element model
 	 * @param   object $params  Element params
 	 * @param   object $thisRow All rows data
 	 *
 	 * @return  string  HTML
 	 */
-	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null, $nav = true)
 	{
+		$this->inTableView = true;
+		$storage = $model->getStorage();
 		$id .= '_carousel';
-		$layout         = $model->getLayout('carousel');
+		$layout         = $model->getLayout('slick-carousel');
 		$layoutData     = new stdClass;
 		$layoutData->id = $id;
 		list($layoutData->width, $layoutData->height) = $this->imageDimensions($params);
+		$imgs = array();
+		$thumbs = array();
 
 		if (!empty($data))
 		{
@@ -229,18 +233,18 @@ class ImageRenderModel
 
 			foreach ($data as $img)
 			{
+				$img = str_replace('\\', '/', $img);
 				$model->_repeatGroupCounter = $i++;
 				$this->renderListData($model, $params, $img, $thisRow);
 				$imgs[] = $this->output;
-			}
-
-			if (count($imgs) == 1)
-			{
-				return $imgs[0];
+				$this->renderListData($model, $params, $storage->_getThumb($img), $thisRow);
+				$thumbs[] = $this->output;
 			}
 		}
 
 		$layoutData->imgs = $imgs;
+		$layoutData->thumbs = $thumbs;
+		$layoutData->nav = $nav;
 
 		return $layout->render($layoutData);
 	}
