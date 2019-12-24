@@ -592,6 +592,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 if (status !== google.maps.GeocoderStatus.OK || results.length === 0) {
                     fconsole(address + ' not found!');
                 } else {
+                    this.options.lat = results[0].geometry.location.lat();
+                    this.options.lon = results[0].geometry.location.lng();
                     this.marker.setPosition(results[0].geometry.location);
                     this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
 
