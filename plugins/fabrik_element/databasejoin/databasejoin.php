@@ -3243,6 +3243,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->id = $this->app->input->getInt('element_id');
 		$this->loadMeForAjax();
 		$this->getElement(true);
+		$params = $this->getParams();
 		$filter  = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
 		$groupModel = $this->getGroupModel();
@@ -3263,7 +3264,26 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
-		echo json_encode($this->_getOptions($request));
+		$options = $this->_getOptions($request);
+		$eval = $params->get('databasejoin_where_ajax_default_eval');
+
+		if (!empty($eval))
+		{
+			$default = eval($eval);
+
+			if (!empty($default))
+			{
+				foreach ($options as $opt)
+				{
+					if ($opt->value === $default)
+					{
+						$opt->selected = true;
+					}
+				}
+			}
+		}
+
+		echo json_encode($options);
 	}
 
 	/**
