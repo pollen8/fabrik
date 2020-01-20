@@ -283,7 +283,7 @@ class StringHelper extends \Joomla\String\StringHelper
 
 		for ($i = 0; $i < StringHelper::strlen($str); $i++)
 		{
-			$ch = ord($str{$i});
+			$ch = ord($str[$i]);
 
 			switch ($ch)
 			{
