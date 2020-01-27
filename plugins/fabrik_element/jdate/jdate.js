@@ -86,7 +86,12 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 }
                 //this.makeCalendar();
                 this.getDateField().onchange = function () {
-                    this.calSelect();
+                    if (jQuery(event.target).data('action') === 'clear') {
+                        this.update('');
+                    }
+                    else {
+                        this.calSelect();
+                    }
                 }.bind(this);
 
                 Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
