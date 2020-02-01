@@ -474,6 +474,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
         $opts->iconDelete       = Html::icon("icon-delete",  '', '', true);
         $opts->spanNames        = array();
         $opts->isCarousel       = $params->get('fu_show_image') === '3' && !$this->isEditable();
+        $opts->isZoom           = $params->get('fu_show_image') === '3' && !$this->isEditable();;
         $opts->htmlId           = $id;
 
         for($i = 1; $i <= 12; $i++)

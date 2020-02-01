@@ -61,6 +61,26 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                 jQuery('.slickCarousel').slick();
                 jQuery('.slickCarouselImage').css('opacity', '1');
             }
+
+            if (this.options.isZoom) {
+                jQuery('.slick-active').find('img').ezPlus({
+                    zoomType: 'lens',
+                    lensShape: 'round',
+                    lensSize: 200
+                });
+
+                jQuery('.slickCarousel').on('beforeChange', function(event, slick, currentSlide, nextSlide){
+                    jQuery('.zoomWindowContainer,.zoomContainer').remove();
+                });
+
+                jQuery('.slickCarousel').on('afterChange', function(event, slick, currentSlide){
+                    jQuery('.slick-active').find('img').ezPlus({
+                        zoomType: 'lens',
+                        lensShape: 'round',
+                        lensSize: 200
+                    });
+                });
+            }
         },
 
         /**

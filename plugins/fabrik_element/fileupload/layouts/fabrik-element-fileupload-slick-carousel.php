@@ -6,6 +6,7 @@ $d      = $displayData;
 
 <?php if ($d->nav) : ?>
 <div id="<?php echo $d->id;?>"
+     style="width:<?php echo $d->width;?>px"
      class="slickCarousel"
      data-slick='{"slidesToShow": 1, "slidesToScroll": 1, "arrows": false, "fade": true, "asNavFor": "#<?php echo $d->id . '_nav'; ?>"}'
 >
@@ -15,6 +16,7 @@ $d      = $displayData;
 </div>
 
 <div id="<?php echo $d->id . '_nav';?>"
+     style="width:<?php echo $d->width;?>px"
      class="slickCarousel"
      data-slick='{"slidesToShow": 3, "slidesToScroll": 1, "dots": true, "centerMode": true, "focusOnSelect": true, "asNavFor": "#<?php echo $d->id; ?>"}'
 >
