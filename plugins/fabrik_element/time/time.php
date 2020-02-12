@@ -382,7 +382,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 				if ($ft == "H:i:s")
 				{
-					$timedisp = $hms;;
+					$timedisp = $hms;
 				}
 				else
 				{
