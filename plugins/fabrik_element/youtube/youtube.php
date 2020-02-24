@@ -124,6 +124,15 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		if (stristr($value, 'twitch'))
 		{
 			$type = 'twitch';
+
+			if (strstr($value, 'clips'))
+			{
+				$type = 'twitchclip';
+			}
+			else if (strstr($value, '/videos/'))
+			{
+				$type = 'twitchvideo';
+			}
 		}
 		else if (stristr($value, 'streamable'))
 		{
@@ -176,9 +185,13 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			// Enable delayed cookies
 			$url = $params->get('enable_delayed_cookies') == 1 ? $scheme . '://www.youtube-nocookie.com/embed/' : $scheme . '://www.youtube.com/embed/';
 		}
-		else if ($type === 'twitch')
+		else if ($type === 'twitchclip' || $type === 'twitch')
 		{
 			$url = $scheme . '://clips.twitch.tv/embed?clip=';
+		}
+		else if ($type === 'twitchvideo')
+		{
+			$url = $scheme . '://player.twitch.tv/?video=';
 		}
 		else if ($type === 'streamable')
 		{
@@ -210,7 +223,21 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 				$vid = str_replace('?t=', '?start=', $vid);
 			}
 		}
-		else if ($type === 'twitch')
+		else if ($type === 'twitchclip')
+		{
+			$vid_array = explode("/", $value);
+			$vid       = array_pop($vid_array);
+
+			if (strstr($vid, 'embed'))
+			{
+				$vid = explode('=', $vid);
+
+				// That's the watch?v=
+				unset($vid[0]);
+				$vid = implode('', $vid);
+			}
+		}
+		else if ($type === 'twitchvideo')
 		{
 			$vid_array = explode("/", $value);
 			$vid       = array_pop($vid_array);
