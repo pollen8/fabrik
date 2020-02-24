@@ -167,11 +167,12 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 				}
 			}
 		}
-		// Include related videos
-		$rel = $params->get('include_related') == 0 ? '&rel=0' : '';
 
 		if ($type === 'youtube')
 		{
+			// Include related videos
+			$rel = $params->get('include_related') == 0 ? '&rel=0' : '';
+
 			// Enable delayed cookies
 			$url = $params->get('enable_delayed_cookies') == 1 ? $scheme . '://www.youtube-nocookie.com/embed/' : $scheme . '://www.youtube.com/embed/';
 		}
@@ -202,6 +203,11 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 				// That's the watch?v=
 				unset($vid[0]);
 				$vid = implode('', $vid);
+			}
+
+			if (strstr($vid, '?t='))
+			{
+				$vid = str_replace('?t=', '?start=', $vid);
 			}
 		}
 		else if ($type === 'twitch')
