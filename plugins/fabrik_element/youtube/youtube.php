@@ -73,7 +73,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		// Stop "'s from breaking the content out of the field.
 		$data['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-		if ($this->canUse())
+		if ($this->app->input->get('view') === 'form')
 		{
 			$class = 'fabrikinput inputbox text';
 			$name = $this->getHTMLName($repeatCounter);

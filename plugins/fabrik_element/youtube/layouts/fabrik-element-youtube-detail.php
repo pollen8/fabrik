@@ -10,7 +10,6 @@ if ($d->type === 'youtube') :
 ?>
 
 <iframe
-	id="ytplayer"
 	type="text/html"
 	width="<?php echo $d->width;?>"
 	height="<?php echo $d->height; ?>"
@@ -18,7 +17,7 @@ if ($d->type === 'youtube') :
     frameborder="0"
 ></iframe>
 <?php
-elseif ($d->type === 'twitch') :
+elseif ($d->type === 'twitchclip' || $d->type === 'twitchvideo') :
 ?>
 	<iframe
 		src="<?php echo $d->url; ?><?php echo $d->vid; ?>"
@@ -28,6 +27,19 @@ elseif ($d->type === 'twitch') :
 		scrolling="no"
 		allowfullscreen="true">
 	</iframe>
+<?php
+elseif ($d->type === 'streamable') :
+	?>
+	<div style="width:<?php echo $d->width;?>;height:0px;position:relative;padding-bottom:56.250%;">
+		<iframe
+			src="<?php echo $d->url; ?><?php echo $d->vid; ?>"
+			frameborder="0"
+			width="100%"
+			height="100%"
+			allowfullscreen
+			style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;">
+		</iframe>
+	</div>
 <?php
 endif;
 ?>
