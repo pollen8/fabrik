@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
@@ -62,6 +63,23 @@ class FabrikViewForm extends FabrikViewFormBase
 				if ($this->params->get('robots'))
 				{
 					$this->doc->setMetadata('robots', $this->params->get('robots'));
+				}
+
+				$formModel = $this->getModel();
+				$listModel = $formModel->getListModel();
+				$listParams = $listModel->getParams();
+				$sefSlug = $listParams->get('sef-slug', '');
+
+				if (!empty($sefSlug))
+				{
+					$elementName = StringHelper::safeColNameToArrayKey($sefSlug);
+					$slug = ArrayHelper::getValue($formModel->data, $elementName, '');
+
+					if (!empty($slug))
+					{
+						$pathway = $this->app->getPathway();
+						$pathway->addItem($slug);
+					}
 				}
 			}
 		}
