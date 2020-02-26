@@ -2885,6 +2885,23 @@ EOT;
 					$attributes[] = 'data-rokbox-album="' . addslashes($group) . '"';
 				}
 				break;
+            case 3:
+                $rel = 'data-rel="lightcase';
+
+                if (!empty($group))
+	            {
+		            $rel .= ':' . addslashes($group);
+	            }
+
+	            $rel .= '"';
+                $attributes[] = $rel;
+
+	            if (!empty($title))
+	            {
+		            $attributes[] = 'title="' . addslashes($title) . '"';
+	            }
+
+                break;
 		}
 
 		return implode(' ', $attributes);

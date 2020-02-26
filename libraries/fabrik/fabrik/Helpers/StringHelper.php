@@ -602,6 +602,13 @@ class StringHelper extends \Joomla\String\StringHelper
 					$a[] = $bit;
 				}
 			}
+			else
+			{
+				if ($bit !== $key)
+				{
+					$a[] = $bit;
+				}
+			}
 		}
 
 		if (!empty($a))

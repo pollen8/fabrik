@@ -449,6 +449,7 @@
 				<option value="0">COM_FABRIK_LIGHTBOX_SLIMBOX</option>
 				<option value="1">COM_FABRIK_LIGHTBOX_MEDIABOX</option>
 				<option value="2">COM_FABRIK_LIGHTBOX_ROKBOX</option>
+				<option value="3">COM_FABRIK_LIGHTBOX_LIGHTCASE</option>
 		</field>
 
 		<field name="mediabox_style"

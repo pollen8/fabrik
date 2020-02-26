@@ -127,13 +127,15 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 this.watchAddOptions();
             }
 
-            $H(this.options.hiddenGroup).each(function (v, k) {
-                if (v === true && typeOf(document.id('group' + k)) !== 'null') {
-                    var subGroup = document.id('group' + k).getElement('.fabrikSubGroup');
-                    this.subGroups.set(k, subGroup.cloneWithIds());
-                    this.hideLastGroup(k, subGroup);
-                }
-            }.bind(this));
+            if (this.options.editable) {
+                $H(this.options.hiddenGroup).each(function (v, k) {
+                    if (v === true && typeOf(document.id('group' + k)) !== 'null') {
+                        var subGroup = document.id('group' + k).getElement('.fabrikSubGroup');
+                        this.subGroups.set(k, subGroup.cloneWithIds());
+                        this.hideLastGroup(k, subGroup);
+                    }
+                }.bind(this));
+            }
 
             // get an int from which to start incrementing for each repeated group id
             // don't ever decrease this value when deleting a group as it will cause all sorts of

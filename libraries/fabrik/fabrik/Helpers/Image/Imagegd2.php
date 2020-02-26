@@ -114,6 +114,13 @@ class Imagegd2 extends Imagegd
 
 				// Create a new temporary image
 				$tmp_img = imagecreatetruecolor($new_width, $new_height);
+				
+				// Handle image transparency for resized image
+				if (function_exists('imagealphablending'))
+				{
+					imagealphablending($tmp_img, false);
+					imagesavealpha($tmp_img, true);
+				}
 
 				// Copy and resize old image into new image
 				imagecopyresampled($tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
