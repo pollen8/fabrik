@@ -208,7 +208,7 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
          */
         eventDelegate: function () {
             var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
-            //str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
+            str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
 
             return str;
         }
