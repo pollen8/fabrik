@@ -900,7 +900,9 @@ class FabrikFEModelImportcsv extends JModelForm
 				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
 					$rowid = $formModel->processToDB();
-					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
+					$args = new \stdClass();
+					$args->rowid = $rowid;
+					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list', $args);
 				}
 			}
 			else
