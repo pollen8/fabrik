@@ -95,6 +95,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$user = $userId <= 1 ? false : JFactory::getUser($userId);
 			}
 		}
+		else if ($this->inRepeatGroup && $this->newGroup)
+		{
+			// we're in a new, blank repeat group, so set to current user
+			$user = $this->user;
+		}
 		else
 		{
 			/**
@@ -440,6 +445,22 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 							$newUserId = (int) $db->loadResult();
 						}
 						$data[$element->name] = $newUserId;
+					}
+				}
+				else if ($this->getGroupModel()->canRepeat())
+				{
+					// see if it's empty, so new repeat group, and hidden or read only
+					if ((!$this->canUse() || !empty($element->hidden)) && empty($data[$element->name]))
+					{
+						$data[$element->name]          = $this->user->get('id');
+						// Set the formDataWithTableName so any plugins (like email) pick it up with getProcessData()
+						$thisFullName = $this->getFullName(true, false);
+						$formModel    = $this->getFormModel();
+						$formModel->formDataWithTableName[$thisFullName][$repeatCounter]          = array($data[$element->name]);
+						$formModel->formDataWithTableName[$thisFullName . '_raw'][$repeatCounter] = array($data[$element->name]);
+						// $$$ hugh - need to add to updatedByPlugin() in order to override write access settings.
+						// This allows us to still 'update on edit' when element is write access controlled.
+						$this->getFormModel()->updatedByPlugin($thisFullName, $this->user->get('id'));
 					}
 				}
 			}

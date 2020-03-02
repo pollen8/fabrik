@@ -260,7 +260,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$returnPathName = null;
 		}
 		// End changes
-		$subject = $params->get('email_subject');
+		$subject = FText::_($params->get('email_subject'));
 
 		if ($subject == '')
 		{

@@ -101,7 +101,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	 * @return boolean
 	 */
 
-	public function onAfterImportCSVRow()
+	public function onAfterImportCSVRow($args)
 	{
 		$params = $this->getParams();
 		$filter = JFilterInput::getInstance();
