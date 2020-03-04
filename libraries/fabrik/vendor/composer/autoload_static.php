@@ -30,6 +30,7 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Pop\\Shipping\\' => 13,
+            'PHPLicengine\\' => 13,
         ),
         'M' => 
         array (
@@ -52,6 +53,7 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'D' => 
         array (
             'Dompdf\\' => 7,
+            'Doctrine\\Common\\Cache\\' => 22,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -85,6 +87,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         array (
             0 => __DIR__ . '/..' . '/popphp/pop-shipping/src',
         ),
+        'PHPLicengine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phplicengine/bitly/lib/PHPLicengine',
+        ),
         'Mpdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
@@ -112,6 +118,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
+        ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
         'DeepCopy\\' => 
         array (
