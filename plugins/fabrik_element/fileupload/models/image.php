@@ -192,6 +192,11 @@ class ImageRenderModel
 	{
 		if ($this->inTableView)
 		{
+			if ($params->get('fu_show_image_in_table') === '2')
+			{
+				return true;
+			}
+
 			return ($params->get('make_thumbnail') || $params->get('fileupload_crop')) ? false : true;
 		}
 

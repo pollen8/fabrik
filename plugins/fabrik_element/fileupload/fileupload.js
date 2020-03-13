@@ -89,7 +89,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
          */
         redraw: function () {
             var el = jQuery(this.element);
-            if (this.options.ajax_upload) {
+            if (this.options.editable && this.options.ajax_upload) {
                 var browseButton = jQuery('#' + el.prop('id') + '_browseButton'),
                     c = jQuery('#' + this.options.element + '_container'),
                     diff = browseButton.position().left - c.position().left;
@@ -103,6 +103,11 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
                     });
                     fileContainer.css('top', diff);
                 }
+            }
+
+            if (this.options.isCarousel)
+            {
+                jQuery('.slickCarousel').slick('resize');
             }
         },
 
