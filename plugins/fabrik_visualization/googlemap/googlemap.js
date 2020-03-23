@@ -250,6 +250,8 @@ FbGoogleMapViz = new Class({
 			{
 				this.update();
 			}
+
+			Fabrik.fireEvent('fabrik.viz.googlemap.init.end', this);
 		},
 
 	setPolyLines: function () {
