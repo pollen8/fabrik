@@ -56,6 +56,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             'zoomlevel'           : '13',
             'control'             : '',
             'maptypecontrol'      : false,
+            'maptypeids'          : false,
             'overviewcontrol'     : false,
             'scalecontrol'        : false,
             'drag'                : false,
@@ -98,9 +99,19 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             this.loadFn = function () {
                 // experimental support for OSM rendering
                 this.mapTypeIds = [];
-                for (var type in google.maps.MapTypeId) {
-                    this.mapTypeIds.push(google.maps.MapTypeId[type]);
+
+                if (typeOf(this.options.maptypeids) !== 'array') {
+                    for (var type in google.maps.MapTypeId) {
+                        this.mapTypeIds.push(google.maps.MapTypeId[type]);
+                    }
                 }
+                else
+                {
+                    for (var type in this.options.maptypeids) {
+                        this.mapTypeIds.push(this.options.maptypeids[type]);
+                    }
+                }
+
                 this.mapTypeIds.push('OSM');
 
                 switch (this.options.maptype) {
@@ -231,6 +242,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         mapTypeIds: this.mapTypeIds
                     }
                 };
+
                 this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
                 this.map.setOptions({'styles': this.options.styles});
 
