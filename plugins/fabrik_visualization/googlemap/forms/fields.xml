@@ -59,6 +59,7 @@
 							type="listfields"
 							repeat="true"
 							showall="0"
+							raw="true"
 							valueformat="tableelement"
 							connection="params_googlemap_connection"
 							connection_in_repeat="true"
