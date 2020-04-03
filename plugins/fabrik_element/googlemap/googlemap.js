@@ -90,6 +90,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
         initialize: function (element, options) {
             this.mapMade = false;
+            this.redrawn = false;
             this.parent(element, options);
 
             if (!this.options.mapShown) {
@@ -345,8 +346,10 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     this.field.value = this.marker.getPosition() + ':' + this.map.getZoom();
                 }.bind(this));
 
-                if (this.options.auto_center && this.options.editable) {
-                    google.maps.event.addListener(this.map, 'center_changed', function () {
+                google.maps.event.addListener(this.map, 'center_changed', function () {
+                    this.options.lat = this.map.getCenter().lat();
+                    this.options.lon = this.map.getCenter().lng();
+                    if (this.options.auto_center && this.options.editable) {
                         this.marker.setPosition(this.map.getCenter());
                         this.field.value = this.marker.getPosition() + ':' + this.map.getZoom();
                         if (this.options.latlng === true) {
@@ -357,8 +360,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                             this.element.getElement('.latdms').value = this.latDecToDMS();
                             this.element.getElement('.lngdms').value = this.lngDecToDMS();
                         }
-                    }.bind(this));
-                }
+                    }
+                }.bind(this));
             }
 
             this.watchTab();
@@ -775,9 +778,12 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
          */
         redraw: function () {
             google.maps.event.trigger(this.map, 'resize');
-            var center = new google.maps.LatLng(this.options.lat, this.options.lon);
-            this.map.setCenter(center);
-            this.map.setZoom(this.map.getZoom());
+            if (!this.redrawn) {
+                var center = new google.maps.LatLng(this.options.lat, this.options.lon);
+                this.map.setCenter(center);
+                this.map.setZoom(this.map.getZoom());
+                this.redrawn = true;
+            }
         },
 
         fillReverseGeocode: function(result) {
