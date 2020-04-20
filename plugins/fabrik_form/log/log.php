@@ -71,7 +71,6 @@ CREATE TABLE IF NOT EXISTS `#__{package}_change_log_fields` (
     `element_id` INT( 11 ) NOT NULL,
 	`row_id` INT( 11 ) NOT NULL,
 	`join_id` INT( 11 ),
-	`parent_id` INT( 11 ),
 	`pk_id` INT( 11 ) NOT NULL,
 	`table_name` VARCHAR( 256 ) NOT NULL,
 	`field_name` VARCHAR( 256 ) NOT NULL,
@@ -94,7 +93,8 @@ CREATE TABLE IF NOT EXISTS `#__{package}_change_log` (
      `list_id` INT( 11 ) NOT NULL,
      `row_id` INT( 11 ) NOT NULL,
      `join_id` INT( 11 ),
-     `log_type_id` INT( 11 ) NOT NULL
+     `log_type_id` INT( 11 ) NOT NULL,
+     `parent_id` INT( 11 ) NOT NULL,
 );
 EOT;
 
@@ -277,63 +277,67 @@ EOT;
 								$join = $groupModel->getJoinModel();
 								$joinId = $join->getId();
 
-								if (!array_key_exists($joinId, $pks[$row->__pk_val]['joins']))
-								{
-									$pks[$row->__pk_val]['joins'][$joinId] = [
-										'join' => $join,
-										'row_changes' => []
-									];
-								}
-
 								$pk = $join->getForeignID();
 								$pkRaw = $pk . '_raw';
 								$thisPks = isset($row->$pkRaw) ? $row->$pkRaw : '';
 								$thisPks = Worker::JSONtoData($thisPks, true);
-								$elementModels = $groupModel->getPublishedElements();
 
-								foreach ($thisPks as $k => $thisPk)
+								if (!\Fabrik\Helpers\ArrayHelper::emptyIsh($thisPks))
 								{
-									if (!array_key_exists($thisPk, $pks[$row->__pk_val]['joins'][$joinId]['row_changes']))
+									if (!array_key_exists($joinId, $pks[$row->__pk_val]['joins']))
 									{
-										$pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk] = [];
+										$pks[$row->__pk_val]['joins'][$joinId] = [
+											'join' => $join,
+											'row_changes' => []
+										];
 									}
 
-									foreach ($elementModels as $elementModel)
+									$elementModels = $groupModel->getPublishedElements();
+
+									foreach ($thisPks as $k => $thisPk)
 									{
-										$fullKey = $elementModel->getFullName(true, false);
-
-										if ($mode === 'exclude' && in_array($fullKey, $fields))
+										if (!array_key_exists($thisPk, $pks[$row->__pk_val]['joins'][$joinId]['row_changes']))
 										{
-											continue;
-										}
-										else if ($mode === 'include' && !in_array($fullKey, $fields))
-										{
-											continue;
+											$pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk] = [];
 										}
 
-										$fullKeyRaw = $fullKey . '_raw';
-										$values = isset($row->$fullKeyRaw) ? $row->$fullKeyRaw : '';
-										$values = Worker::JSONtoData($values, true);
-										$value = \Fabrik\Helpers\ArrayHelper::getValue($values, $k, '');
-
-										if (!$this->dataEmpty($value))
+										foreach ($elementModels as $elementModel)
 										{
-											if (!array_key_exists($fullKeyRaw, $pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk]))
+											$fullKey = $elementModel->getFullName(true, false);
+
+											if ($mode === 'exclude' && in_array($fullKey, $fields))
 											{
-												$pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk][$fullKeyRaw] = array(
-													'time_date'   => $date->format('Y-m-d H:i:s'),
-													'form_id'     => $formModel->getId(),
-													'list_id'     => $formModel->getListModel()->getId(),
-													'element_id'  => $elementModel->getId(),
-													'row_id'      => $row->__pk_val,
-													'join_id'     => $joinId,
-													'pk_id'       => $thisPk,
-													'table_name'  => $join->getJoin()->table_join,
-													'orig_value'  => $value,
-													'new_value'   => '',
-													'field_name'  => $elementModel->element->name,
-													'log_type_id' => 8
-												);
+												continue;
+											}
+											else if ($mode === 'include' && !in_array($fullKey, $fields))
+											{
+												continue;
+											}
+
+											$fullKeyRaw = $fullKey . '_raw';
+											$values     = isset($row->$fullKeyRaw) ? $row->$fullKeyRaw : '';
+											$values     = Worker::JSONtoData($values, true);
+											$value      = \Fabrik\Helpers\ArrayHelper::getValue($values, $k, '');
+
+											if (!$this->dataEmpty($value))
+											{
+												if (!array_key_exists($fullKeyRaw, $pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk]))
+												{
+													$pks[$row->__pk_val]['joins'][$joinId]['row_changes'][$thisPk][$fullKeyRaw] = array(
+														'time_date'   => $date->format('Y-m-d H:i:s'),
+														'form_id'     => $formModel->getId(),
+														'list_id'     => $formModel->getListModel()->getId(),
+														'element_id'  => $elementModel->getId(),
+														'row_id'      => $row->__pk_val,
+														'join_id'     => $joinId,
+														'pk_id'       => $thisPk,
+														'table_name'  => $join->getJoin()->table_join,
+														'orig_value'  => $value,
+														'new_value'   => '',
+														'field_name'  => $elementModel->element->name,
+														'log_type_id' => 8
+													);
+												}
 											}
 										}
 									}
@@ -369,7 +373,7 @@ EOT;
 
 		if ($logDelete !== '0')
 		{
-			$logTypeId = isset($joinId) ? 8 : 2;
+			$logTypeId = isset($joinId) ? 8 : 3;
 			/** @var FabrikFEModelForm $formModel */
 			$logId     = $this->logChange($logTypeId, $rowId, $joinId, $parentId);
 
