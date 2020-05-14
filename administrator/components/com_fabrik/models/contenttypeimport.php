@@ -616,7 +616,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
                 }
                 catch (RuntimeException $e)
                 {
-                    $this->missingElementTypes[] = $elementModel->element->plugin;
+                    $this->missingElementTypes[] = $elementData['plugin'];
                     continue;
                 }
 				$elementModel->element        = $elementModel->getDefaultProperties($elementData);
