@@ -233,9 +233,9 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
      *
      * @param {boolean|string} k API key
      * @param {function|string} cb Callback method function or function name (assigned to window)
-     * @param string optional two letter language code
+     * @param {string} language optional two letter language code
      */
-    Fabrik.loadGoogleMap = function (k, cb, language = '') {
+    Fabrik.loadGoogleMap = function (k, cb, language) {
 
         var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
         var src = prefix + '//maps.googleapis.com/maps/api/js?libraries=places,visualization&callback=Fabrik.mapCb';
