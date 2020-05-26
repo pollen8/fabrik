@@ -315,14 +315,14 @@
 			type="pluginlist"
 			plugin="fabrik_element"
 			required="true"
-			default="date"
+			default="jdate"
 			label="DATETIME"/>
 
 		<field name="date"
 			type="pluginlist"
 			plugin="fabrik_element"
 			required="true"
-			default="date"
+			default="jdate"
 			label="DATE"
 			description="COM_FABRIK_ELEMENTS_DEFAULT_PLUGINS_DATE_DESC"/>
 
@@ -330,7 +330,7 @@
 			type="pluginlist"
 			plugin="fabrik_element"
 			required="true"
-			default="date"
+			default="jdate"
 			label="TIMESTAMP"/>
 
 		<field name="time"

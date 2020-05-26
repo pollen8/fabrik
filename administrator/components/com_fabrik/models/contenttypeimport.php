@@ -663,7 +663,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			// Could be importing from a CSV in which case default fields are set.
 			// TODO refactor this $input get into class constructor
-			$fields     = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array');
+			$fields     = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'jdate'), 'array');
 			$primaryKey = array_keys($input->get('key', array(), 'array'));
 			$primaryKey = array_pop($primaryKey);
 			$elements   = array();
