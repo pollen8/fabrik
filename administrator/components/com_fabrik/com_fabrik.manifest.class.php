@@ -516,6 +516,8 @@ class Com_FabrikInstallerScript
 		}
 
 		echo "<p>Installation finished</p>";
+		echo "<p>Note that this extension places a small number of additional files in the Joomla core directories,
+providing extended functionality such as PDF document types.  These files will be removed if you uninstall Fabrik.</p>";
 		echo '<p><a target="_top" href="index.php?option=com_fabrik&amp;task=home.installSampleData">Click
 here to install sample data</a></p>
 	  ';
