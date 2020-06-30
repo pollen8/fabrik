@@ -116,7 +116,7 @@ $listDirn = $this->state->get('list.direction');
 						</a>
 					<?php endif; ?>
 					<td>
-						<?php echo $item->label; ?>
+						<?php echo FText::_($item->label); ?>
 					</td>
 					</td>
 					<td>
