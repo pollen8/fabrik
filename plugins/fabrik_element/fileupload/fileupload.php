@@ -1002,7 +1002,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($params->get('fu_download_append', '0') === '1')
 		{
-			return $render->output . '<div>' . $downloadHTML . '</div>';;
+			return $render->output . '<div  class="fabrik-fu-download-append">' . $downloadHTML . '</div>';;
 		}
 		else
 		{

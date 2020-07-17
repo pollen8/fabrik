@@ -66,7 +66,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
                 Fabrik.loadGoogleMap(this.options.mapKey, 'geolocateLoad', this.options.language);
             }
 
-            if (this.options.scanQR) {
+            if (this.options.editable && this.options.scanQR) {
                 this.qrBtn = document.id(element + '_qr_upload');
                 this.qrBtn.addEvent('change', function (e) {
                     var node = e.target;
