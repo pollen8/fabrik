@@ -137,7 +137,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (!$this->getFormModel()->failedValidation())
 		{
-			$value = $this->numberFormat($value);
+			if ($this->isEditable())
+			{
+				$value = $this->numberFormat($value);
+			}
 		}
 
 		if (!$this->isEditable())
