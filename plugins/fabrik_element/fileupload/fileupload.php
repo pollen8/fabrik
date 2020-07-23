@@ -937,7 +937,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					{
 						$title = $thisRow->$title_name;
 						$title = FabrikWorker::JSONtoData($title, true);
-						$title = $title[$i];
+						//$title = $title[$i];
+						$title = array_key_exists($i, $title) ? $title[$i] : '';
 					}
 				}
 
