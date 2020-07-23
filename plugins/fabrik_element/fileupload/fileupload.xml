@@ -16,6 +16,8 @@
 		<filename>fileupload.js</filename>
 		<filename>fileupload-min.js</filename>
 		<filename>index.html</filename>
+		<filename>list-fileupload.js</filename>
+		<filename>list-fileupload-min.js</filename>	
 		<folder>adaptors</folder>
 		<folder>element</folder>
 		<folder>forms</folder>
