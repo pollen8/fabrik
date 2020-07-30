@@ -31,7 +31,7 @@ $width =  $width == '0' ? '' : 'width:' . $width . ';';
 			echo $this->loadTemplate('sidebar');
 		endif; ?>
 		<td>
-			<div id="table_map" style="<?php echo $width;?> height:<?php echo $params->get('fb_gm_mapheight');?>px"></div>
+			<div id="table_map_<?php echo $this->containerId;?>" style="<?php echo $width;?> height:<?php echo $params->get('fb_gm_mapheight');?>px"></div>
 		</td>
 		<?php if ($this->sidebarPosition == '2') :
 			echo $this->loadTemplate('sidebar');

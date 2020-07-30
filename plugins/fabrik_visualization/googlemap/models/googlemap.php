@@ -220,7 +220,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts                       = json_encode($opts);
 		$ref                        = $this->getJSRenderContext();
 		$js                         = array();
-		$js[]                       = "\t$ref = new FbGoogleMapViz('table_map', $opts)";
+		$js[]                       = "\t$ref = new FbGoogleMapViz('table_map_{$ref}', {$opts})";
 		$js[]                       = "\t" . "Fabrik.addBlock('$ref', $ref);";
 		$js[]                       = "\n";
 
