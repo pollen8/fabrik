@@ -426,7 +426,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 		foreach ($this->events as $this_listid => $record)
 		{
-			if (!empty($listid) && $this_listid != $listid)
+			if ( empty($listid) || (!empty($listid) && $this_listid != $listid) )
 			{
 				continue;
 			}
