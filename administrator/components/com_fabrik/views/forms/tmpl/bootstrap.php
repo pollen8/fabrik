@@ -111,14 +111,18 @@ $listDirn  = $this->state->get('list.direction');
 							<?php endif; ?>
 							<?php
 							if ($item->checked_out && ($item->checked_out != $user->get('id')))
-							{
-								echo FText::_($item->label);
-							}
+							{ ?>
+								<span class="editlinktip hasTip"
+									title="foo <?php echo FText::_($item->label) . "::" . $params->get('note'); ?>"> <?php echo FText::_($item->label); ?>
+								</span>
+							<?php }
 							else
 							{
 								?>
 								<a href="<?php echo $link; ?>">
-									<?php echo FText::_($item->label); ?>
+									<span class="editlinktip hasTip" title="<?php echo FText::_($item->label) . "::" . $params->get('note'); ?>">
+										<?php echo FText::_($item->label); ?>
+									</span>
 								</a>
 							<?php } ?>
 						</td>
