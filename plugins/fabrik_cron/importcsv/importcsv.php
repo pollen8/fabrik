@@ -147,7 +147,8 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 
 			if ($useTableName)
 			{
-				$listId = $this->getListIdFromFileName(basename($fullCsvFile));
+				//Tablename is filename without extension
+				$listId = $this->getListIdFromFileName(pathinfo($fullCsvFile,PATHINFO_FILENAME));
 			}
 			else
 			{
