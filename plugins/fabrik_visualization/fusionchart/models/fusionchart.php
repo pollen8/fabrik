@@ -1015,7 +1015,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			case 'SCROLLCOMBI2D':
 			case 'SCROLLCOMBIDY2D':
 			case 'SCROLLSTACKEDCOLUMN2D':
-				if ($this->c > 0)
+			case 'RADAR':
+			if ($this->c > 0)
 				{
 					if ($chartType == 'SCROLLAREA2D' || $chartType == 'SCROLLCOLUMN2D' || $chartType == 'SCROLLLINE2D')
 					{
@@ -1128,7 +1129,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 							}
 						}
 
-						$this->addDataset($dataset, $datasetLabel, $extras);
+						$this->addDataset(array_values($dataset), $datasetLabel, $extras);
 					}
 				}
 				break;
