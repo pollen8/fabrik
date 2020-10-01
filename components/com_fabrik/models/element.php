@@ -3932,6 +3932,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				return $this->phpOptions[$key];
 			}
 
+			/* Clear any current errors, if anything happened before it will get picked up by the loEval and likely has nothing to do with the eval */
+			error_clear_last();
+			
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($pop);
