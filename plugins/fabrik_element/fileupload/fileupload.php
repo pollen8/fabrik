@@ -3446,7 +3446,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			exit;
 		}
 
-		if (empty($row))
+		if (empty((array)$row))
 		{
 			$errMsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
 			$errMsg .= Html::isDebug() ? " (no such row)" : '';
