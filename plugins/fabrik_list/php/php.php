@@ -172,7 +172,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		}
 		else
 		{
-			$msg = $params->get('table_php_msg', FText::_('PLG_LIST_PHP_CODE_RUN'));
+			$msg = FText::_($params->get('table_php_msg', FText::_('PLG_LIST_PHP_CODE_RUN')));
 
 			return $msg;
 		}
