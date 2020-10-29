@@ -2551,6 +2551,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			if (!empty($this->orderBy))
 			{
+				$w 	       = new FabrikWorker;
+				$this->orderBy = $w->replaceWithLanguageTags($this->orderBy);
+				
 				if (!$query)
 				{
 					return $this->orderBy;
