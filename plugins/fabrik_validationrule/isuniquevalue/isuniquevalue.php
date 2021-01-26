@@ -42,6 +42,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 	 */
 	public function validate($data, $repeatCounter)
 	{
+		$params = $this->getParams();
 		$input        = $this->app->input;
 		$elementModel = $this->elementModel;
 
@@ -51,7 +52,11 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 			$data = implode('', $data);
 		}
 
-		$params      = $this->getParams();
+		if ($params->get('isuniquevalue-allow_empty', '0') === '1' && $data === '')
+		{
+			return true;
+		}
+
 		$element     = $elementModel->getElement();
 		$listModel   = $elementModel->getlistModel();
 		$table       = $listModel->getTable();
