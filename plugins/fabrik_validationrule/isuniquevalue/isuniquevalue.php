@@ -105,7 +105,17 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		if (!$groupModel->isJoin())
 		{
 			// not a join, just use rowid and normal pk
-			$rowId = $input->get('rowid', '');
+
+			// if copying row, empty row id
+			if ($elementModel->getFormModel()->copyingRow())
+			{
+				$rowId = '';
+			}
+			else
+			{
+				$rowId = $input->get('rowid', '');
+			}
+
 			$pk = $table->db_primary_key;
 		}
 		else
