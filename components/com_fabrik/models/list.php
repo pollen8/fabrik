@@ -4241,7 +4241,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// no plugin preference, so use normal ACL
-			if (!array_key_exists('viewdetails', $this->access))
+			if (!isset($this->access->viewdetails))
 			{
 				$groups                    = $this->user->getAuthorisedViewLevels();
 				$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
@@ -4303,7 +4303,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// no user preference, so use normal ACL
-		if (!array_key_exists('edit', $this->access))
+		if (!isset($this->access->edit))
 		{
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
