@@ -4398,7 +4398,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// no preference from user check, so use main ACL
-		if (!array_key_exists('delete', $this->access))
+		if (!isset($this->access->delete))
 		{
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->delete = in_array($this->getParams()->get('allow_delete'), $groups);

@@ -951,8 +951,8 @@ class FabrikFEModelGroup extends FabModel
 			 * a PHP 'undefined index' notice.
 			 */
 
-			if (array_key_exists($startPage, $pages) && is_array($pages[$startPage])
-				&& !in_array($groupTable->id, $pages[$startPage]) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
+			if (isset($pages->{$startPage}) && is_array($pages->{$startPage})
+				&& !in_array($groupTable->id, $pages->{$startPage}) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
 			{
 				$groupTable->css .= ";display:none;";
 			}
