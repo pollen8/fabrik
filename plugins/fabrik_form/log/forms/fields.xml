@@ -38,7 +38,7 @@
                    label="PLG_FORM_LOG_FIELDS_LABEL"/>
 
             <field default="0"
-                   class="btn-group"
+                   
                    label="PLG_FORM_LOG_FORM_LOAD_LABEL"
                    description="PLG_FORM_LOG_FORM_LOAD_DESC"
                    name="log_form_load"
@@ -61,7 +61,7 @@
             </field>
 
             <field default="1"
-                   class="btn-group"
+                   
                    label="PLG_FORM_LOG_FORM_DELETE_LABEL"
                    description="PLG_FORM_LOG_FORM_DELETE_DESC"
                    name="log_delete"
