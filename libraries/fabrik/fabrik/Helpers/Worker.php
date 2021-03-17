@@ -2613,13 +2613,15 @@ class Worker
 			{
 				$userCol = StringHelper::safeColNameToArrayKey($userCol);
 
-				if (!array_key_exists($userCol, $row))
+				if (!isset($row->{$userCol}))
 				{
 					return false;
 				}
 				else
 				{
-					if (array_key_exists($userCol . '_raw', $row))
+					$userColRaw = $userCol . '_raw';
+
+					if (!isset($row->{$userColRaw}))
 					{
 						$userCol .= '_raw';
 					}

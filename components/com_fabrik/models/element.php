@@ -994,7 +994,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$prop    = $view == 'form' ? 'view_access' : 'list_view_access';
 		$params  = $this->getParams();
 
-		if (!is_object($this->access) || !array_key_exists($key, $this->access))
+		if (!is_object($this->access) || !isset($this->access->{$key}))
 		{
 			$groups             = $this->user->getAuthorisedViewLevels();
 			$this->access->$key = in_array($params->get($prop, $default), $groups);
@@ -1069,7 +1069,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->access = new stdClass;
 		}
 
-		if (!is_object($this->access) || !array_key_exists('use', $this->access))
+		if (!is_object($this->access) || !isset($this->access->use))
 		{
 			/**
 			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
