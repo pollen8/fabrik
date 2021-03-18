@@ -945,14 +945,8 @@ class FabrikFEModelGroup extends FabModel
 			$showGroup        = $params->def('repeat_group_show_first', '1');
 			$pages            = $formModel->getPages();
 			$startPage        = isset($formModel->sessionModel->last_page) ? $formModel->sessionModel->last_page : 0;
-			/**
-			 * $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been
-			 * changed to remove (or change) paging, but user still has session state set.  So it was throwing
-			 * a PHP 'undefined index' notice.
-			 */
 
-			if (isset($pages->{$startPage}) && is_array($pages->{$startPage})
-				&& !in_array($groupTable->id, $pages->{$startPage}) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
+			if ($showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
 			{
 				$groupTable->css .= ";display:none;";
 			}
