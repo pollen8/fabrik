@@ -1149,7 +1149,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function canUseFilter()
 	{
-		if (!is_object($this->access) || !array_key_exists('filter', $this->access))
+		if (!is_object($this->access) || !isset($this->access->filter))
 		{
 			$groups = $this->user->getAuthorisedViewLevels();
 
