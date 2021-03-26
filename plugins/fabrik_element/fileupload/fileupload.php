@@ -347,7 +347,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						{
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_' . $iCounter;
-							$o->name = array_pop(explode($this->getStorage()->getDS(), $tKey));
+							$o->name = array_pop(explode('/', $tKey));
 							$o->path = $tKey;
 
 							if ($fileInfo = $this->getStorage()->getFileInfo($o->path))
@@ -373,7 +373,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						if ($singleCrop)
 						{
 							// Single crop image (not sure about the 0 settings in here)
-							$parts   = explode($this->getStorage()->getDS(), $value[$x]);
+							$parts   = explode('/', $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
@@ -398,7 +398,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 						else
 						{
-							$parts   = explode($this->getStorage()->getDS(), $value[$x]);
+							$parts   = explode('/', $value[$x]);
 							$o       = new stdClass;
 							$o->id   = 'alreadyuploaded_' . $element->id . '_' . $rawValues[$x];
 							$o->name = array_pop($parts);
