@@ -10775,7 +10775,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$col = $elementModel->getFullName(true, false);
 
-				if (!empty($data) && isset($data[0]->{$col}))
+				if (!empty($data) && property_exists($data[0], $col))
 				{
 					for ($i = 0; $i < $ec; $i++)
 					{
