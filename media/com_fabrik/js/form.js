@@ -897,7 +897,14 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                                 '" because it does not exist in HTML.');
                             return;
                         }
-                        var oEl = new window[el[0]](el[1], el[2]);
+                        try {
+                            var oEl = new window[el[0]](el[1], el[2]);
+                        }
+                        catch (err) {
+                            fconsole('Fabrik form::addElements: Cannot add element "' + el[1] +
+                                '" of type "' + el[0] + '" because: ' + err.message);
+                            return;
+                        }
                         added.push(this.addElement(oEl, el[1], gid));
                     }
                     else if (typeOf(el) === 'object') {
@@ -2037,17 +2044,50 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     return;
                 }
 
-                if (typeOf(this.options.group_repeat_sortable[groupId]) === 'null' || !this.options.group_repeat_sortable[groupId]) {
-                    return;
+                if (typeOf(this.options.group_repeat_sortable[groupId]) !== 'null' && this.options.group_repeat_tablesort[groupId]) {
+                    var group = this.form.getElement('#group' + groupId);
+
+                    if (group) {
+                        var cellFilters = [];
+                        group.getElements('th.fabrikElementContainer').each(function (e, x) {
+                            if (e.hasClass('fabrikHide')) {
+                                cellFilters.push('fabrikHide');
+                            } else {
+                                cellFilters.push('');
+                            }
+                        });
+                        jQuery('#group' + groupId + ' table').tablesorter({
+                            theme: 'blue',
+                            widthFixed: true,
+                            widgets: ["filter"],
+                            cssInfoBlock: "tablesorter-no-sort",
+                            ignoreCase: true,
+                            widgetOptions: {
+                                filter_ignoreCase: true,
+                                filter_matchType: {'input': 'match', 'select': 'match'},
+                                filter_saveFilters: true,
+                                filter_liveSearch: true,
+                                filter_cellFilter: cellFilters
+                            }
+                        });
+                    }
                 }
 
-                jQuery('#group' + groupId + ' table tbody').sortable({
-                    stop: function(event, ui) {
-                        var group = ui.item[0].closest('.fabrikGroup');
-                        var groupId = group.id.replace('group', '');
-                        this.reorderSortable(groupId);
-                    }.bind(this)
-                });
+                if (typeOf(this.options.group_repeat_sortable[groupId]) !== 'null' && this.options.group_repeat_sortable[groupId]) {
+                    Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+                        this.renumberSortable(groupId);
+                    }.bind(this));
+
+                    jQuery('#group' + groupId + ' table tbody').sortable({
+                        scroll: true,
+                        scrollSensitivity: 100,
+                        stop: function (event, ui) {
+                            var group = ui.item[0].closest('.fabrikGroup');
+                            var groupId = group.id.replace('group', '');
+                            this.reorderSortable(groupId);
+                        }.bind(this)
+                    });
+                }
             }.bind(this));
         },
 

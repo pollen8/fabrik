@@ -1350,7 +1350,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * model. Used in elements to modify posted data see file upload
 	 *
 	 * @param   string  $key          in key.dot.format to set a recursive array
-	 * @param   string  $val          value to set to
+	 * @param   string|array  $val          value to set to
 	 * @param   bool    $update_raw   automatically update _raw key as well
 	 * @param   bool    $override_ro  update data even if element is RO
 	 *
