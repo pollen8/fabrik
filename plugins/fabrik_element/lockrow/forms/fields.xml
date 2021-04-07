@@ -51,6 +51,15 @@
                 <option value="2">PLG_ELEMENT_LOCKROW_ALLOW_USER_REEDIT_EXCLUSIVE</option>
             </field>
 
+            <field name="lockrow_allow_timeout_submit"
+                   type="radio"
+                   default="0"
+                   label="PLG_ELEMENT_LOCKROW_ALLOW_TIMEOUT_SUBMIT_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_ALLOW_TIMEOUT_SUBMIT_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
             <field name="lockrow_lock_access"
                    type="accesslevel"
                    default="1"
@@ -94,6 +103,13 @@
                    description="PLG_ELEMENT_LOCKROW_LOCKED_MSG_DESC"
                    rows="2" />
 
+            <field name="lockrow_locked_unlock_msg"
+                   type="textarea"
+                   cols="45"
+                   label="PLG_ELEMENT_LOCKROW_LOCKED_UNLOCK_MSG_LABEL"
+                   description="PLG_ELEMENT_LOCKROW_LOCKED_UNLOCK_MSG_DESC"
+                   rows="2" />
+
             <field name="lockrow_relocked_msg"
                    type="textarea"
                    cols="45"
@@ -106,13 +122,6 @@
                    cols="45"
                    label="PLG_ELEMENT_LOCKROW_RELOCKED_EXCLUSIVE_MSG_LABEL"
                    description="PLG_ELEMENT_LOCKROW_RELOCKED_EXCLUSIVE_MSG_DESC"
-                   rows="2" />
-
-            <field name="lockrow_own_locked_msg"
-                   type="textarea"
-                   cols="45"
-                   label="PLG_ELEMENT_LOCKROW_OWN_LOCKED_MSG_LABEL"
-                   description="PLG_ELEMENT_LOCKROW_OWN_LOCKED_MSG_DESC"
                    rows="2" />
 
             <field name="lockrow_own_locked_msg"
