@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
+<h3><?php echo FText::_('COM_FABRIK_MANAGER_ELEMENT_CONFIRM_DELETE_COMMENT'); ?></h3>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<table class="table table-striped">
 		<thead>
@@ -20,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 				<th width="4%">
 					<?php echo FText::_('JGRID_HEADING_ID'); ?>
 				</th>
-				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
+				<th width="10%"><?php echo FText::_('COM_FABRIK_MANAGER_ELEMENT_CONFIRM_DELETE_CHECK'); ?><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
 				<th width="13%" >
 					<?php echo FText::_('COM_FABRIK_NAME'); ?>
 				</th>
