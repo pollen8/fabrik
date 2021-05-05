@@ -1238,7 +1238,7 @@ class FabrikFEModelList extends JModelForm
 
 				// Check if there is  a custom out put handler for the tables format
 				// Currently supports "renderListData_csv", "renderListData_rss", "renderListData_html", "renderListData_json"
-				if (!empty($data) && isset($data[0]->{$col}))
+				if (!empty($data) && property_exists($data[0], $col))
 				{
 					if (method_exists($elementModel, $method))
 					{
