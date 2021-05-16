@@ -13,8 +13,9 @@ if ($d->type === 'youtube') :
 	type="text/html"
 	width="<?php echo $d->width;?>"
 	height="<?php echo $d->height; ?>"
-    src="<?php echo $d->url; ?><?php echo $d->vid; ?>?autoplay=<?php echo $d->autoplay; ?>&fs=<?php echo $d->fs; ?>"
-    frameborder="0"
+    	src="<?php echo $d->url; ?><?php echo $d->vid; ?>?autoplay=<?php echo $d->autoplay; ?>&fs=<?php echo $d->fs; ?>"
+    	frameborder="0"
+	<?php if ($d->fs) {echo 'allowfullscreen';} ?>
 ></iframe>
 <?php
 elseif ($d->type === 'twitchclip' || $d->type === 'twitchvideo') :
