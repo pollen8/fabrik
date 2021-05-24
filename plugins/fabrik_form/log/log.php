@@ -94,7 +94,8 @@ CREATE TABLE IF NOT EXISTS `#__{package}_change_log` (
      `row_id` INT( 11 ) NOT NULL,
      `join_id` INT( 11 ),
      `log_type_id` INT( 11 ) NOT NULL,
-     `parent_id` INT( 11 ) NOT NULL,
+      `parent_id` INT( 11 ) NOT NULL
+
 );
 EOT;
 
@@ -410,6 +411,11 @@ EOT;
 		return $logId;
 	}
 
+	public function setOrigData($origData)
+	{
+		$this->origData = $origData;
+	}
+
 	/**
 	 * Make sure we get our own copy of origData, the "raw" table data, prior to any updates
 	 *
@@ -463,9 +469,8 @@ EOT;
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
-			$origPks = [];
-			$thisPks = [];
 			$deletedPks = [];
+			$newPks = [];
 			$groupIndexMap = [];
 			$pk = '';
 			$join = false;
@@ -517,7 +522,7 @@ EOT;
 					foreach ($deletedPks as $k => $pkVal)
 					{
 						$orig      = ArrayHelper::getValue($this->origData, $fullKey);
-						$origValue = ArrayHelper::getValue($orig, $groupIndexMap[$k]);
+						$origValue = ArrayHelper::getValue($orig, $k);
 
 						$changes[] = array(
 							'time_date' => $date->format('Y-m-d H:i:s'),
@@ -550,7 +555,7 @@ EOT;
 						{
 							$changeTypeId = 7;
 							$origValue = '';
-							$pkVal = '';
+							$pkVal = ArrayHelper::getValue($newPks, $k, '');
 							$force = true;
 						}
 
@@ -618,6 +623,7 @@ EOT;
 			}
 		}
 
+		$this->session->set('fabrik.form.log.changes', $changes);
 		$this->logSubmitChanges($changes);
 
 		return true;
