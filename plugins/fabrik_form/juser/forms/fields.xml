@@ -231,6 +231,13 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="juser_additional_bind_data"
+				   type="fabrikeditor"
+				   mode="json"
+				   description="PLG_FABRIK_FORM_JUSER_ADDITIONAL_BIND_DATA_DESC"
+				   label="PLG_FABRIK_FORM_JUSER_ADDITIONAL_BIND_DATA_LABEL"
+				   repeat="true" />
+
 		</fieldset>
 	</fields>
 </form>

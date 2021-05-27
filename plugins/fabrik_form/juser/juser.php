@@ -520,8 +520,35 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			}
 		}
 
-
 		$this->trimNamePassword($user, $data);
+
+		$additionalData = $params->get('juser_additional_bind_data', '');
+
+		/**
+		 * Experimental feature for adding custom data.  Useful in specific cases like syncing
+		 * with some "social" extensions such as EasyDiscuss, which look for specific additional data
+		 * like a 'easydiscussprofile' array.
+		 */
+		if (!empty($additionalData))
+		{
+			$w = new \Fabrik\Helpers\Worker();
+			$additionalData = str_replace('{', '$$', $additionalData);
+			$additionalData = str_replace('}', '&&', $additionalData);
+			$additionalData = str_replace('[[', '{', $additionalData);
+			$additionalData = str_replace(']]', '}', $additionalData);
+			$additionalData = $w->parseMessageForPlaceHolder($additionalData, $formModel->formData);
+			$additionalData = str_replace('$$', '{', $additionalData);
+			$additionalData = str_replace('&&', '}', $additionalData);
+			$additionalData = json_decode($additionalData, true);
+
+			if ($additionalData !== false)
+			{
+				$data = array_merge(
+					$data,
+					$additionalData
+				);
+			}
+		}
 
 		// End new
 		if (!$user->bind($data))
