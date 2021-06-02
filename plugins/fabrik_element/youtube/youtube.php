@@ -9,6 +9,8 @@
  */
 
 // No direct access
+use Joomla\CMS\Uri\Uri;
+
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
@@ -250,6 +252,9 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 				unset($vid[0]);
 				$vid = implode('', $vid);
 			}
+
+			$uri = Uri::getInstance();
+			$vid .= '&parent=' . $uri->getHost();
 		}
 		else if ($type === 'streamable')
 		{
