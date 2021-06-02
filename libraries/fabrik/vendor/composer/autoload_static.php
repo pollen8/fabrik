@@ -44,6 +44,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         array (
             'JmesPath\\' => 9,
         ),
+        'I' => 
+        array (
+            'IPv4\\' => 5,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -114,6 +118,10 @@ class ComposerStaticInit8bab1790e7afc8af0586b052d452eecd
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
+        'IPv4\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markrogoyski/ipv4-subnet-calculator/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
