@@ -4095,7 +4095,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		foreach ($listModel->getJoins() as $aJoin)
 		{
 			// Not sure why the group id key wasn't found - but put here to remove error
-			if (array_key_exists('group_id', $aJoin))
+			if (property_exists($aJoin, 'group_id'))
 			{
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
