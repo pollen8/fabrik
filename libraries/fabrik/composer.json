@@ -7,6 +7,7 @@
         "dompdf/dompdf": "~v0.8.6",
         "arcturial/clickatell": "~2.0.0",
         "mpdf/mpdf": "~7.1.6",
-        "phplicengine/bitly": "v1.0.1"
+        "phplicengine/bitly": "v1.0.1",
+        "markrogoyski/ipv4-subnet-calculator": "3.*"
     }
 }
