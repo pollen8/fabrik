@@ -366,7 +366,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if (!empty($currentGroups))
 		{
-			$query->where('group_id NOT IN (' . implode($currentGroups, ', ') . ')');
+			$query->where('group_id NOT IN (' . implode(', ' , $currentGroups) . ')');
 		}
 
 		$db->setQuery($query);
