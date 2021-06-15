@@ -7901,7 +7901,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				if (!empty($ids))
 				{
-					$query->where($db->quoteName('id') . ' NOT IN ( ' . implode($ids, ',') . ')');
+					$query->where($db->quoteName('id') . ' NOT IN ( ' . implode(',', $ids) . ')');
 				}
 
 				$db->setQuery($query);
