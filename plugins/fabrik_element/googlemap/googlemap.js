@@ -82,7 +82,14 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             'reverse_geocode_fields': {},
             'key'                 : false,
             'language'            : '',
-            'mapShown'            : true
+            'mapShown'            : true,
+            'use_overlays'       : false,
+            'overlays'          : [],
+            'overlay_urls'      : [],
+            'overlay_labels'    : [],
+            'overlay_events'    : [],
+            'lat_element'         : '',
+            'lon_element'         : ''
         },
 
         loadScript: function () {
@@ -295,6 +302,20 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     }.bind(this));
                 }
 
+                if (this.options.latlng_elements === true) {
+                    var latEl = this.form.formElements.get(this.options.lat_element);
+                    var lonEl = this.form.formElements.get(this.options.lon_element);
+
+                    if (latEl && lonEl) {
+                        latEl.addNewEventAux(latEl.getChangeEvent(), function (e) {
+                            this.updateFromLatLngElements(e);
+                        }.bind(this));
+                        lonEl.addNewEventAux(lonEl.getChangeEvent(), function (e) {
+                            this.updateFromLatLngElements(e);
+                        }.bind(this));
+                    }
+                }
+
                 this.marker = new google.maps.Marker(opts);
 
                 if (this.options.latlng === true) {
@@ -332,6 +353,15 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         this.element.getElement('.latdms').value = this.latDecToDMS();
                         this.element.getElement('.lngdms').value = this.lngDecToDMS();
                     }
+                    if (this.options.latlng_elements === true) {
+                        var latEl = this.form.formElements.get(this.options.lat_element);
+                        var lonEl = this.form.formElements.get(this.options.lon_element);
+
+                        if (latEl && lonEl) {
+                            latEl.update(this.marker.getPosition().lat());
+                            lonEl.update(this.marker.getPosition().lng());
+                        }
+                    }
                     if (this.options.latlng_osref === true) {
                         this.element.getElement('.osref').value = this.latLonToOSRef();
                     }
@@ -362,8 +392,19 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                             this.element.getElement('.latdms').value = this.latDecToDMS();
                             this.element.getElement('.lngdms').value = this.lngDecToDMS();
                         }
+                        if (this.options.latlng_elements === true) {
+                            var latEl = this.form.formElements.get(this.options.lat_element);
+                            var lonEl = this.form.formElements.get(this.options.lon_element);
+
+                            if (latEl && lonEl) {
+                                latEl.update(this.marker.getPosition().lat());
+                                lonEl.update(this.marker.getPosition().lng());
+                            }
+                        }
                     }
                 }.bind(this));
+
+                this.addOverlays();
             }
 
             this.watchTab();
@@ -479,6 +520,24 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
         radiusAddActions: function () {
             if (this.options.radius_read_element) {
                 document.id(this.options.radius_read_element).addEvent('change', this.radiusSetDistance.bind(this));
+            }
+        },
+
+        updateFromLatLngElements: function () {
+            var latEl = this.form.formElements.get(this.options.lat_element);
+            var lonEl = this.form.formElements.get(this.options.lon_element);
+
+            if (latEl && lonEl) {
+                var lat = latEl.getValue();
+                var lon = lonEl.getValue();
+
+                if (lat !== '' && lon !== '') {
+                    lat = lat.replace('° N', '').replace(',', '.').toFloat();
+                    lon = lon.replace('° E', '').replace(',', '.').toFloat();
+                    var pnt = new google.maps.LatLng(lat, lon);
+                    this.marker.setPosition(pnt);
+                    this.doSetCenter(pnt, this.map.getZoom(), true);
+                }
             }
         },
 
@@ -893,6 +952,15 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 this.element.getElement('.latdms').value = this.latDecToDMS();
                 this.element.getElement('.lngdms').value = this.lngDecToDMS();
             }
+            if (this.options.latlng_elements === true) {
+                var latEl = this.form.formElements.get(this.options.lat_element);
+                var lonEl = this.form.formElements.get(this.options.lon_element);
+
+                if (latEl && lonEl) {
+                    latEl.update(pnt.lat());
+                    lonEl.update(pnt.lng());
+                }
+            }
             if (doReverseGeocode && this.options.reverse_geocode) {
                 this.reverseGeocode();
             }
@@ -903,6 +971,56 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 this.geoCode();
             }
             this.parent();
+        },
+
+        toggleOverlayAux: function (el) {
+
+        },
+
+        toggleOverlay: function (e) {
+            if (e.target.id.test(/overlay_select_(\d+)/)) {
+                var self = this;
+                jQuery(e.target).closest('div').find('.fabrik_googlemap_overlay_select').each(
+                    function(k, el) {
+                        var olk = el.id.match(/overlay_select_(\d+)/)[1].toInt();
+                        if (el.checked) {
+                            self.options.overlays[olk].setMap(self.map);
+                        } else {
+                            self.options.overlays[olk].setMap(null);
+                        }
+                    }
+                );
+            }
+        },
+
+        addOverlays: function () {
+            if (this.options.use_overlays) {
+                if (this.options.use_overlays_select === 'radio' && this.options.use_overlays_checked === '') {
+                    this.options.use_overlays_checked = '0';
+                }
+                this.options.overlay_urls.each(function (overlay_url, k) {
+                    var pv = this.options.overlay_preserveviewports[k] === '1';
+                    var so = this.options.overlay_suppressinfowindows[k] === '1';
+                    this.options.overlays[k] = new google.maps.KmlLayer({
+                        url                : overlay_url,
+                        preserveViewport   : pv,
+                        suppressInfoWindows: so
+                    });
+
+                    if ((this.options.use_overlays_select === 'checkbox' && this.options.use_overlays_checked === '') ||
+                        (this.options.use_overlays_checked.toInt() === k)) {
+                        this.options.overlays[k].setMap(this.map);
+                    }
+                    this.options.overlay_events[k] = function (e) {
+                        this.toggleOverlay(e);
+                    }.bind(this);
+                    if (typeOf(document.id(this.options.element + '_overlay_select_' + k)) !== 'null') {
+                        document.id(this.options.element + '_overlay_select_' + k).addEvent('click', this.options.overlay_events[k]);
+                    }
+                }.bind(this));
+
+                Fabrik.fireEvent('fabrik.viz.googlemap.overlays.added', [this]);
+            }
         }
 
     });
