@@ -583,7 +583,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string $view list/details
 	 * @param   string $tmpl template
 	 *
-	 * @since      3.0 - icon_folder is a bool - search through template folders for icons
+	 * @since      3.9 - icon_folder is a three way - search through template folders for icons or use class
 	 *
 	 * @deprecated use replaceWithIcons()
 	 * @return  string    data
@@ -600,7 +600,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string $view List/details
 	 * @param   string $tmpl Template
 	 *
-	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
+	 * @since      3.9 - icon_folder is a three way - search through template folders for icons or use class
 	 *
 	 * @return  string    data
 	 */
@@ -616,6 +616,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params    = $this->getParams();
 		$listModel = $this->getListModel();
 		$iconFile  = (string) $params->get('icon_file', '');
+		$iconFolder  = (int) $params->get('icon_folder', '');
 
 		if ($iconFile === '{extension}')
 		{
@@ -639,7 +640,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$cleanData  = empty($iconFile) ? FabrikString::clean(strip_tags($data)) : $iconFile;
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
-		$opts       = array('forceImage' => true);
+		$opts = array('forceImage' => true);
 
 		//If subdir is set prepend file name with subdirectory (so first search through [template folders]/subdir for icons, e.g. images/subdir)
 		$iconSubDir = $params->get('icon_subdir', '');
@@ -657,69 +658,81 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
 
-				if ($img !== '')
+				if (!empty($img))
 				{
-					$this->iconsSet = true;
-					$opts           = new stdClass;
-					$opts->position = 'top';
-					$opts           = json_encode($opts);
-					$data           = '<span>' . $data . '</span>';
-
-					// See if data has an <a> tag
-					$html = FabrikHelperHTML::loadDOMDocument($data);
-					$as   = $html->getElementsBytagName('a');
-
-					if ($params->get('icon_hovertext', true))
-					{
-						//$aHref  = 'javascript:void(0)';
-						$aHref  = '#';
-						$target = '';
-
-						if ($as->length)
-						{
-							// Data already has an <a href="foo"> lets get that for use in hover text
-							$a      = $as->item(0);
-							$aHref  = $a->getAttribute('href');
-							$target = $a->getAttribute('target');
-							$target = 'target="' . $target . '"';
-						}
-
-						$data = htmlspecialchars($data, ENT_QUOTES);
-
-						$layout                  = FabrikHelperHTML::getLayout('element.fabrik-element-listicon-tip');
-						$displayData             = new stdClass;
-						$displayData->img     = $img;
-						$displayData->title   = $data;
-						$displayData->href    = $aHref;
-						$displayData->target  = $target;
-						$displayData->opts    = $opts;
-						$img                  = $layout->render($displayData);
-
-						//$img  = '<a class="fabrikTip" ' . $target . ' href="' . $aHref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
-					}
-					elseif (!empty($iconFile))
-					{
-						/**
-						 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
-						 * we'll need to replace the text in the link with the image
-						 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
-						 */
-
-						if ($as->length)
-						{
-							$img = $html->createElement('img');
-							$src = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true, array('forceImage' => true));
-							$img->setAttribute('src', $src);
-							$as->item(0)->nodeValue = '';
-							$as->item(0)->appendChild($img);
-
-							return $html->saveHTML();
-						}
-					}
-
-					return $img;
+					break;
 				}
 			}
+
+			if (empty($img) && $iconFolder === 2)
+			{
+				$opts = array('forceImage' => false);
+				$img = FabrikHelperHTML::image($cleanData, $view, $tmpl, array(), false, $opts);
+			}
+
+			if (!empty($img))
+			{
+				$this->iconsSet = true;
+				$opts           = new stdClass;
+				$opts->position = 'top';
+				$opts           = json_encode($opts);
+				$data           = '<span>' . $data . '</span>';
+
+				// See if data has an <a> tag
+				$html = FabrikHelperHTML::loadDOMDocument($data);
+				$as   = $html->getElementsBytagName('a');
+
+				if ($params->get('icon_hovertext', true))
+				{
+					//$aHref  = 'javascript:void(0)';
+					$aHref  = '#';
+					$target = '';
+
+					if ($as->length)
+					{
+						// Data already has an <a href="foo"> lets get that for use in hover text
+						$a      = $as->item(0);
+						$aHref  = $a->getAttribute('href');
+						$target = $a->getAttribute('target');
+						$target = 'target="' . $target . '"';
+					}
+
+					$data = htmlspecialchars($data, ENT_QUOTES);
+
+					$layout                  = FabrikHelperHTML::getLayout('element.fabrik-element-listicon-tip');
+					$displayData             = new stdClass;
+					$displayData->img     = $img;
+					$displayData->title   = $data;
+					$displayData->href    = $aHref;
+					$displayData->target  = $target;
+					$displayData->opts    = $opts;
+					$img                  = $layout->render($displayData);
+
+					//$img  = '<a class="fabrikTip" ' . $target . ' href="' . $aHref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+				}
+				elseif (!empty($iconFile))
+				{
+					/**
+					 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+					 * we'll need to replace the text in the link with the image
+					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+					 */
+
+					if ($as->length)
+					{
+						$img = $html->createElement('img');
+						$src = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true, array('forceImage' => true));
+						$img->setAttribute('src', $src);
+						$as->item(0)->nodeValue = '';
+						$as->item(0)->appendChild($img);
+
+						return $html->saveHTML();
+					}
+				}
+
+				return $img;
+			}
+
 		}
 
 		return $data;
@@ -6224,7 +6237,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$d = json_encode($d);
 			}
 
-			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
+			if ((int)$params->get('icon_folder', 0) > 0 && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
@@ -7519,16 +7532,29 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function setRowClass(&$data)
 	{
+		// first run plugins, which may set row class
+		$listModel = $this->getListModel();
+		$args = new stdClass;
+		$args->rowClass = '';
+		$args->data = $data;
+		$pluginResults = \Fabrik\Helpers\Worker::getPluginManager()->runPlugins(
+			'onElementSetRowClass',
+			$listModel,
+			'list',
+			$this,
+			$args
+		);
+
+		// now check built in "use as row class"
 		$rowClass = $this->getParams()->get('use_as_row_class');
+		$col    = $this->getFullName(true, false);
+		$rawCol = $col . '_raw';
 
-		if ($rowClass == 1)
+		foreach ($data as $groupKey => $group)
 		{
-			$col    = $this->getFullName(true, false);
-			$rawCol = $col . '_raw';
-
-			foreach ($data as $groupKey => $group)
+			for ($i = 0; $i < count($group); $i++)
 			{
-				for ($i = 0; $i < count($group); $i++)
+				if ($rowClass == 1)
 				{
 					$c = false;
 
@@ -7544,9 +7570,43 @@ class PlgFabrik_Element extends FabrikPlugin
 					if ($c !== false)
 					{
 						// added noRowClass and rowClass for use in div templates that need to split those out
-						$data[$groupKey][$i]->noRowClass = $data[$groupKey][$i]->class;
-						$data[$groupKey][$i]->class .= ' ' . FabrikString::getRowClass($c, $this->element->name);
-						$data[$groupKey][$i]->rowClass = FabrikString::getRowClass($c, $this->element->name);
+						if (!isset($data[$groupKey][$i]->noRowClass))
+						{
+							$data[$groupKey][$i]->noRowClass = $data[$groupKey][$i]->class;
+						}
+
+						if (!isset($data[$groupKey][$i]->rowClasses))
+						{
+							$data[$groupKey][$i]->rowClasses = [];
+						}
+
+						$data[$groupKey][$i]->rowClasses[] = FabrikString::getRowClass($c, $this->element->name);
+
+						// plugins may have already created a rowClass
+						if (isset($data[$groupKey][$i]->pluginRowClass))
+						{
+							$data[$groupKey][$i]->rowClass =  $data[$groupKey][$i]->pluginRowClass . ' ' . implode(' ', $data[$groupKey][$i]->rowClasse);
+							$data[$groupKey][$i]->class    =  $data[$groupKey][$i]->noRowClass . ' ' . $data[$groupKey][$i]->rowClass;
+						}
+						else
+						{
+							$data[$groupKey][$i]->rowClass =  implode(' ', $data[$groupKey][$i]->rowClasses);
+							$data[$groupKey][$i]->class    = $data[$groupKey][$i]->noRowClass . ' ' . $data[$groupKey][$i]->rowClass;
+						}
+					}
+				}
+				else
+				{
+					// plugins may have already created a rowClass
+					if (isset($data[$groupKey][$i]->pluginRowClass))
+					{
+						// added noRowClass and rowClass for use in div templates that need to split those out
+						if (!isset($data[$groupKey][$i]->noRowClass))
+						{
+							$data[$groupKey][$i]->noRowClass = $data[$groupKey][$i]->class;
+						}
+
+						$data[$groupKey][$i]->class    = $data[$groupKey][$i]->noRowClass . ' ' . $data[$groupKey][$i]->pluginRowClass;
 					}
 				}
 			}

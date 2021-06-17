@@ -628,7 +628,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$listModel = $this->getListModel();
 		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
-		$useIcon = $params->get('icon_folder', 0) && ArrayHelper::getValue($opts, 'icon', 1);
+		$useIcon = (int)$params->get('icon_folder', 0) > 0 && ArrayHelper::getValue($opts, 'icon', 1);
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->isJoin() ? $this->getFullName(true, false) . '_raw' : $this->getFullName(true, false) . '_id';
