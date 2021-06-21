@@ -829,6 +829,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// new, edit or both (1, 2 or 3)
 		$params    = $this->getParams();
 		$whereWhen = $params->get('database_join_where_when', '3');
+		$invertAccess = $params->get('database_join_where_access_invert', '0') === '1';
 		$isNew     = $this->getFormModel()->isNewRecord();
 
 		if ($isNew && $whereWhen == '2')
@@ -840,7 +841,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			return false;
 		}
 
-		return in_array($gid, $this->user->getAuthorisedViewLevels());
+		if (!$invertAccess)
+		{
+			return in_array($gid, $this->user->getAuthorisedViewLevels());
+		}
+		else
+		{
+			return !in_array($gid, $this->user->getAuthorisedViewLevels());
+		}
 	}
 
 	/**
