@@ -92,8 +92,9 @@ class FileRenderModel
 
 			$layout = $model->getLayout('file');
 			$displayData = new stdClass;
-			$displayData->thumb =  COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $ext . '.png';
-			$displayData->useThumb = $params->get('make_thumbnail', false) && JFile::exists($displayData->thumb);
+			$ext_icon = 'media/com_fabrik/images/' . $ext . '.png';
+			$displayData->thumb =  COM_FABRIK_LIVESITE . $ext_icon;
+			$displayData->useThumb = $params->get('make_thumbnail', false) && JFile::exists(COM_FABRIK_BASE . $ext_icon);
 			$displayData->ext = $ext;
 			$displayData->filename = $filename;
 			$displayData->file = $file;
