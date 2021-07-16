@@ -104,7 +104,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		/**
 		 * If we've got the results for this PK, return them.  Set result, so customProcessResult() gets it right
 		 */
-		if (property_exists($this->acl, $data->__pk_val))
+		if (array_key_exists($data->__pk_val, $this->acl))
 		{
 			$this->result = $this->acl[$data->__pk_val];
 			return $this->acl[$data->__pk_val];
