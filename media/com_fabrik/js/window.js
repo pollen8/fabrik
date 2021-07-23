@@ -19,7 +19,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             if (opts.visible !== false) {
                 Fabrik.Windows[opts.id].open();
             }
-            Fabrik.Windows[opts.id].setOptions(opts);
+            //Fabrik.Windows[opts.id].setOptions(opts);
+            Fabrik.Windows[opts.id] = jQuery.extend(Fabrik.Windows[opts.id], opts);
             // Fabrik.Windows[opts.id].loadContent();
         } else {
             var type = opts.type ? opts.type : '';
