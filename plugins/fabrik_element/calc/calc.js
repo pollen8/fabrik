@@ -14,13 +14,16 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.observeGroupIds = [];
         },
 
-        attachedToForm: function () {
+        attachedToForm: function (cloning) {
             if (this.options.ajax) {
                 this.options.observe.each(function (o) {
                     this.addObserveEvent(o);
                 }.bind(this));
 
-                if (this.options.calcOnLoad) {
+                if (typeof cloning === 'undefined' && this.options.calcOnLoad) {
+                    this.calc();
+                }
+                else if (cloning === true && (this.options.calcOnRepeat || this.options.calcOnLoad)) {
                     this.calc();
                 }
 
@@ -158,7 +161,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 
         cloned: function (c) {
             this.parent(c);
-            this.attachedToForm();
+            this.attachedToForm(true);
         },
 
         update: function (val) {

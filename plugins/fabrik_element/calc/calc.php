@@ -470,6 +470,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$opts->observe = array_values(array_unique($obs));
 		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
+		$opts->calcOnRepeat = (bool) $params->get('calc_on_repeat', false);
 		$opts->id = $this->id;
 
 		return array('FbCalc', $id, $opts);
