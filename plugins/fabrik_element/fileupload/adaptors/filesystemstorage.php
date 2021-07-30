@@ -242,8 +242,22 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		$params = $this->getParams();
 		$allowUnsafe = $params->get('allow_unsafe', '0') === '1';
+		$uploaded = false;
 
-		if (JFile::upload($tmpFile, $filepath, false, $allowUnsafe))
+		/**
+		 * If we're AJAX uploading and WiP is set, then we already "uploaded" it direct from the form through AJAX
+		 * to our own tmp location, now we're just moving it - we can't run JFile::upload(), as that will fail
+		 * (it's not an "uploaded file" at this point)
+		 */
+		if ($params->get('ajax_upload', '0') === '1' && $params->get('upload_use_wip', '0') === '1')
+		{
+			$uploaded = JFile::move($tmpFile, $filepath);
+		}
+		else {
+			$uploaded = JFile::upload($tmpFile, $filepath, false, $allowUnsafe);
+		}
+
+		if ($uploaded)
 		{
 			return $this->createIndexFile(dirname($filepath));
 		}

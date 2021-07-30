@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\Image;
 use Fabrik\Helpers\Uploader;
 use Fabrik\Helpers\Html;
+use Joomla\CMS\Filesystem\File;
 use Joomla\Utilities\ArrayHelper;
 
 if (!defined('FU_DOWNLOAD_SCRIPT_NONE')) define("FU_DOWNLOAD_SCRIPT_NONE", '0');
@@ -1655,6 +1656,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function processUpload()
 	{
+		$params     = $this->getParams();
 		$input      = $this->app->input;
 		$formModel  = $this->getFormModel();
 		$name       = $this->getFullName(true, false);
@@ -1662,6 +1664,44 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!$this->shouldDoNonAjaxUpload())
 		{
+			if ($params->get('upload_use_wip', '0') == '1')
+			{
+				$key       = 'fabrik.form.fileupload.files.' . $this->getId();
+				$ajaxFiles = $this->session->get($key, []);
+
+				if (!empty($ajaxFiles))
+				{
+					$this->session->clear($key);
+					$_FILES[$name] = $ajaxFiles;
+					$fileData      = $_FILES[$name]['name'];
+
+					foreach ($fileData as $i => $f)
+					{
+						$myFileDir = FArrayHelper::getValue($myFileDirs, $i, '');
+						$file      = array('name'     => $_FILES[$name]['name'][$i],
+						                   'type'     => $_FILES[$name]['type'][$i],
+						                   'tmp_name' => $_FILES[$name]['tmp_name'][$i],
+						                   'error'    => $_FILES[$name]['error'][$i],
+						                   'size'     => $_FILES[$name]['size'][$i]);
+
+						if ($file['name'] != '')
+						{
+							$filePath = $this->_processIndUpload($file, $myFileDir, $i);
+							$filePath = str_replace('\\', '/', $filePath);
+
+							foreach ($formModel->formData[$name] as $k => $v)
+							{
+								if ($v === $_FILES[$name]['tmp_name'][$i])
+								{
+									$formModel->formData[$name][$k]          = $filePath;
+									$formModel->formData[$name . '_raw'][$k] = $filePath;
+								}
+							}
+						}
+					}
+				}
+			}
+
 			return;
 		}
 
@@ -2241,12 +2281,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @return object
 	 */
-	public function getStorage()
+	public function getStorage($storageType = null)
 	{
 		if (!isset($this->storage))
 		{
-			$params      = $this->getParams();
-			$storageType = JFilterInput::getInstance()->clean($params->get('fileupload_storage_type', 'filesystemstorage'), 'CMD');
+			/**
+			 * Allow overriding the configured storage type, used by AJAX uploading for temp storage
+			 */
+			if (!isset($storageType))
+			{
+				$params      = $this->getParams();
+				$storageType = JFilterInput::getInstance()->clean($params->get('fileupload_storage_type', 'filesystemstorage'), 'CMD');
+			}
 			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$storageClass  = JString::ucfirst($storageType);
 			$this->storage = new $storageClass($params);
@@ -2399,6 +2445,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($isAjax)
 		{
+			if ($params->get('upload_use_wip', '0') == '1')
+			{
+				$key = 'fabrik.form.fileupload.files.' . $this->getId();
+				$this->session->clear($key);
+			}
+
 			if (is_array($value) && array_key_exists('file', $value))
 			{
 				$value = $value['file'];
@@ -2885,8 +2937,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
         $formModel = $this->getFormModel();
         $this->setId($input->getInt('element_id'));
         $this->loadMeForAjax();
+		$params    = $this->getParams();
 
-        if (!$this->isAjax())
+		if (!$this->isAjax())
         {
             $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
             echo json_encode($o);
@@ -2937,29 +2990,66 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// @TODO test in join
 		if (array_key_exists('file', $_FILES) || array_key_exists('join', $_FILES))
 		{
-			$file     = array(
-				'name' => $_FILES['file']['name'],
-				'type' => $_FILES['file']['type'],
-				'tmp_name' => $_FILES['file']['tmp_name'],
-				'error' => $_FILES['file']['error'],
-				'size' => $_FILES['file']['size']
-			);
-			$filePath = $this->_processIndUpload($file, '', 0);
-
-			if (empty($filePath))
+			if ($params->get('upload_use_wip', '0') == '1')
 			{
-                // zap the temp file, just to be safe (might be a malicious PHP file)
-                JFile::delete($file['tmp_name']);
+				$tmpName     = $_FILES['file']['tmp_name'];
+				$filePath    = tempnam($this->config->get('tmp_path'), "fabrik_ajax_");
+				$params      = $this->getParams();
+				$allowUnsafe = $params->get('allow_unsafe', '0') === '1';
 
-                $o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
-				echo json_encode($o);
+				if (!File::upload($tmpName, $filePath, false, $allowUnsafe))
+				{
+					// zap the temp file, just to be safe (might be a malicious PHP file)
+					JFile::delete($tmpName);
 
-				return;
+					$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+					echo json_encode($o);
+
+					return;
+				}
+
+				$file  = array(
+					'name'     => [$_FILES['file']['name']],
+					'type'     => [$_FILES['file']['type']],
+					'tmp_name' => [$filePath],
+					'error'    => [$_FILES['file']['error']],
+					'size'     => [$_FILES['file']['size']]
+				);
+				$key   = 'fabrik.form.fileupload.files.' . $this->getId();
+				$files = $this->session->get($key, []);
+				$files = array_merge_recursive($files, $file);
+				$this->session->set($key, $files);
+
+				$uri         = $this->getStorage('filesystem')->pathToURL($filePath);
+				$o->filepath = $filePath;
+				$o->uri      = $this->getStorage('filesystem')->preRenderPath($uri);
 			}
+			else
+			{
+				$file     = array(
+					'name'     => $_FILES['file']['name'],
+					'type'     => $_FILES['file']['type'],
+					'tmp_name' => $_FILES['file']['tmp_name'],
+					'error'    => $_FILES['file']['error'],
+					'size'     => $_FILES['file']['size']
+				);
+				$filePath = $this->_processIndUpload($file, '', 0);
 
-			$uri         = $this->getStorage()->pathToURL($filePath);
-			$o->filepath = $filePath;
-			$o->uri      = $this->getStorage()->preRenderPath($uri);
+				if (empty($filePath))
+				{
+					// zap the temp file, just to be safe (might be a malicious PHP file)
+					JFile::delete($file['tmp_name']);
+
+					$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+					echo json_encode($o);
+
+					return;
+				}
+
+				$uri         = $this->getStorage()->pathToURL($filePath);
+				$o->filepath = $filePath;
+				$o->uri      = $this->getStorage()->preRenderPath($uri);
+			}
 		}
 		else
 		{
