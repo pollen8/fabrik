@@ -700,11 +700,11 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
                     foreach ($group as $row) {
                         $this->setAxisLabel($row, $this->c);
 
-                        if (!array_key_exists($column, $row)) {
+                        if (!property_exists($row, $column)) {
                             // Didn't find a _raw column - revert to orig
                             $column = $origColumn;
 
-                            if (!array_key_exists($column, $row)) {
+                            if (!property_exists($row, $column)) {
                                 JError::raiseWarning(E_NOTICE, $column . ': NOT FOUND - PLEASE CHECK IT IS PUBLISHED');
                                 continue;
                             }
