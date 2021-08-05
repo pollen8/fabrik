@@ -412,6 +412,43 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
+	 * Run for each element's canView.  Return false to deny view access
+	 *
+	 * @param  array  $args  array containing element model being tested
+	 *
+	 * @return  bool
+	 */
+	public function onElementContainerClass($args)
+	{
+		$params = $this->getParams();
+
+		if ($params->get('only_process_curl') == 'onElementContainerClass')
+		{
+			if ($this->_requirePHP() === false)
+			{
+				return false;
+			}
+
+			$formModel = $this->getModel();
+			$elementModel = FArrayHelper::getValue($args, 0, false);
+			if ($elementModel)
+			{
+				$w          = new FabrikWorker;
+				$code       = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $formModel->data, true, true);
+				$php_result = eval($code);
+
+				if ($php_result === false)
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * Process the plugin, called when form is submitted
 	 *
 	 * @return  bool
