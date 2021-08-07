@@ -2417,6 +2417,21 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$c[] = $this->getRowClassRO($element);
 
+		// first run plugins, which may set row class
+		$formModel = $this->getFormModel();
+		$args = new stdClass;
+		$args->rowClass = [];
+		$args->data = $formModel->data;
+		$pluginResults = \Fabrik\Helpers\Worker::getPluginManager()->runPlugins(
+			'onElementContainerClass',
+			$formModel,
+			'form',
+			$this,
+			$args
+		);
+
+		$c = array_merge($c, $args->rowClass);
+
 		return implode(' ', $c);
 	}
 
@@ -3367,7 +3382,20 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Encode if necessary
 				if (!in_array($element->get('filter_type'), array('checkbox')))
 				{
-					$r->text = strip_tags($r->text);
+					/**
+					 * Special case, pick out alt="foo" string if the text is an img tag in a dropdown
+					 */
+					$m = [];
+
+					if ($element->get('filter_type') === 'dropdown' && preg_match('/<img\s+.*?alt="(.*?)".*>/', $r->text, $m))
+					{
+						$r->text = $m[1];
+					}
+					else
+					{
+						$r->text = strip_tags($r->text);
+					}
+
 					$r->text = htmlspecialchars($r->text, ENT_NOQUOTES, 'UTF-8', false);
 				}
 			}
