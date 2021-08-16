@@ -254,6 +254,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.drawWindow();
                     }
                 });
+
+                Fabrik.fireEvent('fabrik.window.opened', self.window);
             }
 
             // Rob - removed this caused any form with a file upload in it to be unscrollable - as we load the window
