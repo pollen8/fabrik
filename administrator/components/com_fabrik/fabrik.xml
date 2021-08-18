@@ -44,11 +44,8 @@
 		<folder>models</folder>
 		<folder>sef_ext</folder>
 		<folder>views</folder>
-		<folder>fabrikfeed</folder>
 		<folder>dbdriver</folder>
 		<folder>driver</folder>
-		<folder>pdf</folder>
-		<folder>partial</folder>
 		<folder>query</folder>
 		<folder>fabrik</folder>
 		<folder>Document</folder>
