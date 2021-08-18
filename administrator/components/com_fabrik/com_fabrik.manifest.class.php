@@ -38,13 +38,6 @@ class Com_FabrikInstallerScript
 	protected $documents38 = array('Partial', 'Pdf');
 
 	/**
-	 * Documents <= 3.7
-	 *
-	 * @var array
-	 */
-	protected $documents37 = array('fabrikfeed', 'partial', 'pdf');
-
-	/**
 	 * Run when the component is installed
 	 *
 	 * @param   object $parent installer object
@@ -139,25 +132,11 @@ class Com_FabrikInstallerScript
 		$componentFrontend = 'components/com_fabrik';
 
 		if (version_compare($this->getVersion(), '3.8', '<')) {
-            $docTypes = array('fabrikfeed', 'pdf', 'partial');
-
-            foreach ($docTypes as $docType) {
-                $dest = 'libraries/joomla/document/' . $docType;
-
-                if (!JFolder::exists(JPATH_ROOT . '/' . $dest)) {
-                    JFolder::create(JPATH_ROOT . '/' . $dest);
-                }
-                // $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
-                // it bypasses FTP layer, and will fail if web server does not have write access to J! folders
-                $moveRes = JFolder::copy($componentFrontend . '/' . $docType, $dest, JPATH_SITE, true, false);
-
-                if ($moveRes !== true) {
-                    echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrikfeed to ' . $dest . '</p>';
-
-                    return false;
-                }
-            }
-        }
+			throw new RuntimeException('Fabrik can no longer be installed on versions of Joomla older than 3.8');
+		}
+		else if (version_compare($this->getVersion(), '4.0', '>=')) {
+			throw new RuntimeException('Fabrik can not yet be installed on Joomla 4.x');
+		}
         else
         {
             $dest = 'libraries/src/Document';
