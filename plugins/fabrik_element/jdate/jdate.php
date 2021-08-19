@@ -2644,7 +2644,7 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 		$deps   = array_key_exists($key, $shim) ? $shim[$key]->deps : array();
 		$params = $this->getParams();
 
-		if (!in_array('lib/datejs/date', $deps))
+		if (empty($deps))
 		{
 			$deps[] = 'lib/datejs/globalization/' . JFactory::getLanguage()->getTag();
 			$deps[] = 'lib/datejs/core';
