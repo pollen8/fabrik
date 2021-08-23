@@ -2639,21 +2639,6 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key     = FabrikHelperHTML::isDebug() ? 'element/digsig/digsig' : 'element/digsig/digsig-min';
-		$s       = new stdClass;
-		$s->deps = array();
-
-		$folder           = 'element/digsig/libs/signature-pad/';
-		$digsigShim       = new stdClass;
-		$digsigShim->deps = array($folder . 'jquery.signaturepad');
-		$s->deps[]        = $folder . 'jquery.signaturepad';
-
-		$s->deps[]                     = $folder . 'flashcanvas';
-		$shim[$folder . 'flashcanvas'] = $digsigShim;
-
-		$s->deps[]               = $folder . 'json2';
-		$shim[$folder . 'json2'] = $digsigShim;
-
 		$shim[$key] = $s;
 
 		$key = FabrikHelperHTML::isDebug() ? 'element/jdate/jdate' : 'element/jdate/jdate-min';
