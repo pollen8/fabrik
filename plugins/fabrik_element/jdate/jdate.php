@@ -2639,8 +2639,6 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$shim[$key] = $s;
-
 		$key = FabrikHelperHTML::isDebug() ? 'element/jdate/jdate' : 'element/jdate/jdate-min';
 		// Ensure that we keep advanced dependencies from previous date elements regardless of current elements settings.
 		$deps   = array_key_exists($key, $shim) ? $shim[$key]->deps : array();
