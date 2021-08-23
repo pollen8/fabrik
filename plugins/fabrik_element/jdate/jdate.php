@@ -2639,6 +2639,23 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
+		$key     = FabrikHelperHTML::isDebug() ? 'element/digsig/digsig' : 'element/digsig/digsig-min';
+		$s       = new stdClass;
+		$s->deps = array();
+
+		$folder           = 'element/digsig/libs/signature-pad/';
+		$digsigShim       = new stdClass;
+		$digsigShim->deps = array($folder . 'jquery.signaturepad');
+		$s->deps[]        = $folder . 'jquery.signaturepad';
+
+		$s->deps[]                     = $folder . 'flashcanvas';
+		$shim[$folder . 'flashcanvas'] = $digsigShim;
+
+		$s->deps[]               = $folder . 'json2';
+		$shim[$folder . 'json2'] = $digsigShim;
+
+		$shim[$key] = $s;
+
 		$key = FabrikHelperHTML::isDebug() ? 'element/jdate/jdate' : 'element/jdate/jdate-min';
 		// Ensure that we keep advanced dependencies from previous date elements regardless of current elements settings.
 		$deps   = array_key_exists($key, $shim) ? $shim[$key]->deps : array();
@@ -2646,16 +2663,21 @@ class PlgFabrik_ElementJdate extends PlgFabrik_ElementList
 
 		if (empty($deps))
 		{
-			$deps[] = 'lib/datejs/globalization/' . JFactory::getLanguage()->getTag();
-			$deps[] = 'lib/datejs/core';
-			$deps[] = 'lib/datejs/parser';
-			$deps[] = 'lib/datejs/extras';
-		}
-
-		if (count($deps) > 0)
-		{
+			/**
+			 * Main datejs files (core, parser) require the globalization to be loaded first,
+			 * to add the Date.CultureInfo object, so we have to shim it thusly
+			 */
 			$s          = new stdClass;
-			$s->deps    = $deps;
+			$s->deps    = [];
+			$globalShim = new stdClass();
+			$globalShim->deps = ['lib/datejs/globalization/' . JFactory::getLanguage()->getTag()];
+			$s->deps[] = 'lib/datejs/globalization/' . JFactory::getLanguage()->getTag();
+			$s->deps[] = 'lib/datejs/core';
+			$shim['lib/datejs/core'] = $globalShim;
+			$s->deps[] = 'lib/datejs/parser';
+			$shim['lib/datejs/parser'] = $globalShim;
+			$s->deps[] = 'lib/datejs/extras';
+			$shim['lib/datejs/extras'] = $globalShim;
 			$shim[$key] = $s;
 		}
 
