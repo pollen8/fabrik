@@ -3570,7 +3570,7 @@ class FabrikFEModelForm extends FabModelForm
 						{
 							$name = $names[$i];
 
-							if (isset($row->{$name}))
+							if (property_exists($row, $name))
 							{
 								$v = $row->$name;
 								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
