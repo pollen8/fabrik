@@ -75,7 +75,8 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		// Stop "'s from breaking the content out of the field.
 		$data['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-		if ($this->app->input->get('view') === 'form')
+		//if ($this->app->input->get('view') === 'form')
+		if ($this->app->input->get('view') === 'form' && !($params->get('youtube_embed_read_only', '0') === '1' && !$this->isEditable()))
 		{
 			$class = 'fabrikinput inputbox text';
 			$name = $this->getHTMLName($repeatCounter);
