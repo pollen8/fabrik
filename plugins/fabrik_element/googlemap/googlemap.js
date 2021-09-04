@@ -47,49 +47,50 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
             Extends: FbElement,
 
             watchGeoCodeDone: false,
+            watchDMMDone: false,
 
             options: {
-                'lat'                 : 0,
-                'lat_dms'             : 0,
-                'lon'                 : 0,
-                'lon_dms'             : 0,
-                'zoomlevel'           : '13',
-                'control'             : '',
-                'maptypecontrol'      : false,
-                'maptypeids'          : false,
-                'overviewcontrol'     : false,
-                'scalecontrol'        : false,
-                'drag'                : false,
-                'maptype'             : 'G_NORMAL_MAP',
-                'geocode'             : false,
-                'latlng'              : false,
-                'latlng_dms'          : false,
-                'staticmap'           : false,
-                'auto_center'         : false,
-                'scrollwheel'         : false,
-                'streetView'          : false,
-                'sensor'              : false,
-                'center'              : 0,
-                'reverse_geocode'     : false,
-                'use_radius'          : false,
-                'geocode_on_load'     : false,
-                'traffic'             : false,
-                'debounceDelay'       : 500,
-                'styles'              : [],
-                'directionsFrom'      : false,
-                'directionsFromLat'   : 0,
-                'directionsFromLon'   : 0,
+                'lat': 0,
+                'lat_dms': 0,
+                'lon': 0,
+                'lon_dms': 0,
+                'zoomlevel': '13',
+                'control': '',
+                'maptypecontrol': false,
+                'maptypeids': false,
+                'overviewcontrol': false,
+                'scalecontrol': false,
+                'drag': false,
+                'maptype': 'G_NORMAL_MAP',
+                'geocode': false,
+                'latlng': false,
+                'latlng_dms': false,
+                'staticmap': false,
+                'auto_center': false,
+                'scrollwheel': false,
+                'streetView': false,
+                'sensor': false,
+                'center': 0,
+                'reverse_geocode': false,
+                'use_radius': false,
+                'geocode_on_load': false,
+                'traffic': false,
+                'debounceDelay': 500,
+                'styles': [],
+                'directionsFrom': false,
+                'directionsFromLat': 0,
+                'directionsFromLon': 0,
                 'reverse_geocode_fields': {},
-                'key'                 : false,
-                'language'            : '',
-                'mapShown'            : true,
-                'use_overlays'       : false,
-                'overlays'          : [],
-                'overlay_urls'      : [],
-                'overlay_labels'    : [],
-                'overlay_events'    : [],
-                'lat_element'         : '',
-                'lon_element'         : ''
+                'key': false,
+                'language': '',
+                'mapShown': true,
+                'use_overlays': false,
+                'overlays': [],
+                'overlay_urls': [],
+                'overlay_labels': [],
+                'overlay_events': [],
+                'lat_element': '',
+                'lon_element': ''
             },
 
             loadScript: function () {
@@ -98,6 +99,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
             initialize: function (element, options) {
                 this.mapMade = false;
+                this.watchDMMDone = false;
                 this.redrawn = false;
                 this.parent(element, options);
 
@@ -113,9 +115,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         for (var type in google.maps.MapTypeId) {
                             this.mapTypeIds.push(google.maps.MapTypeId[type]);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         for (var type in this.options.maptypeids) {
                             this.mapTypeIds.push(this.options.maptypeids[type]);
                         }
@@ -190,7 +190,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 this.mapMade = true;
                 var self = this;
 
-                if (typeof(this.map) !== 'undefined' && this.map !== null) {
+                if (typeof (this.map) !== 'undefined' && this.map !== null) {
                     return;
                 }
                 if (typeOf(this.element) === 'null') {
@@ -217,9 +217,11 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                  * and watchGeoCode() will keep track of whether it can / has run.
                  */
                 this.watchGeoCode();
+                this.watchDMM();
                 Fabrik.addEvent('fabrik.form.elements.added', function (form) {
                     if (form === self.form) {
                         self.watchGeoCode();
+                        self.watchDMM();
                     }
                 });
 
@@ -237,16 +239,16 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     var vzoomControl = this.options.control !== 'none';
 
                     var mapOpts = {
-                        center               : this.center,
-                        zoom                 : this.options.zoomlevel.toInt(),
-                        mapTypeId            : this.options.maptype,
-                        scaleControl         : this.options.scalecontrol,
-                        mapTypeControl       : this.options.maptypecontrol,
-                        overviewMapControl   : this.options.overviewcontrol,
-                        scrollwheel          : this.options.scrollwheel,
-                        streetViewControl    : this.options.streetView,
-                        zoomControl          : vzoomControl,
-                        zoomControlOptions   : {
+                        center: this.center,
+                        zoom: this.options.zoomlevel.toInt(),
+                        mapTypeId: this.options.maptype,
+                        scaleControl: this.options.scalecontrol,
+                        mapTypeControl: this.options.maptypecontrol,
+                        overviewMapControl: this.options.overviewcontrol,
+                        scrollwheel: this.options.scrollwheel,
+                        streetViewControl: this.options.streetView,
+                        zoomControl: vzoomControl,
+                        zoomControlOptions: {
                             style: zoomControlStyle
                         },
                         mapTypeControlOptions: {
@@ -267,9 +269,9 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                                 // See above example if you need smooth wrapping at 180th meridian
                                 return 'http://tile.openstreetmap.org/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
                             },
-                            tileSize  : new google.maps.Size(256, 256),
-                            name      : 'OpenStreetMap',
-                            maxZoom   : 18
+                            tileSize: new google.maps.Size(256, 256),
+                            name: 'OpenStreetMap',
+                            maxZoom: 18
                         }));
                     }
 
@@ -279,7 +281,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     }
 
                     var opts = {
-                        map     : this.map,
+                        map: this.map,
                         position: this.center
                     };
                     opts.draggable = this.options.drag;
@@ -300,30 +302,6 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         this.element.getElement('.lngdms').addEvent('blur', function (e) {
                             this.updateFromDMS(e);
                         }.bind(this));
-                    }
-
-                    if (this.options.latlng_elements === true) {
-                        var latEl = this.form.formElements.get(this.options.lat_element);
-                        var lonEl = this.form.formElements.get(this.options.lon_element);
-
-                        if (latEl && lonEl) {
-                            if (this.options.lat_element.test(/_ddm$/) && this.options.lon_element.test(/_ddm$/)) {
-                                latEl.addNewEventAux(latEl.getChangeEvent(), function (e) {
-                                    this.updateFromLatLngDDMElements(e);
-                                }.bind(this));
-                                lonEl.addNewEventAux(lonEl.getChangeEvent(), function (e) {
-                                    this.updateFromLatLngDDMElements(e);
-                                }.bind(this));
-                            }
-                            else {
-                                latEl.addNewEventAux(latEl.getChangeEvent(), function (e) {
-                                    this.updateFromLatLngElements(e);
-                                }.bind(this));
-                                lonEl.addNewEventAux(lonEl.getChangeEvent(), function (e) {
-                                    this.updateFromLatLngElements(e);
-                                }.bind(this));
-                            }
-                        }
                     }
 
                     this.marker = new google.maps.Marker(opts);
@@ -416,9 +394,9 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
             calcRoute: function () {
                 var request = {
-                    origin     : this.directionsFromPoint,
+                    origin: this.directionsFromPoint,
                     destination: this.marker.getPosition(),
-                    travelMode : google.maps.TravelMode.DRIVING
+                    travelMode: google.maps.TravelMode.DRIVING
                 };
                 this.directionsService.route(request, function (result, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
@@ -478,12 +456,10 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     var distance = this.options.radius_default;
                     if (!this.options.editable) {
                         distance = this.options.radius_ro_value;
-                    }
-                    else {
+                    } else {
                         if (this.options.radius_read_element) {
                             distance = document.id(this.options.radius_read_element).value;
-                        }
-                        else if (this.options.radius_write_element) {
+                        } else if (this.options.radius_write_element) {
                             distance = document.id(this.options.radius_write_element).value;
                         }
                     }
@@ -491,13 +467,13 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         distance = distance * 1.609344;
                     }
                     this.distanceWidget = new DistanceWidget({
-                        map            : this.map,
-                        marker         : this.marker,
-                        distance       : distance, // Starting distance in km.
-                        maxDistance    : 2500, // Twitter has a max distance of 2500km.
-                        color          : '#000000',
-                        activeColor    : '#5599bb',
-                        sizerIcon      : new google.maps.MarkerImage(this.options.radius_resize_off_icon),
+                        map: this.map,
+                        marker: this.marker,
+                        distance: distance, // Starting distance in km.
+                        maxDistance: 2500, // Twitter has a max distance of 2500km.
+                        color: '#000000',
+                        activeColor: '#5599bb',
+                        sizerIcon: new google.maps.MarkerImage(this.options.radius_resize_off_icon),
                         activeSizerIcon: new google.maps.MarkerImage(this.options.radius_resize_icon)
                     });
 
@@ -539,8 +515,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                             latElDec.update(this.marker.getPosition().lat());
                             lonElDec.update(this.marker.getPosition().lng());
                         }
-                    }
-                    else {
+                    } else {
                         latEl.update(this.marker.getPosition().lat());
                         lonEl.update(this.marker.getPosition().lng());
 
@@ -585,7 +560,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 }
             },
 
-            strDDMtoDec: function(dec) {
+            strDDMtoDec: function (dec) {
                 var ddm_d_m = dec.split(' ');
 
                 if (ddm_d_m.length === 2) {
@@ -594,8 +569,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
                     if (ddm_d.toInt() < 0) {
                         return ((Math.abs(ddm_d.toInt()) + (ddm_m / 60)) * -1).toString();
-                    }
-                    else {
+                    } else {
                         return (ddm_d.toInt() + (ddm_m / 60)).toString();
                     }
                 }
@@ -775,8 +749,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         this.marker.setPosition(results[0].geometry.location);
                         this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
 
-                        if (this.options.reverse_geocode)
-                        {
+                        if (this.options.reverse_geocode) {
                             if (this.options.reverse_geocode_fields.formatted_address) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(
                                     results[0].formatted_address
@@ -785,6 +758,41 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         }
                     }
                 }.bind(this));
+            },
+
+            watchDMM: function () {
+                if (this.watchDMMDone) {
+                    return;
+                }
+                if (!this.options.editable) {
+                    return;
+                }
+                if (typeof this.form === 'undefined') {
+                    return;
+                }
+                if (this.options.latlng_elements === true) {
+                    var latEl = this.form.formElements.get(this.options.lat_element);
+                    var lonEl = this.form.formElements.get(this.options.lon_element);
+
+                    if (latEl && lonEl) {
+                        if (this.options.lat_element.test(/_ddm$/) && this.options.lon_element.test(/_ddm$/)) {
+                            latEl.addNewEventAux(latEl.getChangeEvent(), function (e) {
+                                this.updateFromLatLngDDMElements(e);
+                            }.bind(this));
+                            lonEl.addNewEventAux(lonEl.getChangeEvent(), function (e) {
+                                this.updateFromLatLngDDMElements(e);
+                            }.bind(this));
+                        } else {
+                            latEl.addNewEventAux(latEl.getChangeEvent(), function (e) {
+                                this.updateFromLatLngElements(e);
+                            }.bind(this));
+                            lonEl.addNewEventAux(lonEl.getChangeEvent(), function (e) {
+                                this.updateFromLatLngElements(e);
+                            }.bind(this));
+                        }
+                    }
+                }
+                this.watchDMMDone = true;
             },
 
             watchGeoCode: function () {
@@ -813,9 +821,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                                     f.addEvent('change', function (e) {
                                         this.geoCode();
                                     }.bind(this));
-                                }
-                                else {
-                                    Fabrik.addEvent('fabrik.element.field.geocode', function(el, results) {
+                                } else {
+                                    Fabrik.addEvent('fabrik.element.field.geocode', function (el, results) {
                                         //fconsole('fired: ' + el.element.id);
                                         this.geoCode();
                                     }.bind(this));
@@ -948,7 +955,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 }
             },
 
-            fillReverseGeocode: function(result) {
+            fillReverseGeocode: function (result) {
                 if (this.options.reverse_geocode_fields.formatted_address) {
                     this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(result.formatted_address);
                 }
@@ -963,38 +970,31 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                             if (this.options.reverse_geocode_fields.street_number || this.options.reverse_geocode_fields.route) {
                                 streetNumber = component.long_name;
                             }
-                        }
-                        else if (type === 'route') {
+                        } else if (type === 'route') {
                             if (this.options.reverse_geocode_fields.route) {
                                 streetRoute = component.long_name;
                             }
-                        }
-                        else if (type === 'street_address') {
+                        } else if (type === 'street_address') {
                             if (this.options.reverse_geocode_fields.route) {
                                 streetAddress = component.long_name;
                             }
-                        }
-                        else if (type === 'neighborhood') {
+                        } else if (type === 'neighborhood') {
                             if (this.options.reverse_geocode_fields.neighborhood) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
                             }
-                        }
-                        else if (type === 'locality') {
+                        } else if (type === 'locality') {
                             if (this.options.reverse_geocode_fields.locality) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
                             }
-                        }
-                        else if (type === 'administrative_area_level_1') {
+                        } else if (type === 'administrative_area_level_1') {
                             if (this.options.reverse_geocode_fields.administrative_area_level_1) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
                             }
-                        }
-                        else if (type === 'postal_code') {
+                        } else if (type === 'postal_code') {
                             if (this.options.reverse_geocode_fields.postal_code) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
                             }
-                        }
-                        else if (type === 'country') {
+                        } else if (type === 'country') {
                             if (this.options.reverse_geocode_fields.country) {
                                 this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
                             }
@@ -1004,23 +1004,20 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
 
                 if (this.options.reverse_geocode_fields.street_number) {
                     this.form.formElements.get(this.options.reverse_geocode_fields.street_number).update(streetNumber);
-                    this.form.formElements.get(this.options.reverse_geocode_fields.route).update(streetRoute);            }
-                else if (this.options.reverse_geocode_fields.route) {
+                    this.form.formElements.get(this.options.reverse_geocode_fields.route).update(streetRoute);
+                } else if (this.options.reverse_geocode_fields.route) {
                     /**
                      * Create the street address.  I'm really not sure what the difference between 'route'
                      * and 'street_address' is in Google's component types, so for now just use 'street_address'
                      * as the preference, use 'route' if no 'street_address', and prepend 'street_number'
                      */
-                    if (streetRoute !== '')
-                    {
-                        if (streetAddress === '')
-                        {
+                    if (streetRoute !== '') {
+                        if (streetAddress === '') {
                             streetAddress = streetRoute;
                         }
                     }
 
-                    if (streetNumber !== '')
-                    {
+                    if (streetNumber !== '') {
                         streetAddress = streetNumber + ' ' + streetAddress;
                     }
 
@@ -1033,8 +1030,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                     if (status === google.maps.GeocoderStatus.OK) {
                         if (results[0]) {
                             this.fillReverseGeocode(results[0]);
-                        }
-                        else {
+                        } else {
                             window.alert('No results found');
                         }
                     } else {
@@ -1077,7 +1073,7 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                 if (e.target.id.test(/overlay_select_(\d+)/)) {
                     var self = this;
                     jQuery(e.target).closest('div').find('.fabrik_googlemap_overlay_select').each(
-                        function(k, el) {
+                        function (k, el) {
                             var olk = el.id.match(/overlay_select_(\d+)/)[1].toInt();
                             if (el.checked) {
                                 self.options.overlays[olk].setMap(self.map);
@@ -1098,8 +1094,8 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         var pv = this.options.overlay_preserveviewports[k] === '1';
                         var so = this.options.overlay_suppressinfowindows[k] === '1';
                         this.options.overlays[k] = new google.maps.KmlLayer({
-                            url                : overlay_url,
-                            preserveViewport   : pv,
+                            url: overlay_url,
+                            preserveViewport: pv,
                             suppressInfoWindows: so
                         });
 
