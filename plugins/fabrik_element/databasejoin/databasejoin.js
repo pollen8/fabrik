@@ -693,7 +693,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
             var found = false;
             if (typeOf(this.element.options) !== 'null') { //needed with repeat group code
                 for (var i = 0; i < this.element.options.length; i++) {
-                    if (typeof val !== 'undefined' && this.element.options[i].value === val.toString()) {
+                    if ((typeof val === 'string' || typeof val === 'number') && this.element.options[i].value === val.toString()) {
                         this.element.options[i].selected = true;
                         found = true;
                         break;
