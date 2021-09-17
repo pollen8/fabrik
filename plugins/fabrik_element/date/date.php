@@ -1649,7 +1649,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * @return  string JLayout render
 	 */
-	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true, $container)
+	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true, $container = null)
 	{
 		if (get_magic_quotes_gpc())
 		{
