@@ -4043,6 +4043,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!empty($php))
 		{
+			FabrikWorker::clearEval();
 			$formModel = $this->getFormModel();
 			$filename = Html::isDebug() ? eval($php) : @eval($php);
 			FabrikWorker::logEval($filename, 'Eval exception : ' . $this->getElement()->name . '::renameFile() : ' . $filename . ' : %s');
