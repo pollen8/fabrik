@@ -2397,7 +2397,7 @@ class Worker
 		}
 
         // if ACY mailing is installed, it returns an exception (!) rather than false
-        if (get_parent_class($ret) === 'Exception')
+        if (is_bool($ret) === false && get_parent_class($ret) === 'Exception')
         {
             self::log('fabrik.helper.sendmail.error', 'Exception in Send: ' . $ret->getMessage(), false);
 
