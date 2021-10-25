@@ -932,7 +932,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 				}
 
-				if (array_key_exists($title_name, $thisRow))
+				if (property_exists($thisRow, $title_name))
 				{
 					if (!empty($thisRow->$title_name))
 					{
