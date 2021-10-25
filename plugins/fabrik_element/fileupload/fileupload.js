@@ -238,7 +238,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
          */
         getFormElementsKey: function (elId) {
             this.baseElementId = elId;
-            if (this.options.ajax_upload && this.options.ajax_max > 1) {
+            if (!this.options.inRepeatGroup && this.options.ajax_upload && this.options.ajax_max > 1) {
                 return this.options.listName + '___' + this.options.elementShortName;
             } else {
                 return this.parent(elId);
@@ -254,15 +254,25 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
         },
 
         cloned: function (c) {
-            var el = jQuery(this.element);
-            // replaced cloned image with default image
-            if (el.closest('.fabrikElement').length === 0) {
-                return;
+            if (this.options.ajax_upload) {
+                jQuery(this.getContainer()).find('.plupload_container').prop('id', this.element.id + '_container');
+                jQuery(this.getContainer()).find('.plupload').prop('id', this.element.id + '_dropList_container');
+                jQuery(this.getContainer()).find('.plupload_filelist').prop('id', this.element.id + '_dropList');
+                jQuery(this.getContainer()).find('.plupload_browsebutton').prop('id', this.element.id + '_browseButton');
+                jQuery(this.getContainer()).find('input').remove();
+                this.watchAjax();
             }
-            var i = el.closest('.fabrikElement').find('img');
-            i.attr('src', this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '');
-            jQuery(this.getContainer()).find('[data-file]').remove();
-            this.watchBrowseButton();
+            else {
+                var el = jQuery(this.element);
+                // replaced cloned image with default image
+                if (el.closest('.fabrikElement').length === 0) {
+                    return;
+                }
+                var i = el.closest('.fabrikElement').find('img');
+                i.attr('src', this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '');
+                jQuery(this.getContainer()).find('[data-file]').remove();
+                this.watchBrowseButton();
+            }
             this.parent(c);
         },
 
