@@ -206,10 +206,23 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
 	                        url += '?lang=' + this.options.lang;
                         }
                     }
+
+                    var width = jQuery(e.target).data('fabrik-print-width');
+                    if (width === 'undefined') {
+                        width = '400';
+                    }
+                    var height = jQuery(e.target).data('fabrik-print-height');
+                    if (height === 'undefined') {
+                        height = '350';
+                    }
+                    var features = 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes';
+                    features += ',width=' + width + ',height=' + height;
+                    features += ',directories=no,location=no;'
+
                     window.open(
                         url,
                         'win2',
-                        'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;'
+                        features
                     );
                 }
             }.bind(this));
