@@ -3188,6 +3188,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$opts->observe = array_values($obs);
+		$opts->ajaxOnLoad = (bool) $params->get('databasejoin_where_ajax_on_load', false);
+
 		$opts->changeEvent = $this->getChangeEvent();
 
 		return $opts;

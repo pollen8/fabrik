@@ -914,6 +914,9 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete-
         },
 
         watchObserve: function () {
+            if (this.options.ajaxOnLoad) {
+                this.updateFromServer();
+            }
             var v2, o2;
             this.options.observe.each(function (o) {
                 if (o === '') {
