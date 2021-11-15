@@ -2958,6 +2958,11 @@ class Worker
 			return $memory;
 		}
 
+		if ($memory === '-1')
+		{
+			return PHP_INT_MAX;
+		}
+
 		$last = strtolower($memory[strlen($memory)-1]);
 		$val  = substr($memory, 0, -1);
 
