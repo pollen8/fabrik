@@ -242,7 +242,10 @@ class ImageRenderModel
 				$model->_repeatGroupCounter = $i++;
 				$this->renderListData($model, $params, $img, $thisRow);
 				$imgs[] = $this->output;
+				$showImage = $params->get('fu_show_image_in_table');
+				$params->set('fu_show_image_in_table', '2');
 				$this->renderListData($model, $params, $storage->_getThumb($img), $thisRow);
+				$params->set('fu_show_image_in_table', $showImage);
 				$thumbs[] = $this->output;
 			}
 		}
