@@ -156,7 +156,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			else
 			{
 				$this->_guessLinkType($value, $data);
-				$value = $this->format($value, false);
+				//@@@trob: apply numberFormat also in details view (like in list view), for backward compat only in case of no guess link
+				$doNumberFormat = $params->get('guess_linktype','0') == '0' ? true :false;
+				$value = $this->format($value, $doNumberFormat);
 				$value = $this->getReadOnlyOutput($value, $value);
 			}
 
