@@ -2819,7 +2819,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @return    string    Download link
 	 */
-	protected function downloadLink($value, $data, $repeatCounter = 0, $ajaxIndex)
+	protected function downloadLink($value, $data, $repeatCounter = 0, $ajaxIndex = '')
 	{
 		$input     = $this->app->input;
 		$params    = $this->getParams();
