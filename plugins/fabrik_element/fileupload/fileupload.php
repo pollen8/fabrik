@@ -3291,7 +3291,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				foreach ($rows as $row)
 				{
-					if (array_key_exists($elName . '_raw', $row))
+					if (property_exists($row, $elName . '_raw'))
 					{
 						if ($this->isJoin())
 						{
