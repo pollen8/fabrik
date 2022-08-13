@@ -168,6 +168,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				 * need __pk_val if 'edit original row'
 				 */
 				$newData->__pk_val = $data->__pk_val;
+				$newData->__elid = $input->get('elid', '');
 
 				foreach ($map as $from => $to)
 				{

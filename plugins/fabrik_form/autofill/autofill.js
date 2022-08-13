@@ -224,7 +224,9 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 			this.json = json;
 			Fabrik.fireEvent('fabrik.form.autofill.update.start', [this, json]);
 
-			var repeatNum = this.element.getRepeatNum(),
+			var el = this.form.formElements.get(json.__elid);
+
+			var repeatNum = el.getRepeatNum(),
 				key, val, k2, origKey;
 
 			if (jQuery.isEmptyObject(this.json)) {
