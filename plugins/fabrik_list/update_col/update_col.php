@@ -134,6 +134,7 @@ class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 
 		// get the pre-set updates
 		$update = json_decode($params->get('update_col_updates'));
+		if (is_null($update) ) $update = new stdClass();
 
 		$prompt = $params->get('update_col_prompt', false);
 
