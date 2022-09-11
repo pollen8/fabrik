@@ -201,6 +201,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					'g'                    : 'form',
 					'v'                    : v,
 					'formid'               : formid,
+					'elid'                 : el.element.id,
 					'observe'              : observe,
 					'cnn'                  : this.options.cnn,
 					'table'                : this.options.table,
