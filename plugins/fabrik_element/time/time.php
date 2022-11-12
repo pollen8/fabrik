@@ -305,7 +305,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	{
 		$data = str_replace(null, '', $data);
 
-		if (strstr($data, ','))
+		if (is_string($data) && strstr($data, ','))
 		{
 			$data = explode(',', $data);
 		}
