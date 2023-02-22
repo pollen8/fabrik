@@ -47,7 +47,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				{
 					$res = @eval($default);
 				}
-				FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
+				FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . str_replace('%','%%',$default) . ' : %s');
 				$default = $res;
 			}
 			*/
@@ -103,7 +103,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$d = $data;
 			FabrikWorker::clearEval();
 			$res = FabrikHelperHTML::isDebug() ? eval($default) : @eval($default);
-			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . ' (id ' . $this->getId() . ')::_getV() : ' . $default . ' : %s');
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . ' (id ' . $this->getId() . ')::_getV() : ' . str_replace('%','%%',$default) . ' : %s');
 
 			return $res;
 		}
@@ -319,7 +319,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				$res = @eval($cal);
 			}
 
-			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . ' (id ' . $this->getId() . ')::preFormatFormJoins() : ' . $cal . ' : %s');
+			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . ' (id ' . $this->getId() . ')::preFormatFormJoins() : ' . str_replace('%','%%',$cal) . ' : %s');
 
 			$res = $this->getFormattedValue($res);
 
