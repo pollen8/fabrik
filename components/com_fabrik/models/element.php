@@ -1507,7 +1507,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getDefaultOnACL($data, $opts)
 	{
 		// Rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
-		if (!$this->isEditable() && FArrayHelper::getValue($data, 'rowid') != 0)
+		if (!$this->isEditable() && (int)FArrayHelper::getValue($data, 'rowid') != 0)
 		{
 			$opts['use_default'] = false;
 		}
